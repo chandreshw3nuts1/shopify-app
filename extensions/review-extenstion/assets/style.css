@@ -1,0 +1,135 @@
+/* Default styling for stars */
+.star-rating {
+    font-size: 20px; 
+  }
+  
+/* Style for checked stars */
+.star-rating .checked { 
+    color: #FFD700; 
+}
+.review-image{
+    margin-right: 5px;
+}
+.review-list-item {
+    cursor: pointer;
+}
+.box-style {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 10px; 
+}
+.box-style:hover {
+    background-color: #f7f7f7;
+}
+
+.product-container{
+    display: flex;
+}
+
+.product-container img {
+width: 50px;
+}
+
+.product-container .text {
+padding-left: 10px;
+}
+
+
+
+.header-review-section .star-rating {
+    display: flex;
+    align-items: center;
+}
+.header-review-section .star-rating .fa-star {
+    color: gold;
+}
+.header-review-section .rating-breakdown .fa-star {
+    color: gold;
+}
+.header-review-section .rating-breakdown .fa-star.half {
+    color: gray;
+}
+.header-review-section .rating-breakdown .rating-bar {
+    height: 10px;
+    background-color: #e9ecef;
+}
+.header-review-section .rating-breakdown .rating-bar .filled {
+    background-color: gold;
+    height: 100%;
+}
+
+.header-review-section .progress-bar {
+    display: block !important;
+}
+
+
+
+  /* Modal Content/Box */
+
+.custom-review-modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 999; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: hidden;
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+  
+
+  .custom-review-modal-content {
+    background-color: #fefefe;
+    margin: 1% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%; /* Could be more or less, depending on screen size */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    animation-name: modalopen;
+    animation-duration: 0.4s;
+  }
+  
+  @keyframes modalopen {
+    from {opacity: 0}
+    to {opacity: 1}
+  }
+  
+  .close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close-btn:hover,
+  .close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+
+
+  .star-rating {
+    direction: rtl;
+    display: inline-block;
+    padding: 20px;
+}
+.star-rating input[type=radio] {
+    display: none;
+}
+.star-rating label {
+    font-size: 2em;
+    color: #ddd;
+    cursor: pointer;
+}
+.star-rating input[type=radio]:checked ~ label {
+    color: #f7d106;
+}
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #f7d106;
+}
+

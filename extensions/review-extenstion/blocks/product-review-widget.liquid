@@ -1,0 +1,101 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<div id="display-widget-component">
+    
+</div>
+
+
+
+<script>
+var settings_vars = {{ block.settings | json }};
+const url = 'https://teens-chargers-tired-y.trycloudflare.com/';
+
+$(document).ready(function(){
+
+	$.ajax({
+        type: 'POST',
+        url: `${url}/api/widget`,
+        data: {
+			no_of_review: settings_vars.no_of_review_per_page,
+			shop_domain : '{{shop.domain}}'
+		},
+		dataType : "json",
+        success: function(response) {
+            $("#display-widget-component").html(response.body);
+			var modal_html = response.htmlModalContent;
+			$("body").append(modal_html);
+		},
+        error: function(xhr, status, error) {
+            // Handle errors
+            console.error(xhr.responseText);
+        }
+    });
+
+
+});
+$(document).on("click", "#show_create_review_modal",  function() {
+	$("#createReviewModal").modal("show");
+});
+
+$(document).on("submit", "#review_submit_btn_form",  function(e) {
+  	e.preventDefault();
+    
+	var formData = new FormData($(this)[0]);
+    formData.append('shop_domain', '{{shop.domain}}');
+    formData.append('product_id', '{{product.id}}');
+
+    var reviewUrl = $(this).attr('action');
+    $.ajax({
+        type: 'POST',
+        url: reviewUrl,
+        data: formData,
+		contentType: false,
+		processData: false,
+
+        success: function(response) {
+            console.log(response);
+        },
+        error: function(xhr, status, error) {
+            // Handle errors
+            console.error(xhr.responseText);
+        }
+    });
+
+});
+
+
+</script>
+
+
+
+
+
+
+
+{% schema %}
+{
+  "name": "Product Review Widget",
+  "target": "section",
+  "stylesheet": "style.css",
+  "settings": [
+    
+    {
+      "type": "range",
+      "id": "no_of_review_per_page",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "label": "Number of reviews to display",
+      "default": 5
+    },
+    { "type": "text", "id": "custom_class_text", "label": "Text Colour" }
+
+
+  ]
+}
+{% endschema %}

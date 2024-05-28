@@ -1,0 +1,50 @@
+<div id="product-reviews-widget-settings">
+  <form id="settings-form">
+    <label>
+      Number of reviews to display:
+      <input type="number" name="number_of_reviews" id="number_of_reviews" value="2">
+    </label>
+    <button type="submit">Save Settings</button>
+  </form>
+</div>
+
+<script>
+  document.getElementById('settings-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const settings = {
+      numberOfReviews: document.getElementById('number_of_reviews').value,
+    };
+
+    try {
+      const response = await fetch('/api/save-widget-settings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(settings),
+      });
+
+      const data = await response.json();
+      if (data.status === 'success') {
+        alert('Settings saved successfully');
+      } else {
+        alert('Failed to save settings: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      alert('An error occurred while saving settings');
+    }
+  });
+</script>
+
+
+
+{% schema %}
+{
+  "name": "Test Widget",
+  "target": "section",
+  "settings": [
+  ]
+}
+{% endschema %}
