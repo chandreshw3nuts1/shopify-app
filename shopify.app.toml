@@ -3,7 +3,7 @@
 client_id = "177ac2a00973ba8fc0c323f490150da3"
 name = "kritic-app"
 handle = "kritic-app"
-application_url = "https://generations-puzzles-assure-pharmaceutical.trycloudflare.com"
+application_url = "https://advertisements-voluntary-mirrors-sensitivity.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_customers,read_products,read_themes,write_products"
 
 [auth]
 redirect_urls = [
-  "https://generations-puzzles-assure-pharmaceutical.trycloudflare.com/auth/callback",
-  "https://generations-puzzles-assure-pharmaceutical.trycloudflare.com/auth/shopify/callback",
-  "https://generations-puzzles-assure-pharmaceutical.trycloudflare.com/api/auth/callback"
+  "https://advertisements-voluntary-mirrors-sensitivity.trycloudflare.com/auth/callback",
+  "https://advertisements-voluntary-mirrors-sensitivity.trycloudflare.com/auth/shopify/callback",
+  "https://advertisements-voluntary-mirrors-sensitivity.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

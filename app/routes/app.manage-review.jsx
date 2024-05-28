@@ -13,6 +13,7 @@ import {
   Layout,
   Page,
   LegacyCard,
+  Spinner,
   Card,Select, TextField, Button, FormLayout
 } from "@shopify/polaris";
 
@@ -46,8 +47,9 @@ export async function loader({request}) {
 			"shop" : shopRecords.domain,
 			"page" : 1,
 			"limit" : 2,
-			"filter_status" : "default params",
-			"param2" : "default params 2",
+			"filter_status" : "all",
+			"filter_stars" : "all",
+			"search_keyword" : "",
 		}
 		const reviewItems = await fetchAllReviewsApi(defaultSearchParams);
 		
@@ -62,8 +64,8 @@ export async function loader({request}) {
 
 export async function fetchAllReviewsApi(requestParams) {
     try {
-		
-        const response = await fetch(`https://generations-puzzles-assure-pharmaceutical.trycloudflare.com/api/manage-review`, {
+
+        const response = await fetch(`https://advertisements-voluntary-mirrors-sensitivity.trycloudflare.com/api/manage-review`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -86,9 +88,42 @@ export default function ManageReview() {
 
 	const [hasMore, setHasMore] = useState(1);
 	const [loading, setLoading] = useState(false);
+	const [selectedStatus, setSelectedStatus] = useState('all');
+	const [selectedRating, setSelectedRating] = useState('all');
+	
+	const handleSelectStatusChange = (e) => {
+		setSelectedStatus(e.target.value);
+		setSearchFormData({ ...searchFormData, filter_status: e.target.value });
+		
+		if (searchFormData.page === 1) {
+			setSearchFormData((prevData) => ({
+				...prevData,
+				page: 0,
+			}));
+		}
+	};
 
+	const handleSelectedRatingChange = (e) => {
+		setSelectedRating(e.target.value);
+		setSearchFormData({ ...searchFormData, filter_stars: e.target.value });
+		
+		if (searchFormData.page === 1) {
+			setSearchFormData((prevData) => ({
+				...prevData,
+				page: 0,
+			}));
+		}
+	};
+
+  
 	const handleChange = (e) => {
 		setSearchFormData({ ...searchFormData, [e.target.name]: e.target.value });
+		if (searchFormData.page === 1) {
+			setSearchFormData((prevData) => ({
+				...prevData,
+				page: 0,
+			}));
+		}
 	};
 	const [filteredReviews, setFilteredReviews] = useState(manageReviewData.reviewItems.reviewItems);
 
@@ -107,7 +142,7 @@ export default function ManageReview() {
 	const lastElementRef = useRef();
 	
 	useEffect(() => {
-		if (!hasMore ) return;
+		if (!hasMore || loading) return;
 		
 		const handleObserver = (entries) => {
 			const target = entries[0];
@@ -118,8 +153,8 @@ export default function ManageReview() {
 
 		observer.current = new IntersectionObserver(handleObserver, {
 			root: null,
-			rootMargin: "20px",
-			threshold: 1.0,
+			rootMargin: '0px',
+        	threshold: 0.1,
 		});
 
 		if (lastElementRef.current) {
@@ -133,10 +168,10 @@ export default function ManageReview() {
 		};
 	}, [lastElementRef, hasMore]);
 
-	console.log(filteredReviews)
 	useEffect(() => {
 		(async() => {
 			setLoading(true);
+			console.log('call apiss');
 			const response = await fetchAllReviewsApi(searchFormData);
 			if (searchFormData.page === 1) {
 				console.log('inside');
@@ -153,6 +188,7 @@ export default function ManageReview() {
 	}, [searchFormData.page]);
 
 	const loadMore = async () => {
+		console.log("loadmore " + searchFormData.page);
 		setSearchFormData((prevData) => ({
 			...prevData,
 			page:prevData.page+1,
@@ -164,12 +200,17 @@ export default function ManageReview() {
 		{"title" : "Manage Review", "link" :""}
 	]);
 		
-	const  handleSubmit = (e) => {
+	const handleSubmit = (e) => {
 		e.preventDefault();
+		console.log(searchFormData);
+		console.log("handleSubmit before " + searchFormData.page);
+
 		setSearchFormData((prevData) => ({
 			...prevData,
 			page: 1,
 		}));
+		console.log("handleSubmit after " + searchFormData.page);
+
 	};
   return (
 	<>
@@ -213,15 +254,22 @@ export default function ManageReview() {
 							</form> */}
 
 							<form onSubmit={handleSubmit}>
-								<input type="text" name="param1" value={searchFormData.param1} onChange={handleChange} placeholder="Enter param1" />
-								<Select
-										label="Date range"
-										name="filter_status"
-										options={filterStatusOptions}
-										onChange={handleChange}
-										value={searchFormData.param2}
-										/>
-								<input type="text" name="param2" value={searchFormData.param2} onChange={handleChange} placeholder="Enter param2" />
+								<input type="text" name="search_keyword" value={searchFormData.search_keyword} onChange={handleChange} placeholder="Enter keyword" />
+								
+								<select value={selectedStatus} onChange={handleSelectStatusChange}>
+									<option value="all">All</option>
+									<option value="publish">Publish</option>
+									<option value="unpublish">Unpublish</option>
+								</select>
+
+								<select value={selectedRating} onChange={handleSelectedRatingChange}>
+									<option value="all">Any rating</option>
+									<option value="5">5 stars</option>
+									<option value="4">4 stars</option>
+									<option value="3">3 stars</option>
+									<option value="2">2 stars</option>
+									<option value="1">1 star</option>
+								</select>
 								<button type="submit">Submit</button>
 							</form>
 
@@ -240,12 +288,26 @@ export default function ManageReview() {
 				<Layout.Section>
 				{filteredReviews.map((result, index) => (
 					<LegacyCard sectioned>
-						
-						<div key={index} ref={index === filteredReviews.length - 1 ? lastElementRef : null}>{result.first_name}</div>
+						<br/>
+						<br/>
+						<br/>
+						<div key={index}>{result.first_name}</div>
 						
 					</LegacyCard>
 					))}
-					{loading && <p>Loading...</p>}
+					<div ref={lastElementRef}>
+						{loading && (
+							<div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+								<Spinner size="large" />
+							</div>
+						)}
+						
+						<div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+							{hasMore == 1 ? "" : <p>No more reviews found!</p> }
+						</div>
+						
+					</div>
+					
 				</Layout.Section>
 			</div>
 		</div>

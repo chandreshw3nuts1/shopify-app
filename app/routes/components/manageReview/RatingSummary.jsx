@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback , useRef} from "react";
 import { useLoaderData } from "@remix-run/react";
 import style from "./RatingSummary.module.css";
-import StarRating from './StarRating';
+// import StarRating from './StarRating';
+import RatingIcons from './RatingIcons';
 
 const RatingSummary = ({ ratingData}) => {
   const totalReviews = ratingData.reduce((acc, item) => acc + item.count, 0);
@@ -12,7 +13,7 @@ const RatingSummary = ({ ratingData}) => {
       <div className={style.average_rating}>
           <h1>{ !isNaN( (ratingData.reduce((acc, item) => acc + item.stars * item.count, 0) / totalReviews).toFixed(1) ) ? (ratingData.reduce((acc, item) => acc + item.stars * item.count, 0) / totalReviews).toFixed(1) : "0.0" }</h1>
           <p>{totalReviews} Reviews</p>
-          <StarRating averageRating={averageRating} />
+          <RatingIcons rating={averageRating} />
 
       </div>
       <div className={style.stars}>

@@ -35,8 +35,8 @@ export async function loader() {
 
 export async function action({ request} ) {
 	const requestBody = await request.json();
-    const {shop, page, limit , param1, param2 } = requestBody;
-
+    var {shop, page, limit , filter_status,filter_stars, search_keyword } = requestBody;
+	page = page == 0 ? 1 : page;
 	const method = request.method;
 	switch(method){
 		case "POST":
@@ -45,10 +45,23 @@ export async function action({ request} ) {
 
 				const shopCollection = db.collection('shop');
 				const shopRecords = await shopCollection.findOne({"domain" : shop});
-				
+				 const query = {
+					"shop_id" : shopRecords._id, "status" : filter_status, "rating" : parseInt(filter_stars),
+					$or: [
+						{ first_name: { $regex: search_keyword, $options: 'i' } },
+						{ last_name: { $regex: search_keyword, $options: 'i' } },
+						{ product_title: { $regex: search_keyword, $options: 'i' } }
+						]
+				};
+				if(filter_status == 'all'){
+					delete query['status'];
+				}if(filter_stars == 'all'){
+					delete query['rating'];
+				}
+
 				const reviewItems =  await db.collection('product-reviews')
 				
-					.find({"shop_id" : shopRecords._id})
+					.find(query)
 					.skip((page - 1) * limit)
 					.limit(limit)
 					.toArray();
