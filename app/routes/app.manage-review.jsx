@@ -7,7 +7,7 @@ import { getShopDetails } from './../utils/common';
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useNavigate } from 'react-router-dom';
-//import useScrollToBottom from './../hooks/useScrollToBottom'; // Import the custom hook
+import { hostUrl } from './../utils/hostUrl'; 
 
 import {
   Layout,
@@ -46,7 +46,7 @@ export async function loader({request}) {
 		const defaultSearchParams = {
 			"shop" : shopRecords.domain,
 			"page" : 1,
-			"limit" : 2,
+			"limit" : 5,
 			"filter_status" : "all",
 			"filter_stars" : "all",
 			"search_keyword" : "",
@@ -64,8 +64,7 @@ export async function loader({request}) {
 
 export async function fetchAllReviewsApi(requestParams) {
     try {
-
-        const response = await fetch(`https://advertisements-voluntary-mirrors-sensitivity.trycloudflare.com/api/manage-review`, {
+        const response = await fetch(`${await hostUrl()}/api/manage-review`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -85,7 +84,8 @@ export async function fetchAllReviewsApi(requestParams) {
 export default function ManageReview() {
 	const manageReviewData = useLoaderData();
 	const [searchFormData, setSearchFormData] = useState(manageReviewData.defaultSearchParams);
-
+	
+	const [submitHandle, setSubmitHandle] = useState(false);
 	const [hasMore, setHasMore] = useState(1);
 	const [loading, setLoading] = useState(false);
 	const [selectedStatus, setSelectedStatus] = useState('all');
@@ -95,35 +95,16 @@ export default function ManageReview() {
 		setSelectedStatus(e.target.value);
 		setSearchFormData({ ...searchFormData, filter_status: e.target.value });
 		
-		if (searchFormData.page === 1) {
-			setSearchFormData((prevData) => ({
-				...prevData,
-				page: 0,
-			}));
-		}
 	};
 
 	const handleSelectedRatingChange = (e) => {
 		setSelectedRating(e.target.value);
 		setSearchFormData({ ...searchFormData, filter_stars: e.target.value });
-		
-		if (searchFormData.page === 1) {
-			setSearchFormData((prevData) => ({
-				...prevData,
-				page: 0,
-			}));
-		}
 	};
 
   
 	const handleChange = (e) => {
 		setSearchFormData({ ...searchFormData, [e.target.name]: e.target.value });
-		if (searchFormData.page === 1) {
-			setSearchFormData((prevData) => ({
-				...prevData,
-				page: 0,
-			}));
-		}
 	};
 	const [filteredReviews, setFilteredReviews] = useState(manageReviewData.reviewItems.reviewItems);
 
@@ -185,7 +166,7 @@ export default function ManageReview() {
 			setHasMore(response.hasMore);
 			setLoading(false);
 		})()
-	}, [searchFormData.page]);
+	}, [searchFormData.page, submitHandle]);
 
 	const loadMore = async () => {
 		console.log("loadmore " + searchFormData.page);
@@ -209,6 +190,7 @@ export default function ManageReview() {
 			...prevData,
 			page: 1,
 		}));
+		setSubmitHandle(!submitHandle);
 		console.log("handleSubmit after " + searchFormData.page);
 
 	};
@@ -258,6 +240,7 @@ export default function ManageReview() {
 								
 								<select value={selectedStatus} onChange={handleSelectStatusChange}>
 									<option value="all">All</option>
+									<option value="pending">Pending</option>
 									<option value="publish">Publish</option>
 									<option value="unpublish">Unpublish</option>
 								</select>

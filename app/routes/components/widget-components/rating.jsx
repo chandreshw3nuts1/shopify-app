@@ -32,7 +32,7 @@ const ItemRating = ({noOfRating}) => {
                         <>
                             <span className="star checked">&#9733;</span>
                             <span className="star checked">&#9733;</span>
-                            <span className="star checked">&#9733;</span>
+                            <span className="star uncheck">&#9733;</span>
                             <span className="star uncheck">&#9733;</span>
                             <span className="star uncheck">&#9733;</span>
                         </>

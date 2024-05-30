@@ -12,21 +12,31 @@
 
 
 <script>
+var page = 1;
+
 var settings_vars = {{ block.settings | json }};
-const url = 'https://teens-chargers-tired-y.trycloudflare.com/';
-
+const url = 'https://commonwealth-bowling-emerald-organisations.trycloudflare.com/';
 $(document).ready(function(){
+	loadRevies(page);
 
+});
+
+function loadRevies(page){
 	$.ajax({
         type: 'POST',
         url: `${url}/api/widget`,
         data: {
 			no_of_review: settings_vars.no_of_review_per_page,
+			page: page,
 			shop_domain : '{{shop.domain}}'
 		},
 		dataType : "json",
         success: function(response) {
-            $("#display-widget-component").html(response.body);
+			if(page == 1) {
+	            $("#display-widget-component").html(response.body);
+			} else {
+	            $(".main_review_block").append(response.body);
+			}
 			var modal_html = response.htmlModalContent;
 			$("body").append(modal_html);
 		},
@@ -35,11 +45,14 @@ $(document).ready(function(){
             console.error(xhr.responseText);
         }
     });
-
-
-});
+}
 $(document).on("click", "#show_create_review_modal",  function() {
 	$("#createReviewModal").modal("show");
+});
+
+$(document).on("click", "#load_more_review",  function() {
+	page = page +1;
+	loadRevies(page);
 });
 
 $(document).on("submit", "#review_submit_btn_form",  function(e) {
@@ -48,6 +61,7 @@ $(document).on("submit", "#review_submit_btn_form",  function(e) {
 	var formData = new FormData($(this)[0]);
     formData.append('shop_domain', '{{shop.domain}}');
     formData.append('product_id', '{{product.id}}');
+    formData.append('product_title', '{{product.title}}');
 
     var reviewUrl = $(this).attr('action');
     $.ajax({

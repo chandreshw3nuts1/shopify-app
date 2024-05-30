@@ -37,7 +37,7 @@ export async function action({ request }) {
 	const formData = await request.formData();
 	const shop = formData.get('shop_domain');
 
-	console.log(formData.get('rating'));
+	console.log(formData.get('product_title'));
 
 	switch(method){
 		case "POST":
@@ -48,8 +48,6 @@ export async function action({ request }) {
 
 				const shopCollection = db.collection('shop');
 				const shopRecords = await shopCollection.findOne({"domain" : shop});
-				console.log(shopRecords);
-			
 				const images = [
 					"img1",
 					"img2",
@@ -69,6 +67,7 @@ export async function action({ request }) {
 					description: formData.get('review'),
 					rating : formData.get('rating'),
 					product_id : formData.get('product_id'),
+					product_title : formData.get('product_title'),
 					images : images,
 					created_at : currentDateTimeString
 				});

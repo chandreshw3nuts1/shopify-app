@@ -29,7 +29,6 @@ import {
 
 const CreateReviewModalWidget = ({shopRecords}) => {
     // console.log("==============props");
-    console.log(shopRecords);
    //console.log(reviewItems.length);
     const proxyUrl = "https://"+shopRecords.domain+"/apps/proxy";
 	return (

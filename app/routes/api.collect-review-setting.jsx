@@ -7,7 +7,7 @@ import { Types } from 'mongoose';
 
 export async function loader() {
     return json({
-        name:"dsads"
+        name:"loading"
     });
   }
 

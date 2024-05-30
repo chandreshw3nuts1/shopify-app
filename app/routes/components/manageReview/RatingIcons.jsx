@@ -12,21 +12,21 @@ const StarRating = ({ rating }) => {
       const stars = [];
       // Full stars
       for (let i = 1; i <= Math.floor(rating); i++) {
-        stars.push(<FontAwesomeIcon key={i} icon={faStar} />);
+        stars.push(<FontAwesomeIcon key={i} icon={faStar} size="1x"/>);
       }
       // Half star
       if (rating % 1 !== 0) {
-        stars.push(<FontAwesomeIcon key="half" icon={faStarHalfAlt} />);
+        stars.push(<FontAwesomeIcon key="half" icon={faStarHalfAlt} size="1x" />);
       }
       // Empty stars
       for (let i = Math.ceil(rating) + 1; i <= 5; i++) {
-        stars.push(<FontAwesomeIcon key={i} icon={farStar} />);
+        stars.push(<FontAwesomeIcon key={i} icon={farStar} size="1x" />);
       }
       return stars;
     };
   
     return (
-      <div className={style.star_rating_gold}>
+      <div className={`${style.star_rating_gold} ${style.star_container}`}>
         {renderStars()}
       </div>
     );
