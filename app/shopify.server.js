@@ -10,6 +10,7 @@ import {
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
 import { restResources } from "@shopify/shopify-api/rest/admin/2024-04";
 import prisma from "./db.server";
+console.log('===============afterAuth  ss============');
 
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
@@ -28,11 +29,14 @@ const shopify = shopifyApp({
     },
   },
   hooks: {
+
     afterAuth: async ({ session }) => {
+      console.log('====dd===========afterAuth===================');
 		
       /* Handle shop api and store in db */
       storeShopDetails(session);
 	    /* End Handle shop api and store in db */
+      console.log('===============afterAuth=end==================');
 
       shopify.registerWebhooks({ session });
     },
@@ -47,6 +51,7 @@ const shopify = shopifyApp({
     ? { customShopDomains: [process.env.SHOP_CUSTOM_DOMAIN] }
     : {}),
 });
+
 
 export default shopify;
 export const apiVersion = ApiVersion.April24;

@@ -113,7 +113,7 @@ padding-left: 10px;
 
 
   .star-rating {
-    direction: rtl;
+    direction: ltr;
     display: inline-block;
     padding: 20px;
 }
