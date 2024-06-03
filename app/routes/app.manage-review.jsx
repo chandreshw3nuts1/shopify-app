@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from "react";
 import Breadcrumb from "./components/Breadcrumb";
 import ReviewPageSidebar from "./components/headerMenu/ReviewPageSidebar";
 import RatingSummary from "./components/manageReview/RatingSummary";
+import ReviewItem from "./components/manageReview/ReviewItem";
+
 import { mongoConnection } from './../utils/mongoConnection'; 
 import { getShopDetails } from './../utils/common'; 
 import { json } from "@remix-run/node";
@@ -10,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import settings from './../utils/settings.json'; 
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
-import { formatDate, formatTimeAgo } from './../utils/dateFormat';
+
 
 import {
   Layout,
@@ -76,7 +78,7 @@ export async function fetchAllReviewsApi(requestParams) {
         });
 		
        	const data = await response.json();
-
+		console.log(data);
 		return data;
 	
     } catch (error) {
@@ -250,21 +252,7 @@ export default function ManageReview() {
 				<Layout.Section>
 					<LegacyCard sectioned>
 						<Card sectioned>
-							{/* <form action="/manage-review" method="GET">
-								<FormLayout>
-									<TextField
-										label="Search"
-										value=""
-										autoComplete="off"
-									/>
-									<Select
-										label="Filter"
-										options={options}
-									/>
-									<Button submit  primary>Search</Button>
-								</FormLayout>
-							</form> */}
-
+							
 							<form onSubmit={handleSubmit}>
 								<input type="text" name="search_keyword" value={searchFormData.search_keyword} onChange={handleChange} placeholder="Enter keyword" />
 								
@@ -299,20 +287,10 @@ export default function ManageReview() {
 			</div>
 			<div className="col-sm-9">
 				<Layout.Section>
-				{filteredReviews.map((result, index) => (
-					<LegacyCard sectioned>
-						<br/>
-						<br/>
-						<br/>
-						<div key={index}>
-							{result.first_name}
-							{formatTimeAgo(result.created_at)}
-							<button onClick={() => handleDeleteReviewItem(result._id)}>Delete</button>	
-						</div>
-						
-					</LegacyCard>
-					))}
-					<div ref={lastElementRef}>
+					{filteredReviews.length > 0 ?
+						<ReviewItem filteredReviews = {filteredReviews} />
+					:"no reviews "}	
+					 <div ref={lastElementRef}>
 						{loading && (
 							<div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
 								<Spinner size="large" />
@@ -324,7 +302,6 @@ export default function ManageReview() {
 						</div>
 						
 					</div>
-					
 				</Layout.Section>
 			</div>
 		</div>

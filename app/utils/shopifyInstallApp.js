@@ -27,14 +27,18 @@ export async function storeShopDetails(session) {
 				domain : data.shop.domain
 			}
 		};
-		const options = { upsert: true };
+		const options = { upsert: true, returnDocument: 'after'};
 		const shopRecords = await collection.findOneAndUpdate(query, update, options);
 		const settingCollection = db.collection('settings');
-		const testvar = await settingCollection.replaceOne(
-			{ shop_id: shopRecords._id },
-			{ shop_id: shopRecords._id, autoPublishReview: true, reviewPublishMode: "auto" },
-			{ upsert: true }
-		 );
+		const testvar = await settingCollection.updateOne(
+			{
+				shop_id: shopRecords._id
+			}, 
+			{
+			$setOnInsert: {shop_id: shopRecords._id, autoPublishReview: true, reviewPublishMode: "auto"}
+			},
+			{upsert: true}
+		)
 		console.log(shopRecords);
 		console.log(testvar);
 

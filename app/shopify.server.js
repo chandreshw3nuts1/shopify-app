@@ -31,7 +31,7 @@ const shopify = shopifyApp({
   hooks: {
 
     afterAuth: async ({ session }) => {
-      console.log('====dd===========afterAuth===================');
+      console.log('===============afterAuth===================');
 		
       /* Handle shop api and store in db */
       storeShopDetails(session);

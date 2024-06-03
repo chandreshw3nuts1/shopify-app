@@ -14,3 +14,4 @@ database.sqlite
 package-lock.json
 yarn.lock
 .vscode
+shopify.app.toml
