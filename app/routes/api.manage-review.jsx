@@ -2,9 +2,11 @@ import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
 import { GraphQLClient } from "graphql-request";
 import { mongoConnection } from "./../utils/mongoConnection"; 
-import { getShopDetails } from "./../utils/common"; 
+import { findOneRecord } from "./../utils/common"; 
 import EmailTemplate from './components/email/EmailTemplate';
 import ReactDOMServer from 'react-dom/server';
+// import ObjectId from 'bson-objectid';
+import { ObjectId } from 'mongodb';
 
 export async function loader() {
 
@@ -35,17 +37,15 @@ export async function loader() {
 
 export async function action({ request} ) {
 	const requestBody = await request.json();
-    var {shop, page, limit , filter_status,filter_stars, search_keyword } = requestBody;
-	page = page == 0 ? 1 : page;
+   
 	const method = request.method;
 	switch(method){
 		case "POST":
+			var {shop, page, limit , filter_status,filter_stars, search_keyword } = requestBody;
+			page = page == 0 ? 1 : page;
 			try {
-				const db = await mongoConnection();
-
-				const shopCollection = db.collection('shop');
-				const shopRecords = await shopCollection.findOne({"domain" : shop});
-				 const query = {
+				const shopRecords = await findOneRecord("shop", {"domain" : shop});
+				const query = {
 					"shop_id" : shopRecords._id, "status" : filter_status, "rating" : parseInt(filter_stars),
 					$or: [
 						{ first_name: { $regex: search_keyword, $options: 'i' } },
@@ -58,7 +58,7 @@ export async function action({ request} ) {
 				}if(filter_stars == 'all'){
 					delete query['rating'];
 				}
-
+				const db = await mongoConnection();
 				const reviewItems =  await db.collection('product-reviews')
 				
 					.find(query)
@@ -103,23 +103,24 @@ export async function action({ request} ) {
 					//console.log(productsDetails);
 				}
 			
-
-				// const options = [
-				// 	{ label: 'Option 1', value: 'option1' },
-				// 	{ label: 'Option 2', value: 'option2' },
-				// 	{ label: 'Option 3', value: 'option3' },
-				// 	];
-				
 				return json({reviewItems, hasMore: hasMore});
 
-				//return json([{ reviewItems: reviewItems, hasMore : hasMore }]);
-				//return json({ reviewItems: reviewItems, productsDetails : productsDetails, hasMore : hasMore });
 			  } catch (error) {
 				console.error('Error updating record:', error);
 				return json({ error: 'Failed to update record' }, { status: 500 });
 			  }
-		case "PATCH":
+		case "DELETE":
+			try{
+				var {review_id} = requestBody;
+				const objectIds = new ObjectId(review_id);
+				const db = await mongoConnection();
+				const reviewItems =  await db.collection('product-reviews').deleteOne({ _id: objectId });
+				return json({"status" : 200, "message" : "Review deleted successfully!"});
+			} catch (error) {
+				console.error('Error deleting record:', error);
+				return json({"status" : 400, "message" : "Error deleting record!"});
 
+			}
 			
 		default:
 

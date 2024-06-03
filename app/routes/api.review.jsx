@@ -2,13 +2,13 @@ import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
 import { GraphQLClient } from "graphql-request";
 import { mongoConnection } from "./../utils/mongoConnection"; 
-import { getShopDetails } from "./../utils/common"; 
+import { findOneRecord } from "./../utils/common"; 
 import EmailTemplate from './components/email/EmailTemplate';
 import ReactDOMServer from 'react-dom/server';
+import moment from 'moment';
 
 export async function loader() {
 
-	
 	const email = 'chandresh.w3nuts@gmail.com';
 	const recipientName ="Chands";
 	const content ="okok okoko ko ko ";
@@ -42,23 +42,20 @@ export async function action({ request }) {
 	switch(method){
 		case "POST":
 			try {
+				const shopRecords = await findOneRecord("shop", {"domain" : shop});
 
-
-				const db = await mongoConnection();
-
-				const shopCollection = db.collection('shop');
-				const shopRecords = await shopCollection.findOne({"domain" : shop});
 				const images = [
 					"img1",
 					"img2",
 					"img3",
 				];
 				const collectionName = 'product-reviews';
-				const collection = db.collection(collectionName);
 				
 				const currentDate = new Date();
-    			const currentDateTimeString = currentDate.toISOString();
-
+    			// const currentDateTimeString = currentDate.toISOString();
+				const formattedUTCDate = moment().utc().format('YYYY-MM-DD HH:mm:ss [UTC]');
+				
+				const db = await mongoConnection();
 				const result = await db.collection(collectionName).insertOne({
 					shop_id:shopRecords._id,
 					first_name : "test",
@@ -69,7 +66,7 @@ export async function action({ request }) {
 					product_id : formData.get('product_id'),
 					product_title : formData.get('product_title'),
 					images : images,
-					created_at : currentDateTimeString
+					created_at : formattedUTCDate
 				});
 
 				//console.log(result);

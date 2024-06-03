@@ -1,9 +1,9 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "177ac2a00973ba8fc0c323f490150da3"
-name = "kritic-app"
-handle = "kritic-app"
-application_url = "https://commonwealth-bowling-emerald-organisations.trycloudflare.com"
+client_id = "42a06bef464ccb143792aa18e22198e6"
+name = "new-kritic-apps"
+handle = "new-kritic-apps"
+application_url = "https://allows-pushed-yesterday-del.trycloudflare.com"
 embedded = true
 
 [build]
@@ -15,11 +15,12 @@ include_config_on_deploy = true
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
 scopes = "read_customers,read_products,read_themes,write_products"
 
+
 [auth]
 redirect_urls = [
-  "https://commonwealth-bowling-emerald-organisations.trycloudflare.com/auth/callback",
-  "https://commonwealth-bowling-emerald-organisations.trycloudflare.com/auth/shopify/callback",
-  "https://commonwealth-bowling-emerald-organisations.trycloudflare.com/api/auth/callback"
+  "https://allows-pushed-yesterday-del.trycloudflare.com/auth/callback",
+  "https://allows-pushed-yesterday-del.trycloudflare.com/auth/shopify/callback",
+  "https://allows-pushed-yesterday-del.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

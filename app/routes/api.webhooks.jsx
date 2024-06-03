@@ -9,6 +9,7 @@ export async function loader() {
   }
 
   export async function action({ request }) {
+    console.log('============= action app unstall');
     const hmacHeader = request.headers.get('X-Shopify-Hmac-Sha256');
     const rawBody = await request.text();
     const generatedHmac = crypto
@@ -24,10 +25,10 @@ export async function loader() {
     console.log(`App uninstalled from shop: ${shop}`);
 
   // Perform your clean-up tasks here, such as:
-  // - Deleting store data from your database
+  // - notify to admin
   // - Revoking access tokens
   // - Canceling subscriptions
-
+  // maintain log history
   return json({ message: 'Webhook received' });
   }
   

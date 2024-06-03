@@ -28,9 +28,7 @@ import {
 } from "@shopify/polaris";
 
 const CreateReviewModalWidget = ({shopRecords}) => {
-    // console.log("==============props");
-   //console.log(reviewItems.length);
-    const proxyUrl = "https://"+shopRecords.domain+"/apps/proxy";
+    const proxyUrl = "https://"+shopRecords.domain+"/apps/proxy/review";
 	return (
 	    <>  
         <div id="createReviewModal" className="custom-review-modal" >

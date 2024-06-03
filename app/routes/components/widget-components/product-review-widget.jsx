@@ -29,15 +29,16 @@ import {
   Select
 } from "@shopify/polaris";
 
-const ProductReviewWidget = ({shopRecords, reviewItems, productsDetails, hasMore, page}) => {
+const ProductReviewWidget = ({shopRecords, reviewItems, productsDetails, hasMore, page, productId}) => {
     
 	return (
 	  <>
         {
             page == 1 ? <div className="container">
-            <div class="text-right mb-3">
-                <button class="btn btn-primary" id="show_create_review_modal" >Create Review</button>
-            </div>
+              {productId != "" ? <div class="text-right mb-3">
+                  <button class="btn btn-primary" id="show_create_review_modal" >Create Review</button>
+              </div> : "" }
+            
             <div className="main_review_block">
                 <ReviewItem reviewItems={reviewItems} productsDetails={productsDetails}/>
             </div>

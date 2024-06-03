@@ -15,19 +15,18 @@
 var page = 1;
 
 var settings_vars = {{ block.settings | json }};
-const url = 'https://commonwealth-bowling-emerald-organisations.trycloudflare.com/';
 $(document).ready(function(){
-	loadRevies(page);
-
+	loadReviews(page);
 });
 
-function loadRevies(page){
+function loadReviews(page){
 	$.ajax({
         type: 'POST',
-        url: `${url}/api/widget`,
+        url: `/apps/proxy/widget`,
         data: {
 			no_of_review: settings_vars.no_of_review_per_page,
 			page: page,
+            product_id : '{{product.id}}',
 			shop_domain : '{{shop.domain}}'
 		},
 		dataType : "json",
@@ -52,7 +51,7 @@ $(document).on("click", "#show_create_review_modal",  function() {
 
 $(document).on("click", "#load_more_review",  function() {
 	page = page +1;
-	loadRevies(page);
+	loadReviews(page);
 });
 
 $(document).on("submit", "#review_submit_btn_form",  function(e) {

@@ -21,7 +21,8 @@ import { mongoConnection } from './../utils/mongoConnection';
 
             const shop = formData.get('shop_domain');
             const limit = parseInt(formData.get('no_of_review'));
-            const page = formData.get('page' , 1);
+            const page = formData.get('page');
+            const productId = formData.get('product_id');
             const shopRecords =await getShopDetailsByShop(shop);
             const db = await mongoConnection();
             const query = {
@@ -74,7 +75,7 @@ import { mongoConnection } from './../utils/mongoConnection';
             }
            
 
-            const dynamicComponent = <ProductReviewWidget shopRecords={shopRecords} reviewItems={reviewItems} productsDetails={productsDetails} hasMore={hasMore} page={page} />;
+            const dynamicComponent = <ProductReviewWidget shopRecords={shopRecords} reviewItems={reviewItems} productsDetails={productsDetails} hasMore={hasMore} page={page} productId={productId} />;
             const htmlContent = ReactDOMServer.renderToString(dynamicComponent);
             
             const dynamicModalComponent = <CreateReviewModalWidget shopRecords={shopRecords} />;

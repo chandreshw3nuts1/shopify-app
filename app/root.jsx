@@ -6,6 +6,10 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 export default function App() {
   return (
     <html>
@@ -25,6 +29,7 @@ export default function App() {
         <Outlet />
         <ScrollRestoration />
         <Scripts />
+        <ToastContainer />
       </body>
     </html>
   );

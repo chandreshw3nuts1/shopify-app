@@ -1,13 +1,16 @@
 import { useEffect, useState, useRef } from "react";
 import Breadcrumb from "./components/Breadcrumb";
-import ReviewPageSidebar from "./components/ReviewPageSidebar";
+import ReviewPageSidebar from "./components/headerMenu/ReviewPageSidebar";
 import RatingSummary from "./components/manageReview/RatingSummary";
 import { mongoConnection } from './../utils/mongoConnection'; 
 import { getShopDetails } from './../utils/common'; 
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useNavigate } from 'react-router-dom';
-import { hostUrl } from './../utils/hostUrl'; 
+import settings from './../utils/settings.json'; 
+import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
+import { formatDate, formatTimeAgo } from './../utils/dateFormat';
 
 import {
   Layout,
@@ -18,8 +21,8 @@ import {
 } from "@shopify/polaris";
 
 export async function loader({request}) {
-
 	try {
+
 		const shopRecords = await getShopDetails(request);
 		const limit = 10;
 	  
@@ -64,7 +67,7 @@ export async function loader({request}) {
 
 export async function fetchAllReviewsApi(requestParams) {
     try {
-        const response = await fetch(`${await hostUrl()}/api/manage-review`, {
+        const response = await fetch(`${settings.host_url}/api/manage-review`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -108,12 +111,45 @@ export default function ManageReview() {
 	};
 	const [filteredReviews, setFilteredReviews] = useState(manageReviewData.reviewItems.reviewItems);
 
-	const options = [
-		{label: 'Today', value: 'today'},
-		{label: 'Yesterday', value: 'yesterday'},
-		{label: 'Last 7 days', value: 'lastWeek'},
-	  ];
+	  
+	const handleDeleteReviewItem = async (recordId) => {
+		Swal.fire({
+			title: 'Are you sure you want to delete this review?',
+			text: "This action is irreversible, and the review will not be accessible again!",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes, delete it!'
+		}).then(async (result) => { 
+			if (result.isConfirmed) {
+				try {
+					const response = await fetch(`${settings.host_url}/api/manage-review`, {
+						method: 'DELETE',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({"review_id" : recordId})
+					});
 	
+					const data = await response.json();
+					console.log(data);
+					if(data.status == 200) {
+						toast.success(data.message);
+					} else {
+						toast.error(data.message);
+					}
+					// Assuming toast is a function to show notifications
+				} catch (error) {
+					console.error("Error deleting record:", error);
+					// Handle error, show toast, etc.
+					toast.error("Failed to delete record.");
+				}
+			}
+		});
+	};
+	
+
 	const filterStatusOptions = [
 		{label: 'All', value: 'all'},
 		{label: 'Published', value: 'publish'},
@@ -152,10 +188,8 @@ export default function ManageReview() {
 	useEffect(() => {
 		(async() => {
 			setLoading(true);
-			console.log('call apiss');
 			const response = await fetchAllReviewsApi(searchFormData);
 			if (searchFormData.page === 1) {
-				console.log('inside');
 				setFilteredReviews([...response.reviewItems]);
 			} else {
 				setFilteredReviews(prevData => ([
@@ -169,7 +203,6 @@ export default function ManageReview() {
 	}, [searchFormData.page, submitHandle]);
 
 	const loadMore = async () => {
-		console.log("loadmore " + searchFormData.page);
 		setSearchFormData((prevData) => ({
 			...prevData,
 			page:prevData.page+1,
@@ -183,15 +216,12 @@ export default function ManageReview() {
 		
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log(searchFormData);
-		console.log("handleSubmit before " + searchFormData.page);
-
+		
 		setSearchFormData((prevData) => ({
 			...prevData,
 			page: 1,
 		}));
 		setSubmitHandle(!submitHandle);
-		console.log("handleSubmit after " + searchFormData.page);
 
 	};
   return (
@@ -205,7 +235,7 @@ export default function ManageReview() {
 				<ReviewPageSidebar />
 			</div>
 			<div className="col-sm-9">
-				<Layout.Section>
+				<Layout.Section className="abcd">
 					<LegacyCard sectioned>
 						<RatingSummary ratingData={manageReviewData.outputRatting} />
 					</LegacyCard>
@@ -274,7 +304,11 @@ export default function ManageReview() {
 						<br/>
 						<br/>
 						<br/>
-						<div key={index}>{result.first_name}</div>
+						<div key={index}>
+							{result.first_name}
+							{formatTimeAgo(result.created_at)}
+							<button onClick={() => handleDeleteReviewItem(result._id)}>Delete</button>	
+						</div>
 						
 					</LegacyCard>
 					))}

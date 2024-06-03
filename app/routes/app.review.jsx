@@ -5,7 +5,7 @@ import { useLoaderData } from "@remix-run/react";
 import { mongoConnection } from './../utils/mongoConnection'; 
 import { getShopDetails } from './../utils/common'; 
 import Breadcrumb from "./components/Breadcrumb";
-import ReviewPageSidebar from "./components/ReviewPageSidebar";
+import ReviewPageSidebar from "./components/headerMenu/ReviewPageSidebar";
 import styles from "./components/review.module.css";
 
  

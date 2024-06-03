@@ -13,7 +13,7 @@ export async function storeShopDetails(session) {
 		const data = await response.json();
 		const db = await mongoConnection();
 		const collection = db.collection('shop');
-
+		console.log('==================================');
 		const query = { shop_id : data.shop.id };
 		const update = { $set: { 
 				shop_id : data.shop.id,
@@ -30,11 +30,15 @@ export async function storeShopDetails(session) {
 		const options = { upsert: true };
 		const shopRecords = await collection.findOneAndUpdate(query, update, options);
 		const settingCollection = db.collection('settings');
-		await settingCollection.replaceOne(
+		const testvar = await settingCollection.replaceOne(
 			{ shop_id: shopRecords._id },
 			{ shop_id: shopRecords._id, autoPublishReview: true, reviewPublishMode: "auto" },
 			{ upsert: true }
 		 );
+		console.log(shopRecords);
+		console.log(testvar);
+
+		 console.log('=============end=====================');
 
 	} catch (error) {
 		console.error('Error installing App:', error);

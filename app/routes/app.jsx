@@ -23,7 +23,7 @@ export default function App() {
           Home
         </Link>
         <Link to="/app/review">Reviews</Link>
-        <Link to="/app/setting">Settings</Link>
+        <Link to="/app/branding">Settings</Link>
       </ui-nav-menu>
       <Outlet />
     </AppProvider>
