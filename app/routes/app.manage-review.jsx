@@ -228,86 +228,10 @@ export default function ManageReview() {
 	};
   return (
 	<>
-	<Page fullWidth>
-		<Breadcrumb crumbs={crumbs}/>
-	</Page>
-	<Page fullWidth>
-		<div className="row">
-			<div className="col-sm-3">
-				<ReviewPageSidebar />
-			</div>
-			<div className="col-sm-9">
-				<Layout.Section className="abcd">
-					<LegacyCard sectioned>
-						<RatingSummary ratingData={manageReviewData.outputRatting} />
-					</LegacyCard>
-				</Layout.Section>
-			</div>
-		</div>
-
-		<div className="row">
-			<div className="col-sm-3">
-			</div>
-			<div className="col-sm-9">
-				<Layout.Section>
-					<LegacyCard sectioned>
-						<Card sectioned>
-							
-							<form onSubmit={handleSubmit}>
-								<input type="text" name="search_keyword" value={searchFormData.search_keyword} onChange={handleChange} placeholder="Enter keyword" />
-								
-								<select value={selectedStatus} onChange={handleSelectStatusChange}>
-									<option value="all">All</option>
-									<option value="pending">Pending</option>
-									<option value="publish">Publish</option>
-									<option value="unpublish">Unpublish</option>
-								</select>
-
-								<select value={selectedRating} onChange={handleSelectedRatingChange}>
-									<option value="all">Any rating</option>
-									<option value="5">5 stars</option>
-									<option value="4">4 stars</option>
-									<option value="3">3 stars</option>
-									<option value="2">2 stars</option>
-									<option value="1">1 star</option>
-								</select>
-								<button type="submit">Submit</button>
-							</form>
-
-						</Card>
-					</LegacyCard>
-				</Layout.Section>
-			</div>
-		</div>
-
-
-
-		<div className="row">
-			<div className="col-sm-3">
-			</div>
-			<div className="col-sm-9">
-				<Layout.Section>
-					{filteredReviews.length > 0 ?
-						<ReviewItem filteredReviews = {filteredReviews} />
-					:"no reviews "}	
-					 <div ref={lastElementRef}>
-						{loading && (
-							<div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
-								<Spinner size="large" />
-							</div>
-						)}
-						
-						<div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
-							{hasMore == 1 ? "" : <p>No more reviews found!</p> }
-						</div>
-						
-					</div>
-				</Layout.Section>
-			</div>
-		</div>
-
-
-	</Page>
+	
+	<div>
+		<p>jhfksdfjsdfjk</p>
+	</div>
     </>
     
   );

@@ -1,26 +1,24 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "42a06bef464ccb143792aa18e22198e6"
-name = "new-kritic-apps"
-handle = "new-kritic-apps"
-application_url = "https://allows-pushed-yesterday-del.trycloudflare.com"
+client_id = "1f8a740a88a87931cd6a800d3c43c5d3"
+name = "kritic-app"
+handle = "kritic-app-1"
+application_url = "https://enhancing-affordable-altered-become.trycloudflare.com"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "chandstest.myshopify.com"
-include_config_on_deploy = true
+dev_store_url = "chintan-dev-store.myshopify.com"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_customers,read_products,read_themes,write_products"
-
+scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://allows-pushed-yesterday-del.trycloudflare.com/auth/callback",
-  "https://allows-pushed-yesterday-del.trycloudflare.com/auth/shopify/callback",
-  "https://allows-pushed-yesterday-del.trycloudflare.com/api/auth/callback"
+  "https://enhancing-affordable-altered-become.trycloudflare.com/auth/callback",
+  "https://enhancing-affordable-altered-become.trycloudflare.com/auth/shopify/callback",
+  "https://enhancing-affordable-altered-become.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
