@@ -1,0 +1,178 @@
+@font-face {
+  font-family: 'icon24';
+  src:  url('icon24.eot?t055co');
+  src:  url('icon24.eot?t055co#iefix') format('embedded-opentype'),
+    url('icon24.ttf?t055co') format('truetype'),
+    url('icon24.woff?t055co') format('woff'),
+    url('icon24.svg?t055co#icon24') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="twenty-"], [class*=" twenty-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icon24' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.twenty-image:before {
+  content: "\e911";
+}
+.twenty-Info_icon:before {
+  content: "\e900";
+}
+.twenty-addicon:before {
+  content: "\e901";
+}
+.twenty-arrow-down:before {
+  content: "\e902";
+}
+.twenty-arrow-left:before {
+  content: "\e903";
+}
+.twenty-arrow-right:before {
+  content: "\e904";
+}
+.twenty-arrow-up:before {
+  content: "\e905";
+}
+.twenty-checkicon:before {
+  content: "\e906";
+}
+.twenty-collectreviews:before {
+  content: "\e907";
+}
+.twenty-customizeicon:before {
+  content: "\e908";
+}
+.twenty-deleteicon:before {
+  content: "\e909";
+}
+.twenty-discount:before {
+  content: "\e90a";
+}
+.twenty-dragicon:before {
+  content: "\e90b";
+}
+.twenty-editicon1:before {
+  content: "\e90c";
+}
+.twenty-editicon2:before {
+  content: "\e90d";
+}
+.twenty-emails:before {
+  content: "\e90e";
+}
+.twenty-filtericon:before {
+  content: "\e90f";
+}
+.twenty-fraudprotection:before {
+  content: "\e910";
+}
+.twenty-import-aliexpress:before {
+  content: "\e912";
+}
+.twenty-import-apps:before {
+  content: "\e913";
+}
+.twenty-importreviews:before {
+  content: "\e914";
+}
+.twenty-import-spreadsheet:before {
+  content: "\e915";
+}
+.twenty-longarrow-left:before {
+  content: "\e916";
+}
+.twenty-longarrow-right:before {
+  content: "\e917";
+}
+.twenty-managereviews:before {
+  content: "\e918";
+}
+.twenty-manualreview:before {
+  content: "\e919";
+}
+.twenty-menuicon:before {
+  content: "\e91a";
+}
+.twenty-moreicon:before {
+  content: "\e91b";
+}
+.twenty-purchase-widget:before {
+  content: "\e91c";
+}
+.twenty-questions:before {
+  content: "\e91d";
+}
+.twenty-referraloffer:before {
+  content: "\e91e";
+}
+.twenty-referralswidgets:before {
+  content: "\e91f";
+}
+.twenty-reviewform:before {
+  content: "\e920";
+}
+.twenty-reviewswidgets:before {
+  content: "\e921";
+}
+.twenty-review-timing:before {
+  content: "\e922";
+}
+.twenty-sortby:before {
+  content: "\e923";
+}
+.twenty-star:before {
+  content: "\e924";
+}
+.twenty-videoreviews:before {
+  content: "\e925";
+}
+
+
+/* Start Icon */
+
+@font-face {
+  font-family: 'staricon';
+  src:  url('staricon.eot?hw9ybu');
+  src:  url('staricon.eot?hw9ybu#iefix') format('embedded-opentype'),
+    url('staricon.ttf?hw9ybu') format('truetype'),
+    url('staricon.woff?hw9ybu') format('woff'),
+    url('staricon.svg?hw9ybu#staricon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="starsico-"], [class*=" starsico-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'staricon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.starsico-stars:before {
+  content: "\e900";
+}
+.starsico-single-star:before {
+  content: "\e901";
+}

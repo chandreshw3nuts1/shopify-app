@@ -7,12 +7,13 @@ import ReviewItem from "./components/manageReview/ReviewItem";
 import { mongoConnection } from './../utils/mongoConnection'; 
 import { getShopDetails } from './../utils/common'; 
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Links, useLoaderData } from "@remix-run/react";
 import { useNavigate } from 'react-router-dom';
 import settings from './../utils/settings.json'; 
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
-
+import { Image, Link } from "@shopify/polaris";
+import reviewImage from "./../images/no-reviews-yet.svg"
 
 import {
   Layout,
@@ -189,24 +190,22 @@ export default function ManageReview() {
 	};
   return (
 	<>
-	<Page fullWidth>
-		<Breadcrumb crumbs={crumbs}/>
-	</Page>
+	<Breadcrumb crumbs={crumbs}/>
 	<Page fullWidth>
 		<div className="row">
-			<div className="col-sm-3">
+			<div className="col-sm-12">
 				<ReviewPageSidebar />
 			</div>
-			<div className="col-sm-9">
+			{/* <div className="col-sm-12">
 				<Layout.Section className="abcd">
 					<LegacyCard sectioned>
 						<RatingSummary ratingData={manageReviewData.outputRatting} />
 					</LegacyCard>
 				</Layout.Section>
-			</div>
+			</div> */}
 		</div>
 
-		<div className="row">
+		{/* <div className="row">
 			<div className="col-sm-3">
 			</div>
 			<div className="col-sm-9">
@@ -239,32 +238,70 @@ export default function ManageReview() {
 					</LegacyCard>
 				</Layout.Section>
 			</div>
-		</div>
+		</div> */}
 
 
 
-		<div className="row">
-			<div className="col-sm-3">
-			</div>
-			<div className="col-sm-9">
-				<Layout.Section>
-					{filteredReviews.length > 0 ?
+		<div className="noreviewyetmain">
+			<Layout.Section>
+				{filteredReviews.length > 0 ?
+					<>
 						<ReviewItem filteredReviews = {filteredReviews} />
-					:"no reviews "}	
-					 <div ref={lastElementRef}>
-						{loading && (
+						<div ref={lastElementRef}>
+							{loading && (
+								<div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+									<Spinner size="large" />
+								</div>
+							)}
+							
 							<div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
-								<Spinner size="large" />
+								{hasMore == 1 ? "" : <p>No more reviews found!</p> }
 							</div>
-						)}
 						
-						<div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
-							{hasMore == 1 ? "" : <p>No more reviews found!</p> }
 						</div>
-						
+					</>
+				: 
+					<>
+					<div className="imageplustext">
+						<div className="imagebox flxrow justify-content-center">
+							<Image src={reviewImage} width={100} height={100} ></Image>
+						</div>
+						<h4>No reviews yet</h4>
+						<p>Let's start collecting reviews. Try manually requesting or importing reviews.</p>
+						<div className="btnwrap centeralign">
+							<a href="#" className="revbtn lightbtn">Send manual request</a>
+							<a href="#" className="revbtn">Import reviews</a>
+						</div>
 					</div>
-				</Layout.Section>
-			</div>
+					{/* Review section Start */}
+						<div className="totalreviewdisplay flxrow">
+							<div className="lefttotal flxfix flxcol">
+								<h4>Reviews</h4>
+								<p>Export all reviews to .csv file</p>
+								<div className="bottomdetail mt-auto">
+									<h6>5.0</h6>
+									<div className="reviewcount">1 Reviews</div>
+									<div className="ratingstars flxrow">
+										<div className="inside_ratingstars">
+											<div className="filledicon" style={{width: '52%'}}>
+												<i className="starsico-stars"></i>
+											</div>
+											<div className="dficon">
+												<i className="starsico-stars"></i>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div className="rightrating flxflexi">
+								
+							</div>
+						</div>		
+					{/* Review section End */}
+
+					</>
+				}	
+			</Layout.Section>
 		</div>
 
 
