@@ -78,7 +78,6 @@ export async function fetchAllReviewsApi(requestParams) {
         });
 		
        	const data = await response.json();
-		console.log(data);
 		return data;
 	
     } catch (error) {
@@ -113,44 +112,6 @@ export default function ManageReview() {
 	};
 	const [filteredReviews, setFilteredReviews] = useState(manageReviewData.reviewItems.reviewItems);
 
-	  
-	const handleDeleteReviewItem = async (recordId) => {
-		Swal.fire({
-			title: 'Are you sure you want to delete this review?',
-			text: "This action is irreversible, and the review will not be accessible again!",
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			confirmButtonText: 'Yes, delete it!'
-		}).then(async (result) => { 
-			if (result.isConfirmed) {
-				try {
-					const response = await fetch(`${settings.host_url}/api/manage-review`, {
-						method: 'DELETE',
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						body: JSON.stringify({"review_id" : recordId})
-					});
-	
-					const data = await response.json();
-					console.log(data);
-					if(data.status == 200) {
-						toast.success(data.message);
-					} else {
-						toast.error(data.message);
-					}
-					// Assuming toast is a function to show notifications
-				} catch (error) {
-					console.error("Error deleting record:", error);
-					// Handle error, show toast, etc.
-					toast.error("Failed to delete record.");
-				}
-			}
-		});
-	};
-	
 
 	const filterStatusOptions = [
 		{label: 'All', value: 'all'},

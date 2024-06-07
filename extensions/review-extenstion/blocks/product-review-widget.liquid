@@ -22,7 +22,7 @@ $(document).ready(function(){
 function loadReviews(page){
 	$.ajax({
         type: 'POST',
-        url: `/apps/proxy/widget`,
+        url: `/apps/custom-proxy/widget`,
         data: {
 			no_of_review: settings_vars.no_of_review_per_page,
 			page: page,

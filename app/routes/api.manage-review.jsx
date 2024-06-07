@@ -112,7 +112,8 @@ export async function action({ request} ) {
 		case "DELETE":
 			try{
 				var {review_id} = requestBody;
-				const objectIds = new ObjectId(review_id);
+				console.log(review_id);
+				const objectId = new ObjectId(review_id);
 				const db = await mongoConnection();
 				const reviewItems =  await db.collection('product-reviews').deleteOne({ _id: objectId });
 				return json({"status" : 200, "message" : "Review deleted successfully!"});

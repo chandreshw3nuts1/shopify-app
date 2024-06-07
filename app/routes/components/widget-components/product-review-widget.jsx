@@ -1,8 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { mongoConnection } from './../../../utils/mongoConnection';
-import { getShopDetails } from './../../../utils/common';
 import ItemRating  from './rating';
 import ReviewItem  from './review-item';
 import moment from 'moment';
@@ -35,8 +33,8 @@ const ProductReviewWidget = ({shopRecords, reviewItems, productsDetails, hasMore
 	  <>
         {
             page == 1 ? <div className="container">
-              {productId != "" ? <div class="text-right mb-3">
-                  <button class="btn btn-primary" id="show_create_review_modal" >Create Review</button>
+              {productId != "" ? <div className="text-right mb-3">
+                  <button className="btn btn-primary" id="show_create_review_modal" >Create Review</button>
               </div> : "" }
             
             <div className="main_review_block">
