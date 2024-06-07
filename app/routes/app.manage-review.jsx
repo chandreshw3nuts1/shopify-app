@@ -7,12 +7,13 @@ import ReviewItem from "./components/manageReview/ReviewItem";
 import { mongoConnection } from './../utils/mongoConnection'; 
 import { getShopDetails } from './../utils/common'; 
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Links, useLoaderData } from "@remix-run/react";
 import { useNavigate } from 'react-router-dom';
 import settings from './../utils/settings.json'; 
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
-
+import { Image, Link } from "@shopify/polaris";
+import reviewImage from "./../images/no-reviews-yet.svg"
 
 import {
   Layout,
@@ -228,10 +229,122 @@ export default function ManageReview() {
 	};
   return (
 	<>
-	
-	<div>
-		<p>jhfksdfjsdfjk</p>
-	</div>
+	<Breadcrumb crumbs={crumbs}/>
+	<Page fullWidth>
+		<div className="row">
+			<div className="col-sm-12">
+				<ReviewPageSidebar />
+			</div>
+			{/* <div className="col-sm-12">
+				<Layout.Section className="abcd">
+					<LegacyCard sectioned>
+						<RatingSummary ratingData={manageReviewData.outputRatting} />
+					</LegacyCard>
+				</Layout.Section>
+			</div> */}
+		</div>
+
+		{/* <div className="row">
+			<div className="col-sm-3">
+			</div>
+			<div className="col-sm-9">
+				<Layout.Section>
+					<LegacyCard sectioned>
+						<Card sectioned>
+							
+							<form onSubmit={handleSubmit}>
+								<input type="text" name="search_keyword" value={searchFormData.search_keyword} onChange={handleChange} placeholder="Enter keyword" />
+								
+								<select value={selectedStatus} onChange={handleSelectStatusChange}>
+									<option value="all">All</option>
+									<option value="pending">Pending</option>
+									<option value="publish">Publish</option>
+									<option value="unpublish">Unpublish</option>
+								</select>
+
+								<select value={selectedRating} onChange={handleSelectedRatingChange}>
+									<option value="all">Any rating</option>
+									<option value="5">5 stars</option>
+									<option value="4">4 stars</option>
+									<option value="3">3 stars</option>
+									<option value="2">2 stars</option>
+									<option value="1">1 star</option>
+								</select>
+								<button type="submit">Submit</button>
+							</form>
+
+						</Card>
+					</LegacyCard>
+				</Layout.Section>
+			</div>
+		</div> */}
+
+
+
+		<div className="noreviewyetmain">
+			<Layout.Section>
+				{filteredReviews.length > 0 ?
+					<>
+						<ReviewItem filteredReviews = {filteredReviews} />
+						<div ref={lastElementRef}>
+							{loading && (
+								<div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+									<Spinner size="large" />
+								</div>
+							)}
+							
+							<div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+								{hasMore == 1 ? "" : <p>No more reviews found!</p> }
+							</div>
+						
+						</div>
+					</>
+				: 
+					<>
+					<div className="imageplustext">
+						<div className="imagebox flxrow justify-content-center">
+							<Image src={reviewImage} width={100} height={100} ></Image>
+						</div>
+						<h4>No reviews yet</h4>
+						<p>Let's start collecting reviews. Try manually requesting or importing reviews.</p>
+						<div className="btnwrap centeralign">
+							<a href="#" className="revbtn lightbtn">Send manual request</a>
+							<a href="#" className="revbtn">Import reviews</a>
+						</div>
+					</div>
+					{/* Review section Start */}
+						<div className="totalreviewdisplay flxrow">
+							<div className="lefttotal flxfix flxcol">
+								<h4>Reviews</h4>
+								<p>Export all reviews to .csv file</p>
+								<div className="bottomdetail mt-auto">
+									<h6>5.0</h6>
+									<div className="reviewcount">1 Reviews</div>
+									<div className="ratingstars flxrow">
+										<div className="inside_ratingstars">
+											<div className="filledicon" style={{width: '52%'}}>
+												<i className="starsico-stars"></i>
+											</div>
+											<div className="dficon">
+												<i className="starsico-stars"></i>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div className="rightrating flxflexi">
+								
+							</div>
+						</div>		
+					{/* Review section End */}
+
+					</>
+				}	
+			</Layout.Section>
+		</div>
+
+
+	</Page>
     </>
     
   );

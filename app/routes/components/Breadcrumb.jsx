@@ -7,9 +7,9 @@ import HomeImage from './home.png';
 const Breadcrumb = (props) => {
   
   return (
-    <div className='tarimasinigand'>
+    <div className={styles.custom_breadcrumb}>
         <ul className={styles.breadcrumbs}>
-        <li key="home-li"><Link to="/app"><span><img src={HomeImage} className={styles.breadcrumbHome} alt="" /></span> Home </Link></li>
+        <li key="home-li"><Link to="/app">Home </Link></li>
           {
             props.crumbs.map((crumb, index) => {
               if (props.crumbs.length -1 == index) {
@@ -23,9 +23,8 @@ const Breadcrumb = (props) => {
               }
             })
           }
-          </ul>
+        </ul>
     </div>
-    
   );
 };
 
