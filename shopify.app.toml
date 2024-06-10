@@ -3,7 +3,7 @@
 client_id = "1f8a740a88a87931cd6a800d3c43c5d3"
 name = "kritic-app"
 handle = "kritic-app-1"
-application_url = "https://enhancing-affordable-altered-become.trycloudflare.com"
+application_url = "https://setup-hack-dark-eco.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://enhancing-affordable-altered-become.trycloudflare.com/auth/callback",
-  "https://enhancing-affordable-altered-become.trycloudflare.com/auth/shopify/callback",
-  "https://enhancing-affordable-altered-become.trycloudflare.com/api/auth/callback"
+  "https://setup-hack-dark-eco.trycloudflare.com/auth/callback",
+  "https://setup-hack-dark-eco.trycloudflare.com/auth/shopify/callback",
+  "https://setup-hack-dark-eco.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

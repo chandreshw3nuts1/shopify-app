@@ -61,7 +61,7 @@ html body {
 
 .btnwrap { display: flex; column-gap: 16px; margin: 24px 0 0 0;}
 .btnwrap.centeralign { justify-content: center;} 
-.revbtn { display: inline-flex; height: 44px; padding: 0 24px; border-radius: 100px; font-size: 14px; font-weight: 400; background: var(--blueColor); text-decoration: none; outline: none; box-shadow: none; color: var(--whiteText); align-items: center; column-gap: 6px;}
+.revbtn { display: inline-flex; height: 44px; padding: 0 24px; border-radius: 100px; font-size: 14px; font-weight: 400; background: var(--blueColor); text-decoration: none; outline: none; box-shadow: none; color: var(--whiteText); align-items: center; column-gap: 6px; border: none;}
 .revbtn.tinybtn { height: 24px; padding: 0 12px; column-gap: 6px;}
 .revbtn.smbtn { height: 36px; font-size: 12px; column-gap: 2px;}
 .revbtn.lightbtn { background: var(--lightGreyBGcolor); color: var(--darkColor);}
@@ -117,12 +117,12 @@ body .form-check-input:active { filter: brightness(95%);}
 .noreviewyetmain { margin: 0;}
 .noreviewyetmain .Polaris-Layout__Section { margin: 0;}
 .noreviewyetmain .imageplustext { margin: 0;}
-.noreviewyetmain .imagebox { margin: 0 0 24px 0;}
-.noreviewyetmain .imagebox img { width: 100%; max-width: 364px; height: auto;}
+.noreviewyetmain .imageplustext .imagebox { margin: 0 0 24px 0;}
+.noreviewyetmain .imageplustext .imagebox img { width: 100%; max-width: 364px; height: auto;}
 .noreviewyetmain h4 { text-align: center; color: var(--darkColor); font-size: 22px; font-weight: 700; margin: 0; padding: 0;}
 .noreviewyetmain p { text-align: center; padding: 8px 0 0 0; margin: 0; font-size: 14px; color: var(--lightGreyColor);}
 
-.totalreviewdisplay { padding: 24px; border-radius: 10px; background: var(--whiteBg); border: solid 1px var(--borderColor);}
+.totalreviewdisplay { padding: 24px; border-radius: 10px; background: var(--whiteBg); border: solid 1px var(--borderColor); margin: 0;}
 .totalreviewdisplay .lefttotal { padding: 0 24px; border-right: solid 1px var(--borderColor); align-items: flex-start;}
 .totalreviewdisplay .lefttotal h4 { font-size: 32px; font-weight: 700; color: var(--darkColor); margin: 0; padding: 0;}
 .totalreviewdisplay .lefttotal p { color: var(--lightGreyColor); font-size: 16px; font-weight: 400; margin: 0; padding: 8px 0 0 0;}
@@ -136,3 +136,56 @@ body .form-check-input:active { filter: brightness(95%);}
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+.totalreviewdisplay .rightrating { padding: 0 20px 0 24px; row-gap: 26px;}
+.totalreviewdisplay .rightrating .ratingrow { display: flex; align-items: center;}
+.totalreviewdisplay .rightrating .starbox { margin: 0 10px 0 0; align-items: center; font-size: 14px; font-weight: 600;}
+.totalreviewdisplay .rightrating .starbox i { margin: 0 0 0 4px; font-size: 15px;}
+.totalreviewdisplay .rightrating .starlines { position: relative; height: 4px; border-radius: 8px; background: var(--borderColor);}
+.totalreviewdisplay .rightrating .starlines .filledpart { position: absolute; left: 0; top: 0; height: 4px; border-radius: 8px; background: var(--blueColor);}
+.totalreviewdisplay .rightrating .percentageright { width: 40px; color: var(--darkColor); font-size: 14px; font-weight: 600; margin: 0 0 0 10px;}
+
+.dividerblk { margin: 24px 0; height: 1px; background: var(--borderColor); width: 100%;}
+
+form .form-group { margin: 0 0 24px 0; width: 100%;}
+form .form-group label { display: block; font-size: 14px; line-height: normal; font-weight: 600; color: var(--darkColor); margin: 0 0 12px 0; padding: 0;}
+form .input_text { width: 100%; height: 44px; border-radius: 8px; background: var(--whiteBg); border: solid 1px var(--borderColor); padding: 0 16px; outline: none; box-shadow: none; resize: none; font-size: 14px;}
+.filterandserchwrap { padding: 24px; border-radius: 10px; background: var(--whiteBg); border: solid 1px var(--borderColor); margin: 24px 0 0 0;}
+
+.reviewlistblocks { margin: 24px 0 0 0;}
+.reviewlistblocks .topactions { align-items: center; margin: 0 0 24px 0;}
+.reviewlistblocks .topactions .reviewcounttop { display: flex; align-items: center; font-size: 22px; line-height: normal; font-weight: 700; color: var(--darkColor);}
+.reviewlistblocks .topactions .reviewcounttop span { margin: 0 5px 0 0; display: block;}
+.reviewlistblocks .topactions .rightbox { display: flex;}
+
+.reviewbunch { margin: 0;}
+.reviewbunch .reviewrowbox { margin: 0; padding: 24px; background: var(--whiteBg); border: solid 1px var(--borderColor); border-radius: 10px;}
+.reviewbunch .reviewrowbox .topline { display: flex;}
+.reviewbunch .reviewrowbox .imagebox { width: 168px; position: relative; margin: 0 15px 0 0;}
+.reviewbunch .reviewrowbox .imagebox::before { content: ''; display: block; padding-top: 100%; margin: 0 15px 0 0;}
+.reviewbunch .reviewrowbox .imagebox img { width: 100%; height: 100%; position: absolute; left: 0; top: 0; object-fit: cover;}
+.reviewbunch .reviewrowbox .rightinfo { margin: 0;}
+.reviewbunch .reviewrowbox .rightinfo .titlebox { width: 100%; display: flex; align-items: flex-start;}
+.reviewbunch .reviewrowbox .rightinfo .checkmark { margin: 0 10px 0 0; display: flex; width: 24px; height: 24px; color: var(--whiteText); background: var(--blueColor); align-items: center; justify-content: center; font-size: 22px; border-radius: 50px;}
+.reviewbunch .reviewrowbox .rightinfo .titlebox h4 { font-size: 20px; color: var(--darkColor); margin: 0; padding: 0; font-weight: 400;}
+.reviewbunch .reviewrowbox .rightinfo .titlebox h4 strong { font-weight: 700; color: var(--blueColor);}
+.reviewbunch .reviewrowbox .rightinfo .displayname { color: var(--lightGreyColor); font-size: 14px; margin: 0; padding: 12px 0 0 0;}
+.reviewbunch .reviewrowbox .rightinfo .starreviewstatus { display: flex; align-items: center;}
+.reviewbunch .reviewrowbox .rightinfo .ratingstars { font-size: 24px; align-items: center; line-height: 1; margin: 12px 0 0 0;}
+.reviewbunch .reviewrowbox .rightinfo .ratingstars .dficon { color: var(--borderColor);}
+.reviewbunch .reviewrowbox .rightinfo .inside_ratingstars { position: relative;}
+.reviewbunch .reviewrowbox .rightinfo .ratingstars .filledicon { position: absolute; left: 0; top: 0; overflow: hidden;
+    background: -webkit-linear-gradient(-90deg, #FFE61C 0%, #FFA929 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.reviewbunch .reviewrowbox .rightinfo .rating_time { font-size: 14px; color: var(--darkColor); font-weight: 400; padding: 0 0 0 12px;}
+.reviewbunch .reviewrowbox .rightinfo .reviewstatus { padding: 5px 12px; border-radius: 50px; background: var(--LightblueColor3); white-space: nowrap; font-size: 10px; line-height: 14px; color: var(--blueColor); font-weight: 600; margin: 0 0 0 12px;}
+.reviewbunch .reviewrowbox .rightinfo .reviewstatus img { margin: 0 6px 0 0;}
+.reviewbunch .reviewrowbox .rightinfo p { line-height: 1.71; text-align: left; padding: 24px 0 0 0;}
+
+.reviewbunch .reviewrowbox .rightactions { margin: 0;}
+.reviewbunch .reviewrowbox .rightactions .sociallinks { margin: 0;}
+.reviewbunch .reviewrowbox .rightactions .sociallinks a { display: flex; align-items: center; justify-content: center;}
+.reviewbunch .reviewrowbox .rightactions .sociallinks a + a { margin: 0 0 0 14px;}
+.reviewbunch .reviewrowbox .rightactions .sociallinks a img { width: 24px; height: 24px;}
+.reviewbunch .reviewrowbox .rightactions .bottombuttons { display: flex; margin: auto 0 0 0;}
