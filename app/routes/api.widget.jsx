@@ -35,7 +35,6 @@ import { mongoConnection } from './../utils/mongoConnection';
             .skip((page - 1) * limit)
 			.limit(limit)
             .toArray();
-            console.log(reviewItems);
 
             const client = new GraphQLClient(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
                 headers: {

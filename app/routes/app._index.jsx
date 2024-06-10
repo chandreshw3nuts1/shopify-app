@@ -17,9 +17,10 @@ import {
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 import Breadcrumb from "./components/Breadcrumb";
+import CustomQuestions from "./components/collect-review/CustomQuestions";
 
 export const loader = async ({ request }) => {
-  //await authenticate.admin(request);
+  await authenticate.admin(request);
   //const { admin } = await authenticate.admin(request);
   //const response = admin.rest.get({path: 'shop'});
   return null;
@@ -121,6 +122,7 @@ export default function Index() {
       
 
     <Page>
+      <CustomQuestions />
       <BlockStack gap="500">
         <Layout>
           <Layout.Section>

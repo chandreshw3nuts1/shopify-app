@@ -9,7 +9,6 @@ export async function mongoConnection() {
   try {
     // Connect to MongoDB
     await client.connect();
-    console.log('Connected to MongoDB');
 
     // Access the database and return the database object
     const db = client.db(dbName);

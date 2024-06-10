@@ -5,7 +5,7 @@ import { mongoConnection } from "./../utils/mongoConnection";
 import { findOneRecord } from "./../utils/common"; 
 import EmailTemplate from './components/email/EmailTemplate';
 import ReactDOMServer from 'react-dom/server';
-import moment from 'moment';
+import { getCurrentDate } from "./../utils/dateFormat"; 
 
 export async function loader() {
 
@@ -52,8 +52,6 @@ export async function action({ request }) {
 				const collectionName = 'product-reviews';
 				
 				const currentDate = new Date();
-    			// const currentDateTimeString = currentDate.toISOString();
-				const formattedUTCDate = moment().utc().format('YYYY-MM-DD HH:mm:ss [UTC]');
 				
 				const db = await mongoConnection();
 				const result = await db.collection(collectionName).insertOne({
@@ -66,7 +64,7 @@ export async function action({ request }) {
 					product_id : formData.get('product_id'),
 					product_title : formData.get('product_title'),
 					images : images,
-					created_at : formattedUTCDate
+					created_at : getCurrentDate()
 				});
 
 				//console.log(result);

@@ -1,34 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import { getShopDetails } from './../../../utils/common';
-import ItemRating  from './rating';
-import moment from 'moment';
 
-
-
-import {
-  Page,
-  Layout,
-  Text,
-  Card,
-  Button,
-  BlockStack,
-  Box,
-  Link,
-  InlineStack,
-  Grid,
-  List,
-  LegacyCard,
-  LegacyStack,
-  Collapsible,
-  TextContainer,
-  Checkbox,
-  Select
-} from "@shopify/polaris";
 
 const CreateReviewModalWidget = ({shopRecords}) => {
-    const proxyUrl = "https://"+shopRecords.domain+"/apps/proxy/review";
+    const proxyUrl = "https://"+shopRecords.domain+"/apps/custom-proxy/review";
 	return (
 	    <>  
         <div id="createReviewModal" className="custom-review-modal" >

@@ -9,7 +9,7 @@ export async function loader() {
   }
 
   export async function action({ request }) {
-    console.log('============= action app unstall');
+    console.log('============= action app uninstall');
     const hmacHeader = request.headers.get('X-Shopify-Hmac-Sha256');
     const rawBody = await request.text();
     const generatedHmac = crypto
@@ -22,6 +22,8 @@ export async function loader() {
     const body = JSON.parse(rawBody);
     const shop = body.myshopify_domain;
   
+    console.log(`App uninstalled from shop: ${shop}`);
+    console.log(body);
     console.log(`App uninstalled from shop: ${shop}`);
 
   // Perform your clean-up tasks here, such as:

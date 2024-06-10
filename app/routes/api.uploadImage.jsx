@@ -1,46 +1,30 @@
-import { json } from '@remix-run/node';
-import { useActionData } from '@remix-run/react';
-import multer from 'multer';
-import { createRequestHandler } from '@remix-run/express';
-import express from 'express';
+import { Form, useSubmit } from "@remix-run/react";
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    console.log('storage');
+import {
+  json,
+  unstable_composeUploadHandlers as composeUploadHandlers,
+  unstable_createFileUploadHandler as createFileUploadHandler,
+  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
+  unstable_parseMultipartFormData as parseMultipartFormData,
+} from "@remix-run/node";
 
-    cb(null, './uploads');
-  },
-  filename: function (req, file, cb) {
-    console.log('storage==============');
 
-    cb(null, file.originalname);
-  }
-});
-//console.log('==========================');
-//console.log(storage);
-const upload = multer({ storage: storage });
+// Action function to handle file upload logic
+export async function action({ params, request }) {
+  const uploadHandler =  composeUploadHandlers(
+    createFileUploadHandler({
+      directory: "public/uploads",
+      maxPartSize: 300000000,
+    }),
+    createMemoryUploadHandler(),
+  );
+  const formData = await parseMultipartFormData(request, uploadHandler);
+  // console.log(formData);
+  // const image = formData.get("file");
+  // if (!image || typeof image === "string") {
+  //   return json({ error: "something wrong", imgSrc: null });
+  // }
 
-const app = express();
 
-app.use(upload.single('file'));
-
-app.all('*', createRequestHandler({
-  getLoadContext() {
-    return { message: "Hello from the upload route!" };
-  }
-}));
-
-export const action = async ({ request }) => {
-  const data = await request.formData();
-  console.log(data);
-  const file = data.get('file');
-
-  if (!file) {
-    return json({ error: 'No file uploaded' }, { status: 400 });
-  }
-
-  const filePath = `uploads/${file.name}`;
-  // Here you can move or handle the uploaded file as needed
-
-  return json({ filePath });
-};  
+  return json({ status: false, message: "Please provide valid user data." });
+};
