@@ -3,10 +3,12 @@ import { json } from '@remix-run/node';
 import { useActionData, useNavigation, useSubmit } from '@remix-run/react';
 import { useLoaderData } from '@remix-run/react';
 import { mongoConnection } from './../utils/mongoConnection';
-import { getShopDetails } from './../utils/common';
+import { getShopDetails } from './../utils/getShopDetails';
+import { findOneRecord } from './../utils/common';
 import Breadcrumb from './components/Breadcrumb';
 import ReviewPageSidebar from './components/headerMenu/ReviewPageSidebar';
 import styles from './components/review.module.css';
+import CustomQuestions from "./components/collect-review/CustomQuestions";
 
 import {
 	Page,
@@ -26,6 +28,7 @@ import {
 	TextContainer,
 	Checkbox,
 	Select,
+	TextField
 } from '@shopify/polaris';
 const collectionName = 'settings';
 
@@ -34,12 +37,15 @@ export async function loader({ request }) {
 		const shopRecords = await getShopDetails(request);
 
 		const db = await mongoConnection();
-		const settingCollection = db.collection('settings');
-		const records = await settingCollection.findOne({
+		const settings = await findOneRecord(collectionName,{
 			shop_id: shopRecords._id,
 		});
-
-		return json(records);
+		const customQuestionsData =  await db.collection('custom-questions')
+		.find({
+			shop_id : shopRecords._id,
+		})
+		.toArray();
+		return json({"settings" : settings, "shopRecords" : shopRecords, "customQuestionsData" : customQuestionsData});
 	} catch (error) {
 		console.error('Error fetching records from MongoDB:', error);
 		return json(
@@ -59,7 +65,11 @@ export const action = async ({ request }) => {
 };
 
 const ReviewPage = () => {
-	const settings = useLoaderData();
+	const loaderData = useLoaderData();
+	const settings = loaderData.settings;
+	console.log(settings);
+	const customQuestionsData = loaderData.customQuestionsData;
+	const shopRecords = loaderData.shopRecords;
 	const [isChecked, setIsChecked] = useState(
 		settings?.autoPublishReview || false
 	);
@@ -75,12 +85,26 @@ const ReviewPage = () => {
 		{ title: 'Collect Review', link: '' },
 	]);
 	const [openNewReview, setOpenNewReview] = useState(false);
+	const [openCustomQuestions, setOpenCustomQuestions] = useState(false);
+    const [reviewNotificationEmail, setReviewNotificationEmail] = useState(
+		settings?.reviewNotificationEmail || ''
+	);
+	const [initialReviewNotificationEmail, setInitialReviewNotificationEmail] = useState(
+		settings?.reviewNotificationEmail || ''
+	);
+	const [isValidReviewNotificationEmail, setIsValidReviewNotificationEmail] = useState(true);
+	
+	
+	const [isCheckedReviewNotification, setIsCheckedReviewNotification] = useState(
+		settings?.reviewNotification || false
+	);
+
+
 	const [open, setOpen] = useState(false);
 
-	const handleToggleNewReview = useCallback(
-		() => setOpenNewReview(openNewReview => !openNewReview),
-		[]
-	);
+	const handleToggleNewReview = useCallback(() => setOpenNewReview(openNewReview => !openNewReview),[]);
+	const handleToggleCustomQuestions = useCallback(() => setOpenCustomQuestions(openCustomQuestions => !openCustomQuestions),[]);
+
 	const handleToggle = useCallback(() => setOpen(open => !open), []);
 
 	const handleSelectChange = async (value, name) => {
@@ -109,7 +133,6 @@ const ReviewPage = () => {
 
 	const handleCheckboxChange = async event => {
 		try {
-			console.log(settings);
 			const myKey = event.target.name;
 			const updateData = {
 				field: event.target.name,
@@ -128,7 +151,62 @@ const ReviewPage = () => {
 		}
 		setIsChecked(!isChecked);
 	};
+ 
+	
+	const handleReviewNotificationEmailChange = useCallback((value) => {
+		setReviewNotificationEmail(value);
+	}, []);
 
+	const handleReviewNotificationEmailBlur = async (e) => {
+
+		const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		
+		setIsValidReviewNotificationEmail(false);
+
+		if (regex.test(e.target.value)) {
+
+			setIsValidReviewNotificationEmail(true);
+
+			if (initialReviewNotificationEmail != e.target.value) {
+				const updateData = {
+					field: e.target.name,
+					value: reviewNotificationEmail,
+					oid: settings._id,
+				};
+				await fetch('/api/collect-review-setting', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(updateData),
+				});
+				setInitialReviewNotificationEmail(e.target.value);
+
+			}
+
+		}
+	};
+	
+	const handleReviewNotificationCheckboxchange = async event => {
+		try {
+			const myKey = event.target.name;
+			const updateData = {
+				field: event.target.name,
+				value: !isCheckedReviewNotification,
+				oid: settings._id,
+			};
+			await fetch('/api/collect-review-setting', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(updateData),
+			});
+		} catch (error) {
+			console.error('Error updating record:', error);
+		}
+		setIsCheckedReviewNotification(!isCheckedReviewNotification);
+	};
 	return (
 		<>
 			<Breadcrumb crumbs={crumbs} />
@@ -178,10 +256,11 @@ const ReviewPage = () => {
 											expandOnPrint
 										>
 											<div className='row'>
-												<div className='col-md-6'>
+											<div className='col-md-6'>
 													<div className='collectreviewformbox'>
 														<Card>
-															<div className="formcontent">
+														{isChecked && 
+															<div className="formcontent" >
 																<Select
 																	name="reviewPublishMode"
 																	id="reviewPublishMode"
@@ -193,6 +272,10 @@ const ReviewPage = () => {
 																	value={selected}
 																/>
 															</div>
+														}
+
+
+															
 															<div className="bottomcheckrow">
 																<div className="form-check form-switch">
 																	<input
@@ -205,7 +288,7 @@ const ReviewPage = () => {
 																		className="form-check-input"
 																		type="checkbox"
 																		role="switch"
-																		name="autoPublishReview"
+																		name="reviewNotifications"
 																		id="flexSwitchCheckChecked"
 																	/>
 																	<label
@@ -217,6 +300,112 @@ const ReviewPage = () => {
 																	</label>
 																</div>
 															</div>
+														</Card>
+													</div>
+												</div>
+
+
+
+
+												<div className='col-md-6'>
+													<div className='collectreviewformbox'>
+														<Card>
+														
+															<div className="formcontent" >
+																 <TextField
+																	value={reviewNotificationEmail}
+																	onChange={ handleReviewNotificationEmailChange } 
+																	onBlur={ handleReviewNotificationEmailBlur }
+																	name="reviewNotificationEmail"
+																	autoComplete="off"
+																	helpText="Leave empty to have notifications sent to: chandresh.w3nuts@gmail.com"
+																	placeholder='Notification Email'
+																/>
+																{!isValidReviewNotificationEmail && <small class="text-danger">Email address is invalid.</small>}
+
+															</div>
+
+
+															
+															<div className="bottomcheckrow">
+																<div className="form-check form-switch">
+																	<input
+																		checked={
+																			isCheckedReviewNotification
+																		}
+																		onChange={
+																			handleReviewNotificationCheckboxchange
+																		}
+																		className="form-check-input"
+																		type="checkbox"
+																		role="switch"
+																		name="reviewNotification"
+																		id="revNotiSwitchCheckChecked"
+																	/>
+																	<label
+																		className="form-check-label"
+																		for="revNotiSwitchCheckChecked"
+																	>
+																		Auto-publish new
+																		reviews
+																	</label>
+																</div>
+															</div>
+														</Card>
+													</div>
+												</div>
+
+												
+											</div>
+										</Collapsible>
+									</LegacyStack>
+								</LegacyCard>
+							</Layout.Section>
+						</div>
+					</div>
+
+					<div className="col-sm-12">
+						<div className='accordian_rowmain'>
+							<Layout.Section>
+								<LegacyCard sectioned>
+									<div
+										onClick={handleToggleCustomQuestions}
+										ariaExpanded={openCustomQuestions}
+										ariaControls="basic-collapsible"
+										className={openCustomQuestions ? 'open' : ''}
+									>
+										<div className='flxrow acctitle'>
+											<div className='flxfix iconbox'>
+												<i className='twenty-star'></i>
+											</div>
+											<div className='flxflexi titledetail'>
+												<Text as="h1" variant="headingMd">
+													Custom Questions
+												</Text>
+												<Text>
+												Add your own custom questions to the review form
+												</Text>
+											</div>
+											<div className='flxfix arrowicon'>
+												<i className='twenty-arrow-down'></i>
+											</div>
+										</div>
+									</div>
+									<LegacyStack vertical>
+										<Collapsible
+											open={openCustomQuestions}
+											id="basic-collapsible"
+											transition={{
+												duration: '300ms',
+												timingFunction: 'ease-in-out',
+											}}
+											expandOnPrint
+										>
+											<div className='row'>
+												<div className='col-md-6'>
+													<div className='collectreviewformbox'>
+														<Card>
+															<CustomQuestions customQuestionsData={customQuestionsData} shopRecords={shopRecords} />
 														</Card>
 													</div>
 												</div>

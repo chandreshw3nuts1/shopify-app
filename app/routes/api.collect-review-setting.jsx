@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import { mongoConnection } from './../utils/mongoConnection'; 
-import { getShopDetails } from './../utils/common'; 
+import { getShopDetails } from './../utils/getShopDetails'; 
 
 // import ObjectId from 'bson-objectid';
 import { Types } from 'mongoose';

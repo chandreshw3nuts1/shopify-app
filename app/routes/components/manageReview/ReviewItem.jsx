@@ -34,7 +34,6 @@ export default function ReviewItem({filteredReviews}) {
 					});
 	
 					const data = await response.json();
-					console.log(data);
 					if(data.status == 200) {
 						toast.success(data.message);
 					} else {

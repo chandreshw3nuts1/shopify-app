@@ -1,5 +1,5 @@
 import { mongoConnection } from './mongoConnection'; 
-import { authenticate } from "../shopify.server";
+import axios from 'axios';
 import { json } from "@remix-run/node";
 
 export async function findOneRecord(collection = "", params = {}) {
@@ -15,17 +15,6 @@ export async function findOneRecord(collection = "", params = {}) {
   	}
 }
 
-export async function getShopDetails(request) {
-	try{
-	  const { session } = await authenticate.admin(request);
-	  const { shop } = session;
-	  return await findOneRecord("shop", {"domain" : shop});
-  	} catch (error) {
-	  console.error('Error fetching shop record:', error);
-  	}
-}
-
-
 export async function getShopDetailsByShop(shop) {
 	try{
 		return await findOneRecord("shop", {"domain" : shop});
@@ -33,4 +22,3 @@ export async function getShopDetailsByShop(shop) {
 		console.error('Error fetching shop record by shop:', error);
   	}
 }
-

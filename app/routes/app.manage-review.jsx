@@ -5,7 +5,7 @@ import RatingSummary from "./components/manageReview/RatingSummary";
 import ReviewItem from "./components/manageReview/ReviewItem";
 
 import { mongoConnection } from './../utils/mongoConnection'; 
-import { getShopDetails } from './../utils/common'; 
+import { getShopDetails } from './../utils/getShopDetails'; 
 import { json } from "@remix-run/node";
 import { Links, useLoaderData } from "@remix-run/react";
 import { useNavigate } from 'react-router-dom';
