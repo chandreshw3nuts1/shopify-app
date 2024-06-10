@@ -13,7 +13,16 @@ import settings from './../utils/settings.json';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import { Image, Link } from "@shopify/polaris";
+// import Dropdown from 'react-bootstrap/Dropdown';
+import NiceSelect from './../NiceSelect/NiceSelect';
+
 import reviewImage from "./../images/no-reviews-yet.svg"
+import customerImage from "./../images/customer-image.jpg"
+import mailBlueIcon from "./../images/blue-mail-icon.svg"
+
+import facebookSocial from "./../images/Facebook-Original.svg"
+import redditSocial from "./../images/Reddit-Original.svg"
+import pinterestSocial from "./../images/Pinterest-Original.svg"
 
 import {
   Layout,
@@ -332,10 +341,172 @@ export default function ManageReview() {
 									</div>
 								</div>
 							</div>
-							<div className="rightrating flxflexi">
-								
+							<div className="rightrating flxflexi flxcol">
+								<div className="ratingrow">
+									<div className="starbox flxrow flxfix">5 <i className="starsico-single-star"></i></div>
+									<div className="starlines flxflexi">
+										<div className="filledpart" style={{width: '100%'}}></div>
+									</div>
+									<div className="percentageright flxfix">100%</div>
+								</div>
+								<div className="ratingrow">
+									<div className="starbox flxrow flxfix">4 <i className="starsico-single-star"></i></div>
+									<div className="starlines flxflexi">
+										<div className="filledpart" style={{width: '0%'}}></div>
+									</div>
+									<div className="percentageright flxfix">0%</div>
+								</div>
+								<div className="ratingrow">
+									<div className="starbox flxrow flxfix">3 <i className="starsico-single-star"></i></div>
+									<div className="starlines flxflexi">
+										<div className="filledpart" style={{width: '0%'}}></div>
+									</div>
+									<div className="percentageright flxfix">0%</div>
+								</div>
+								<div className="ratingrow">
+									<div className="starbox flxrow flxfix">2 <i className="starsico-single-star"></i></div>
+									<div className="starlines flxflexi">
+										<div className="filledpart" style={{width: '0%'}}></div>
+									</div>
+									<div className="percentageright flxfix">0%</div>
+								</div>
+								<div className="ratingrow">
+									<div className="starbox flxrow flxfix">1 <i className="starsico-single-star"></i></div>
+									<div className="starlines flxflexi">
+										<div className="filledpart" style={{width: '0%'}}></div>
+									</div>
+									<div className="percentageright flxfix">0%</div>
+								</div>
 							</div>
-						</div>		
+						</div>	
+						<div className="filterandserchwrap">
+							<form action="">
+								<div className="row">
+									<div className="col-lg-6">
+										<div className="form-group">
+											<label htmlFor="">Search</label>
+											<input type="text" className="input_text" placeholder="Search by name, email and product" />
+										</div>
+									</div>
+									<div className="col-lg-6">
+										<div className="form-group">
+											<label htmlFor="">Review</label>
+											<select className="input_text">
+												<option>All Reviews</option>
+												<option>All Reviews</option>
+												<option>All Reviews</option>
+											</select>
+										</div>
+									</div>
+									<div className="col-lg-6">
+										<div className="form-group">
+											<label htmlFor="">Ratings</label>
+											<select className="input_text">
+												<option>All Rating</option>
+												<option>1 Reting</option>
+												<option>2 Reting</option>
+												<option>3 Reting</option>
+												<option>4 Reting</option>
+												<option>5 Reting</option>
+											</select>
+										</div>
+									</div>
+									<div className="col-lg-6">
+										<div className="form-group">
+											<label htmlFor="">Filter</label>
+											<select className="input_text">
+												<option>Photo & Video Reviews</option>
+												<option>Only Photo</option>
+												<option>Only Video</option>
+											</select>
+										</div>
+									</div>
+									<div className="col-lg-12">
+										<div className="btnbox">
+											<input type="submit" value="Search" className="revbtn" />
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>	
+						<div className="dividerblk"></div>
+						<div className="reviewlistblocks">
+							<div className="topactions flxrow">
+								<div className="reviewcounttop">
+									<span>1</span>Reviews found
+								</div>
+								<div className="rightbox ms-auto">
+									<NiceSelect id="a-select" placeholder="Bulk Actions" className="sampleClass">
+										<option value="OP1">Option 1</option>
+										<option value="OP2">Option 2</option>
+									</NiceSelect>
+								</div>
+								{/* <Dropdown>
+									<Dropdown.Toggle variant="success" id="dropdown-basic">
+										Dropdown Button
+									</Dropdown.Toggle>
+
+									<Dropdown.Menu>
+										<Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+										<Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+										<Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+									</Dropdown.Menu>
+								</Dropdown> */}
+							</div>
+							<div className="reviewbunch">
+								<div className="reviewrowbox">
+									<div className="topline">
+										<div className="imagebox flxfix">
+											<Image src={customerImage} width={100} height={100} ></Image>
+										</div>
+										<div className="rightinfo flxflexi">
+											<div className="titlebox">
+												<div className="checkmark">
+													<i className="twenty-checkicon"></i>
+												</div>
+												<h4 className="fleflexi"><strong>Yash Vora</strong> about <strong>New t-shirt</strong></h4>
+											</div>
+											<div className="displayname">Display name: Yash Patel</div>
+											<div class="ratingstars flxrow">
+												<div class="inside_ratingstars">
+													<div class="filledicon" style={{width:'52%'}}>
+														<i class="starsico-stars"></i>
+														</div>
+													<div class="dficon">
+														<i class="starsico-stars"></i>
+													</div>
+												</div>
+												<div className="rating_time">3 hours ago</div>
+												<div className="reviewstatus flxrow">
+													<Image src={mailBlueIcon} width={14} height={14} ></Image>
+													Received through review request
+												</div>
+											</div>
+											<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since.</p>
+										</div>
+										<div className="rightactions flxfix flxcol">
+											<div className="sociallinks flxrow">
+												<a href="#">
+													<Image src={facebookSocial} width={24} height={24} ></Image>
+												</a>
+												<a href="#">
+													<Image src={redditSocial} width={24} height={24} ></Image>
+												</a>
+												<a href="#">
+													<Image src={pinterestSocial} width={24} height={24} ></Image>
+												</a>
+											</div>
+											<div className="bottombuttons">
+												<NiceSelect id="statusreviewpublishornot" className="sampleClass">
+													<option value="OP1" iconAttr='twenty-checkicon' className="twenty-checkicon" selected>Option 1</option>
+													<option value="OP2">Option 2</option>
+												</NiceSelect>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 					{/* Review section End */}
 
 					</>
