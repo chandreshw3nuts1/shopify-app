@@ -41,69 +41,107 @@ export async function action({ request} ) {
 	const method = request.method;
 	switch(method){
 		case "POST":
-			var {shop, page, limit , filter_status,filter_stars, search_keyword } = requestBody;
+			var {shop, page, limit , filter_status,filter_stars, search_keyword, actionType } = requestBody;
 			page = page == 0 ? 1 : page;
 			try {
-				const shopRecords = await findOneRecord("shop", {"domain" : shop});
-				const query = {
-					"shop_id" : shopRecords._id, "status" : filter_status, "rating" : parseInt(filter_stars),
-					$or: [
-						{ first_name: { $regex: search_keyword, $options: 'i' } },
-						{ last_name: { $regex: search_keyword, $options: 'i' } },
-						{ product_title: { $regex: search_keyword, $options: 'i' } }
-						]
-				};
-				if(filter_status == 'all'){
-					delete query['status'];
-				}if(filter_stars == 'all'){
-					delete query['rating'];
-				}
 				const db = await mongoConnection();
-				const reviewItems =  await db.collection('product-reviews')
-				
-					.find(query)
-					.skip((page - 1) * limit)
-					.limit(limit)
-					.toArray();
+				const collectionName = 'product-reviews';
+				if (actionType == 'changeReviewStatus') {
+					const collection = db.collection(collectionName);
+					const objectId = new ObjectId(requestBody.oid);
 
-				
-				var hasMore = 0;
-				if (reviewItems.length > 0) {
-					var hasMore = 1;
+					const result = await collection.updateOne({_id : objectId}, {
+									$set: { 
+									status : requestBody.value
+								}
+							});
 					
-					const client = new GraphQLClient(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
-					headers: {
-							'X-Shopify-Access-Token': shopRecords.accessToken,
-						},
-					});
-					const productIds = reviewItems.map((item) =>  `"gid://shopify/Product/${item.product_id}"`);
+
+					return json({"sdsad" :"sdsadsadsa"});
 					
-					const query = `{
-						nodes(ids: [${productIds}]) {
-							... on Product {
-								id
-								title
-								description
-								images(first: 1) {
-									edges {
-										node {
-											id
-											transformedSrc(maxWidth: 100, maxHeight: 100)
+				} else {
+					const shopRecords = await findOneRecord("shop", {"domain" : shop});
+					const query = {
+						"shop_id" : shopRecords._id, "status" : filter_status, "rating" : parseInt(filter_stars),
+						$or: [
+							{ first_name: { $regex: search_keyword, $options: 'i' } },
+							{ last_name: { $regex: search_keyword, $options: 'i' } },
+							{ product_title: { $regex: search_keyword, $options: 'i' } }
+							]
+					};
+					if(filter_status == 'all'){
+						delete query['status'];
+					}if(filter_stars == 'all'){
+						delete query['rating'];
+					}
+					// const reviewItems =  await db.collection('product-reviews')
+					// 	.find(query)
+					// 	.skip((page - 1) * limit)
+					// 	.limit(limit)
+					// 	.toArray();
+
+
+						const reviewItems = await db.collection('product-reviews').aggregate([
+							{ 
+							  $match: query 
+							},
+							{ 
+							  $skip: (page - 1) * limit 
+							},
+							{ 
+							  $limit: limit 
+							},
+							{ 
+							  $lookup: {
+								from: 'product-review-questions',
+								localField: '_id',
+								foreignField: 'review_id',
+								as: 'reviewQuestions'
+							  }
+							}
+							
+						  ]).toArray();
+					//console.log(reviewItems);
+					var hasMore = 0;
+					if (reviewItems.length > 0) {
+						var hasMore = 1;
+						
+						const client = new GraphQLClient(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
+						headers: {
+								'X-Shopify-Access-Token': shopRecords.accessToken,
+							},
+						});
+						const productIds = reviewItems.map((item) =>  `"gid://shopify/Product/${item.product_id}"`);
+						
+						const query = `{
+							nodes(ids: [${productIds}]) {
+								... on Product {
+									id
+									title
+									description
+									images(first: 1) {
+										edges {
+											node {
+												id
+												transformedSrc(maxWidth: 100, maxHeight: 100)
+											}
 										}
 									}
 								}
 							}
+						} `;
+						var productsDetails = await client.request(query);
+						
+						if(productsDetails.nodes.length > 0) {
+							productsDetails = productsDetails.nodes;
 						}
-					} `;
-					var productsDetails = await client.request(query);
-					
-					if(productsDetails.nodes.length > 0) {
-						productsDetails = productsDetails.nodes;
+						//console.log(productsDetails);
 					}
-					//console.log(productsDetails);
+				
+					return json({reviewItems, hasMore: hasMore});
 				}
-			
-				return json({reviewItems, hasMore: hasMore});
+
+				
 
 			  } catch (error) {
 				console.error('Error updating record:', error);
