@@ -63,6 +63,7 @@ export async function action({ request }) {
 					rating : formData.get('rating'),
 					product_id : formData.get('product_id'),
 					product_title : formData.get('product_title'),
+					product_url : formData.get('product_url'),
 					images : images,
 					created_at : getCurrentDate()
 				});

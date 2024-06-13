@@ -61,6 +61,7 @@ $(document).on("submit", "#review_submit_btn_form",  function(e) {
     formData.append('shop_domain', '{{shop.domain}}');
     formData.append('product_id', '{{product.id}}');
     formData.append('product_title', '{{product.title}}');
+    formData.append('product_url', '{{product.url}}');
 
     var reviewUrl = $(this).attr('action');
     $.ajax({

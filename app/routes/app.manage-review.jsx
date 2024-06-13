@@ -57,10 +57,10 @@ export async function loader({request}) {
 			"filter_stars" : "all",
 			"search_keyword" : "",
 		}
-		const reviewItems = await fetchAllReviewsApi(defaultSearchParams);
+		// const reviewItems = await fetchAllReviewsApi(defaultSearchParams);
 		
 	  
-		return json({"outputRatting" : outputRatting,"countRating" :countRating.length, "shopRecords" : shopRecords, "reviewItems" : reviewItems, "defaultSearchParams" : defaultSearchParams});
+		return json({"outputRatting" : outputRatting,"countRating" :countRating.length, "shopRecords" : shopRecords, "defaultSearchParams" : defaultSearchParams});
 	  } catch (error) {
 		console.error('Error fetching manage review:', error);
 		return json({ error: 'Error fetching manage review' }, { status: 500 });
@@ -90,7 +90,7 @@ export default function ManageReview() {
 	const manageReviewData = useLoaderData();
 	const [searchFormData, setSearchFormData] = useState(manageReviewData.defaultSearchParams);
 	const [countRating, setCountRating] = useState(manageReviewData.countRating);
-
+	const shopRecords = manageReviewData.shopRecords;
 	
 	const [submitHandle, setSubmitHandle] = useState(false);
 	const [hasMore, setHasMore] = useState(1);
@@ -113,7 +113,8 @@ export default function ManageReview() {
 	const handleChange = (e) => {
 		setSearchFormData({ ...searchFormData, [e.target.name]: e.target.value });
 	};
-	const [filteredReviews, setFilteredReviews] = useState(manageReviewData.reviewItems.reviewItems);
+	// const [filteredReviews, setFilteredReviews] = useState(manageReviewData.reviewItems.reviewItems);
+	const [filteredReviews, setFilteredReviews] = useState([]);
 	const [filteredReviewsTotal, setFilteredReviewsTotal] = useState(0);
 
 
@@ -156,7 +157,6 @@ export default function ManageReview() {
 		(async() => {
 			setLoading(true);
 			const response = await fetchAllReviewsApi(searchFormData);
-			setFilteredReviewsTotal(10);
 			if (searchFormData.page === 1) {
 				setFilteredReviews([...response.reviewItems]);
 			} else {
@@ -166,7 +166,10 @@ export default function ManageReview() {
 				]));
 			}
 			setHasMore(response.hasMore);
+			setFilteredReviewsTotal(response.totalReviewItems);
+
 			setLoading(false);
+
 		})()
 	}, [searchFormData.page, submitHandle]);
 
@@ -261,7 +264,7 @@ export default function ManageReview() {
 						</form>
 					</div>
 					<div className="dividerblk"></div>
-					<ReviewItem filteredReviews = {filteredReviews} setFilteredReviews = {setFilteredReviews} filteredReviewsTotal = {filteredReviewsTotal}/>
+					<ReviewItem filteredReviews = {filteredReviews} setFilteredReviews = {setFilteredReviews} filteredReviewsTotal = {filteredReviewsTotal} shopRecords={shopRecords} searchFormData={searchFormData} setSubmitHandle={setSubmitHandle} submitHandle={submitHandle} setSearchFormData={setSearchFormData}/>
 					<div ref={lastElementRef}>
 						{loading && (
 							<div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>

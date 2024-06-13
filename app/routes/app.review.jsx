@@ -9,6 +9,7 @@ import Breadcrumb from './components/Breadcrumb';
 import ReviewPageSidebar from './components/headerMenu/ReviewPageSidebar';
 import styles from './components/review.module.css';
 import CustomQuestions from "./components/collect-review/CustomQuestions";
+import { toast } from 'react-toastify';
 
 import {
 	Page,
@@ -113,13 +114,19 @@ const ReviewPage = () => {
 			value: value,
 			oid: settings._id,
 		};
-		await fetch('/api/collect-review-setting', {
+		const response  = await fetch('/api/collect-review-setting', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify(updateData),
 		});
+		const data = await response.json();
+		if(data.status == 200) {
+			toast.success(data.message);
+		} else {
+			toast.error(data.message);
+		}
 
 		setSelected(value); // Update the state with the selected value
 	};
@@ -133,19 +140,26 @@ const ReviewPage = () => {
 
 	const handleCheckboxChange = async event => {
 		try {
+
 			const myKey = event.target.name;
 			const updateData = {
 				field: event.target.name,
 				value: !isChecked,
 				oid: settings._id,
 			};
-			await fetch('/api/collect-review-setting', {
+			const response = await fetch('/api/collect-review-setting', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify(updateData),
 			});
+			const data = await response.json();
+			if(data.status == 200) {
+				toast.success(data.message);
+			} else {
+				toast.error(data.message);
+			}
 		} catch (error) {
 			console.error('Error updating record:', error);
 		}
@@ -163,7 +177,7 @@ const ReviewPage = () => {
 		
 		setIsValidReviewNotificationEmail(false);
 
-		if (regex.test(e.target.value)) {
+		if (regex.test(e.target.value) || e.target.value == '') {
 
 			setIsValidReviewNotificationEmail(true);
 
@@ -173,13 +187,21 @@ const ReviewPage = () => {
 					value: reviewNotificationEmail,
 					oid: settings._id,
 				};
-				await fetch('/api/collect-review-setting', {
+				const response = await fetch('/api/collect-review-setting', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify(updateData),
 				});
+
+				const data = await response.json();
+				if(data.status == 200) {
+					toast.success(data.message);
+				} else {
+					toast.error(data.message);
+				}
+
 				setInitialReviewNotificationEmail(e.target.value);
 
 			}
@@ -195,13 +217,19 @@ const ReviewPage = () => {
 				value: !isCheckedReviewNotification,
 				oid: settings._id,
 			};
-			await fetch('/api/collect-review-setting', {
+			const response = await fetch('/api/collect-review-setting', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify(updateData),
 			});
+			const data = await response.json();
+			if(data.status == 200) {
+				toast.success(data.message);
+			} else {
+				toast.error(data.message);
+			}
 		} catch (error) {
 			console.error('Error updating record:', error);
 		}
@@ -288,15 +316,14 @@ const ReviewPage = () => {
 																		className="form-check-input"
 																		type="checkbox"
 																		role="switch"
-																		name="reviewNotifications"
+																		name="autoPublishReview"
 																		id="flexSwitchCheckChecked"
 																	/>
 																	<label
 																		className="form-check-label"
 																		for="flexSwitchCheckChecked"
 																	>
-																		Auto-publish new
-																		reviews
+																		Auto-publish new reviews
 																	</label>
 																</div>
 															</div>
@@ -318,7 +345,7 @@ const ReviewPage = () => {
 																	onBlur={ handleReviewNotificationEmailBlur }
 																	name="reviewNotificationEmail"
 																	autoComplete="off"
-																	helpText="Leave empty to have notifications sent to: chandresh.w3nuts@gmail.com"
+																	helpText={`Leave empty to have notifications sent to: ${shopRecords.email}`}
 																	placeholder='Notification Email'
 																/>
 																{!isValidReviewNotificationEmail && <small class="text-danger">Email address is invalid.</small>}
@@ -346,8 +373,7 @@ const ReviewPage = () => {
 																		className="form-check-label"
 																		for="revNotiSwitchCheckChecked"
 																	>
-																		Auto-publish new
-																		reviews
+																		Review notifications
 																	</label>
 																</div>
 															</div>

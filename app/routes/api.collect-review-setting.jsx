@@ -34,12 +34,10 @@ export async function loader() {
             const options = { upsert: true };
             const result = await collection.findOneAndUpdate(query, update, options);
             
-            console.log(result);
+            return json({"status" : 200, "message" : "Settings saved"});
 
-            return json({ success: true });
           } catch (error) {
-            console.error('Error updating record:', error);
-            return json({ error: 'Failed to update record' }, { status: 500 });
+            return json({"status" : 400, "message" : "Failed to update record"});
           }
 
         case "PATCH":

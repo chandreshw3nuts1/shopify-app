@@ -3,7 +3,7 @@ import { json } from "@remix-run/node";
 
 
 const CreateReviewModalWidget = ({shopRecords}) => {
-    const proxyUrl = "https://"+shopRecords.domain+"/apps/custom-proxy/review";
+    const proxyUrl = "https://"+shopRecords.domain+"/apps/custom-proxy/product-review-widget";
 	return (
 	    <>  
         <div id="createReviewModal" className="custom-review-modal" >

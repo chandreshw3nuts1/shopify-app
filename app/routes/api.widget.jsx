@@ -9,8 +9,7 @@ import { mongoConnection } from './../utils/mongoConnection';
     export async function loader() {
 
         return json({
-            title:"hii there",
-            body:"hii bodybodybodybodybody"
+           
         });
     }
 

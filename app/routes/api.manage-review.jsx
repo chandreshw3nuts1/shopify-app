@@ -39,26 +39,116 @@ export async function action({ request} ) {
 	const requestBody = await request.json();
    
 	const method = request.method;
+	const db = await mongoConnection();
+	const collectionName = 'product-reviews';
+
 	switch(method){
 		case "POST":
 			var {shop, page, limit , filter_status,filter_stars, search_keyword, actionType } = requestBody;
 			page = page == 0 ? 1 : page;
 			try {
-				const db = await mongoConnection();
-				const collectionName = 'product-reviews';
 				if (actionType == 'changeReviewStatus') {
 					const collection = db.collection(collectionName);
 					const objectId = new ObjectId(requestBody.oid);
 
 					const result = await collection.updateOne({_id : objectId}, {
-									$set: { 
-									status : requestBody.value
-								}
-							});
+							$set: {
+							status : requestBody.value
+						}
+					});
+					
+					return json({"status" : 200, "message" : "Status updated!"});
+					
+				} else if (actionType == 'addReviewReply') {
+					const collection = db.collection(collectionName);
+					const objectId = new ObjectId(requestBody.review_id);
+
+					const result = await collection.updateOne({_id : objectId}, {
+							$set: { 
+							replyText : requestBody.reply
+						}
+					});
+					if(requestBody.subActionType == 'editReview'){
+						var msg = "Your reply updated!";
+					} else if(requestBody.subActionType == 'deleteReply'){
+						var msg = "Your reply deleted!";
+					} else{
+						var msg = "Your reply added!";
+					}
+					return json({"status" : 200, "message" : msg});
+					
+				} else if (actionType == 'bulkRatingStatus') {
+					const {shop, filter_status,filter_stars, search_keyword } = requestBody.searchFormData;
+					
+					const shopRecords = await findOneRecord("shop", {"domain" : shop});
+					const query = {
+						"shop_id" : shopRecords._id, "status" : filter_status, "rating" : parseInt(filter_stars),
+						$or: [
+							{ first_name: { $regex: search_keyword, $options: 'i' } },
+							{ last_name: { $regex: search_keyword, $options: 'i' } },
+							{ product_title: { $regex: search_keyword, $options: 'i' } }
+							]
+					};
+					if(filter_status == 'all'){
+						delete query['status'];
+					}if(filter_stars == 'all'){
+						delete query['rating'];
+					}
+					if(requestBody.subActionType == 'delete') {
+						await db.collection(collectionName).deleteMany(query);
+						var msg = "Review deleted";
+					} else {
+						await db.collection(collectionName).updateMany(
+							query,
+							{ $set: { status: requestBody.subActionType } }
+						);
+
+						if(requestBody.subActionType == 'publish') {
+							var msg = "Review published";
+						} else {
+							var msg = "Review unpublished";
+						}
+
+					}
+					return json({"status" : 200, "message" : msg});
+					
+				} else if (actionType == 'imageSliderAction') {
+					const {doc_id, review_id, subActionType } = requestBody;
+					const collection = db.collection('review_documents');
+					const reviewId = new ObjectId(review_id);
+					const docId = new ObjectId(doc_id);
+					
+					if (subActionType == 'makeCoverPhoto') {
+						await collection.updateMany({review_id : reviewId}, {
+							$set: { 
+								is_cover : false
+							}
+						});
+						
+						await collection.updateOne({_id : docId}, {
+							$set: { 
+								is_cover : true
+							}
+						});
+						var msg = "Cover photo set";
+					} else if (subActionType == 'hidePhoto') {
+						await collection.updateOne({_id : docId}, {
+							$set: { 
+								is_approve : false
+							}
+						});
+						var msg = "Photo hidden";
+					} else if (subActionType == 'approvePhoto') {
+						await collection.updateOne({_id : docId}, {
+							$set: { 
+								is_approve : true
+							}
+						});
+						var msg = "Photo approve";
+					}
 					
 
-					return json({"sdsad" :"sdsadsadsa"});
-					
+					return json({"status" : 200, "message" : msg});
 				} else {
 					const shopRecords = await findOneRecord("shop", {"domain" : shop});
 					const query = {
@@ -80,29 +170,121 @@ export async function action({ request} ) {
 					// 	.limit(limit)
 					// 	.toArray();
 
+					const totalReviewItems =  await db.collection(collectionName)
+					.countDocuments(query);
 
-						const reviewItems = await db.collection('product-reviews').aggregate([
-							{ 
-							  $match: query 
-							},
-							{ 
-							  $skip: (page - 1) * limit 
-							},
-							{ 
-							  $limit: limit 
-							},
-							{ 
-							  $lookup: {
+
+					const reviewItems = await db.collection('product-reviews').aggregate([
+						{ 
+							$match: query 
+						},
+						{ 
+							$skip: (page - 1) * limit 
+						},
+						{ 
+							$limit: limit 
+						},
+						{
+							$lookup: {
+								from: 'review_documents',
+								localField: '_id',
+								foreignField: 'review_id',
+								as: 'reviewDocuments'
+							}
+						},
+						{
+							$unwind: {
+								path: "$reviewDocuments",
+								preserveNullAndEmptyArrays: true
+							}
+						},
+						{
+							$lookup: {
 								from: 'product-review-questions',
 								localField: '_id',
 								foreignField: 'review_id',
-								as: 'reviewQuestions'
-							  }
+								as: 'reviewQuestionsAnswer'
 							}
-							
-						  ]).toArray();
-					//console.log(reviewItems);
+						},
+						{
+							$unwind: {
+								path: "$reviewQuestionsAnswer",
+								preserveNullAndEmptyArrays: true
+							}
+						},
+						{
+							$lookup: {
+								from: "custom-questions",
+								localField: "reviewQuestionsAnswer.question_id",
+								foreignField: "_id",
+								as: "reviewQuestionsAnswer.reviewQuestions"
+							}
+						},
+						{
+							$unwind: {
+								path: "$reviewQuestionsAnswer.reviewQuestions",
+								preserveNullAndEmptyArrays: true
+							}
+						},
+						{
+							$group: {
+								_id: "$_id",
+								description: { $first: "$description" },
+								rating: { $first: "$rating" },
+								first_name: { $first: "$first_name" },
+								email: { $first: "$email" },
+								last_name: { $first: "$last_name" },
+								created_at: { $first: "$created_at" },
+								status: { $first: "$status" },
+								images: { $first: "$images" },
+								replyText: { $first: "$replyText" },
+								product_id: { $first: "$product_id" },
+								reviewDocuments: { $addToSet: "$reviewDocuments" }, // Use $addToSet to avoid duplicates
+								reviewQuestionsAnswer: { 
+									$addToSet: { // Use $addToSet to avoid duplicates
+										_id: "$reviewQuestionsAnswer._id",
+										review_id: "$reviewQuestionsAnswer.review_id",
+										answer: "$reviewQuestionsAnswer.answer",
+										question_id: "$reviewQuestionsAnswer.question_id",
+										reviewQuestions: {
+											_id: "$reviewQuestionsAnswer.reviewQuestions._id",
+											question: "$reviewQuestionsAnswer.reviewQuestions.question"
+										}
+									}
+								}
+							}
+						},
+						{
+							$project: {
+								_id: "$_id",
+								description: "$description",
+								rating: "$rating",
+								first_name: "$first_name",
+								email: "$email",
+								last_name: "$last_name",
+								created_at: "$created_at",
+								status: "$status",
+								images: "$images",
+								replyText: "$replyText",
+								product_id : "$product_id",
+								reviewDocuments : "$reviewDocuments",
+								reviewQuestionsAnswer: {
+									$filter: {
+										input: "$reviewQuestionsAnswer",
+										as: "item",
+										cond: { $ne: ["$$item._id", null] }
+									}
+								}
+							}
+						},
+						{
+							$sort: { created_at: -1 } 
+						}
+					]).toArray();
+					
 					var hasMore = 0;
+					var mapProductDetails = {};
+
 					if (reviewItems.length > 0) {
 						var hasMore = 1;
 						
@@ -111,13 +293,16 @@ export async function action({ request} ) {
 								'X-Shopify-Access-Token': shopRecords.accessToken,
 							},
 						});
-						const productIds = reviewItems.map((item) =>  `"gid://shopify/Product/${item.product_id}"`);
-						
+						const uniqueProductIds = [...new Set(reviewItems.map(item => item.product_id))];
+
+						const productIds = uniqueProductIds.map((item) =>  `"gid://shopify/Product/${item}"`);
+
 						const query = `{
 							nodes(ids: [${productIds}]) {
 								... on Product {
 									id
 									title
+									handle
 									description
 									images(first: 1) {
 										edges {
@@ -134,29 +319,36 @@ export async function action({ request} ) {
 						
 						if(productsDetails.nodes.length > 0) {
 							productsDetails = productsDetails.nodes;
+
+							  
+							productsDetails.forEach(node => {
+								const id = node.id.split('/').pop();
+								mapProductDetails[id] = node;
+							});
 						}
-						//console.log(productsDetails);
 					}
-				
-					return json({reviewItems, hasMore: hasMore});
+					
+					const mapReviewItems = {};
+					reviewItems.map(items => {
+						items.productDetails = mapProductDetails[items.product_id];
+						return items;
+					});
+
+					return json({reviewItems, totalReviewItems,  hasMore});
 				}
 
 				
 
 			  } catch (error) {
-				console.error('Error updating record:', error);
-				return json({ error: 'Failed to update record' }, { status: 500 });
+				return json({"status" : 400, "message" : "Failed to update record!"});
 			  }
 		case "DELETE":
 			try{
 				var {review_id} = requestBody;
-				console.log(review_id);
 				const objectId = new ObjectId(review_id);
-				const db = await mongoConnection();
-				const reviewItems =  await db.collection('product-reviews').deleteOne({ _id: objectId });
+				const reviewItems =  await db.collection(collectionName).deleteOne({ _id: objectId });
 				return json({"status" : 200, "message" : "Review deleted successfully!"});
 			} catch (error) {
-				console.error('Error deleting record:', error);
 				return json({"status" : 400, "message" : "Error deleting record!"});
 
 			}
