@@ -4,11 +4,13 @@
     max-width: 100%;
     overflow: hidden;
     display: flex;
+    height: 100%;
   }
   
   .slider-wrapper {
     display: flex;
     transition: transform 0.5s ease-in-out;
+    height: 100%;
   }
   
   .slide {
@@ -16,9 +18,8 @@
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
     position: relative;
-
+    height: 100%;
   }
-  
   .slide.active {
     opacity: 1;
   } 
@@ -28,27 +29,49 @@
     display: block;
     cursor: pointer;
     object-fit: cover;
-
+    height: 100%;
   }
   
   .button {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.5);
+    background: var(--whiteBg);
     border: none;
     color: white;
-    font-size: 2rem;
+    font-size: 0;
     cursor: pointer;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border-radius: 50px;
+  }
+  .button::before {
+    display: block;
+    font-family: 'icon24' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    font-size: 20px;
+    color: var(--darkColor);
   }
   
   .button.prev {
-    left: 10px;
+    left: 4px;
     z-index: 1;
+  }
+  .button.prev::before {
+    content: "\e903";
   }
   
   .button.next {
-    right: 10px;
+    right: 4px;
+  }
+  .button.next::before {
+    content: "\e904";
   }
   
 
@@ -57,6 +80,7 @@
     position: absolute;
     bottom: 10px;
     width: 100%;
+    display: none;
   }
   
   .dot {
@@ -80,7 +104,23 @@
   top: 10px;
   right: 10px;
   cursor: pointer;
-  background-color: #f0f0f0;
+  background: var(--whiteBg);
+  width: 24px; height: 24px; border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.menu_icon svg { display: none;}
+.menu_icon::before {
+  font-size: 24px;
+  font-family: 'icon24' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  content: "\e91b";
 }
 
 .menu {
@@ -96,14 +136,16 @@
 .menu ul {
   list-style: none;
   margin: 0;
-  width: 140px;
+  width: 120px;
   font-size: 14px;
-  padding: 0px 5px 0px 5px;
+  padding: 0;
 }
 
 .menu li {
   cursor: pointer;
-  padding: 0px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .menu li:hover {
@@ -119,4 +161,14 @@
   border-radius: 5px;
   overflow: hidden;
   padding: 0px 5px 0px 5px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  height: 20px;
 }
+.cover_photo_label i {
+  font-size: 16px;
+  margin: 0 1px 0 0;
+}
+.cover_photo_label svg { width: 12px; height: 12px; margin: 0 4px 0 0;}

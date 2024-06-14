@@ -3,22 +3,23 @@
 client_id = "1f8a740a88a87931cd6a800d3c43c5d3"
 name = "kritic-app"
 handle = "kritic-app-1"
-application_url = "https://setup-hack-dark-eco.trycloudflare.com"
+application_url = "https://pipes-hughes-revenues-workers.trycloudflare.com"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
 dev_store_url = "chintan-dev-store.myshopify.com"
+include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products"
+scopes = "read_products,write_products"
 
 [auth]
 redirect_urls = [
-  "https://setup-hack-dark-eco.trycloudflare.com/auth/callback",
-  "https://setup-hack-dark-eco.trycloudflare.com/auth/shopify/callback",
-  "https://setup-hack-dark-eco.trycloudflare.com/api/auth/callback"
+  "https://pipes-hughes-revenues-workers.trycloudflare.com/auth/callback",
+  "https://pipes-hughes-revenues-workers.trycloudflare.com/auth/shopify/callback",
+  "https://pipes-hughes-revenues-workers.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

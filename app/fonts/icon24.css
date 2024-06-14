@@ -139,6 +139,9 @@
 .twenty-videoreviews:before {
   content: "\e925";
 }
+.twenty-closeicon:before {
+  content: "\e926";
+}
 
 
 /* Start Icon */

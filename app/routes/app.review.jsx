@@ -10,6 +10,9 @@ import ReviewPageSidebar from './components/headerMenu/ReviewPageSidebar';
 import styles from './components/review.module.css';
 import CustomQuestions from "./components/collect-review/CustomQuestions";
 import { toast } from 'react-toastify';
+import { Dropdown, DropdownButton} from 'react-bootstrap';
+import PublishedIcon from '../images/PublishedIcon';
+import MoreIcon from '../images/MoreIcon';
 
 import {
 	Page,
@@ -240,208 +243,249 @@ const ReviewPage = () => {
 			<Breadcrumb crumbs={crumbs} />
 
 			<Page fullWidth>
-				<div className="row">
-					<div className="col-sm-12">
-						<ReviewPageSidebar />
-					</div>
-					<div className="col-sm-12">
-						<div className='accordian_rowmain'>
-							<Layout.Section>
-								<LegacyCard sectioned>
-									<div
-										onClick={handleToggleNewReview}
-										ariaExpanded={openNewReview}
-										ariaControls="basic-collapsible"
-										className={openNewReview ? 'open' : ''}
-									>
-										<div className='flxrow acctitle'>
-											<div className='flxfix iconbox'>
-												<i className='twenty-star'></i>
-											</div>
-											<div className='flxflexi titledetail'>
-												<Text as="h1" variant="headingMd">
-													Manage New Review
-												</Text>
-												<Text>
-													Choose which reviews you want to auto
-													publish and how you want to be notified
-													of new reviews
-												</Text>
-											</div>
-											<div className='flxfix arrowicon'>
-												<i className='twenty-arrow-down'></i>
+				<ReviewPageSidebar />
+				<div className='accordian_rowmain'>
+					<Layout.Section>
+						<LegacyCard sectioned>
+							<div
+								onClick={handleToggleNewReview}
+								ariaExpanded={openNewReview}
+								ariaControls="basic-collapsible"
+								className={openNewReview ? 'open' : ''}
+							>
+								<div className='flxrow acctitle'>
+									<div className='flxfix iconbox'>
+										<i className='twenty-star'></i>
+									</div>
+									<div className='flxflexi titledetail'>
+										<Text as="h1" variant="headingMd">
+											Manage New Review
+										</Text>
+										<Text>
+											Choose which reviews you want to auto
+											publish and how you want to be notified
+											of new reviews
+										</Text>
+									</div>
+									<div className='flxfix arrowicon'>
+										<i className='twenty-arrow-down'></i>
+									</div>
+								</div>
+							</div>
+							<LegacyStack vertical>
+								<Collapsible
+									open={openNewReview}
+									id="basic-collapsible"
+									transition={{
+										duration: '300ms',
+										timingFunction: 'ease-in-out',
+									}}
+									expandOnPrint
+								>
+									<div className='row'>
+										<div className='col-md-6'>
+											<div className='collectreviewformbox'>
+												<Card>
+												{isChecked && 
+													<div className="formcontent" >
+														<Select
+															name="reviewPublishMode"
+															id="reviewPublishMode"
+															helpText="Select which reviews you want to auto-publish. Any changes will only affect new reviews."
+															options={options}
+															onChange={
+																handleSelectChange
+															}
+															value={selected}
+														/>
+													</div>
+												}
+
+
+													
+													<div className="bottomcheckrow">
+														<div className="form-check form-switch">
+															<input
+																checked={
+																	isChecked
+																}
+																onChange={
+																	handleCheckboxChange
+																}
+																className="form-check-input"
+																type="checkbox"
+																role="switch"
+																name="autoPublishReview"
+																id="flexSwitchCheckChecked"
+															/>
+															<label
+																className="form-check-label"
+																for="flexSwitchCheckChecked"
+															>
+																Auto-publish new reviews
+															</label>
+														</div>
+													</div>
+												</Card>
 											</div>
 										</div>
-									</div>
-									<LegacyStack vertical>
-										<Collapsible
-											open={openNewReview}
-											id="basic-collapsible"
-											transition={{
-												duration: '300ms',
-												timingFunction: 'ease-in-out',
-											}}
-											expandOnPrint
-										>
-											<div className='row'>
-											<div className='col-md-6'>
-													<div className='collectreviewformbox'>
-														<Card>
-														{isChecked && 
-															<div className="formcontent" >
-																<Select
-																	name="reviewPublishMode"
-																	id="reviewPublishMode"
-																	helpText="Select which reviews you want to auto-publish. Any changes will only affect new reviews."
-																	options={options}
-																	onChange={
-																		handleSelectChange
-																	}
-																	value={selected}
-																/>
-															</div>
-														}
-
-
-															
-															<div className="bottomcheckrow">
-																<div className="form-check form-switch">
-																	<input
-																		checked={
-																			isChecked
-																		}
-																		onChange={
-																			handleCheckboxChange
-																		}
-																		className="form-check-input"
-																		type="checkbox"
-																		role="switch"
-																		name="autoPublishReview"
-																		id="flexSwitchCheckChecked"
-																	/>
-																	<label
-																		className="form-check-label"
-																		for="flexSwitchCheckChecked"
-																	>
-																		Auto-publish new reviews
-																	</label>
-																</div>
-															</div>
-														</Card>
-													</div>
-												</div>
 
 
 
 
-												<div className='col-md-6'>
-													<div className='collectreviewformbox'>
-														<Card>
-														
-															<div className="formcontent" >
-																 <TextField
-																	value={reviewNotificationEmail}
-																	onChange={ handleReviewNotificationEmailChange } 
-																	onBlur={ handleReviewNotificationEmailBlur }
-																	name="reviewNotificationEmail"
-																	autoComplete="off"
-																	helpText={`Leave empty to have notifications sent to: ${shopRecords.email}`}
-																	placeholder='Notification Email'
-																/>
-																{!isValidReviewNotificationEmail && <small class="text-danger">Email address is invalid.</small>}
-
-															</div>
-
-
-															
-															<div className="bottomcheckrow">
-																<div className="form-check form-switch">
-																	<input
-																		checked={
-																			isCheckedReviewNotification
-																		}
-																		onChange={
-																			handleReviewNotificationCheckboxchange
-																		}
-																		className="form-check-input"
-																		type="checkbox"
-																		role="switch"
-																		name="reviewNotification"
-																		id="revNotiSwitchCheckChecked"
-																	/>
-																	<label
-																		className="form-check-label"
-																		for="revNotiSwitchCheckChecked"
-																	>
-																		Review notifications
-																	</label>
-																</div>
-															</div>
-														</Card>
-													</div>
-												</div>
-
+										<div className='col-md-6'>
+											<div className='collectreviewformbox'>
+												<Card>
 												
-											</div>
-										</Collapsible>
-									</LegacyStack>
-								</LegacyCard>
-							</Layout.Section>
-						</div>
-					</div>
+													<div className="formcontent" >
+															<TextField
+															value={reviewNotificationEmail}
+															onChange={ handleReviewNotificationEmailChange } 
+															onBlur={ handleReviewNotificationEmailBlur }
+															name="reviewNotificationEmail"
+															autoComplete="off"
+															helpText={`Leave empty to have notifications sent to: ${shopRecords.email}`}
+															placeholder='Notification Email'
+														/>
+														{!isValidReviewNotificationEmail && <small class="text-danger">Email address is invalid.</small>}
 
-					<div className="col-sm-12">
-						<div className='accordian_rowmain'>
-							<Layout.Section>
-								<LegacyCard sectioned>
-									<div
-										onClick={handleToggleCustomQuestions}
-										ariaExpanded={openCustomQuestions}
-										ariaControls="basic-collapsible"
-										className={openCustomQuestions ? 'open' : ''}
-									>
-										<div className='flxrow acctitle'>
-											<div className='flxfix iconbox'>
-												<i className='twenty-star'></i>
+													</div>
+
+
+													
+													<div className="bottomcheckrow">
+														<div className="form-check form-switch">
+															<input
+																checked={
+																	isCheckedReviewNotification
+																}
+																onChange={
+																	handleReviewNotificationCheckboxchange
+																}
+																className="form-check-input"
+																type="checkbox"
+																role="switch"
+																name="reviewNotification"
+																id="revNotiSwitchCheckChecked"
+															/>
+															<label
+																className="form-check-label"
+																for="revNotiSwitchCheckChecked"
+															>
+																Review notifications
+															</label>
+														</div>
+													</div>
+												</Card>
 											</div>
-											<div className='flxflexi titledetail'>
-												<Text as="h1" variant="headingMd">
-													Custom Questions
-												</Text>
-												<Text>
-												Add your own custom questions to the review form
-												</Text>
+										</div>
+
+										
+									</div>
+								</Collapsible>
+							</LegacyStack>
+						</LegacyCard>
+					</Layout.Section>
+				</div>
+				<div className='accordian_rowmain'>
+					<Layout.Section>
+						<LegacyCard sectioned>
+							<div
+								onClick={handleToggleCustomQuestions}
+								ariaExpanded={openCustomQuestions}
+								ariaControls="basic-collapsible"
+								className={openCustomQuestions ? 'open' : ''}
+							>
+								<div className='flxrow acctitle'>
+									<div className='flxfix iconbox'>
+										<i className='twenty-questions'></i>
+									</div>
+									<div className='flxflexi titledetail'>
+										<Text as="h1" variant="headingMd">
+											Custom Questions
+										</Text>
+										<Text>
+										Add your own custom questions to the review form
+										</Text>
+									</div>
+									<div className='flxfix arrowicon'>
+										<i className='twenty-arrow-down'></i>
+									</div>
+								</div>
+							</div>
+							<LegacyStack vertical>
+								<Collapsible
+									open={openCustomQuestions}
+									id="basic-collapsible"
+									transition={{
+										duration: '300ms',
+										timingFunction: 'ease-in-out',
+									}}
+									expandOnPrint
+								>
+									<div className='row'>
+										<div className='col-md-12'>
+											<div className='questionrow'>
+												<div className='draggableicon flxfix flxrow'>
+													<div className='iconbox'>
+														<i className='twenty-dragicon'></i>
+													</div>
+												</div>
+												<div className='questionmiddbox flxflexi'>
+													<div className='mainquestion'>
+														<h3>My First Question</h3>
+													</div>
+													<div className='morequestions_wrap flxrow flxwrap'>
+														<div className='singlequestion'>How would you rate your overall experience with our website?</div>
+														<div className='singlequestion'>What did you enjoy most about your visit?</div>
+														<div className='singlequestion'>How easy was it to find what you were looking for?</div>
+														<div className='singlequestion'>How likely are you to recommend our site to a friend or colleague?</div>
+														<div className='singlequestion'>How would you rate the quality of the information provided?</div>
+													</div>
+												</div>
+												<div className='questionaction flxfix dropdownwrap ddlightbtn'>
+												<DropdownButton id="dropdown-basic-button" title={<MoreIcon />} align={'end'}>
+													<Dropdown.Item eventKey="edit" className="custom-dropdown-item">Edit</Dropdown.Item>
+													<Dropdown.Item eventKey="delete" className="custom-dropdown-item">Delete</Dropdown.Item>
+												</DropdownButton>
+												</div>
 											</div>
-											<div className='flxfix arrowicon'>
-												<i className='twenty-arrow-down'></i>
+											<div className='questionrow'>
+												<div className='draggableicon flxfix flxrow'>
+													<div className='iconbox'>
+														<i className='twenty-dragicon'></i>
+													</div>
+												</div>
+												<div className='questionmiddbox flxflexi'>
+													<div className='mainquestion'>
+														<h3>My First Question</h3>
+													</div>
+													<div className='morequestions_wrap flxrow flxwrap'>
+														<div className='singlequestion'>How would you rate your overall experience with our website?</div>
+														<div className='singlequestion'>What did you enjoy most about your visit?</div>
+														<div className='singlequestion'>How easy was it to find what you were looking for?</div>
+														<div className='singlequestion'>How likely are you to recommend our site to a friend or colleague?</div>
+														<div className='singlequestion'>How would you rate the quality of the information provided?</div>
+													</div>
+												</div>
+												<div className='questionaction flxfix dropdownwrap ddlightbtn'>
+												<DropdownButton id="dropdown-basic-button" title={<MoreIcon />} align={'end'}>
+													<Dropdown.Item eventKey="edit" className="custom-dropdown-item">Edit</Dropdown.Item>
+													<Dropdown.Item eventKey="delete" className="custom-dropdown-item">Delete</Dropdown.Item>
+												</DropdownButton>
+												</div>
+											</div>
+											<div className='collectreviewformbox'>
+												<Card>
+													<CustomQuestions customQuestionsData={customQuestionsData} shopRecords={shopRecords} />
+												</Card>
 											</div>
 										</div>
 									</div>
-									<LegacyStack vertical>
-										<Collapsible
-											open={openCustomQuestions}
-											id="basic-collapsible"
-											transition={{
-												duration: '300ms',
-												timingFunction: 'ease-in-out',
-											}}
-											expandOnPrint
-										>
-											<div className='row'>
-												<div className='col-md-6'>
-													<div className='collectreviewformbox'>
-														<Card>
-															<CustomQuestions customQuestionsData={customQuestionsData} shopRecords={shopRecords} />
-														</Card>
-													</div>
-												</div>
-											</div>
-										</Collapsible>
-									</LegacyStack>
-								</LegacyCard>
-							</Layout.Section>
-						</div>
-					</div>
+								</Collapsible>
+							</LegacyStack>
+						</LegacyCard>
+					</Layout.Section>
 				</div>
 			</Page>
 		</>

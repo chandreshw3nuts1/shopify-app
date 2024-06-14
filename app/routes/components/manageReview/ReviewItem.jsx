@@ -9,9 +9,13 @@ import NiceSelect from './../../../NiceSelect/NiceSelect';
 import reviewImage from "./../../../images/no-reviews-yet.svg"
 import customerImage from "./../../../images/customer-image.jpg"
 import mailBlueIcon from "./../../../images/blue-mail-icon.svg"
+import PublishedIcon from "../../../images/PublishedIcon";
+import UnPublishedIcon from "../../../images/UnPublishedIcon";
+import ReplyIcon from "../../../images/ReplyIcon";
 
 import facebookSocial from "./../../../images/Facebook-Original.svg"
 import redditSocial from "./../../../images/Reddit-Original.svg"
+import twitterxicon from "./../../../images/twitter-x-icon.svg"
 import pinterestSocial from "./../../../images/Pinterest-Original.svg"
 import { Dropdown, DropdownButton, Modal, Button } from 'react-bootstrap';
 import ImageSlider from './ImageSlider';
@@ -247,6 +251,14 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 		});
 	};
 
+	const getTitle = (status) => {
+		if (status === 'publish') {
+		  	return <><PublishedIcon /> Published</>;
+		} else {
+		  	return <><UnPublishedIcon /> Unpublished</>;
+		}
+	};
+
 	return (
 		<>
 
@@ -256,8 +268,8 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 						<span>{filteredReviewsTotal}</span>Reviews found
 					</div>
 					{filteredReviewsTotal > 0 &&
-						<div className="rightbox ms-auto">
-							<DropdownButton id="dropdown-basic-button" onSelect={(e) => handleBuklRatingStatusChange(e)} title="Bulk Actions">
+						<div className="rightbox dropdownwrap ms-auto ddlightbtn">
+							<DropdownButton id="dropdown-basic-button" onSelect={(e) => handleBuklRatingStatusChange(e)} title="Bulk Actions" align={'end'}>
 								<Dropdown.Item eventKey="publish" className="custom-dropdown-item">Publish all reviews</Dropdown.Item>
 								<Dropdown.Item eventKey="unpublish" className="custom-dropdown-item">Unpublish all reviews</Dropdown.Item>
 								<Dropdown.Item eventKey="delete" className="custom-dropdown-item">Delete all reviews</Dropdown.Item>
@@ -270,7 +282,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 					<div className="reviewbunch">
 						<div className="reviewrowbox">
 							<div className="topline">
-								<div className="">
+								<div className="slider_imagebox">
 									<ImageSlider reviewDocuments={result.reviewDocuments} autoPlay={false} interval={500} />
 								</div>
 
@@ -279,8 +291,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 										<div className="checkmark">
 											<i className="twenty-checkicon"></i>
 										</div>
-										<h4 className="fleflexi"><strong>{result.first_name} {result.last_name}</strong> about
-											<strong>
+										<h4 className="fleflexi"><strong>{result.first_name} {result.last_name}</strong> about <strong>
 												{result.productDetails ? <a href={`https://${shopRecords.domain}/products/${result.productDetails.handle}`} target="_blank"> {result.productDetails.title} </a> : ''}
 											</strong>
 										</h4>
@@ -304,12 +315,14 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 										}
 									</div>
 
-									<div className="timeline-body">
+									<div className="timeline-body reviewquestionwrap">
 										<div className="row">
 											{result.reviewQuestionsAnswer.map((revItem, rIndex) => (
 												<div className="col-md-3">
-													<div className="small text-muted">{revItem.reviewQuestions.question}</div>
-													<span>{revItem.answer}</span>
+													<div className="qabox">
+														<div className="questiontitle">{revItem.reviewQuestions.question}</div>
+														<span className="answerofque">{revItem.answer}</span>
+													</div>
 												</div>
 											))}
 
@@ -318,19 +331,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 
 									<p>{result.description}</p>
 
-									<div class="timeline-reply">
-										{result.replyText &&
-											<>
-												<hr />
-												<span >Your reply</span>
-												<p >{result.replyText}</p>
-
-												<button type="button" class="btn btn-default" onClick={(e) => handleShowEditReplyModal(result._id, index)} >Edit</button>
-												<button type="button" class="btn btn-default" onClick={(e) => deleteReviewReply(result._id, index)} >Delete</button>
-											</>
-										}
-
-									</div>
+									
 								</div>
 								<div className="rightactions flxfix flxcol">
 									<div className="sociallinks flxrow">
@@ -338,24 +339,42 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 											<Image src={facebookSocial} width={24} height={24} ></Image>
 										</a>
 										<a href="#">
-											<Image src={redditSocial} width={24} height={24} ></Image>
+											<Image src={twitterxicon} width={24} height={24} ></Image>
 										</a>
 										<a href="#">
 											<Image src={pinterestSocial} width={24} height={24} ></Image>
 										</a>
 									</div>
-									<div className="bottombuttons">
-										<DropdownButton id="dropdown-basic-button" onSelect={(e) => handleRatingStatusChange(e, index)} title={result.status == 'publish' ? "Published" : "Unpublished"}>
+									<div className="bottombuttons dropdownwrap">
+										<DropdownButton id="dropdown-basic-button" className={result.status == 'publish' ? 'publishstatus' : 'unpblishstatus'} onSelect={(e) => handleRatingStatusChange(e, index)} title={getTitle(result.status)}>
 											{ result.status == "unpublish" && <Dropdown.Item eventKey="publish" className="custom-dropdown-item">Publish</Dropdown.Item> }
 											{ result.status == "publish" && <Dropdown.Item eventKey="unpublish" className="custom-dropdown-item">Unpublish</Dropdown.Item> }
 										</DropdownButton>
 										{!result.replyText &&
-											<button type="button" class="btn btn-default" onClick={(e) => handleShowReplyModal(result._id, index)} >Reply</button>
+											<button type="button" class="revbtn lightbtn outline" onClick={(e) => handleShowReplyModal(result._id, index)} >Reply <ReplyIcon /></button>
 										}
-										<button type="button" class="btn btn-default" onClick={(e) => handleDeleteReviewItem(result._id, index)} >Delete Review</button>
+										<button type="button" class="revbtn lightbtn outline" onClick={(e) => handleDeleteReviewItem(result._id, index)} >Delete Review</button>
 
 									</div>
 								</div>
+							</div>
+							<div class="timeline-reply replywrap flxrow">
+								{result.replyText &&
+									<>
+										<div className="flxflexi">
+											<h3>Your reply</h3>
+											<p >{result.replyText}</p>
+										</div>
+										<div className="flxfix replayaction">
+											<button type="button" class="" onClick={(e) => handleShowEditReplyModal(result._id, index)} >
+												<i className="twenty-editicon2"></i>
+											</button>
+											<button type="button" class="" onClick={(e) => deleteReviewReply(result._id, index)} >
+												<i className="twenty-deleteicon"></i>
+											</button>
+										</div>
+									</>
+								}
 							</div>
 						</div>
 					</div>

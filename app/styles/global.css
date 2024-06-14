@@ -61,14 +61,26 @@ html body {
 
 .btnwrap { display: flex; column-gap: 16px; margin: 24px 0 0 0;}
 .btnwrap.centeralign { justify-content: center;} 
-.revbtn { display: inline-flex; height: 44px; padding: 0 24px; border-radius: 100px; font-size: 14px; font-weight: 400; background: var(--blueColor); text-decoration: none; outline: none; box-shadow: none; color: var(--whiteText); align-items: center; column-gap: 6px; border: none;}
-.revbtn.tinybtn { height: 24px; padding: 0 12px; column-gap: 6px;}
-.revbtn.smbtn { height: 36px; font-size: 12px; column-gap: 2px;}
-.revbtn.lightbtn { background: var(--lightGreyBGcolor); color: var(--darkColor);}
-.revbtn.bluelightbtn { background: var(--LightblueColor3); color: var(--blueColor);}
-.revbtn.outline { background: var(--whiteBg); border: solid 1px var(--borderColor); color: var(--darkColor);}
-.revbtn.regularbtn { border-radius: 8px; padding: 0 16px;}
-.revbtn.bigbtn { padding: 0 20px; font-size: 16px; font-weight: 600;}
+body .revbtn { display: inline-flex; height: 44px; padding: 0 24px; border-radius: 100px; font-size: 14px; font-weight: 400; background: var(--blueColor); text-decoration: none; outline: none; box-shadow: none; color: var(--whiteText); align-items: center; column-gap: 6px; border: none; column-gap: 4px; line-height: 16px;}
+body .revbtn:disabled { display: inline-flex; height: 44px; padding: 0 24px; border-radius: 100px; font-size: 14px; font-weight: 400; background: var(--blueColor); text-decoration: none; outline: none; box-shadow: none; color: var(--whiteText); align-items: center; column-gap: 6px; border: none; column-gap: 4px; line-height: 16px; opacity: 0.5;}
+body .revbtn:hover { background: var(--blueColor); color: var(--whiteText);}
+body .revbtn.tinybtn { height: 24px; padding: 0 12px; column-gap: 6px;}
+body .revbtn.tinybtn:disabled { height: 24px; padding: 0 12px; column-gap: 6px; opacity: 0.5;}
+body .revbtn.smbtn { height: 36px; font-size: 12px; column-gap: 2px;}
+body .revbtn.smbtn:disabled { height: 36px; font-size: 12px; column-gap: 2px; opacity: 0.5;}
+body .revbtn.lightbtn { background: var(--lightGreyBGcolor); color: var(--darkColor);}
+body .revbtn.lightbtn:disabled { background: var(--lightGreyBGcolor); color: var(--darkColor); opacity: 0.5;}
+body .revbtn.lightbtn:hover { background: var(--lightGreyBGcolor); color: var(--darkColor);}
+body .revbtn.bluelightbtn { background: var(--LightblueColor3); color: var(--blueColor);}
+body .revbtn.bluelightbtn:disabled { background: var(--LightblueColor3); color: var(--blueColor); opacity: 0.5;}
+body .revbtn.bluelightbtn:hover { background: var(--LightblueColor3); color: var(--blueColor);}
+body .revbtn.outline { background: var(--whiteBg); border: solid 1px var(--borderColor); color: var(--darkColor);}
+body .revbtn.outline:disabled { background: var(--whiteBg); border: solid 1px var(--borderColor); color: var(--darkColor); opacity: 0.5;}
+body .revbtn.outline:hover { background: var(--whiteBg); border: solid 1px var(--borderColor); color: var(--darkColor);}
+body .revbtn.regularbtn { border-radius: 8px; padding: 0 16px;}
+body .revbtn.regularbtn:disabled { border-radius: 8px; padding: 0 16px; opacity: 0.5;}
+body .revbtn.bigbtn { padding: 0 20px; font-size: 16px; font-weight: 600;}
+body .revbtn.bigbtn:disabled { padding: 0 20px; font-size: 16px; font-weight: 600; opacity: 0.5;}
 
 
 .main_layout {
@@ -146,28 +158,44 @@ body .form-check-input:active { filter: brightness(95%);}
 
 .dividerblk { margin: 24px 0; height: 1px; background: var(--borderColor); width: 100%;}
 
-form .form-group { margin: 0 0 24px 0; width: 100%;}
+.form-group,
+form .form-group { margin: 0 0 24px 0; width: 100%; position: relative;}
+.form-group label,
 form .form-group label { display: block; font-size: 14px; line-height: normal; font-weight: 600; color: var(--darkColor); margin: 0 0 12px 0; padding: 0;}
+.input_text,
+.form-control,
+form .form-control,
 form .input_text { width: 100%; height: 44px; border-radius: 8px; background: var(--whiteBg); border: solid 1px var(--borderColor); padding: 0 16px; outline: none; box-shadow: none; resize: none; font-size: 14px;}
 .filterandserchwrap { padding: 24px; border-radius: 10px; background: var(--whiteBg); border: solid 1px var(--borderColor); margin: 24px 0 0 0;}
+.letterlimite { position: absolute; right: 0; top: 100%; font-size: 12px; color: var(--lightGreyColor);}
 
 .reviewlistblocks { margin: 24px 0 0 0;}
 .reviewlistblocks .topactions { align-items: center; margin: 0 0 24px 0;}
 .reviewlistblocks .topactions .reviewcounttop { display: flex; align-items: center; font-size: 22px; line-height: normal; font-weight: 700; color: var(--darkColor);}
 .reviewlistblocks .topactions .reviewcounttop span { margin: 0 5px 0 0; display: block;}
 .reviewlistblocks .topactions .rightbox { display: flex;}
+.reviewlistblocks .replywrap { margin: 24px 0 0 0; padding: 24px 0 0 0; border-top: solid 1px var(--borderColor); align-items: flex-start;}
+.reviewlistblocks .replywrap h3 { font-size: 20px; font-weight: 700; color: var(--darkColor); margin: 0; padding: 0;}
+.reviewlistblocks .replywrap p { text-align: left;}
+.reviewlistblocks .replywrap .replayaction { display: flex; align-items: center; margin: 0 0 0 40px;}
+.reviewlistblocks .replywrap .replayaction button { width: 28px; height: 28px; outline: none; border: none; box-shadow: none; border-radius: 0; background: none; font-size: 28px; color: var(--darkColor); line-height: 1; padding: 0;}
+.reviewlistblocks .replywrap .replayaction button + button { margin: 0 0 0 16px;}
+.reviewlistblocks .replywrap .replayaction button:hover { color: var(--blueColor);}
+
+.accordian_rowmain + .accordian_rowmain { margin-top: 16px;}
 
 .reviewbunch { margin: 0;}
 .reviewbunch .reviewrowbox { margin: 0; padding: 24px; background: var(--whiteBg); border: solid 1px var(--borderColor); border-radius: 10px;}
 .reviewbunch .reviewrowbox .topline { display: flex;}
-.reviewbunch .reviewrowbox .imagebox { width: 168px; position: relative; margin: 0 15px 0 0;}
+.reviewbunch .reviewrowbox .slider_imagebox { width: 168px; height: 168px; position: relative; margin: 0 15px 0 0;}
 .reviewbunch .reviewrowbox .imagebox::before { content: ''; display: block; padding-top: 100%; margin: 0 15px 0 0;}
-.reviewbunch .reviewrowbox .imagebox img { width: 100%; height: 100%; position: absolute; left: 0; top: 0; object-fit: cover;}
+/* .reviewbunch .reviewrowbox .slider_imagebox img { width: 100%; height: 100%; position: absolute; left: 0; top: 0; object-fit: cover;} */
 .reviewbunch .reviewrowbox .rightinfo { margin: 0;}
 .reviewbunch .reviewrowbox .rightinfo .titlebox { width: 100%; display: flex; align-items: flex-start;}
 .reviewbunch .reviewrowbox .rightinfo .checkmark { margin: 0 10px 0 0; display: flex; width: 24px; height: 24px; color: var(--whiteText); background: var(--blueColor); align-items: center; justify-content: center; font-size: 22px; border-radius: 50px;}
 .reviewbunch .reviewrowbox .rightinfo .titlebox h4 { font-size: 20px; color: var(--darkColor); margin: 0; padding: 0; font-weight: 400;}
 .reviewbunch .reviewrowbox .rightinfo .titlebox h4 strong { font-weight: 700; color: var(--blueColor);}
+.reviewbunch .reviewrowbox .rightinfo .titlebox h4 a { color: var(--blueColor); text-decoration: none;}
 .reviewbunch .reviewrowbox .rightinfo .displayname { color: var(--lightGreyColor); font-size: 14px; margin: 0; padding: 12px 0 0 0;}
 .reviewbunch .reviewrowbox .rightinfo .starreviewstatus { display: flex; align-items: center;}
 .reviewbunch .reviewrowbox .rightinfo .ratingstars { font-size: 24px; align-items: center; line-height: 1; margin: 12px 0 0 0;}
@@ -181,11 +209,63 @@ form .input_text { width: 100%; height: 44px; border-radius: 8px; background: va
 .reviewbunch .reviewrowbox .rightinfo .rating_time { font-size: 14px; color: var(--darkColor); font-weight: 400; padding: 0 0 0 12px;}
 .reviewbunch .reviewrowbox .rightinfo .reviewstatus { padding: 5px 12px; border-radius: 50px; background: var(--LightblueColor3); white-space: nowrap; font-size: 10px; line-height: 14px; color: var(--blueColor); font-weight: 600; margin: 0 0 0 12px;}
 .reviewbunch .reviewrowbox .rightinfo .reviewstatus img { margin: 0 6px 0 0;}
-.reviewbunch .reviewrowbox .rightinfo p { line-height: 1.71; text-align: left; padding: 24px 0 0 0;}
+.reviewbunch .reviewrowbox .rightinfo p { line-height: 1.71; text-align: left; padding: 14px 0 0 0;}
 
 .reviewbunch .reviewrowbox .rightactions { margin: 0;}
-.reviewbunch .reviewrowbox .rightactions .sociallinks { margin: 0;}
+.reviewbunch .reviewrowbox .rightactions .sociallinks { margin: 0 0 0 auto;}
 .reviewbunch .reviewrowbox .rightactions .sociallinks a { display: flex; align-items: center; justify-content: center;}
 .reviewbunch .reviewrowbox .rightactions .sociallinks a + a { margin: 0 0 0 14px;}
 .reviewbunch .reviewrowbox .rightactions .sociallinks a img { width: 24px; height: 24px;}
-.reviewbunch .reviewrowbox .rightactions .bottombuttons { display: flex; margin: auto 0 0 0;}
+.reviewbunch .reviewrowbox .rightactions .bottombuttons { display: flex; margin: auto 0 0 0; column-gap: 16px;}
+
+.reviewquestionwrap { margin: 14px 0 0 0;}
+.reviewquestionwrap .qabox { width: 100%;}
+.reviewquestionwrap .qabox .questiontitle { font-size: 13px; font-weight: 500; color: var(--lightGreyColor);}
+.reviewquestionwrap .qabox .answerofque { margin: 0; font-size: 14px; color: var(--darkColor); display: block; font-weight: 500;}
+
+
+body .dropdown-menu { padding: 6px; background: var(--whiteBg); border-radius: 10px; border: solid 1px var(--borderColor);}
+body .dropdown-menu .dropdown-item { white-space: nowrap; height: 44px; border-radius: 10px; color: var(--lightGreyColor); font-size: 14px; display: flex; align-items: center; padding: 0 10px;}
+body .dropdown-menu .dropdown-item:hover { background: var(--lightGreyBGcolor);}
+
+.dropdownwrap .dropdown .btn { display: inline-flex; height: 44px; padding: 0 24px; border-radius: 100px; font-size: 14px; font-weight: 400; background: var(--blueColor); text-decoration: none; outline: none; box-shadow: none; color: var(--whiteText); align-items: center; column-gap: 6px; border: none; line-height: 16px;}
+.dropdownwrap .dropdown.unpblishstatus .btn { background: var(--iconBGcolor); color: var(--lightGreyColor); line-height: 16px;}
+
+.dropdownwrap.ddlightbtn .dropdown .btn { background: var(--iconBGcolor); color: var(--lightGreyColor); border-radius: 8px; padding: 0 20px; font-size: 16px; font-weight: 600; color: var(--darkColor); line-height: 16px;}
+
+
+.questionrow { background: var(--whiteBg); border-radius: 10px; overflow: visible; border: solid 1px var(--borderColor); padding: 24px; margin: 24px 0 0 0; display: flex;}
+.questionrow .draggableicon { align-items: center; margin: 0 16px 0 0;}
+.questionrow .draggableicon .iconbox { width: 24px; height: 24px; line-height: 22px; font-size: 24px; cursor: move;}
+.questionrow .questionmiddbox .mainquestion h3 { font-size: 20px; color: var(--darkColor); font-weight: 600; margin: 0; padding: 0;}
+.questionrow .questionmiddbox .morequestions_wrap { column-gap: 16px; row-gap: 16px; margin: 24px 0 0 0;}
+.questionrow .questionmiddbox .morequestions_wrap .singlequestion { line-height: 1.714; color: var(--lightGreyColor); font-size: 14px; padding: 8px 24px; border-radius: 50px; background: var(--lightGreyBGcolor);}
+.questionrow .questionaction .dropdown .btn { width: 24px; height: 24px; padding: 0; justify-content: center; border-radius: 50px; font-size: 24px; color: var(--darkColor); background: var(--lightGreyBGcolor);}
+.questionrow .questionaction .dropdown.show .btn.show { background: var(--blueColor); color: var(--whiteText);}
+.questionrow .questionaction .dropdown .btn::after { display: none;}
+
+body .modal .modal-dialog .modal-content { background: var(--whiteBg); border-radius: 20px; border: none; box-shadow: none;}
+body .modal .modal-dialog .modal-content .modal-header { padding: 24px 32px; border-bottom-color: var(--borderColor);}
+body .modal .modal-dialog .modal-content .modal-header .modal-title.h4 { font-size: 24px; line-height: normal; color: var(--darkColor); font-weight: 600;}
+body .modal .modal-dialog .modal-content .modal-header .btn-close { width: 44px; height: 44px; padding: 0; margin: 0 0 0 auto; border-radius: 60px; background: var(--lightGreyBGcolor); color: var(--darkColor); opacity: 1; font-size: 24px;}
+body .modal .modal-dialog .modal-content .modal-header .btn-close::before { content: "\e926"; font-family: 'icon24' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+}
+body .modal .modal-dialog .modal-content .modal-body { padding: 24px 32px;}
+body .modal .modal-dialog .modal-content .modal-footer { margin: 0 32px; padding: 24px 0; justify-content: flex-start;}
+body .modal.smallmodal .modal-dialog { max-width: 564px;}
+
+.modalAnswerItems { position: relative;}
+.modalAnswerItems + .modalAnswerItems { margin-top: 44px;}
+.modalAnswerItems .inputandlatter { position: relative;}
+.modalAnswerItems .draggable { display: flex; align-items: center;}
+.modalAnswerItems .deletebtn { margin: 0 0 0 16px;}
+.modalAnswerItems .deletebtn button { background: none; outline: none; border: none; box-shadow: none; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 24px;}
+.btnwrap.popbtnwrap { margin-top: 44px;}
+.btnwrap.popbtnwrap .revbtn { width: 100%; text-align: center; justify-content: center;}
+.btnwrap.popbtnwrap .revbtn i { font-size: 22px;}

@@ -5,6 +5,8 @@ import { Modal } from 'react-bootstrap';
 import { FaEllipsisV } from 'react-icons/fa';  // Import the three dots icon
 import { toast } from 'react-toastify';
 
+import UnPublishedIcon from '../../../images/UnPublishedIcon';
+
 const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [preArrow, setPreArrow] = useState(false);
@@ -193,8 +195,14 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 									</div>
 								)}
 							</div>
-							{image.is_cover && image.is_approve && (<span className={styles.cover_photo_label}>cover photo</span>)}
-							{image.is_approve == false && <span className={styles.cover_photo_label}>Hide</span>}
+							{image.is_cover && image.is_approve && (
+								<span className={`${styles.cover_photo_label} ${styles.coverphotolabel}`}>
+									<i className='starsico-single-star'></i> cover photo
+								</span>
+							)}
+							{image.is_approve == false && 
+								<span className={`${styles.cover_photo_label} ${styles.hidephotolabel}`}><UnPublishedIcon/> Hide</span>
+							}
 						</div>
 					))}
 				</div>
@@ -213,8 +221,9 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 				}
 			</div>
 
-			<Modal show={showImageModal} onHide={handleCloseImageModal} size="lg" backdrop="static">
+			<Modal show={showImageModal} className='reviewimagepopup' onHide={handleCloseImageModal} size="lg" backdrop="static">
 				<Modal.Header closeButton>
+					<Modal.Title>title</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					{images[currentIndex] &&
