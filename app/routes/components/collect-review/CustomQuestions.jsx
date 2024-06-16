@@ -93,19 +93,25 @@ const DraggableInput = ({ id, index, value, moveInput, handleInputChanges, allow
 
     return (
     <div  className="draggable">
-        <span ref={ref} className="move-icon">☰</span>
-        
-        <input
-        type="text"
-        value={value}
-        name={id}
-        id={id}
-        onChange={(e) => handleInputChanges(index, e)}
-        />
-        <br/>
-        <span className="">{value.length}/24</span>
+
+        {/* <span ref={ref} className="move-icon">☰</span> */}
+        <div className='inputandlatter flxflexi'>
+            <input
+            type="text"
+            value={value}
+            name={id}
+            id={id}
+            className='form-control'
+            onChange={(e) => handleInputChanges(index, e)}
+            />
+            <div className="letterlimite">{value.length}/24</div>
+        </div>
         { allowDeleteAns && (
-            <button onClick={(e) => deleteAnswerInput(index, e)}>Delete</button>
+            <div className='deletebtn flxfix'>
+                <button onClick={(e) => deleteAnswerInput(index, e)}>
+                    <i className='twenty-closeicon'></i>
+                </button>
+            </div>
         )}
     </div>
     );
@@ -337,22 +343,24 @@ export default function CustomQuestions({customQuestionsData, shopRecords}) {
           New Question
         </Button>
   
-        <Modal show={show} onHide={handleCloseModal} size="lg" backdrop="static">
+        <Modal show={show} onHide={handleCloseModal} className='smallmodal' size="lg" backdrop="static">
             <Modal.Header closeButton>
-                <Modal.Title>Modal heading</Modal.Title>
+                <Modal.Title>Custom Questions</Modal.Title>
             </Modal.Header>
                 
                 <Modal.Body>
-                    <span className="">Question text</span>
-                    <input className="form-control"
-                    type="text" // Or any other input type
-                    value={questionTitle}
-                    onChange={handleInputChange} />
-                    <span className="">{questionTitle.length}/40</span>
+                    <div className='form-group'>
+                        <label className="">Question text</label>
+                        <input className="form-control"
+                        type="text" // Or any other input type
+                        value={questionTitle}
+                        onChange={handleInputChange} />
+                        <span className="letterlimite">{questionTitle.length}/40</span>
+                    </div>
 
                     <DndProvider backend={HTML5Backend}>
-                            <div>
-                            <span className="">Answers</span>
+                        <div className='form-group'>
+                            <label className="">Answers</label>
 
                                 {customAnswer.map((input, index) => (
                                     <div className='modalAnswerItems' key={index}>
@@ -368,19 +376,20 @@ export default function CustomQuestions({customQuestionsData, shopRecords}) {
                                         />
                                     </div>
                                 ))}
+                        </div>
+                        {isAddMoreButtonVisible && (
+                            <div className='btnwrap popbtnwrap'>
+                                <button onClick={addAnswerInput} className='revbtn bluelightbtn'><i className='twenty-addicon'></i> Add Option</button>
                             </div>
-                            {isAddMoreButtonVisible && (
-                                <button onClick={addAnswerInput}>Add More</button>
-                            )}
+                        )}
                     </DndProvider>
-                    <hr/>
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseModal}>
-                    Close
+                <Modal.Footer className='blabla'>
+                    <Button variant="" onClick={handleCloseModal} className='revbtn lightbtn outline'>
+                        Close
                     </Button>
-                    <Button variant="primary" onClick={submitAnswers} disabled={inputValueError}>
-                    Save Changes
+                    <Button variant="" onClick={submitAnswers} className='revbtn' disabled={inputValueError}>
+                        Save
                     </Button>
                 </Modal.Footer>     
         </Modal>
