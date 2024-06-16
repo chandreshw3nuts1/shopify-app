@@ -7,9 +7,10 @@ import {
   DeliveryMethod,
   shopifyApp,
 } from "@shopify/shopify-app-remix/server";
-import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
+// import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
 import { restResources } from "@shopify/shopify-api/rest/admin/2024-04";
-import prisma from "./db.server";
+// import prisma from "./db.server";
+import { MongoDBSessionStorage } from '@shopify/shopify-app-session-storage-mongodb';
 console.log('===============afterAuth  ss============');
 
 const shopify = shopifyApp({
@@ -19,7 +20,10 @@ const shopify = shopifyApp({
   scopes: process.env.SCOPES?.split(","),
   appUrl: process.env.SHOPIFY_APP_URL || "",
   authPathPrefix: "/auth",
-  sessionStorage: new PrismaSessionStorage(prisma),
+  sessionStorage: new MongoDBSessionStorage(
+    process.env.MONGO_CONNECTION_STRING,
+    process.env.MONGO_CONNECTION_DATABASE
+  ),
   distribution: AppDistribution.AppStore,
   restResources,
   webhooks: {

@@ -80,7 +80,7 @@ export async function action({ request} ) {
 				} else if (actionType == 'bulkRatingStatus') {
 					const {shop, filter_status,filter_stars, search_keyword } = requestBody.searchFormData;
 					
-					const shopRecords = await findOneRecord("shop", {"domain" : shop});
+					const shopRecords = await findOneRecord("shopify_sessions", {"shop" : shop});
 					const query = {
 						"shop_id" : shopRecords._id, "status" : filter_status, "rating" : parseInt(filter_stars),
 						$or: [
@@ -114,7 +114,7 @@ export async function action({ request} ) {
 					
 				} else if (actionType == 'imageSliderAction') {
 					const {doc_id, review_id, subActionType } = requestBody;
-					const collection = db.collection('review_documents');
+					const collection = db.collection('review-documents');
 					const reviewId = new ObjectId(review_id);
 					const docId = new ObjectId(doc_id);
 					
@@ -150,7 +150,7 @@ export async function action({ request} ) {
 
 					return json({"status" : 200, "message" : msg});
 				} else {
-					const shopRecords = await findOneRecord("shop", {"domain" : shop});
+					const shopRecords = await findOneRecord("shopify_sessions", {"shop" : shop});
 					const query = {
 						"shop_id" : shopRecords._id, "status" : filter_status, "rating" : parseInt(filter_stars),
 						$or: [
@@ -178,6 +178,9 @@ export async function action({ request} ) {
 						{ 
 							$match: query 
 						},
+						{
+							$sort: { created_at: -1 } 
+						},
 						{ 
 							$skip: (page - 1) * limit 
 						},
@@ -186,7 +189,7 @@ export async function action({ request} ) {
 						},
 						{
 							$lookup: {
-								from: 'review_documents',
+								from: 'review-documents',
 								localField: '_id',
 								foreignField: 'review_id',
 								as: 'reviewDocuments'
@@ -276,18 +279,12 @@ export async function action({ request} ) {
 									}
 								}
 							}
-						},
-						{
-							$sort: { created_at: -1 } 
 						}
 					]).toArray();
-					
 					var hasMore = 0;
 					var mapProductDetails = {};
-
 					if (reviewItems.length > 0) {
 						var hasMore = 1;
-						
 						const client = new GraphQLClient(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
 						headers: {
 								'X-Shopify-Access-Token': shopRecords.accessToken,
@@ -315,19 +312,21 @@ export async function action({ request} ) {
 								}
 							}
 						} `;
+
 						var productsDetails = await client.request(query);
-						
+
 						if(productsDetails.nodes.length > 0) {
 							productsDetails = productsDetails.nodes;
-
-							  
 							productsDetails.forEach(node => {
-								const id = node.id.split('/').pop();
-								mapProductDetails[id] = node;
+								if(node) {
+									const id = node.id.split('/').pop();
+									mapProductDetails[id] = node;
+								}
+								
 							});
 						}
 					}
-					
+
 					const mapReviewItems = {};
 					reviewItems.map(items => {
 						items.productDetails = mapProductDetails[items.product_id];
@@ -336,11 +335,10 @@ export async function action({ request} ) {
 
 					return json({reviewItems, totalReviewItems,  hasMore});
 				}
-
 				
 
 			  } catch (error) {
-				return json({"status" : 400, "message" : "Failed to update record!"});
+				return json({"status" : 400, "message" : "Operation failed"});
 			  }
 		case "DELETE":
 			try{

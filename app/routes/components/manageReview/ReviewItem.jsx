@@ -38,7 +38,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 	const [replyButtonText, setReplyButtonText] = useState('');
 	const [replyHelpText, setReplyHelpText] = useState('');
 	const handleCloseReplyModal = () => setShowReplayModal(false);
-	console.log(filteredReviews);
+	
 	const handleShowReplyModal = (review_id, index) => {
 		setShowReplayModal(true);
 		setReplyReviewId(review_id);
@@ -247,6 +247,34 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 		});
 	};
 
+	const shareOnFacebook = () => {
+		const url = shopRecords.domain; 
+		const encodedUrl = encodeURIComponent(`https://${url}`);
+		const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+		window.open(shareUrl, '_blank', 'width=600,height=400');
+	}
+
+	const shareOnTwitter = () => {
+		const url = `https://${shopRecords.domain}`; 
+		const text = "";
+		const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+		window.open(twitterUrl, '_blank', 'width=600,height=400');
+
+	};
+
+	const shareOnPinterest = () => {
+		const url = `https://${shopRecords.domain}`; 
+		const image = "https://chandstest.myshopify.com/cdn/shop/files/shitr.jpg?v=1714996209";
+		const description = "test";
+		const pinterestUrl = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&media=${encodeURIComponent(image)}&description=${encodeURIComponent(description)}`;
+
+		window.open(pinterestUrl, '_blank', 'width=600,height=400');
+	};
+	
+
+	  
+	
+
 	return (
 		<>
 
@@ -334,13 +362,13 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 								</div>
 								<div className="rightactions flxfix flxcol">
 									<div className="sociallinks flxrow">
-										<a href="#">
-											<Image src={facebookSocial} width={24} height={24} ></Image>
+										<a href="javascript:void(0)" onClick={(e) => shareOnFacebook()}>
+											<Image  src={facebookSocial} width={24} height={24} ></Image>
 										</a>
-										<a href="#">
-											<Image src={redditSocial} width={24} height={24} ></Image>
+										<a href="javascript:void(0)" onClick={(e) => shareOnTwitter()}>
+											<Image   src={redditSocial} width={24} height={24} ></Image>
 										</a>
-										<a href="#">
+										<a href="javascript:void(0)" onClick={(e) => shareOnPinterest()}>
 											<Image src={pinterestSocial} width={24} height={24} ></Image>
 										</a>
 									</div>

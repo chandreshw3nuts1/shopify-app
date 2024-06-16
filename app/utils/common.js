@@ -17,7 +17,7 @@ export async function findOneRecord(collection = "", params = {}) {
 
 export async function getShopDetailsByShop(shop) {
 	try{
-		return await findOneRecord("shop", {"domain" : shop});
+		return await findOneRecord("shopify_sessions", {"shop" : shop});
 	} catch (error) {
 		console.error('Error fetching shop record by shop:', error);
   	}

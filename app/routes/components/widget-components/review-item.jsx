@@ -46,10 +46,10 @@ const ReviewItem = ({ reviewItems, productsDetails }) => {
                             <div className="content">
                                 {review.description}
                             </div>
-                            {review.images.map((images, imkey) => (
+                            {/* {review.images.map((images, imkey) => (
                                 <img src="https://via.placeholder.com/100" key={imkey} alt="User Image" className="review-image" />
                                 )
-                            )}
+                            )} */}
                             <hr/>
                             <div className="product-container">
 

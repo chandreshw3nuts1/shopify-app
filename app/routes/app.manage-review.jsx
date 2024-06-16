@@ -13,12 +13,13 @@ import settings from './../utils/settings.json';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 // import Dropdown from 'react-bootstrap/Dropdown';
-
+import reviewImage from "./../images/no-reviews-yet.svg"
 import {
   Layout,
   Page,
   LegacyCard,
   Spinner,
+  Image,
   Card,Select, TextField, Button, FormLayout
 } from "@shopify/polaris";
 
@@ -50,7 +51,7 @@ export async function loader({request}) {
 			];
 		}
 		const defaultSearchParams = {
-			"shop" : shopRecords.domain,
+			"shop" : shopRecords.shop,
 			"page" : 1,
 			"limit" : limit,
 			"filter_status" : "all",

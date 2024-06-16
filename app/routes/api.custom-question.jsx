@@ -1,10 +1,5 @@
 import { json } from "@remix-run/node";
-import { sendEmail } from "./../utils/email.server";
-import { GraphQLClient } from "graphql-request";
 import { mongoConnection } from "./../utils/mongoConnection"; 
-import { findOneRecord } from "./../utils/common"; 
-import EmailTemplate from './components/email/EmailTemplate';
-import ReactDOMServer from 'react-dom/server';
 import { ObjectId } from 'mongodb';
 
 export async function loader() {
@@ -90,7 +85,6 @@ export async function action({ request} ) {
         case "DELETE":
 			try{
 				var {id} = requestBody;
-				console.log(id);
 				const objectId = new ObjectId(id);
 				const db = await mongoConnection();
 				await db.collection(collectionName).deleteOne({ _id: objectId });

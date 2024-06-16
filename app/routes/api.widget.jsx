@@ -17,7 +17,7 @@ import { mongoConnection } from './../utils/mongoConnection';
         
         try{
             const formData = await request.formData();
-
+            
             const shop = formData.get('shop_domain');
             const limit = parseInt(formData.get('no_of_review'));
             const page = formData.get('page');
@@ -27,8 +27,7 @@ import { mongoConnection } from './../utils/mongoConnection';
             const query = {
                 "shop_id" : shopRecords._id,
             };
-    
-
+            
             const reviewItems =  await db.collection('product-reviews')
             .find(query)
             .skip((page - 1) * limit)
@@ -68,10 +67,9 @@ import { mongoConnection } from './../utils/mongoConnection';
                 if(productsDetails.nodes.length > 0) {
                     productsDetails = productsDetails.nodes;
                 }
-                //console.log(productsDetails.products.edges[0].node.images.edges[0].node.transformedSrc);
     
             }
-           
+
 
             const dynamicComponent = <ProductReviewWidget shopRecords={shopRecords} reviewItems={reviewItems} productsDetails={productsDetails} hasMore={hasMore} page={page} productId={productId} />;
             const htmlContent = ReactDOMServer.renderToString(dynamicComponent);
@@ -83,7 +81,6 @@ import { mongoConnection } from './../utils/mongoConnection';
                 htmlModalContent :htmlModalContent
             });
         } catch(error){
-            console.log(error);
             return json({
                 error
             });

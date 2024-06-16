@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb';
 
-const mongoUri = 'mongodb://127.0.0.1:27017/mydatabase'; // Replace with your MongoDB connection URI
-const dbName = 'kritic-app';
+const mongoUri = process.env.MONGO_CONNECTION_STRING; // Replace with your MongoDB connection URI
+const dbName = process.env.MONGO_CONNECTION_DATABASE;
 
 export async function mongoConnection() {
   const client = new MongoClient(mongoUri);

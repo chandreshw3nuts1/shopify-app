@@ -16,15 +16,15 @@ const RatingSummary = ({ ratingData}) => {
 	let one_start_percent = 0;
 	ratingData.forEach(item => {
 		if(item.stars == 5){
-			five_start_percent = ((item.count /totalReviews) * 100).toFixed(2);
+			five_start_percent = Math.round((item.count /totalReviews) * 100);
 		} else if(item.stars == 4) {
-			four_start_percent = ((item.count /totalReviews) * 100).toFixed(2);
+			four_start_percent = Math.round((item.count /totalReviews) * 100);
 		} else if(item.stars == 3) {
-			three_start_percent = ((item.count /totalReviews) * 100).toFixed(2);
+			three_start_percent = Math.round((item.count /totalReviews) * 100);
 		} else if(item.stars == 2) {
-			two_start_percent = ((item.count /totalReviews) * 100).toFixed(2);
+			two_start_percent = Math.round((item.count /totalReviews) * 100);
 		} else if(item.stars == 1) {
-			one_start_percent = ((item.count /totalReviews) * 100).toFixed(2);
+			one_start_percent = Math.round((item.count /totalReviews) * 100);
 		}
 	});
   return (

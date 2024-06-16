@@ -12,9 +12,12 @@ export async function storeShopDetails(session) {
 		});
 		const data = await response.json();
 		const db = await mongoConnection();
-		const collection = db.collection('shop');
-		console.log('==================================');
-		const query = { shop_id : data.shop.id };
+		const collection = db.collection('shopify_sessions');
+		console.log('============end install======================');
+
+		console.log(data);
+		console.log('============end install======================');
+		const query = { shop : data.shop.domain };
 		const update = { $set: { 
 				shop_id : data.shop.id,
 				accessToken : session.accessToken,
@@ -23,11 +26,11 @@ export async function storeShopDetails(session) {
 				timezone : data.shop.timezone,
 				shop_owner : data.shop.shop_owner,
 				name : data.shop.name,
-				email : data.shop.email,
-				domain : data.shop.domain
+				email : data.shop.email
 			}
 		};
 		const options = { upsert: true, returnDocument: 'after'};
+		console.log(query, update, options);
 		const shopRecords = await collection.findOneAndUpdate(query, update, options);
 		const settingCollection = db.collection('settings');
 		const testvar = await settingCollection.updateOne(
@@ -40,7 +43,6 @@ export async function storeShopDetails(session) {
 			{upsert: true}
 		)
 		console.log(shopRecords);
-		console.log(testvar);
 
 		 console.log('=============end=====================');
 

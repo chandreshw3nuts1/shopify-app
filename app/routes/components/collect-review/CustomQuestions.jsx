@@ -235,9 +235,6 @@ export default function CustomQuestions({customQuestionsData, shopRecords}) {
                 return updatedAnswers;
             });
 
-            console.log(customQuestionsAnswer);
-            //setCustomQuestionsAnswer(customQuestionsAnswer.filter((item, i) => i !== editQuestionIndex));
-            //setCustomQuestionsAnswer([...customQuestionsAnswer, data.data]);
         } else {
             setCustomQuestionsAnswer([...customQuestionsAnswer, data.data]);
         }
