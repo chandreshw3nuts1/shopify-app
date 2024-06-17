@@ -367,7 +367,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 											<Image  src={facebookSocial} width={24} height={24} ></Image>
 										</a>
 										<a href="javascript:void(0)" onClick={(e) => shareOnTwitter()}>
-											<Image   src={redditSocial} width={24} height={24} ></Image>
+											<Image src={twitterxicon} width={24} height={24} ></Image>
 										</a>
 										<a href="javascript:void(0)" onClick={(e) => shareOnPinterest()}>
 											<Image src={pinterestSocial} width={24} height={24} ></Image>
