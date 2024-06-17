@@ -28,7 +28,7 @@ import { mongoConnection } from './../utils/mongoConnection';
                 "shop_id" : shopRecords._id,
             };
             
-            const reviewItems =  await db.collection('product-reviews')
+            const reviewItems =  await db.collection('product_reviews')
             .find(query)
             .skip((page - 1) * limit)
 			.limit(limit)

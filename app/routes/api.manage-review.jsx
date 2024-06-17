@@ -40,7 +40,7 @@ export async function action({ request} ) {
    
 	const method = request.method;
 	const db = await mongoConnection();
-	const collectionName = 'product-reviews';
+	const collectionName = 'product_reviews';
 
 	switch(method){
 		case "POST":
@@ -114,7 +114,7 @@ export async function action({ request} ) {
 					
 				} else if (actionType == 'imageSliderAction') {
 					const {doc_id, review_id, subActionType } = requestBody;
-					const collection = db.collection('review-documents');
+					const collection = db.collection('review_documents');
 					const reviewId = new ObjectId(review_id);
 					const docId = new ObjectId(doc_id);
 					
@@ -164,7 +164,7 @@ export async function action({ request} ) {
 					}if(filter_stars == 'all'){
 						delete query['rating'];
 					}
-					// const reviewItems =  await db.collection('product-reviews')
+					// const reviewItems =  await db.collection('product_reviews')
 					// 	.find(query)
 					// 	.skip((page - 1) * limit)
 					// 	.limit(limit)
@@ -174,7 +174,7 @@ export async function action({ request} ) {
 					.countDocuments(query);
 
 
-					const reviewItems = await db.collection('product-reviews').aggregate([
+					const reviewItems = await db.collection('product_reviews').aggregate([
 						{ 
 							$match: query 
 						},
@@ -189,7 +189,7 @@ export async function action({ request} ) {
 						},
 						{
 							$lookup: {
-								from: 'review-documents',
+								from: 'review_documents',
 								localField: '_id',
 								foreignField: 'review_id',
 								as: 'reviewDocuments'
@@ -203,7 +203,7 @@ export async function action({ request} ) {
 						},
 						{
 							$lookup: {
-								from: 'product-review-questions',
+								from: 'product_review_questions',
 								localField: '_id',
 								foreignField: 'review_id',
 								as: 'reviewQuestionsAnswer'
@@ -217,7 +217,7 @@ export async function action({ request} ) {
 						},
 						{
 							$lookup: {
-								from: "custom-questions",
+								from: "custom_questions",
 								localField: "reviewQuestionsAnswer.question_id",
 								foreignField: "_id",
 								as: "reviewQuestionsAnswer.reviewQuestions"

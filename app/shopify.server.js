@@ -35,12 +35,10 @@ const shopify = shopifyApp({
   hooks: {
 
     afterAuth: async ({ session }) => {
-      console.log('===============afterAuth===================');
 		
       /* Handle shop api and store in db */
-      storeShopDetails(session);
+      await storeShopDetails(session);
 	    /* End Handle shop api and store in db */
-      console.log('===============afterAuth=end==================');
 
       shopify.registerWebhooks({ session });
     },

@@ -30,7 +30,7 @@ export async function loader({request}) {
 		const limit = 10;
 	  
 		const db = await mongoConnection();
-		const countRating =  await db.collection("product-reviews").aggregate([
+		const countRating =  await db.collection("product_reviews").aggregate([
 			{ $match: { shop_id: shopRecords._id } }, 
 			{ $group: { _id: "$rating", count: { $sum: 1 } } }
 		]).toArray();

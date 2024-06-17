@@ -44,7 +44,7 @@ export async function loader({ request }) {
 		const settings = await findOneRecord(collectionName,{
 			shop_id: shopRecords._id,
 		});
-		const customQuestionsData =  await db.collection('custom-questions')
+		const customQuestionsData =  await db.collection('custom_questions')
 		.find({
 			shop_id : shopRecords._id,
 		})

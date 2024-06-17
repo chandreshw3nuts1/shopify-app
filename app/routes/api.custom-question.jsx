@@ -9,7 +9,7 @@ export async function loader() {
 
 export async function action({ request} ) {
 	const requestBody = await request.json();
-	const collectionName = 'custom-questions';
+	const collectionName = 'custom_questions';
 
     const method = request.method;
     switch(method){
@@ -23,7 +23,7 @@ export async function action({ request} ) {
                 if (actionType == 'reorderQuestion') {
                     const {questionList } = requestBody;
 
-                    const customQuestionsData =  await db.collection('custom-questions')
+                    const customQuestionsData =  await db.collection('custom_questions')
                     .find({
                         "shop_id" : shopObjectId,
                     })

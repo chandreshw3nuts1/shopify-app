@@ -47,7 +47,7 @@ export async function action({ request }) {
 				});
 
 
-				const collectionName = 'product-reviews';
+				const collectionName = 'product_reviews';
 
 				const currentDate = new Date();
 				var reviewStatus = 'pending';
@@ -89,7 +89,7 @@ export async function action({ request }) {
 				images.map( async (img, index) => {
 					const isCover = index == 0 ? true : false;
 					const docType = 'image';
-					await db.collection('review-documents').insertOne({
+					await db.collection('review_documents').insertOne({
 						review_id: new ObjectId(insertedId),
 						type: docType,
 						url : img,
@@ -111,7 +111,7 @@ export async function action({ request }) {
 
 				if (questions.length > 0) {
 					const insertPromises = questions.map(question =>
-						db.collection('product-review-questions').insertOne({
+						db.collection('product_review_questions').insertOne({
 							review_id: new ObjectId(insertedId),
 							question_id: new ObjectId(question.question_id),
 							answer: question.answer
