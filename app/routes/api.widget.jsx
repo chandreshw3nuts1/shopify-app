@@ -151,8 +151,6 @@ import productReviews from "./models/productReviews";
                 }
             ]);
 
-            return reviewItems;
-           
 
             const client = new GraphQLClient(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
                 headers: {
