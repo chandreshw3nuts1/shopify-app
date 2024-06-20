@@ -1,3 +1,11 @@
 {
-    "host_url" : "https://pipes-hughes-revenues-workers.trycloudflare.com"
+    "host_url" : "https://assumed-easy-ou-preview.trycloudflare.com",
+    "manage_review_limit" : 20,
+    "manage_new_review_options" : [
+		{ "label" : "All reviews", "value": "auto" },
+		{ "label" : "5 star reviews", "value" : "5star" },
+		{ "label" : "4 stars and up", "value" : "above4" },
+		{ "label" : "3 stars and up", "value" : "above3" }
+	]
+
 }

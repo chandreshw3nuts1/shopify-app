@@ -3,8 +3,9 @@ import { GraphQLClient } from 'graphql-request';
 import ReactDOMServer from 'react-dom/server';
 import ProductReviewWidget from './components/widget-components/product-review-widget';
 import CreateReviewModalWidget from './components/widget-components/create-review-modal-widget';
-import { getShopDetailsByShop } from './../utils/common';
+import { getShopDetailsByShop, findOneRecord } from './../utils/common';
 import { mongoConnection } from './../utils/mongoConnection';
+import productReviews from "./models/productReviews";
 
     export async function loader() {
 
@@ -20,23 +21,142 @@ import { mongoConnection } from './../utils/mongoConnection';
             
             const shop = formData.get('shop_domain');
             const limit = parseInt(formData.get('no_of_review'));
-            const page = formData.get('page');
+            const page = parseInt(formData.get('page'));
+            const sortBy = formData.get('sort_by');
             const productId = formData.get('product_id');
+            const products = formData.get('products');
             const shopRecords =await getShopDetailsByShop(shop);
+            const shopSessionRecords = await findOneRecord("shopify_sessions", {shop : shop});
             const db = await mongoConnection();
-            const query = {
-                "shop_id" : shopRecords._id,
-            };
             
-            const reviewItems =  await db.collection('product_reviews')
-            .find(query)
-            .skip((page - 1) * limit)
-			.limit(limit)
-            .toArray();
+            let sortByfield = "tag_as_feature";
+            let sortByValue = 1;
+            if (sortBy == 'featured') {
+                sortByfield = "tag_as_feature";
+                sortByValue = 1;
+            } else if (sortBy == 'newest'){
+                sortByfield = "createdAt";
+                sortByValue = -1;
+            } else if (sortBy == 'highest_ratings'){
+                sortByfield = "rating";
+                sortByValue = -1;
+            } else if (sortBy == 'lowest_ratings'){
+                sortByfield = "rating";
+                sortByValue = 1;
+            }
+
+            const sortOption = {};
+            sortOption[sortByfield] = sortByValue;
+
+            const query = {
+                shop_id : shopRecords._id,
+            };
+
+            const reviewItems = await productReviews.aggregate([
+                { 
+                    $match: query 
+                },
+                {
+                    $sort: sortOption 
+                },
+                { 
+                    $skip: (1 - 1) * limit 
+                },
+                { 
+                    $limit: limit 
+                },
+                {
+                    $lookup: {
+                        from: 'review_documents',
+                        localField: '_id',
+                        foreignField: 'review_id',
+                        as: 'reviewDocuments'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'product_review_questions',
+                        localField: '_id',
+                        foreignField: 'review_id',
+                        as: 'reviewQuestionsAnswer'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$reviewQuestionsAnswer",
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$_id",
+                        description: { $first: "$description" },
+                        rating: { $first: "$rating" },
+                        first_name: { $first: "$first_name" },
+                        display_name: { $first: "$display_name" },
+                        email: { $first: "$email" },
+                        last_name: { $first: "$last_name" },
+                        createdAt: { $first: "$createdAt" },
+                        status: { $first: "$status" },
+                        replyText: { $first: "$replyText" },
+                        product_id: { $first: "$product_id" },
+                        tag_as_feature: { $first: "$tag_as_feature" },
+                        reviewDocuments: { $first: "$reviewDocuments" }, // Use $first to avoid duplicates
+                        reviewQuestionsAnswer: { 
+                            $push: {
+                                _id: "$reviewQuestionsAnswer._id",
+                                review_id: "$reviewQuestionsAnswer.review_id",
+                                answer: "$reviewQuestionsAnswer.answer",
+                                question_name: "$reviewQuestionsAnswer.question_name",
+                                question_id: "$reviewQuestionsAnswer.question_id",
+                                createdAt: "$reviewQuestionsAnswer.createdAt",
+                            }
+                        }
+                    }
+                },
+                {
+                    $sort: sortOption
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        description: 1,
+                        rating: 1,
+                        first_name: 1,
+                        display_name: 1,
+                        email: 1,
+                        last_name: 1,
+                        createdAt: 1,
+                        status: 1,
+                        images: 1,
+                        replyText: 1,
+                        product_id: 1,
+                        is_review_request: 1,
+                        tag_as_feature : 1,
+                        reviewDocuments: {
+                            $filter: {
+                                input: "$reviewDocuments",
+                                as: "doc",
+                                cond: { $eq: ["$$doc.is_approve", true] }
+                            }
+                        },
+                        reviewQuestionsAnswer: {
+                            $filter: {
+                                input: "$reviewQuestionsAnswer",
+                                as: "item",
+                                cond: { $ne: ["$$item._id", null] }
+                            }
+                        }
+                    }
+                }
+            ]);
+
+            return reviewItems;
+           
 
             const client = new GraphQLClient(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
                 headers: {
-                    'X-Shopify-Access-Token': shopRecords.accessToken,
+                    'X-Shopify-Access-Token': shopSessionRecords.accessToken,
                 },
             });
             let  productsDetails = [];

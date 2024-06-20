@@ -1,6 +1,6 @@
 import { mongoConnection } from './mongoConnection'; 
-import axios from 'axios';
 import { json } from "@remix-run/node";
+import customQuestions from './../routes/models/customQuestions';
 
 export async function findOneRecord(collection = "", params = {}) {
 	try{
@@ -17,8 +17,17 @@ export async function findOneRecord(collection = "", params = {}) {
 
 export async function getShopDetailsByShop(shop) {
 	try{
-		return await findOneRecord("shopify_sessions", {"shop" : shop});
+		return await findOneRecord("shop_details", {"shop" : shop});
 	} catch (error) {
 		console.error('Error fetching shop record by shop:', error);
+  	}
+}
+
+
+export async function getCustomQuestions(params = {} ) {
+	try{
+		return await customQuestions.find(params);
+	} catch (error) {
+		console.error('Error fetching custom question record :', error);
   	}
 }

@@ -5,8 +5,10 @@ import { mongoConnection } from "./../utils/mongoConnection";
 import { findOneRecord } from "./../utils/common";
 import EmailTemplate from './components/email/EmailTemplate';
 import ReactDOMServer from 'react-dom/server';
-import { getCurrentDate } from "./../utils/dateFormat";
 import { ObjectId } from 'mongodb';
+import productReviews  from "./models/productReviews";
+import reviewDocuments from "./models/reviewDocuments";
+import productReviewQuestions from "./models/productReviewQuestions";
 
 export async function loader() {
 
@@ -41,33 +43,34 @@ export async function action({ request }) {
 	switch (method) {
 		case "POST":
 			try {
-				const shopRecords = await findOneRecord("shopify_sessions", { "shop": shop });
+				
+				const shopRecords = await findOneRecord("shop_details", { "shop": shop });
 				const settings = await findOneRecord('settings', {
 					shop_id: shopRecords._id,
 				});
 
-
-				const collectionName = 'product_reviews';
-
-				const currentDate = new Date();
-				var reviewStatus = 'pending';
+				var reviewStatus = 'publish';
 				const reviewStarRating = parseInt(formData.get('rating'));
 				if (settings.autoPublishReview == false) {
 					var reviewStatus = 'pending';
 				} else {
-					if (settings.autoPublishReview == true && (settings.autoPublishReview == 'auto' || settings.reviewPublishMode == '5star')) {
+
+					if ( settings.reviewPublishMode == 'auto' || settings.reviewPublishMode == '5star') {
 						var reviewStatus = 'publish';
 					} else if (settings.reviewPublishMode == 'above4' && reviewStarRating >= 4) {
 						var reviewStatus = 'publish';
 					} else if (settings.reviewPublishMode == 'above3' && reviewStarRating >= 3) {
 						var reviewStatus = 'publish';
+					} else {
+						var reviewStatus = 'pending';
 					}
 				}
 				const db = await mongoConnection();
-				const result = await db.collection(collectionName).insertOne({
+				const productReviewModel = new productReviews({
 					shop_id: shopRecords._id,
 					first_name: formData.get('first_name'),
 					last_name: formData.get('last_name'),
+					display_name: formData.get('first_name') +" "+ formData.get('last_name').charAt(0),
 					email: formData.get('email'),
 					description: formData.get('description'),
 					rating: reviewStarRating,
@@ -75,29 +78,33 @@ export async function action({ request }) {
 					product_title: formData.get('product_title'),
 					product_url: formData.get('product_url'),
 					status: reviewStatus,
-					created_at: getCurrentDate()
 				});
-				const insertedId = result.insertedId;
+				const result = await productReviewModel.save();
+
+				const insertedId = result._id;
 
 				// upload images/video
 
 				const images = [
 					"https://png.pngtree.com/thumb_back/fh260/background/20230817/pngtree-lotus-flower-jpg-pink-lotus-flower-image_13023952.jpg",
-					"https://png.pngtree.com/thumb_back/fh260/background/20230817/pngtree-lotus-flower-jpg-pink-lotus-flower-image_13023952.jpg",
+					"https://png.pngtree.com/thumb_back/fh260/background/20230817/pngtree-lotus-flower-jpg-pink-lotus-flower-image_13023953.jpg",
 				];
 
-				images.map( async (img, index) => {
-					const isCover = index == 0 ? true : false;
+				for (let index = 0; index < images.length; index++) {
+					const img = images[index];
+					const isCover = index === 0; // index 0 will be true, others will be false
 					const docType = 'image';
-					await db.collection('review_documents').insertOne({
+			
+					const reviewDocumentModel = new reviewDocuments({
 						review_id: new ObjectId(insertedId),
 						type: docType,
-						url : img,
-						is_approve : true,
-						is_cover : isCover
-					})
-				});
-
+						url: img,
+						is_approve: true,
+						is_cover: isCover
+					});
+			
+					await reviewDocumentModel.save();
+				}
 
 
 				//insert questions and answers 
@@ -105,19 +112,23 @@ export async function action({ request }) {
 				for (let i = 0; ; i++) {
 					const question_id = formData.get(`questions[${i}][question_id]`);
 					const answer = formData.get(`questions[${i}][answer]`);
+					const question_name = formData.get(`questions[${i}][question_name]`);
 					if (!question_id) break; // Exit loop if question_id is not found
-					questions.push({ question_id, answer });
+					questions.push({ question_id, answer, question_name });
 				}
 
 				if (questions.length > 0) {
-					const insertPromises = questions.map(question =>
-						db.collection('product_review_questions').insertOne({
+					questions.map( async (question, index) => {
+
+						const productReviewQuestionModel = new productReviewQuestions({
 							review_id: new ObjectId(insertedId),
 							question_id: new ObjectId(question.question_id),
-							answer: question.answer
-						})
-					);
-					await Promise.all(insertPromises);
+							answer: question.answer,
+							question_name: question.question_name
+						});
+						await productReviewQuestionModel.save();
+
+					});
 				}
 
 				return json({ success: true });

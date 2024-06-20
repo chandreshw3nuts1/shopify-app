@@ -1,36 +1,39 @@
 import { json } from "@remix-run/node";
-import { GraphQLClient } from 'graphql-request';
 import crypto from 'crypto';
+import shopifySessions from './../routes/models/shopifySessions';
+import appInstallLogs from './models/appInstallLogs';
 
-export async function loader() {
-  return json({
-        name:"dsads"
-    });
-  }
+export async function action({ request }) {
+	const hmacHeader = request.headers.get('X-Shopify-Hmac-Sha256');
+	const rawBody = await request.text();
+	const generatedHmac = crypto
+		.createHmac('sha256', process.env.SHOPIFY_API_SECRET)
+		.update(rawBody, 'utf8')
+		.digest('base64');
+	if (generatedHmac !== hmacHeader) {
+		return new Response('Unauthorized', { status: 401 });
+	}
+	const body = JSON.parse(rawBody);
+	const shop = body.myshopify_domain;
 
-  export async function action({ request }) {
-    console.log('============= action app uninstall');
-    const hmacHeader = request.headers.get('X-Shopify-Hmac-Sha256');
-    const rawBody = await request.text();
-    const generatedHmac = crypto
-      .createHmac('sha256', process.env.SHOPIFY_API_SECRET)
-      .update(rawBody, 'utf8')
-      .digest('base64');
-    if (generatedHmac !== hmacHeader) {
-      return new Response('Unauthorized', { status: 401 });
-    }
-    const body = JSON.parse(rawBody);
-    const shop = body.myshopify_domain;
-  
-    console.log(`App uninstalled from shop: ${shop}`);
-    console.log(body);
-    console.log(`App uninstalled from shop: ${shop}`);
+	/* delete shopify sessions  */
+	await shopifySessions.deleteMany({ shop: shop });
 
-  // Perform your clean-up tasks here, such as:
-  // - notify to admin
-  // - Revoking access tokens
-  // - Canceling subscriptions
-  // maintain log history
+	/* notify to admin  */
+	/* Canceling subscriptions  */
+
+	/* add uninstall app log */
+	const appInstallLogsModel = new appInstallLogs({
+		shop_id: body.id,
+		shop: shop,
+		event_type: 'uninstall',
+		email: body.email,
+		shop_owner: body.shop_owner,
+		name: body.name
+	});
+	await appInstallLogsModel.save();
+
+	console.log(`---App uninstalled from shop: ${shop}`);
+
   return json({ message: 'Webhook received' });
-  }
-  
+}

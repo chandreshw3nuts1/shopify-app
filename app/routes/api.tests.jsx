@@ -1,8 +1,31 @@
 import { json } from "@remix-run/node";
 import { GraphQLClient } from 'graphql-request';
+import settings from './models/settings';
 
 export async function loader() {
-    
+    const shop = 'chandstest.myshopify.com';
+    const accessToken = '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';
+    const responses = await fetch(`https://${shop}/admin/api/2023-01/sections.json`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Access-Token': accessToken
+    },
+    body: JSON.stringify({
+      section: {
+        name: "loox-dynamic-section",
+        settings: {
+          heading: "Customer Reviews",
+          text: "Here are some reviews from our customers."
+        }
+      }
+    })
+  });
+  return responses.json();
+  const newres = await responses.json();
+  return newres;
+
+
   // const response =  await fetch('https://chandstest.myshopify.com/admin/api/2023-10/themes.json', {
   //   method: 'GET',
   //   headers: {
@@ -39,7 +62,19 @@ export async function loader() {
 
     switch(method){
         case "POST":
-
+          const queryd = { shop_id : '6646e8ead0850811abf77da4'};
+          const update = { $set: {
+              reviewNotification : false,
+            }
+          };
+      
+          const options = {
+            new: true,
+            upsert: true,
+          };
+          const settingsRes = await settings.findOneAndUpdate(queryd, update, options);
+          return settingsRes;
+          return 1;
       //   const shopifyDomain = 'chandstest.myshopify.com';
       //   const apiKey = process.env.SHOPIFY_API_KEY;
       //   const password = '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';
@@ -52,10 +87,35 @@ export async function loader() {
 
         const client = new GraphQLClient(`https://chandstest.myshopify.com/admin/api/2023-01/graphql.json`, {
           headers: {
-            'X-Shopify-Access-Token': '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',
+            'X-Shopify-Access-Token': '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',
           },
         });
- 
+        const query1 = `
+{
+  productByHandle(handle: "long-t") {
+    id
+    title
+    descriptionHtml
+    handle
+    images(first: 5) {
+      edges {
+        node {
+          src
+          altText
+        }
+      }
+    }
+    variants(first: 5) {
+      edges {
+        node {
+          id
+          title
+          price
+        }
+      }
+    }
+  }
+}`;
         const query = `{
           nodes(ids: ["gid://shopify/Product/8461148881134", "gid://shopify/Product/8461148520686"]) {
               ... on Product {
@@ -74,9 +134,9 @@ export async function loader() {
         }
       }
   `;
-      const data = await client.request(query);
+      const data = await client.request(query1);
       
-      return json(data.nodes[1]);
+      return json(data);
 
       
       

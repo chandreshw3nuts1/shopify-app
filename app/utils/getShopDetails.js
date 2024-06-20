@@ -7,7 +7,7 @@ export async function getShopDetails(request) {
 	try{
 	  const { session } = await authenticate.admin(request);
 	  const { shop } = session;
-	  return await findOneRecord("shopify_sessions", {"shop" : shop});
+	  return await findOneRecord("shop_details", {"shop" : shop});
   	} catch (error) {
 	  console.error('Error fetching shop record:', error);
   	}

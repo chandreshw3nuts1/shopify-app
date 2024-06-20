@@ -11,7 +11,6 @@ import {
 import { restResources } from "@shopify/shopify-api/rest/admin/2024-04";
 // import prisma from "./db.server";
 import { MongoDBSessionStorage } from '@shopify/shopify-app-session-storage-mongodb';
-console.log('===============afterAuth  ss============');
 
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
@@ -35,12 +34,13 @@ const shopify = shopifyApp({
   hooks: {
 
     afterAuth: async ({ session }) => {
-		
+
       /* Handle shop api and store in db */
       await storeShopDetails(session);
 	    /* End Handle shop api and store in db */
 
       shopify.registerWebhooks({ session });
+
     },
   },
   future: {

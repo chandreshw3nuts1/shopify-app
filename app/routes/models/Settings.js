@@ -5,10 +5,15 @@ if (mongoose.models['settings']) {
 }
 
 const settingsSchema = new mongoose.Schema({
-    autoPublishReview: { type: Boolean,  },
+    shop_id: {type: mongoose.Schema.Types.ObjectId, ref: 'shop_details', required: true },
+    autoPublishReview: { type: Boolean },
     reviewPublishMode: { type: String },
-    shop_id: { type: String },
-    createdAt: { type: Date, default: Date.now }
+    reviewNotification: { type: Boolean },
+    addOnsiteReview: { type: Boolean },
+    
+},{
+  timestamps: true
 });
 
-export default mongoose.model('settings', settingsSchema);;
+const  settings = mongoose.model('settings', settingsSchema);
+export default settings;

@@ -7,28 +7,22 @@ import ReviewItem from "./components/manageReview/ReviewItem";
 import { mongoConnection } from './../utils/mongoConnection'; 
 import { getShopDetails } from './../utils/getShopDetails'; 
 import { json } from "@remix-run/node";
-import { Links, useLoaderData } from "@remix-run/react";
-import { useNavigate } from 'react-router-dom';
-import settings from './../utils/settings.json'; 
-import Swal from 'sweetalert2';
-import { toast } from 'react-toastify';
-// import Dropdown from 'react-bootstrap/Dropdown';
+import { useLoaderData } from "@remix-run/react";
+import settingsJson from './../utils/settings.json'; 
 import reviewImage from "./../images/no-reviews-yet.svg"
 import {
   Layout,
   Page,
-  LegacyCard,
   Spinner,
   Image,
-  Card,Select, TextField, Button, FormLayout
 } from "@shopify/polaris";
 
 export async function loader({request}) {
 	try {
 
 		const shopRecords = await getShopDetails(request);
-		const limit = 10;
-	  
+		const limit = settingsJson.manage_review_limit;
+
 		const db = await mongoConnection();
 		const countRating =  await db.collection("product_reviews").aggregate([
 			{ $match: { shop_id: shopRecords._id } }, 
@@ -71,7 +65,7 @@ export async function loader({request}) {
 
 export async function fetchAllReviewsApi(requestParams) {
     try {
-        const response = await fetch(`${settings.host_url}/api/manage-review`, {
+        const response = await fetch(`${settingsJson.host_url}/api/manage-review`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -85,7 +79,7 @@ export async function fetchAllReviewsApi(requestParams) {
     } catch (error) {
         console.error('Failed to fetch reviews:', error);
     }
-};
+}
 
 export default function ManageReview() {
 	const manageReviewData = useLoaderData();
@@ -265,7 +259,7 @@ export default function ManageReview() {
 						</form>
 					</div>
 					<div className="dividerblk"></div>
-					<ReviewItem filteredReviews = {filteredReviews} setFilteredReviews = {setFilteredReviews} filteredReviewsTotal = {filteredReviewsTotal} shopRecords={shopRecords} searchFormData={searchFormData} setSubmitHandle={setSubmitHandle} submitHandle={submitHandle} setSearchFormData={setSearchFormData}/>
+					<ReviewItem filteredReviews = {filteredReviews} setFilteredReviews = {setFilteredReviews} filteredReviewsTotal = {filteredReviewsTotal} setFilteredReviewsTotal={setFilteredReviewsTotal} shopRecords={shopRecords} searchFormData={searchFormData} setSubmitHandle={setSubmitHandle} submitHandle={submitHandle} setSearchFormData={setSearchFormData}/>
 					<div ref={lastElementRef}>
 						{loading && (
 							<div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
