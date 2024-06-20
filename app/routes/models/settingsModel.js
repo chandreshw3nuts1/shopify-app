@@ -15,5 +15,6 @@ const settingsSchema = new mongoose.Schema({
   timestamps: true
 });
 
+
 const  settings = mongoose.model('settings', settingsSchema);
 export default settings;
