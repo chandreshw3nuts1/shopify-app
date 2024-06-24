@@ -37,8 +37,8 @@ export default function Branding() {
         setImageLogo(URL.createObjectURL(e.target.files[0]));
 
 		const formData = new FormData();
-		formData.append("file", e.target.files[0]);
-
+		formData.append("file", e.target.files);
+		console.log(e.target.files);
 		axios.post('/api/uploadImage', formData, {
 			headers: {
 			  'Content-Type': 'multipart/form-data'
@@ -64,7 +64,7 @@ export default function Branding() {
 					<LegacyCard sectioned>
 						{/* <ColorPicker/> */}
 					<h2>Add Image:</h2>
-					<input type="file" onChange={handleChange} />
+					<input type="file" multiple onChange={handleChange} />
 					<img src={imageLogo} />
 					</LegacyCard>
 				</Layout.Section>

@@ -16,9 +16,10 @@ import FaceStar3 from "../images/FaceStar3";
 import FaceStar4 from "../images/FaceStar4";
 import FaceStar5 from "../images/FaceStar5";
 
-const CreateReviewModalWidget = ({shopRecords}) => {
+const CreateReviewModalWidget = ({shopRecords, customQuestionsData}) => {
     const proxyUrl = "https://"+shopRecords.shop+"/apps/custom-proxy/product-review-widget";
-	return (
+	const countTotalQuestions = customQuestionsData.length;
+    return (
 	    <>  
         <div id="createReviewModal" className="modal fade addreviewpopup">
             <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -67,6 +68,7 @@ const CreateReviewModalWidget = ({shopRecords}) => {
                                                 <li className='star' title='WOW!!!' data-value='5'>
                                                     <StarBigIcon />
                                                 </li>
+                                                <input type="hidden" id="review_rating" name="rating" value="3" />
                                             </ul>
                                         </div>
                                         
@@ -103,7 +105,7 @@ const CreateReviewModalWidget = ({shopRecords}) => {
                                                     Add Photos or Videos
                                                 </span>
                                             </div>
-                                            <input class="form__file" id="upload-files" type="file" accept="image/*,video/mp4,video/x-m4v,video/*" multiple="multiple" />
+                                            <input class="form__file" name="image_and_videos[]" id="upload-files" type="file" accept="image/*,video/mp4,video/x-m4v,video/*" multiple="multiple" />
                                         </label>
                                         <div className="discountrow">
                                             <div className="discountbox">Your <strong>15%</strong> off discount is wait for you!</div>
@@ -116,61 +118,43 @@ const CreateReviewModalWidget = ({shopRecords}) => {
                                     <a href="#" className="revbtn lightbtn nextbtn">Next <LongArrowRight /></a>
                                 </div>
                             </div>
-                            <div className="reviewsteps step-3 d-none">
-                                <div className="modal-header">
-                                    <div className="flxflexi">
-                                        <h1 class="modal-title">Question</h1>
-                                        <div className="subtextbox">Please give us answer about your product.</div>
+
+                            { customQuestionsData.map((customQuestionItem ,qIndex) => 
+                                <div className={`reviewsteps step-${qIndex+3} d-none`}>
+                                    <div className="modal-header">
+                                        <div className="flxflexi">
+                                            <h1 class="modal-title">Question</h1>
+                                            <div className="subtextbox">Please give us answer about your product.</div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="modal-body">
-                                    <div className="popupquestionswrap">
-                                        <h4>How’s our product is?</h4>
-                                        <div className="answers_wrap">
-                                            <div className="anserbox">
-                                                <input type="radio" id="q1answer1" value="q1ans1" name="q1answers" />
-                                                <label htmlFor="q1answer1">
-                                                    <strong>Answer 01</strong>
-                                                    <span className="flxfix"><CheckArrowIcon /></span>
-                                                </label>
-                                            </div>
-                                            <div className="anserbox">
-                                                <input type="radio" id="q1answer2" value="q1ans2" name="q1answers" />
-                                                <label htmlFor="q1answer2">
-                                                    <strong>Answer 02</strong>
-                                                    <span className="flxfix"><CheckArrowIcon /></span>
-                                                </label>
-                                            </div>
-                                            <div className="anserbox">
-                                                <input type="radio" id="q1answer3" value="q1ans3" name="q1answers" />
-                                                <label htmlFor="q1answer3">
-                                                    <strong>Answer 03</strong>
-                                                    <span className="flxfix"><CheckArrowIcon /></span>
-                                                </label>
-                                            </div>
-                                            <div className="anserbox">
-                                                <input type="radio" id="q1answer4" value="q1ans4" name="q1answers" />
-                                                <label htmlFor="q1answer4">
-                                                    <strong>Answer 04</strong>
-                                                    <span className="flxfix"><CheckArrowIcon /></span>
-                                                </label>
-                                            </div>
-                                            <div className="anserbox">
-                                                <input type="radio" id="q1answer5" value="q1ans5" name="q1answers" />
-                                                <label htmlFor="q1answer5">
-                                                    <strong>Answer 05</strong>
-                                                    <span className="flxfix"><CheckArrowIcon /></span>
-                                                </label>
+                                    <div className="modal-body">
+                                        <div className="popupquestionswrap">
+                                            <h4>{customQuestionItem.question}</h4>
+                                            <input type="" name= {"questions["+qIndex+"][question_id]"} value={customQuestionItem._id} />
+                                            <input type="" name= {"questions["+qIndex+"][question_name]"} value={customQuestionItem.question} />
+                                            <div className="answers_wrap">
+                                                { customQuestionItem.answers.map((answerItems ,aIndex) => 
+                                                    <div className="anserbox">
+                                                        <input type="radio" className="check-answer" id={"answer"+qIndex +"_"+aIndex} value={answerItems.val} name= {"questions["+qIndex +"][answer]"}  />
+                                                        <label htmlFor={"answer"+qIndex +"_"+aIndex}>
+                                                            <strong>{answerItems.val}</strong>
+                                                            <span className="flxfix"><CheckArrowIcon /></span>
+                                                        </label>
+                                                    </div>
+                                                )}
+                                                
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="modal-footer">
+                                        <a href="#" className="revbtn lightbtn backbtn"><LongArrowLeft /> Back</a>
+                                        <a href="#"  className={`revbtn lightbtn nextbtn ${customQuestionItem.isMakeRequireQuestion ? 'd-none' : ''}`} >Next <LongArrowRight /></a>
+                                    </div>
                                 </div>
-                                <div className="modal-footer">
-                                    <a href="#" className="revbtn lightbtn backbtn"><LongArrowLeft /> Back</a>
-                                    <a href="#" className="revbtn lightbtn nextbtn">Next <LongArrowRight /></a>
-                                </div>
-                            </div>
-                            <div className="reviewsteps step-4 d-none">
+                            )}
+                            
+
+                            <div className={`reviewsteps step-${countTotalQuestions+3} d-none`}>
                                 <div className="modal-header">
                                     <div className="flxflexi">
                                         <h1 class="modal-title">Tell us more!</h1>
@@ -180,7 +164,7 @@ const CreateReviewModalWidget = ({shopRecords}) => {
                                 <div className="modal-body">
                                     <div className="tellusmorepopup_wrap">
                                         <div className="form-group">
-                                            <textarea className="form-control" placeholder="Share your experience..."></textarea>
+                                            <textarea className="form-control review-description" name="description" placeholder="Share your experience..."></textarea>
                                         </div>
                                         <div className="discountrow">
                                             <div className="discountbox">Your <strong>15%</strong> off discount is wait for you!</div>
@@ -189,10 +173,10 @@ const CreateReviewModalWidget = ({shopRecords}) => {
                                 </div>
                                 <div className="modal-footer">
                                     <a href="#" className="revbtn lightbtn backbtn"><LongArrowLeft /> Back</a>
-                                    <a href="#" className="revbtn lightbtn nextbtn">Next <LongArrowRight /></a>
+                                    <a href="#" className="revbtn lightbtn nextbtn d-none">Next <LongArrowRight /></a>
                                 </div>
                             </div>
-                            <div className="reviewsteps step-5 d-none">
+                            <div className={`reviewsteps step-${countTotalQuestions+4} d-none`}>
                                 <div className="modal-header">
                                     <div className="flxflexi">
                                         <h1 class="modal-title">About you!</h1>
@@ -204,20 +188,25 @@ const CreateReviewModalWidget = ({shopRecords}) => {
                                         <div className="row">
                                             <div className="col-lg-6">
                                                 <div className="form-group">
-                                                    <label htmlFor="">First name</label>
-                                                    <input type="text" className="form-control" placeholder="Enter first name" />
+                                                    <label htmlFor="">First name <span className="text-danger" >*</span> </label>
+                                                    <input type="text" className="form-control" name="first_name" id="first_name" placeholder="Enter first name" />
+                                                    <div class="error text-danger" id="firstNameError"></div>
                                                 </div>
                                             </div>
                                             <div className="col-lg-6">
                                                 <div className="form-group">
-                                                    <label htmlFor="">Last name</label>
-                                                    <input type="text" className="form-control" placeholder="Enter last name" />
+                                                    <label htmlFor="">Last name <span className="text-danger" >*</span></label>
+                                                    <input type="text" className="form-control" name="last_name" id="last_name" placeholder="Enter last name" />
+                                                    <div class="error text-danger" id="lastNameError"></div>
+
                                                 </div>
                                             </div>
                                             <div className="col-lg-12">
                                                 <div className="form-group">
-                                                    <label htmlFor="">Email address</label>
-                                                    <input type="text" className="form-control" placeholder="Enter email address" />
+                                                    <label htmlFor="">Email address <span className="text-danger" >*</span></label>
+                                                    <input type="email" className="form-control" name="email" id="emailfield" placeholder="Enter email address" />
+                                                    <div class="error text-danger" id="emailError"></div>
+
                                                 </div>
                                             </div>
                                             <div className="col-lg-12">
@@ -228,7 +217,28 @@ const CreateReviewModalWidget = ({shopRecords}) => {
                                 </div>
                                 <div className="modal-footer">
                                     <a href="#" className="revbtn lightbtn backbtn"><LongArrowLeft /> Back</a>
-                                    <button type="submit" className="revbtn">Submit <LongArrowRight /></button>
+                                    <button type="submit" className="revbtn submitBtn">Submit <LongArrowRight /></button>
+                                </div>
+                            </div>
+
+                            <div className={`reviewsteps step-${countTotalQuestions+5} d-none thankyou-page`}>
+                                <div className="modal-header">
+                                    <div className="flxflexi">
+                                        <h1 class="modal-title">Thank you!</h1>
+                                        <div className="subtextbox">Can we collect your information for improve our product.</div>
+                                    </div>
+                                </div>
+                                <div className="modal-body">
+                                    <div className="tellmeaboutyou_wrap">
+                                        <div className="row">
+                                            <div className="col-lg-12">
+                                                <div className="formnote">Thank you</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="modal-footer">
+                                    <a href="#" className="revbtn lightbtn nextbtn continueBtn"><LongArrowRight /> Continue</a>
                                 </div>
                             </div>
                         </form>

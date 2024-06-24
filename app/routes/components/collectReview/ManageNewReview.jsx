@@ -55,8 +55,6 @@ export default function ManageNewReview({ settings, shopRecords }) {
 
 		setSelected(value); // Update the state with the selected value
 	};
-	console.log(settingsJson);
-	console.log(settingsJson.manage_new_review_options);
 	const options = settingsJson.manage_new_review_options;
 
 

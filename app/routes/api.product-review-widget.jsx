@@ -9,7 +9,9 @@ import { ObjectId } from 'mongodb';
 import productReviews  from "./models/productReviews";
 import reviewDocuments from "./models/reviewDocuments";
 import productReviewQuestions from "./models/productReviewQuestions";
-
+import settingsJson from './../utils/settings.json'; 
+import fs from "fs";
+import path from "path";
 export async function loader() {
 
 	const email = 'chandresh.w3nuts@gmail.com';
@@ -38,7 +40,7 @@ export async function action({ request }) {
 
 	const method = request.method;
 	const formData = await request.formData();
-
+	
 	const shop = formData.get('shop_domain');
 	switch (method) {
 		case "POST":
@@ -85,49 +87,55 @@ export async function action({ request }) {
 
 				// upload images/video
 
-				const images = [
-					"https://png.pngtree.com/thumb_back/fh260/background/20230817/pngtree-lotus-flower-jpg-pink-lotus-flower-image_13023952.jpg",
-					"https://png.pngtree.com/thumb_back/fh260/background/20230817/pngtree-lotus-flower-jpg-pink-lotus-flower-image_13023953.jpg",
-				];
+				const files = formData.getAll("image_and_videos[]");
+				const uploadsDir = path.join(process.cwd(), "public/uploads");
+				fs.mkdirSync(uploadsDir, { recursive: true });
+				for (let i = 0; i < files.length; i++) {
+					if (files[i].name != "" && files[i].name != null){
+						const fileName = Date.now()+"-"+files[i].name; 
+						const filePath = path.join(uploadsDir, fileName);
+						const buffer = Buffer.from(await files[i].arrayBuffer());
+						fs.writeFileSync(filePath, buffer);
 
-				for (let index = 0; index < images.length; index++) {
-					const img = images[index];
-					const isCover = index === 0; // index 0 will be true, others will be false
-					const docType = 'image';
-			
-					const reviewDocumentModel = new reviewDocuments({
-						review_id: new ObjectId(insertedId),
-						type: docType,
-						url: img,
-						is_approve: true,
-						is_cover: isCover
-					});
-			
-					await reviewDocumentModel.save();
+						const isCover = i === 0; // index 0 will be true, others will be false
+						const docType = 'image';
+				
+						const reviewDocumentModel = new reviewDocuments({
+							review_id: new ObjectId(insertedId),
+							type: docType,
+							url: fileName,
+							is_approve: true,
+							is_cover: isCover
+						});
+				
+						await reviewDocumentModel.save();
+					}
+					
+
 				}
-
-
+				
 				//insert questions and answers 
 				var questions = [];
 				for (let i = 0; ; i++) {
-					const question_id = formData.get(`questions[${i}][question_id]`);
 					const answer = formData.get(`questions[${i}][answer]`);
+					const question_id = formData.get(`questions[${i}][question_id]`);
 					const question_name = formData.get(`questions[${i}][question_name]`);
 					if (!question_id) break; // Exit loop if question_id is not found
 					questions.push({ question_id, answer, question_name });
 				}
-
+				console.log(questions);
 				if (questions.length > 0) {
 					questions.map( async (question, index) => {
-
-						const productReviewQuestionModel = new productReviewQuestions({
-							review_id: new ObjectId(insertedId),
-							question_id: new ObjectId(question.question_id),
-							answer: question.answer,
-							question_name: question.question_name
-						});
-						await productReviewQuestionModel.save();
-
+						if(question.answer != null) {
+							const productReviewQuestionModel = new productReviewQuestions({
+								review_id: new ObjectId(insertedId),
+								question_id: new ObjectId(question.question_id),
+								answer: question.answer,
+								question_name: question.question_name
+							});
+							await productReviewQuestionModel.save();
+						}
+						
 					});
 				}
 

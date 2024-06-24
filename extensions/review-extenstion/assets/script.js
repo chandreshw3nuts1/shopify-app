@@ -65,6 +65,8 @@ jQuery(window).on('load', function () {
                 msg = "Terrible!";
             }
             responseMessage(msg);
+            jQuery('#review_rating').val(ratingValue);
+            
         });
     }, 1000);
 });
@@ -224,4 +226,20 @@ jQuery(window).on('load', function () {
 });
 
 /* Upload script : End */
+$(document).on('click','.check-answer', function() {
+    $(this).parents(".reviewsteps").find('.nextbtn').removeClass('d-none');
+});
+
+$(document).on('keyup','.review-description', function() {
+    if(typeof $(this).val() == 'undefined' || $.trim($(this).val()) == "" ) {
+        $(this).parents(".reviewsteps").find('.nextbtn').addClass('d-none');
+    } else {
+        $(this).parents(".reviewsteps").find('.nextbtn').removeClass('d-none');
+    }
+});
+
+
+$(document).on('click','.continueBtn', function() {
+    window.location.reload();
+});
 

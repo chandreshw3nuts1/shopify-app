@@ -3,7 +3,7 @@ import { GraphQLClient } from 'graphql-request';
 import ReactDOMServer from 'react-dom/server';
 import ProductReviewWidget from './components/widget-components/product-review-widget';
 import CreateReviewModalWidget from './components/widget-components/create-review-modal-widget';
-import { getShopDetailsByShop, findOneRecord } from './../utils/common';
+import { getShopDetailsByShop, findOneRecord, getCustomQuestions } from './../utils/common';
 import { mongoConnection } from './../utils/mongoConnection';
 import productReviews from "./models/productReviews";
 
@@ -60,7 +60,7 @@ import productReviews from "./models/productReviews";
                     $sort: sortOption 
                 },
                 { 
-                    $skip: (1 - 1) * limit 
+                    $skip: (page - 1) * limit 
                 },
                 { 
                     $limit: limit 
@@ -110,6 +110,7 @@ import productReviews from "./models/productReviews";
                                 question_name: "$reviewQuestionsAnswer.question_name",
                                 question_id: "$reviewQuestionsAnswer.question_id",
                                 createdAt: "$reviewQuestionsAnswer.createdAt",
+                                deletedAt: "$reviewQuestionsAnswer.deletedAt",
                             }
                         }
                     }
@@ -144,13 +145,17 @@ import productReviews from "./models/productReviews";
                             $filter: {
                                 input: "$reviewQuestionsAnswer",
                                 as: "item",
-                                cond: { $ne: ["$$item._id", null] }
+                                cond: {
+                                    $and: [
+                                        { $ne: ["$$item._id", null] },
+                                        { $eq: ["$$item.deletedAt", null] }
+                                    ]
+                                }
                             }
                         }
                     }
                 }
             ]);
-
 
             const client = new GraphQLClient(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
                 headers: {
@@ -188,11 +193,15 @@ import productReviews from "./models/productReviews";
     
             }
 
-
             const dynamicComponent = <ProductReviewWidget shopRecords={shopRecords} reviewItems={reviewItems} productsDetails={productsDetails} hasMore={hasMore} page={page} productId={productId} />;
             const htmlContent = ReactDOMServer.renderToString(dynamicComponent);
             
-            const dynamicModalComponent = <CreateReviewModalWidget shopRecords={shopRecords} />;
+            const customQuestionsData = await getCustomQuestions({
+                shop_id: shopRecords._id,
+            });
+
+
+            const dynamicModalComponent = <CreateReviewModalWidget shopRecords={shopRecords} customQuestionsData={customQuestionsData} />;
             const htmlModalContent = ReactDOMServer.renderToString(dynamicModalComponent);
             return json({
                 body:htmlContent,

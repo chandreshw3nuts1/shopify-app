@@ -15,3 +15,4 @@ package-lock.json
 yarn.lock
 .vscode
 shopify.app.toml
+/public/uploads/
