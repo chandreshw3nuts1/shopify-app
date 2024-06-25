@@ -119,6 +119,22 @@ jQuery(window).on('load', function () {
 
 });
 
+jQuery(window).on('load', function () {
+    setTimeout(function (){
+        const myModalEl = document.getElementById('createReviewModal');
+        let stepsDiv = jQuery('.modal .reviewsteps');
+        let steps1Div = jQuery('.modal .reviewsteps.step-1');
+        myModalEl.addEventListener('hidden.bs.modal', event => {
+            console.log('asdasdasdasdasd');
+            jQuery(stepsDiv).each(function(){
+                jQuery(this).addClass('d-none');
+            });
+            jQuery(steps1Div).removeClass('d-none');
+        });
+    }, 1500);
+});
+
+
 /* Upload Script : Start */
 
 jQuery(window).on('load', function () {

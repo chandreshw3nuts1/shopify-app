@@ -327,3 +327,25 @@ form textarea.input_text { height: 80px; padding-top: 8px; padding-bottom: 8px;}
 .tellmeaboutyou_wrap .formnote { text-align: center; color: var(--lightGreyColor); font-size: 12px; margin: 0; padding: 0; line-height: 20px;}
 .tellmeaboutyou_wrap .formnote a { color: var(--darkColor); font-weight: 600; text-decoration: underline;}
 .tellmeaboutyou_wrap .formnote a:hover { color: var(--blueColor);}
+
+.frontreviewbox { margin: 0;}
+.frontreviewbox * { letter-spacing: 0;}
+.frontreviewbox .box-style { padding: 24px; background: var(--lightGreyBGcolor); border: none;}
+.frontreviewbox .box-style .review_topbar { align-items: center; margin: 0 0 12px 0;}
+.frontreviewbox .box-style .review_topbar .profileicon { width: 48px; height: 48px; margin: 0 16px 0 0; border-radius: 50px; overflow: hidden; position: relative; background: var(--borderColor);}
+.frontreviewbox .box-style .review_topbar .profileicon img { width: 100%; height: 100%; position: absolute; left: 0; top: 0; object-fit: cover;}
+.frontreviewbox .box-style .review_topbar h4 { font-size: 16px; color: var(--darkColor); font-weight: 600; margin: 0; padding: 0;}
+.frontreviewbox .box-style .review_topbar .date { padding: 2px 0 0 0; color: var(--lightGreyColor); font-size: 14px; line-height: 1.71; font-weight: 400;}
+.frontreviewbox .box-style .review_topbar .star-rating { display: flex; align-items: center;}
+.frontreviewbox .box-style .review_topbar .star-rating svg { width: 22px; height: 22px; color: var(--borderColor);}
+.frontreviewbox .box-style .review_topbar .star-rating .ratingstars.star-1 svg:nth-child(-n+1) { color: #FFC107;}
+.frontreviewbox .box-style .review_topbar .star-rating .ratingstars.star-2 svg:nth-child(-n+2) { color: #FFC107;}
+.frontreviewbox .box-style .review_topbar .star-rating .ratingstars.star-3 svg:nth-child(-n+3) { color: #FFC107;}
+.frontreviewbox .box-style .review_topbar .star-rating .ratingstars.star-4 svg:nth-child(-n+4) { color: #FFC107;}
+.frontreviewbox .box-style .review_topbar .star-rating .ratingstars.star-5 svg:nth-child(-n+5) { color: #FFC107;}
+.frontreviewbox .box-style .review_topbar .star-rating .ratingcount { margin: 0 10px 0 0; color: var(--darkColor); font-size: 14px; line-height: 1.71; padding: 0; font-weight: 700;}
+.frontreviewbox .box-style .text_content { margin: 0 0 16px 0;}
+.frontreviewbox .box-style .text_content p { margin: 0; padding: 0; font-size: 14px; line-height: 24px; color: var(--darkColor); line-height: 1.71; font-weight: 400;}
+.frontreviewbox .box-style .imageorvideowrap { padding: 16px 0 0 0; margin: 16px 0 0 0; border-top: solid 1px var(--borderColor); display: flex; flex-wrap: wrap;}
+.frontreviewbox .box-style .imageorvideowrap .columnbox { width: 80px; height: 80px; border-radius: 10px; overflow: hidden;}
+.frontreviewbox .box-style .imageorvideowrap .columnbox + .columnbox { margin-right: 16px;}
