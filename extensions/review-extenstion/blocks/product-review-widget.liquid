@@ -42,6 +42,9 @@ function loadReviews(page){
 			}
 			var modal_html = response.htmlModalContent;
 			$("body").append(modal_html);
+
+            var modal_details_html = response.htmlReviewDetailModalContent;
+			$("body").append(modal_details_html);
 		},
         error: function(xhr, status, error) {
             // Handle errors

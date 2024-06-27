@@ -122,10 +122,11 @@ jQuery(window).on('load', function () {
 jQuery(window).on('load', function () {
     setTimeout(function (){
         const myModalEl = document.getElementById('createReviewModal');
-        let stepsDiv = jQuery('.modal .reviewsteps');
-        let steps1Div = jQuery('.modal .reviewsteps.step-1');
+        console.log(myModalEl);
+        let stepsDiv = jQuery('.addreviewpopup.modal .reviewsteps');
+        let steps1Div = jQuery('.addreviewpopup.modal .reviewsteps.step-1');
         myModalEl.addEventListener('hidden.bs.modal', event => {
-            console.log('asdasdasdasdasd');
+            // console.log('asdasdasdasdasd');
             jQuery(stepsDiv).each(function(){
                 jQuery(this).addClass('d-none');
             });
@@ -142,7 +143,7 @@ jQuery(window).on('load', function () {
 
     setTimeout(function (){
         const INPUT_FILE = document.querySelector('#upload-files');
-        console.log(INPUT_FILE);
+        // console.log(INPUT_FILE);
     
         const INPUT_CONTAINER = document.querySelector('#upload-container');
         const FILES_LIST_CONTAINER = document.querySelector('#files-list-container');

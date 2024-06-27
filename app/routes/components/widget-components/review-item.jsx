@@ -2,6 +2,7 @@ import ItemRating  from './rating';
 import moment from 'moment';
 import StarBigIcon from "../icons/StarBigIcon";
 
+
 import {
   Page,
   Layout,
@@ -31,7 +32,7 @@ const ReviewItem = ({ reviewItems, productsDetails }) => {
             <p>No reviews found.</p>
         ) : (
         reviewItems.map((review, i) => (
-            <div className="review-list-item frontreviewbox" key={i} >
+            <div className="review-list-item frontreviewbox" datatype={i} key={i} >
                 <div className='row'>
                     <div className="col">
                         <div className="box-style">
@@ -67,13 +68,30 @@ const ReviewItem = ({ reviewItems, productsDetails }) => {
                                     <img src="https://via.placeholder.com/100" key={imkey} alt="User Image" className="review-image" />
                                     )
                                 )} */}
-                                <div className="product-container imageorvideowrap">
-                                    <div className='columnbox'>
-                                        <div className="image">
+                                <div className='review_bottomwrap'>
+                                    <div className="product-container product-thumb-detail">
+                                        <div className="image flxfix">
                                             <img src={productsDetails[i].images.edges[0].node.transformedSrc} />
                                         </div>
-                                        <div className="text">
+                                        <div className="text flxflexi">
                                             <p>{productsDetails[i].title}</p>
+                                        </div>
+                                    </div>
+                                    <div className='review_imageswrap flxrow' data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                        <div className='imagebox'>
+                                            <img src={productsDetails[i].images.edges[0].node.transformedSrc} />
+                                        </div>
+                                        <div className='imagebox'>
+                                            <img src={productsDetails[i].images.edges[0].node.transformedSrc} />
+                                        </div>
+                                        <div className='imagebox'>
+                                            <img src={productsDetails[i].images.edges[0].node.transformedSrc} />
+                                        </div>
+                                        <div className='imagebox'>
+                                            <img src={productsDetails[i].images.edges[0].node.transformedSrc} />
+                                        </div>
+                                        <div className='imagebox'>
+                                            <img src={productsDetails[i].images.edges[0].node.transformedSrc} />
                                         </div>
                                     </div>
                                 </div>
@@ -81,6 +99,7 @@ const ReviewItem = ({ reviewItems, productsDetails }) => {
                         </div>
                     </div>
                 </div>
+                
             </div>
             ))
         )}
