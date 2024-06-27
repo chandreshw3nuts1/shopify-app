@@ -3,6 +3,9 @@ import { GraphQLClient } from 'graphql-request';
 import ReactDOMServer from 'react-dom/server';
 import ProductReviewWidget from './components/widget-components/product-review-widget';
 import CreateReviewModalWidget from './components/widget-components/create-review-modal-widget';
+import ReviewDetailModalWidget from './components/widget-components/review-detail-modal-widget';
+
+
 import { getShopDetailsByShop, findOneRecord, getCustomQuestions } from './../utils/common';
 import { mongoConnection } from './../utils/mongoConnection';
 import productReviews from "./models/productReviews";
@@ -260,6 +263,29 @@ import productReviews from "./models/productReviews";
                     hasMore : hasMore
                 });
             }
+
+            const dynamicComponent = <ProductReviewWidget shopRecords={shopRecords} reviewItems={reviewItems} productsDetails={productsDetails} hasMore={hasMore} page={page} productId={productId} />;
+            const htmlContent = ReactDOMServer.renderToString(dynamicComponent);
+            
+            const customQuestionsData = await getCustomQuestions({
+                shop_id: shopRecords._id,
+            });
+
+
+            
+
+
+            const dynamicReviewDetailModalWidget = <ReviewDetailModalWidget/>;
+            const htmlReviewDetailModalContent = ReactDOMServer.renderToString(dynamicReviewDetailModalWidget);
+            
+            const dynamicModalComponent = <CreateReviewModalWidget shopRecords={shopRecords} customQuestionsData={customQuestionsData} />;
+            const htmlModalContent = ReactDOMServer.renderToString(dynamicModalComponent);
+            
+            return json({
+                body:htmlContent,
+                htmlModalContent :htmlModalContent,
+                htmlReviewDetailModalContent :htmlReviewDetailModalContent,
+            });
         } catch(error){
             return json({
                 error

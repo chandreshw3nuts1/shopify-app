@@ -204,6 +204,26 @@ padding-left: 10px;
 .modal .modal-body::-webkit-scrollbar-thumb:hover { background: var(--borderColor);}
 
 
+.modal.reviewdetailpopup .modal-dialog { max-width: 848px;}
+.modal.reviewdetailpopup .modal-content { height: 600px; overflow: hidden; border: none;}
+.modal.reviewdetailpopup .btn-close { right: auto; top: 32px; left: 32px;}
+.modal.reviewdetailpopup .modal-body { padding: 0;}
+.modal.reviewdetailpopup .revdetailwrap { width: 100%; height: 100%; position: relative;}
+.modal.reviewdetailpopup .revdetailwrap .imagesliderwrap { width: 100%; max-width: 50%;}
+.modal.reviewdetailpopup .revdetailwrap .rightinfowrap { width: 100%; max-width: 50%;}
+.modal.reviewdetailpopup .revdetailwrap .carousel { height: 100%; position: relative;}
+.modal.reviewdetailpopup .revdetailwrap .carousel-inner { height: 100%;}
+.modal.reviewdetailpopup .revdetailwrap .carousel-item { height: 100%;}
+.modal.reviewdetailpopup .revdetailwrap .carousel-item .imagewrap { position: absolute; left: 0; top: 0; width: 100%; height: 100%;}
+.modal.reviewdetailpopup .revdetailwrap .carousel-item .imagewrap img { width: 100%; height: 100%; position: absolute; left: 0; top: 0; object-fit: cover;}
+.modal.reviewdetailpopup .revdetailwrap .carousel-indicators { margin: 0 0 32px 0; padding: 0; display: flex; justify-content: center; width: 100%;}
+.modal.reviewdetailpopup .revdetailwrap .carousel-indicators button { width: 74px; height: 74px; border: none; border-radius: 0; opacity: 1; outline: none; box-shadow: none; position: relative; margin: 0 10px; padding: 0;}
+.modal.reviewdetailpopup .revdetailwrap .carousel-indicators button img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover;}
+.modal.reviewdetailpopup .revdetailwrap .carousel-control-next, 
+.modal.reviewdetailpopup .revdetailwrap .carousel-control-prev { opacity: 1; width: auto; padding: 0 32px;}
+.modal.reviewdetailpopup .revdetailwrap .carousel-control-next span, 
+.modal.reviewdetailpopup .revdetailwrap .carousel-control-prev span { background: none; width: 44px; height: 44px; display: flex; background: var(--whiteBg); border-radius: 50px; align-items: center; justify-content: center; color: var(--darkColor);}
+
 
 .rating-stars { display: flex; justify-content: center; align-items: center; position: relative; height: 100%; padding: 0 0 44px 0;}
 .rating-stars ul { display: flex; align-items: center; margin: 0; padding: 8px 24px; border-radius: 100px; background: var(--lightGreyBGcolor);}
@@ -327,3 +347,34 @@ form textarea.input_text { height: 80px; padding-top: 8px; padding-bottom: 8px;}
 .tellmeaboutyou_wrap .formnote { text-align: center; color: var(--lightGreyColor); font-size: 12px; margin: 0; padding: 0; line-height: 20px;}
 .tellmeaboutyou_wrap .formnote a { color: var(--darkColor); font-weight: 600; text-decoration: underline;}
 .tellmeaboutyou_wrap .formnote a:hover { color: var(--blueColor);}
+
+.frontreviewbox { margin: 0;}
+.frontreviewbox * { letter-spacing: 0;}
+.frontreviewbox + .frontreviewbox { margin-top: 24px;}
+.frontreviewbox .box-style { padding: 24px; margin: 0; background: var(--lightGreyBGcolor); border: none; border-radius: 10px;}
+.frontreviewbox .box-style .review_topbar { align-items: center; margin: 0 0 12px 0;}
+.frontreviewbox .box-style .review_topbar .profileicon { width: 48px; height: 48px; margin: 0 16px 0 0; border-radius: 50px; overflow: hidden; position: relative; background: var(--borderColor);}
+.frontreviewbox .box-style .review_topbar .profileicon img { width: 100%; height: 100%; position: absolute; left: 0; top: 0; object-fit: cover;}
+.frontreviewbox .box-style .review_topbar h4 { font-size: 16px; color: var(--darkColor); font-weight: 600; margin: 0; padding: 0;}
+.frontreviewbox .box-style .review_topbar .date { padding: 2px 0 0 0; color: var(--lightGreyColor); font-size: 14px; line-height: 1.71; font-weight: 400;}
+.frontreviewbox .box-style .review_topbar .star-rating { display: flex; align-items: center;}
+.frontreviewbox .box-style .review_topbar .star-rating svg { width: 22px; height: 22px; color: var(--borderColor);}
+.frontreviewbox .box-style .review_topbar .star-rating .ratingstars.star-1 svg:nth-child(-n+1) { color: #FFC107;}
+.frontreviewbox .box-style .review_topbar .star-rating .ratingstars.star-2 svg:nth-child(-n+2) { color: #FFC107;}
+.frontreviewbox .box-style .review_topbar .star-rating .ratingstars.star-3 svg:nth-child(-n+3) { color: #FFC107;}
+.frontreviewbox .box-style .review_topbar .star-rating .ratingstars.star-4 svg:nth-child(-n+4) { color: #FFC107;}
+.frontreviewbox .box-style .review_topbar .star-rating .ratingstars.star-5 svg:nth-child(-n+5) { color: #FFC107;}
+.frontreviewbox .box-style .review_topbar .star-rating .ratingcount { margin: 0 10px 0 0; color: var(--darkColor); font-size: 14px; line-height: 1.71; padding: 0; font-weight: 700;}
+.frontreviewbox .box-style .text_content { margin: 0 0 16px 0;}
+.frontreviewbox .box-style .text_content p { margin: 0; padding: 0; font-size: 14px; line-height: 24px; color: var(--darkColor); line-height: 1.71; font-weight: 400;}
+.frontreviewbox .box-style .product-thumb-detail { display: flex; align-items: center; margin: 0 auto 0 0;}
+.frontreviewbox .box-style .product-thumb-detail .image { width: 80px; height: 80px; border-radius: 10px; overflow: hidden; position: relative; margin: 0 16px 0 0;}
+.frontreviewbox .box-style .product-thumb-detail .image img { width: 100%; height: 100%; left: 0; top: 0; object-fit: cover; position: absolute;}
+.frontreviewbox .box-style .product-thumb-detail .text { padding: 0;}
+.frontreviewbox .box-style .product-thumb-detail .text p { margin: 0; padding: 0; font-size: 16px; line-height: 24px; color: var(--darkColor); font-weight: 600;}
+.frontreviewbox .box-style .review_bottomwrap { padding: 16px 0 0 0; margin: 16px 0 0 0; border-top: solid 1px var(--borderColor); display: flex;}
+.frontreviewbox .box-style .review_imageswrap { align-items: center;}
+.frontreviewbox .box-style .review_imageswrap .imagebox { width: 80px; height: 80px; border-radius: 10px; overflow: hidden; position: relative; margin: 0;}
+.frontreviewbox .box-style .review_imageswrap .imagebox + .imagebox { margin-left: 16px;}
+.frontreviewbox .box-style .review_imageswrap .imagebox img { width: 100%; height: 100%; left: 0; top: 0; object-fit: cover; position: absolute;}
+
