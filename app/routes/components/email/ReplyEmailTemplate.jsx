@@ -3,15 +3,6 @@ import React from 'react';
 
 const EmailTemplate = ({  emailContents, footer }) => {
 
-    const questionsHtml = emailContents.questions.map((item) => {
-        if (item.answer != null) {
-            return `<h2>${item.question_name}</h2>
-                    <p>${item.answer}</p>`;
-        } else {
-            return ''; // or any other default value or message when answer is not available
-        }
-        
-    }).join('');
     const emailHtml = `<!DOCTYPE html>
     <html lang="en">
     <head>
@@ -65,7 +56,7 @@ const EmailTemplate = ({  emailContents, footer }) => {
     <body style=" background-color:#edf2f7;  height: 100%;  width: 100%!important">
         <div class="container-logo">
             <div class="header">
-                <h1>Logo</h1>
+                <img src="${emailContents.logo}" width=100>
             </div>
             
         </div>
@@ -75,15 +66,13 @@ const EmailTemplate = ({  emailContents, footer }) => {
                 <h1>Welcome to Our Service</h1>
             </div>
             <div class="content">
-                <p><strong>${emailContents.first_name} ${emailContents.first_name} </strong>!</p>
-                <p>Display name: ${emailContents.display_name}</p>
-                <p>*****</p>
-                <p>${emailContents.description}</p>
+                <p><strong>Hello ${emailContents.display_name} </strong>!</p>
+                <p>A reply was added to your review of : ${emailContents.product_title}</p>
+                <p>${emailContents.reply}</p>
                 
-                ${questionsHtml}
+                <p>To respond privately, reply to this email.</p>
+                
 
-
-                <a href="${emailContents.shopifyStoreUrl}" class="btn-start">View Replay And share</a>
             </div>
             <div class="footer">
                 <p>Best regards,</p>

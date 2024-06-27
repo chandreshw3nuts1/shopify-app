@@ -9,122 +9,13 @@
 
 
 
-<div id="display-widget-component">
+<div id="display-widget-component" data-product-id="{{ product.id }}" data-product-url="{{ product.url }}" data-shop-domain="{{ shop.domain }}" data-product-title="{{ product.title }}" data-shop-domain="{{ shop.domain }}"  data-product-settings='{{ block.settings | json }}' >
     
 </div>
 
 
 
 <script>
-var page = 1;
-
-var settings_vars = {{ block.settings | json }};
-$(document).ready(function(){
-	loadReviews(page);
-});
-
-function loadReviews(page){
-	$.ajax({
-        type: 'POST',
-        url: `/apps/custom-proxy/widget`,
-        data: {
-			no_of_review: settings_vars.no_of_review_per_page,
-			page: page,
-            product_id : '{{product.id}}',
-			shop_domain : '{{shop.domain}}'
-		},
-		dataType : "json",
-        success: function(response) {
-			if(page == 1) {
-	            $("#display-widget-component").html(response.body);
-			} else {
-	            $(".main_review_block").append(response.body);
-			}
-			var modal_html = response.htmlModalContent;
-			$("body").append(modal_html);
-		},
-        error: function(xhr, status, error) {
-            // Handle errors
-            console.error(xhr.responseText);
-        }
-    });
-}
-$(document).on("click", "#show_create_review_modal",  function() {
-	$("#createReviewModal").modal("show");
-});
-
-$(document).on("click", "#load_more_review",  function() {
-	page = page +1;
-	loadReviews(page);
-});
-
-$(document).on("submit", "#review_submit_btn_form",  function(e) {
-  	e.preventDefault();
-    var _this = $(this);
-
-    $('.error').text('');
-    // Get the form values
-    var firstName = $.trim($('#first_name').val());
-    var lastName = $.trim($('#last_name').val());
-    var emailfield = $.trim($('#emailfield').val());
-
-    var isValid = true;
-
-    // Validate first name
-    if (firstName === '') {
-        $('#firstNameError').text('First name is required.');
-        isValid = false;
-    }
-
-    // Validate last name
-    if (lastName === '') {
-        $('#lastNameError').text('Last name is required.');
-        isValid = false;
-    }
-
-    // Validate email
-    if (emailfield === '') {
-        $('#emailError').text('Email is required.');
-        isValid = false;
-    } else if (!validateEmail(emailfield)) {
-        $('#emailError').text('Please enter a valid email address.');
-        isValid = false;
-    }
-    if(isValid) {
-        var formData = new FormData($(this)[0]);
-        formData.append('shop_domain', '{{shop.domain}}');
-        formData.append('product_id', '{{product.id}}');
-        formData.append('product_title', '{{product.title}}');
-        formData.append('product_url', '{{product.url}}');
-
-        var reviewUrl = $(this).attr('action');
-        $.ajax({
-            type: 'POST',
-            url: reviewUrl,
-            data: formData,
-            contentType: false,
-            processData: false,
-            beforeSend: function() {
-                _this.find('.submitBtn').attr('disabled', 'disabled');
-            },
-            success: function(response) {
-                $(".reviewsteps").addClass('d-none');
-                $(".thankyou-page").removeClass('d-none');
-            },
-            error: function(xhr, status, error) {
-                // Handle errors
-                console.error(xhr.responseText);
-            }
-        });
-    }
-	
-    
-});
-
-function validateEmail(email) {
-    var re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    return re.test(email);
-}
 </script>
 
 
@@ -140,17 +31,33 @@ function validateEmail(email) {
   "stylesheet": "style.css",
   "javascript": "script.js",
   "settings": [
-    
+    {
+      "type": "checkbox",
+      "id": "show_image_reviews",
+      "label": "Display only reviews with photos",
+      "default": false
+    },
+    {
+        "type": "checkbox",
+        "id": "show_all_reviews",
+        "label": "Show reviews from all products",
+        "default": true
+    },
     {
       "type": "range",
       "id": "no_of_review_per_page",
       "min": 1,
-      "max": 10,
+      "max": 20,
       "step": 1,
       "label": "Number of reviews to display",
-      "default": 5
+      "default": 10
     },
-    { "type": "text", "id": "custom_class_text", "label": "Text Colour" }
+    {
+        "type": "checkbox",
+        "id": "hide_product_thumbnails",
+        "label": "Hide product thumbnails",
+        "default": false
+    }
 
 
   ]

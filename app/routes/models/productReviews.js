@@ -17,11 +17,11 @@ const productReviewsSchema = new mongoose.Schema({
     product_url: { type: String },
     status: { type: String, required: true },
     description: { type: String,required: true },
+    replyText: { type: String},
     is_review_request: { type: Boolean, default: false },
     tag_as_feature: { type: Boolean, default: false },
     verify_badge: { type: Boolean, default: false },
     add_to_carousel: { type: Boolean, default: false },
-    
     
 },{
     timestamps: true

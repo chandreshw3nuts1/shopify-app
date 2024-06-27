@@ -1,7 +1,10 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState,  useCallback } from "react";
+import { useLoaderData } from '@remix-run/react';
 import Breadcrumb from "./components/Breadcrumb";
 import SettingPageSidebar from "./components/headerMenu/SettingPageSidebar";
-import axios from 'axios';
+import { getShopDetails } from './../utils/getShopDetails';
+import GeneralAppearance from "./components/settings/general-appearance";
+import { findOneRecord } from './../utils/common';
 
 // import ColorPicker from "./components/svgIconPicker";
 import { json } from "@remix-run/node";
@@ -11,13 +14,22 @@ import {
   Page,
   LegacyCard,
   Spinner,
-  Card,Select, TextField, Button, FormLayout
+  Text,
+  Card,LegacyStack, TextField, Button, FormLayout,Collapsible
 } from "@shopify/polaris";
 
 export async function loader({request}) {
 	try {
-	  
-		return json({});
+		
+		const shopRecords = await getShopDetails(request);
+		const generalAppearances = await findOneRecord('general_appearances',{
+			shop_id: shopRecords._id,
+		});
+
+		// const getUploadDocumentss =  getUploadDocument();
+
+		return json({shopRecords : shopRecords,generalAppearances : generalAppearances});
+
 	  } catch (error) {
 		console.error('Error fetching manage review:', error);
 		return json({ error: 'Error fetching manage review' }, { status: 500 });
@@ -26,53 +38,67 @@ export async function loader({request}) {
 }
 
 export default function Branding() {
+	const loaderData = useLoaderData();
+	const shopRecords = loaderData.shopRecords;
+	const generalAppearances = loaderData.generalAppearances;
+	
 	const [crumbs, setCrumbs] = useState([
-		{"title" : "Review", "link" :"./../review"},
-		{"title" : "Manage Review", "link" :""}
+		{"title" : "Settings", "link" :"./../branding"},
+		{"title" : "Branding", "link" :""}
 	]);
-
-	const [imageLogo, setImageLogo] = useState();
-    function handleChange(e) {
-
-        setImageLogo(URL.createObjectURL(e.target.files[0]));
-
-		const formData = new FormData();
-		formData.append("file", e.target.files);
-		console.log(e.target.files);
-		axios.post('/api/uploadImage', formData, {
-			headers: {
-			  'Content-Type': 'multipart/form-data'
-			}
-		}).then(response => {
-		})
-		.catch(error => {
-			console.error('Error uploading image:', error);
-		});
-    }
-  return (
+	const [openGeneralAppr, setOpenGeneralAppr] = useState(false);
+	const handleToggleGeneralAppr = useCallback(() => setOpenGeneralAppr(openGeneralAppr => !openGeneralAppr),[]);
+ 	return (
 	<>
+	<Breadcrumb crumbs={crumbs}/>
 	<Page fullWidth>
-		<Breadcrumb crumbs={crumbs}/>
-	</Page>
-	<Page fullWidth>
-		<div className="row">
-			<div className="col-sm-3">
 				<SettingPageSidebar />
-			</div>
-			<div className="col-sm-9">
-				<Layout.Section>
-					<LegacyCard sectioned>
-						{/* <ColorPicker/> */}
-					<h2>Add Image:</h2>
-					<input type="file" multiple onChange={handleChange} />
-					<img src={imageLogo} />
-					</LegacyCard>
-				</Layout.Section>
-			</div>
-		</div>
-
-	</Page>
-    </>
+				<div className='accordian_rowmain'>
+					<Layout.Section>
+						<LegacyCard sectioned>
+							<div
+								onClick={handleToggleGeneralAppr}
+								ariaExpanded={openGeneralAppr}
+								ariaControls="basic-collapsible"
+								className={openGeneralAppr ? 'open' : ''}
+							>
+								<div className='flxrow acctitle'>
+									<div className='flxfix iconbox'>
+										<i className='twenty-star'></i>
+									</div>
+									<div className='flxflexi titledetail'>
+										<Text as="h1" variant="headingMd">
+										General appearance
+										</Text>
+										<Text>
+										Customize visual elements to fit your brand's look & feel
+										</Text>
+									</div>
+									<div className='flxfix arrowicon'>
+										<i className='twenty-arrow-down'></i>
+									</div>
+								</div>
+							</div>
+							<LegacyStack vertical>
+								<Collapsible
+									open={openGeneralAppr}
+									id="basic-collapsible"
+									transition={{
+										duration: '300ms',
+										timingFunction: 'ease-in-out',
+									}}
+									expandOnPrint
+								>
+								<GeneralAppearance shopRecords={shopRecords} generalAppearances={generalAppearances}/>
+								</Collapsible>
+							</LegacyStack>
+						</LegacyCard>
+					</Layout.Section>
+				</div>
+				
+			</Page>
+		</>
+  
     
   );
 }

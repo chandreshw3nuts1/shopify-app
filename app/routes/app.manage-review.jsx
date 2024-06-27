@@ -51,6 +51,7 @@ export async function loader({request}) {
 			"filter_status" : "all",
 			"filter_stars" : "all",
 			"search_keyword" : "",
+			"filter_options" : "all",
 		}
 		// const reviewItems = await fetchAllReviewsApi(defaultSearchParams);
 		
@@ -92,6 +93,7 @@ export default function ManageReview() {
 	const [loading, setLoading] = useState(false);
 	const [selectedStatus, setSelectedStatus] = useState('all');
 	const [selectedRating, setSelectedRating] = useState('all');
+	const [selectedFilterOptions, setSelectedFilterOptions] = useState('all');
 	
 	const handleSelectStatusChange = (e) => {
 		setSelectedStatus(e.target.value);
@@ -104,6 +106,11 @@ export default function ManageReview() {
 		setSearchFormData({ ...searchFormData, filter_stars: e.target.value });
 	};
 
+	const handleSelectedFilterOptionsChange = (e) => {
+		setSelectedFilterOptions(e.target.value);
+		setSearchFormData({ ...searchFormData, filter_options: e.target.value });
+	};
+
   
 	const handleChange = (e) => {
 		setSearchFormData({ ...searchFormData, [e.target.name]: e.target.value });
@@ -113,11 +120,6 @@ export default function ManageReview() {
 	const [filteredReviewsTotal, setFilteredReviewsTotal] = useState(0);
 
 
-	const filterStatusOptions = [
-		{label: 'All', value: 'all'},
-		{label: 'Published', value: 'publish'},
-		{label: 'Unpublished', value: 'unpublish'},
-	];
 	const observer = useRef();
 	const lastElementRef = useRef();
 	
@@ -243,10 +245,14 @@ export default function ManageReview() {
 								<div className="col-lg-6">
 									<div className="form-group">
 										<label htmlFor="">Filter</label>
-										<select className="input_text">
-											<option>Photo & Video Reviews</option>
-											<option>Only Photo</option>
-											<option>Only Video</option>
+										<select value={selectedFilterOptions} onChange={handleSelectedFilterOptionsChange}  className="input_text"> 
+											<option value="">All</option>
+											<option value="image_video">Photo & Video Reviews</option>
+											<option value="image">Only Photo</option>
+											<option value="video">Only Video</option>
+											<option value="tag_as_feature">Featured review</option>
+											<option value="verify_badge">Verify badge review</option>
+											<option value="carousel_review">Carousel review</option>
 										</select>
 									</div>
 								</div>

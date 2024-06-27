@@ -107,10 +107,16 @@ const CreateReviewModalWidget = ({shopRecords, customQuestionsData}) => {
                                             </div>
                                             <input class="form__file" name="image_and_videos[]" id="upload-files" type="file" accept="image/*,video/mp4,video/x-m4v,video/*" multiple="multiple" />
                                         </label>
+                                        
+
+                                        <div className="discountrow uploadDocError d-none">
+                                            <div className="discountbox"><strong>You can select up to 5 photos</strong></div>
+                                        </div>
                                         <div className="discountrow">
                                             <div className="discountbox">Your <strong>15%</strong> off discount is wait for you!</div>
                                         </div>
                                         <div class="form__files-container" id="files-list-container"></div>
+                                        <input type="hidden" name="file_objects" id="file_objects" />
                                     </div>
                                 </div>
                                 <div className="modal-footer">
@@ -130,8 +136,8 @@ const CreateReviewModalWidget = ({shopRecords, customQuestionsData}) => {
                                     <div className="modal-body">
                                         <div className="popupquestionswrap">
                                             <h4>{customQuestionItem.question}</h4>
-                                            <input type="" name= {"questions["+qIndex+"][question_id]"} value={customQuestionItem._id} />
-                                            <input type="" name= {"questions["+qIndex+"][question_name]"} value={customQuestionItem.question} />
+                                            <input type="hidden" name= {"questions["+qIndex+"][question_id]"} value={customQuestionItem._id} />
+                                            <input type="hidden" name= {"questions["+qIndex+"][question_name]"} value={customQuestionItem.question} />
                                             <div className="answers_wrap">
                                                 { customQuestionItem.answers.map((answerItems ,aIndex) => 
                                                     <div className="anserbox">

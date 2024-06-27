@@ -4,12 +4,14 @@ if (mongoose.models['settings']) {
   delete mongoose.models['settings'];
 }
 
+
 const settingsSchema = new mongoose.Schema({
     shop_id: {type: mongoose.Schema.Types.ObjectId, ref: 'shop_details', required: true },
-    autoPublishReview: { type: Boolean },
-    reviewPublishMode: { type: String },
-    reviewNotification: { type: Boolean },
-    addOnsiteReview: { type: Boolean },
+    autoPublishReview: { type: Boolean, default: true },
+    reviewPublishMode: { type: String, default : "auto" },
+    reviewNotification: { type: Boolean, default: true },
+    addOnsiteReview: { type: Boolean, default: false},
+    reviewNotificationEmail: { type: String }
     
 },{
   timestamps: true

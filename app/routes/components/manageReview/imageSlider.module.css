@@ -172,3 +172,6 @@
   margin: 0 1px 0 0;
 }
 .cover_photo_label svg { width: 12px; height: 12px; margin: 0 4px 0 0;}
+.videoWidth {
+  width: 100%;
+}

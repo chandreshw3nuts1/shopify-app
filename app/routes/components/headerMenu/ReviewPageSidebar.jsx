@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom'; // Assuming you're using React Router for routing
-import {Card, Breadcrumbs, Button,Layout, LegacyCard} from '@shopify/polaris';
+import { NavLink } from 'react-router-dom'; // Assuming you're using React Router for routing
+import {Layout} from '@shopify/polaris';
 
 const ReviewPageSidebar = (props) => {
   

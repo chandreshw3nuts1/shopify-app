@@ -46,12 +46,15 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 	}
 
 	const [showChangeProductModal, setShowChangeProductModal] = useState(false);
+	const [changeProductIndex, setChangeProductIndex] = useState('');
+
 	const handleCloseChangeProductModal = () => setShowChangeProductModal(false);
 	const [changeProductReviewId, setChangeProductReviewId] = useState('');
 
 	const handleShowChangeProductModal = (review_id, index) => {
 		setShowChangeProductModal(true);
 		setChangeProductReviewId(review_id);
+		setChangeProductIndex(index);
 	}
 	const [changeProductValueError, setChangeProductValueError] = useState(true);
 	const [changeProductHandle, setChangeProductHandle] = useState('');
@@ -106,11 +109,12 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 
 
 	const submitChangeProduct = async () => {
-
+		 
 		const customParams = {
 			review_id: changeProductReviewId,
 			changeProductHandle: changeProductHandle,
-			actionType: "changeProductHandle"
+			actionType: "changeProductHandle",
+			shop : shopRecords.shop,
 		};
 		const response = await fetch(`/api/manage-review`, {
 			method: 'POST',
@@ -122,15 +126,24 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 		const data = await response.json();
 		if (data.status == 200) {
 			toast.success(data.message);
+			setFilteredReviews(filteredReviews.map((item, idx) =>
+				idx === changeProductIndex 
+					? {
+						...item, 
+						productDetails: { 
+						...item.productDetails, 
+						title: data.updatedProductData.product_title, 
+						handle: data.updatedProductData.product_url 
+						} 
+					}
+					: item
+			));
+			setChangeProductHandle('');
+			setShowChangeProductModal(false);
 		} else {
 			toast.error(data.message);
 		}
-		setReplyValueError(true);
-		setReplyText('');
-		setShowReplayModal(false);
-		setFilteredReviews(filteredReviews.map((item, idx) =>
-			idx === replyReviewIndex ? { ...item, replyText: replyText } : item
-		));
+		
 	};
 
 	

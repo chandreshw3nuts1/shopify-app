@@ -1,17 +1,18 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Assuming you're using React Router for routing
-import {Card, Breadcrumbs, Button,Layout, LegacyCard} from '@shopify/polaris';
+import { NavLink } from 'react-router-dom'; // Assuming you're using React Router for routing
+import {Layout} from '@shopify/polaris';
 
 const SettingPageSidebar = (props) => {
   
   return (
-    <Layout.Section>
-        <ul>
-            <li><Link to="./../branding"> Branding</Link></li>
-            <li><Link to="./../manage-review"> Manage Reviews</Link></li>
-        </ul>
-    </Layout.Section>
-      
+    <div className='review_topline'>
+      <Layout.Section>
+          <ul>
+              <li><NavLink  to="./../branding"><i className='twenty-collectreviews'></i>Branding</NavLink></li>
+              <li><NavLink  to="./../manage-review"><i className='twenty-managereviews'></i>Manage Reviews</NavLink></li>
+          </ul>
+      </Layout.Section>
+    </div>
   );
 };
 
