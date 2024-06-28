@@ -27,7 +27,7 @@ import {
   Select
 } from "@shopify/polaris";
 
-const ProductReviewWidget = ({shopRecords, reviewItems, productsDetails,formParams}) => {
+const ProductReviewWidget = ({shopRecords, reviewItems ,formParams}) => {
     
 	return (
 	  <>
@@ -38,14 +38,14 @@ const ProductReviewWidget = ({shopRecords, reviewItems, productsDetails,formPara
               </div> : "" }
             
             <div className="main_review_block">
-                <ReviewItem reviewItems={reviewItems} productsDetails={productsDetails} formParams = {formParams}/>
+                <ReviewItem reviewItems={reviewItems} formParams = {formParams} shopRecords={shopRecords}/>
             </div>
             {formParams.hasMore == 1 ? <div className="load_more_review">
                 <Link url="javascript:void(0)" id="load_more_review">Load more</Link>
             </div> : ""}
         </div> :
 
-            <ReviewItem reviewItems={reviewItems} productsDetails={productsDetails} formParams = {formParams}/>
+            <ReviewItem reviewItems={reviewItems} formParams = {formParams} shopRecords={shopRecords}/>
 
         }
         

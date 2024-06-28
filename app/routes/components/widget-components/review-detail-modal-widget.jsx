@@ -2,73 +2,81 @@ import CloseIcon from "../icons/CloseIcon";
 import { Image } from "react-bootstrap";
 import LongArrowLeft from "../icons/LongArrowLeft";
 import LongArrowRight from "../icons/LongArrowRight";
+import {getUploadDocument} from './../../../utils/documentPath';
+import StarBigIcon from "../icons/StarBigIcon";
+import moment from 'moment';
+import settingsJson from './../../../utils/settings.json'; 
 
-const ReviewDetailModalWidget = () => {
-    const SliderImage1 = "https://gossip-relationships-corporations-cottage.trycloudflare.com/images/slider-image-1.jpg";
-    const SliderImage2 = "https://gossip-relationships-corporations-cottage.trycloudflare.com/images/slider-image-2.jpg";
-    const SliderImage3 = "https://gossip-relationships-corporations-cottage.trycloudflare.com/images/slider-image-3.jpg";
-    const SliderImage4 = "https://gossip-relationships-corporations-cottage.trycloudflare.com/images/slider-image-4.jpg";
+import {
+    Text,
+  } from "@shopify/polaris";
+  
+  
+const ReviewDetailModalWidget = ({shopRecords, reviewDetails, productsDetails}) => {
+    const videoIcon = `${settingsJson.host_url}/images/play-circle.png`;
     return (
         <>
             <div class="modal fade reviewdetailpopup" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <CloseIcon />
+                            <CloseIcon /> 
                         </button>
+                        
+                         
                         <div class="modal-body">
                             <div className="revdetailwrap flxrow">
-                                <div className="imagesliderwrap">
-                                    <div id="carouselExampleCaptions" class="carousel slide">
-                                        <div class="carousel-indicators">
-                                            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1">
-                                                <Image src={SliderImage1} alt="" />
+                                {reviewDetails.reviewDocuments.length > 0 && 
+                                    <div className="imagesliderwrap">
+                                        <div id="carouselExampleCaptions" class="carousel slide">
+                                            
+                                            <div class="carousel-indicators">
+                                            {reviewDetails.reviewDocuments.map((media, i) => (
+                                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to={i} class={i == 0? "active" : ""} aria-current={i == 0? "true" : ""} aria-label="Slide 1">
+                                                    {media.type === 'image' ? (
+                                                        <Image src={getUploadDocument(media.url)} alt="" />
+                                                    ) : (
+                                                        
+                                                        <Image src={videoIcon} alt="" />
+
+                                                    )}
+                                                </button>
+                                            ))}
+                                            
+                                            </div>
+                                            <div class="carousel-inner">
+                                                {reviewDetails.reviewDocuments.map((media, i) => (
+                                                    <div class={`carousel-item ${i == 0 ?  "active" : "" }`}>
+                                                        <div className="imagewrap">
+                                                        {media.type === 'image' ? (
+                                                            <Image src={getUploadDocument(media.url)} alt="" />
+                                                        ) : (
+                                                            <video  controls>
+                                                                <source src={getUploadDocument(media.url)} type="video/mp4" />
+                                                            </video>
+                                                        )}
+                                                            
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                                
+                                            </div>
+                                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true">
+                                                    <LongArrowLeft />
+                                                </span>
                                             </button>
-                                            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2">
-                                                <Image src={SliderImage2} alt="" />
-                                            </button>
-                                            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3">
-                                                <Image src={SliderImage3} alt="" />
-                                            </button>
-                                            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3" aria-label="Slide 4">
-                                                <Image src={SliderImage4} alt="" />
+                                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true">
+                                                    <LongArrowRight />
+                                                </span>
                                             </button>
                                         </div>
-                                        <div class="carousel-inner">
-                                            <div class="carousel-item active">
-                                                <div className="imagewrap">
-                                                    <Image src={SliderImage1} alt="" />
-                                                </div>
-                                            </div>
-                                            <div class="carousel-item">
-                                                <div className="imagewrap">
-                                                    <Image src={SliderImage2} alt="" />
-                                                </div>
-                                            </div>
-                                            <div class="carousel-item">
-                                                <div className="imagewrap">
-                                                    <Image src={SliderImage3} alt="" />
-                                                </div>
-                                            </div>
-                                            <div class="carousel-item">
-                                                <div className="imagewrap">
-                                                    <Image src={SliderImage4} alt="" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                                            <span class="carousel-control-prev-icon" aria-hidden="true">
-                                                <LongArrowLeft />
-                                            </span>
-                                        </button>
-                                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                                            <span class="carousel-control-next-icon" aria-hidden="true">
-                                                <LongArrowRight />
-                                            </span>
-                                        </button>
                                     </div>
+                                }
+                                <div className="rightinfowrap">
+
                                 </div>
-                                <div className="rightinfowrap"></div>
                             </div>
                         </div>
                     </div>

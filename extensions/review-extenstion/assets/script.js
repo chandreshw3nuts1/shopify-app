@@ -325,7 +325,33 @@ $(document).on("click", "#show_create_review_modal",  function() {
 	
 });
 
-$(document).on("click", "#load_more_review",  function() {
+$(document).on("click", ".review-list-item",  function() {
+    reviewId = $(this).data('reviewid');
+    $.ajax({
+        type: 'POST',
+        url: `/apps/custom-proxy/widget`,
+        data: {
+            reviewId : reviewId,
+			actionType : 'openReviewDetailModal',
+			shop_domain : shop_domain
+		},
+		dataType : "json",
+        success: function(response) {
+            
+			$("#staticBackdrop").remove();
+            var modal_html = response.body;
+			$("body").append(modal_html);
+
+            $("#staticBackdrop").modal("show");
+		},
+        error: function(xhr, status, error) {
+            // Handle errors
+            console.error(xhr.responseText);
+        }
+    });
+    
+});
+    $(document).on("click", "#load_more_review",  function() {
 	page = page +1;
 	loadReviews(page);
 });

@@ -620,7 +620,6 @@ export async function action({ request} ) {
 						}
 					}
 
-					const mapReviewItems = {};
 					reviewItems.map(items => {
 						items.productDetails = mapProductDetails[items.product_id];
 						return items;
