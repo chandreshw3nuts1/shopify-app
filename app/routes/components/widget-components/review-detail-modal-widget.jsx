@@ -6,6 +6,8 @@ import {getUploadDocument} from './../../../utils/documentPath';
 import StarBigIcon from "../icons/StarBigIcon";
 import moment from 'moment';
 import settingsJson from './../../../utils/settings.json'; 
+import InfoIcon from "../icons/InfoIcon";
+import ArrowRightIcon from "../icons/ArrowRightIcon";
 
 import {
     Text,
@@ -14,9 +16,10 @@ import {
   
 const ReviewDetailModalWidget = ({shopRecords, reviewDetails, productsDetails}) => {
     const videoIcon = `${settingsJson.host_url}/images/play-circle.png`;
+    console.log(productsDetails.nodes[0]);
     return (
         <>
-            <div class="modal fade reviewdetailpopup" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class={`modal fade reviewdetailpopup ${reviewDetails.reviewDocuments.length > 0 ? '' : 'imagemissing'}`} data-bs-backdrop="static"  id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">
@@ -28,6 +31,7 @@ const ReviewDetailModalWidget = ({shopRecords, reviewDetails, productsDetails}) 
                             <div className="revdetailwrap flxrow">
                                 {reviewDetails.reviewDocuments.length > 0 && 
                                     <div className="imagesliderwrap">
+                                        
                                         <div id="carouselExampleCaptions" class="carousel slide">
                                             
                                             <div class="carousel-indicators">
@@ -74,8 +78,46 @@ const ReviewDetailModalWidget = ({shopRecords, reviewDetails, productsDetails}) 
                                         </div>
                                     </div>
                                 }
-                                <div className="rightinfowrap">
-
+                                <div className="rightinfowrap flxcol">
+                                    <div className="top_detail flxfix">
+                                        <div className="namerow flxrow">
+                                            <h3>{reviewDetails.first_name} {reviewDetails.last_name}</h3>
+                                            <div className="infoicon">
+                                                <InfoIcon />
+                                            </div>
+                                        </div>
+                                        {/* <div>{JSON.stringify(reviewDetails.reviewDocuments)}</div> */}
+                                        <div className="reviewanddates">
+                                            <div class={`ratingstars flxrow star-${reviewDetails.rating}`}>
+                                                <StarBigIcon className="ratingstar" />
+                                                <StarBigIcon className="ratingstar" />
+                                                <StarBigIcon className="ratingstar" />
+                                                <StarBigIcon className="ratingstar" />
+                                                <StarBigIcon className="ratingstar" />
+                                            </div>
+                                            <div className="datebox">
+                                                {moment(reviewDetails.created_at).format('M/D/YYYY')}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="mid_detail flxflexi">
+                                        <div className="reviewtext">
+                                            <p>{reviewDetails.description}</p>
+                                        </div>
+                                    </div>
+                                    <div className="bottom_detail flxfix">
+                                        <div className="productbox">
+                                            <div className="imgbox flxfix">
+                                                <Image src={productsDetails.nodes[0].images.edges[0].node.transformedSrc} />
+                                            </div>
+                                            <div className="detailbox flxflexi">
+                                                <h6>{productsDetails.nodes[0].title}</h6>
+                                                <div className="prolink">
+                                                    <a href="#">View Product <ArrowRightIcon /></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -250,7 +250,7 @@ $(document).on('click','.continueBtn', function() {
 
 
 var page = 1;
-console.log($("#display-widget-component").data('product-id'));
+// console.log($("#display-widget-component").data('product-id'));
 var settings_vars = $("#display-widget-component").data('product-settings');
 const product_id = $("#display-widget-component").data('product-id');
 const shop_domain = $("#display-widget-component").data('shop-domain');
