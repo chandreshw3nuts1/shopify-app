@@ -100,6 +100,18 @@ body .revbtn.regularbtn { border-radius: 8px; padding: 0 16px;}
 body .revbtn.regularbtn:disabled { border-radius: 8px; padding: 0 16px; opacity: 0.5;}
 body .revbtn.bigbtn { padding: 0 20px; font-size: 16px; font-weight: 600;}
 body .revbtn.bigbtn:disabled { padding: 0 20px; font-size: 16px; font-weight: 600; opacity: 0.5;}
+body .revbtn.wbigbtn { height: 48px; font-weight: 600; font-size: 16px;}
+body .revbtn.wbigbtn:disabled { height: 48px; font-weight: 600; font-size: 16px; opacity: 0.5;}
+
+body .dropdown-menu { padding: 6px; background: var(--whiteBg); border-radius: 10px; border: solid 1px var(--borderColor);}
+body .dropdown-menu .dropdown-item { white-space: nowrap; height: 44px; border-radius: 10px; color: var(--lightGreyColor); font-size: 14px; display: flex; align-items: center; padding: 0 10px;}
+body .dropdown-menu .dropdown-item:hover { background: var(--lightGreyBGcolor);}
+
+.dropdown .noafter::after,
+.dropdown .noafter::before { display: none;}
+.dropdown .arrowright { width: 24px; height: 24px; display: flex; margin: 0;}
+.dropdown .arrowright svg { display: block; margin: 0; padding: 0; width: 24px; height: 24px;}
+.dropdown .show .arrowright svg { transform: rotate(180deg);}
 
 /* Default styling for stars */
 .star-rating {
@@ -238,6 +250,36 @@ padding-left: 10px;
 
 .modal.reviewdetailpopup .revdetailwrap .mid_detail { margin: 0; padding: 16px 0;}
 .modal.reviewdetailpopup .revdetailwrap .mid_detail .reviewtext p { font-size: 14px; line-height: 1.71; color: var(--darkColor); margin: 0; padding: 0;}
+.modal.reviewdetailpopup .revdetailwrap .mid_detail .reviewtext + .qawrap { margin: 16px 0 0 0;}
+.modal.reviewdetailpopup .revdetailwrap .mid_detail .qaboxrow + .qaboxrow { margin: 16px 0 0 0;}
+.modal.reviewdetailpopup .revdetailwrap .mid_detail .qawrap .quationname { font-size: 13px; font-weight: 500; color: var(--lightGreyColor);}
+.modal.reviewdetailpopup .revdetailwrap .mid_detail .qawrap .answername { margin: 0; font-size: 14px; color: var(--darkColor); display: block; font-weight: 500;}
+
+.review_widget_main { padding: 44px 0;}
+.load_more_review { padding: 44px 0 0 0; display: flex; justify-content: center;}
+
+.review_top_actions { margin: 0 0 32px 0; display: flex;}
+.review_top_actions .left_actions { margin: 0;}
+.review_top_actions .left_actions .section_title { font-size: 22px; color: var(--darkColor); font-weight: 700; margin: 0 0 12px 0; padding: 0; line-height: normal;}
+.review_top_actions .left_actions .star-rating { display: flex; align-items: center;}
+.review_top_actions .left_actions .star-rating .ratingstars { display: flex; align-items: center;}
+.review_top_actions .left_actions .star-rating .ratingstars svg { width: 24px; height: 24px; color: var(--borderColor);}
+.review_top_actions .left_actions .star-rating .ratingstars svg + svg { margin: 0 0 0 2px;}
+.review_top_actions .left_actions .star-rating .ratingstars.star-1 svg:nth-child(-n+1) { color: #FFC107;}
+.review_top_actions .left_actions .star-rating .ratingstars.star-2 svg:nth-child(-n+2) { color: #FFC107;}
+.review_top_actions .left_actions .star-rating .ratingstars.star-3 svg:nth-child(-n+3) { color: #FFC107;}
+.review_top_actions .left_actions .star-rating .ratingstars.star-4 svg:nth-child(-n+4) { color: #FFC107;}
+.review_top_actions .left_actions .star-rating .ratingstars.star-5 svg:nth-child(-n+5) { color: #FFC107;}
+.review_top_actions .left_actions .starbtn { background: none !important; border: none !important; outline: none !important; box-shadow: none !important; padding: 0; margin: 0; display: flex; align-items: center;}
+.review_top_actions .left_actions .starbtn .ratingcount { font-size: 14px; font-weight: 600; color: var(--darkColor); line-height: normal; margin: 0 0 0 6px; padding: 0;}
+.review_top_actions .left_actions .starbtn::before,
+.review_top_actions .left_actions .starbtn::after { display: none;}
+.review_top_actions .left_actions .starbtn .arrowright { width: 24px; height: 24px; display: flex; margin: 0 0 0 6px;}
+.review_top_actions .left_actions .starbtn .arrowright svg { display: block; margin: 0; padding: 0; width: 24px; height: 24px;}
+.review_top_actions .left_actions .starbtn.show .arrowright svg { transform: rotate(180deg);}
+.review_top_actions .left_actions .totalreviewcount { margin: 12px 0 0 0; color: var(--lightGreyColor); font-size: 14px; line-height: 1.71; padding: 0;}
+.review_top_actions .right_actions { margin: 0;}
+
 
 .modal.reviewdetailpopup .revdetailwrap .bottom_detail { border-top: solid 1px var(--borderColor); padding: 16px 0 0 0;}
 .modal.reviewdetailpopup .revdetailwrap .bottom_detail .productbox { display: flex; align-items: center;}

@@ -104,6 +104,16 @@ const ReviewDetailModalWidget = ({shopRecords, reviewDetails, productsDetails}) 
                                         <div className="reviewtext">
                                             <p>{reviewDetails.description}</p>
                                         </div>
+                                        <div className="qawrap">
+                                            <div className="qaboxrow">
+                                                <div className="quationname">My question one ?</div>
+                                                <div className="answername">Answer one</div>
+                                            </div>
+                                            <div className="qaboxrow">
+                                                <div className="quationname">My question two ?</div>
+                                                <div className="answername">Answer two</div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className="bottom_detail flxfix">
                                         <div className="productbox">
