@@ -9,7 +9,7 @@
 
 
 
-<div id="display-widget-component" data-product-id="{{ product.id }}" data-product-url="{{ product.url }}" data-shop-domain="{{ shop.domain }}" data-product-title="{{ product.title }}" data-shop-domain="{{ shop.domain }}"  data-product-settings='{{ block.settings | json }}' >
+<div id="display-widget-component" data-cust-last_name = "{{ customer.last_name  }}"  data-cust-first_name = "{{ customer.first_name  }}"  data-cust-email= "{{ customer.email }}" data-product-id="{{ product.id }}" data-product-url="{{ product.url }}" data-shop-domain="{{ shop.domain }}" data-product-title="{{ product.title }}" data-shop-domain="{{ shop.domain }}"  data-product-settings='{{ block.settings | json }}' >
     
 </div>
 
@@ -17,12 +17,6 @@
 
 <script>
 </script>
-
-
-
-
-
-
 
 {% schema %}
 {

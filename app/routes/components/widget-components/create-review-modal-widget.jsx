@@ -16,7 +16,7 @@ import FaceStar3 from "../images/FaceStar3";
 import FaceStar4 from "../images/FaceStar4";
 import FaceStar5 from "../images/FaceStar5";
 
-const CreateReviewModalWidget = ({shopRecords, customQuestionsData}) => {
+const CreateReviewModalWidget = ({shopRecords, customQuestionsData, paramObj}) => {
     const proxyUrl = "https://"+shopRecords.shop+"/apps/custom-proxy/product-review-widget";
 	const countTotalQuestions = customQuestionsData.length;
     return (
@@ -32,7 +32,7 @@ const CreateReviewModalWidget = ({shopRecords, customQuestionsData}) => {
                             <div className="reviewsteps step-1">
                                 <div className="modal-header">
                                     <div className="flxflexi">
-                                        <h1 class="modal-title">Create Review</h1>
+                                        <h1 className="modal-title">Create Review</h1>
                                         <div className="subtextbox">
                                             <div className="success-box-wrap">
                                                 <div className='success-box'>
@@ -85,13 +85,13 @@ const CreateReviewModalWidget = ({shopRecords, customQuestionsData}) => {
                             <div className="reviewsteps step-2 d-none">
                                 <div className="modal-header">
                                     <div className="flxflexi">
-                                        <h1 class="modal-title">Show it off</h1>
+                                        <h1 className="modal-title">Show it off</h1>
                                         <div className="subtextbox">We'd love to see it in action.</div>
                                     </div>
                                 </div>
                                 <div className="modal-body">
                                     <div className="filesupload_wrap">
-                                        <label class="form__container" id="upload-container">
+                                        <label className="form__container" id="upload-container">
                                             <div className="iconimage">
                                                 <AddImageIcon />
                                             </div>
@@ -105,7 +105,7 @@ const CreateReviewModalWidget = ({shopRecords, customQuestionsData}) => {
                                                     Add Photos or Videos
                                                 </span>
                                             </div>
-                                            <input class="form__file" name="image_and_videos[]" id="upload-files" type="file" accept="image/*,video/mp4,video/x-m4v,video/*" multiple="multiple" />
+                                            <input className="form__file" name="image_and_videos[]" id="upload-files" type="file" accept="image/*,video/mp4,video/x-m4v,video/*" multiple="multiple" />
                                         </label>
                                         
 
@@ -115,7 +115,7 @@ const CreateReviewModalWidget = ({shopRecords, customQuestionsData}) => {
                                         <div className="discountrow">
                                             <div className="discountbox">Your <strong>15%</strong> off discount is wait for you!</div>
                                         </div>
-                                        <div class="form__files-container" id="files-list-container"></div>
+                                        <div className="form__files-container" id="files-list-container"></div>
                                         <input type="hidden" name="file_objects" id="file_objects" />
                                     </div>
                                 </div>
@@ -126,10 +126,10 @@ const CreateReviewModalWidget = ({shopRecords, customQuestionsData}) => {
                             </div>
 
                             { customQuestionsData.map((customQuestionItem ,qIndex) => 
-                                <div className={`reviewsteps step-${qIndex+3} d-none`}>
+                                <div className={`reviewsteps step-${qIndex+3} d-none`} key={qIndex}>
                                     <div className="modal-header">
                                         <div className="flxflexi">
-                                            <h1 class="modal-title">Question</h1>
+                                            <h1 className="modal-title">Question</h1>
                                             <div className="subtextbox">Please give us answer about your product.</div>
                                         </div>
                                     </div>
@@ -163,7 +163,7 @@ const CreateReviewModalWidget = ({shopRecords, customQuestionsData}) => {
                             <div className={`reviewsteps step-${countTotalQuestions+3} d-none`}>
                                 <div className="modal-header">
                                     <div className="flxflexi">
-                                        <h1 class="modal-title">Tell us more!</h1>
+                                        <h1 className="modal-title">Tell us more!</h1>
                                         <div className="subtextbox">We'd love to see your thoughts about our product.</div>
                                     </div>
                                 </div>
@@ -185,7 +185,7 @@ const CreateReviewModalWidget = ({shopRecords, customQuestionsData}) => {
                             <div className={`reviewsteps step-${countTotalQuestions+4} d-none`}>
                                 <div className="modal-header">
                                     <div className="flxflexi">
-                                        <h1 class="modal-title">About you!</h1>
+                                        <h1 className="modal-title">About you!</h1>
                                         <div className="subtextbox">Can we collect your information for improve our product.</div>
                                     </div>
                                 </div>
@@ -195,23 +195,23 @@ const CreateReviewModalWidget = ({shopRecords, customQuestionsData}) => {
                                             <div className="col-lg-6">
                                                 <div className="form-group">
                                                     <label htmlFor="">First name <span className="text-danger" >*</span> </label>
-                                                    <input type="text" className="form-control" name="first_name" id="first_name" placeholder="Enter first name" />
-                                                    <div class="error text-danger" id="firstNameError"></div>
+                                                    <input type="text" className="form-control" name="first_name" id="first_name" placeholder="Enter first name" value={paramObj.cust_first_name} />
+                                                    <div className="error text-danger" id="firstNameError"></div>
                                                 </div>
                                             </div>
                                             <div className="col-lg-6">
                                                 <div className="form-group">
                                                     <label htmlFor="">Last name <span className="text-danger" >*</span></label>
-                                                    <input type="text" className="form-control" name="last_name" id="last_name" placeholder="Enter last name" />
-                                                    <div class="error text-danger" id="lastNameError"></div>
+                                                    <input type="text" className="form-control" name="last_name" id="last_name" placeholder="Enter last name" value={paramObj.cust_last_name} />
+                                                    <div className="error text-danger" id="lastNameError"></div>
 
                                                 </div>
                                             </div>
                                             <div className="col-lg-12">
                                                 <div className="form-group">
                                                     <label htmlFor="">Email address <span className="text-danger" >*</span></label>
-                                                    <input type="email" className="form-control" name="email" id="emailfield" placeholder="Enter email address" />
-                                                    <div class="error text-danger" id="emailError"></div>
+                                                    <input type="email" className="form-control" name="email" id="emailfield" placeholder="Enter email address" value={paramObj.cust_email} />
+                                                    <div className="error text-danger" id="emailError"></div>
 
                                                 </div>
                                             </div>
@@ -230,7 +230,7 @@ const CreateReviewModalWidget = ({shopRecords, customQuestionsData}) => {
                             <div className={`reviewsteps step-${countTotalQuestions+5} d-none thankyou-page`}>
                                 <div className="modal-header">
                                     <div className="flxflexi">
-                                        <h1 class="modal-title">Thank you!</h1>
+                                        <h1 className="modal-title">Thank you!</h1>
                                         <div className="subtextbox">Can we collect your information for improve our product.</div>
                                     </div>
                                 </div>

@@ -31,8 +31,12 @@ import productReviews from "./models/productReviews";
                 const customQuestionsData = await getCustomQuestions({
                     shop_id: shopRecords._id,
                 });
-
-                const dynamicModalComponent = <CreateReviewModalWidget shopRecords={shopRecords} customQuestionsData={customQuestionsData} />;
+                const paramObj = {
+                    cust_first_name : formData.get('cust_first_name'),
+                    cust_last_name : formData.get('cust_last_name'),
+                    cust_email : formData.get('cust_email'),
+                }
+                const dynamicModalComponent = <CreateReviewModalWidget shopRecords={shopRecords} customQuestionsData={customQuestionsData} paramObj={paramObj} />;
                 const htmlModalContent = ReactDOMServer.renderToString(dynamicModalComponent);
                 return json({
                     htmlModalContent :htmlModalContent

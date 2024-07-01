@@ -1,15 +1,14 @@
 import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
-import { GraphQLClient } from "graphql-request";
-import { mongoConnection } from "./../utils/mongoConnection";
-import { findOneRecord } from "./../utils/common";
+import { findOneRecord, getShopifyProducts } from "./../utils/common";
 import EmailTemplate from './components/email/EmailTemplate';
 import ReactDOMServer from 'react-dom/server';
 import { ObjectId } from 'mongodb';
 import productReviews  from "./models/productReviews";
 import reviewDocuments from "./models/reviewDocuments";
 import productReviewQuestions from "./models/productReviewQuestions";
-import settingsJson from './../utils/settings.json'; 
+import manualRequestProducts from './models/manualRequestProducts';
+
 import fs from "fs";
 import path from "path";
 export async function loader() {
@@ -45,7 +44,7 @@ export async function action({ request }) {
   
 	const shop = formData.get('shop_domain');
 	const actionType = formData.get('actionType');
-
+	
 	switch (method) {
 		case "POST":
 			try {
@@ -84,14 +83,23 @@ export async function action({ request }) {
 					return json({ success: true });
 
 				} else {
+					if(shop == null || formData.get('product_id') == null ) {
+						return json({ success: false });
+					}
 
 					const shopRecords = await findOneRecord("shop_details", { "shop": shop });
 					const settings = await findOneRecord('settings', {
 						shop_id: shopRecords._id,
 					});
 
+					const productId =  `"gid://shopify/Product/${formData.get('product_id')}"`;
+					var productsDetails = await getShopifyProducts(shop, productId);
+					const productNodes = productsDetails.nodes[0];
+					if(productNodes == null ) {
+						return json({ success: false });
+					}
+
 					const shopifyStoreUrl = `${process.env.SHOPIFY_ADMIN_STORE_URL}/${shopRecords.name}/apps/${process.env.SHOPIFY_APP_NAME}/app/manage-review`;
-					console.log(shopifyStoreUrl);
 					
 					var reviewStatus = 'publish';
 					const reviewStarRating = parseInt(formData.get('rating'));
@@ -109,7 +117,7 @@ export async function action({ request }) {
 							var reviewStatus = 'pending';
 						}
 					}
-					const db = await mongoConnection();
+
 					const display_name = formData.get('first_name') +" "+ formData.get('last_name').charAt(0);
 					const productReviewModel = new productReviews({
 						shop_id: shopRecords._id,
@@ -120,14 +128,21 @@ export async function action({ request }) {
 						description: formData.get('description'),
 						rating: reviewStarRating,
 						product_id: formData.get('product_id'),
-						product_title: formData.get('product_title'),
-						product_url: formData.get('product_url'),
+						product_title: productNodes.title,
+						product_url: productNodes.handle,
 						status: reviewStatus,
+						is_review_request : formData.get('requestId') ? true : false
 					});
 					const result = await productReviewModel.save();
 
 					const insertedId = result._id;
 
+					await manualRequestProducts.updateOne(
+						{ _id : formData.get('requestId') },
+						{
+						  $set: { status : "received"}
+						}
+					);
 					// upload images/video
 
 					const file_objects = formData.get("file_objects");
@@ -210,8 +225,6 @@ export async function action({ request }) {
 						subject,
 						html: emailHtml,
 					});
-
-
 
 					return json({ success: true });
 				}

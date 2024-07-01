@@ -49,11 +49,7 @@ $(document).ready(function(){
             jQuery('.success-box').addClass(`star-${ratingValue}`);
             
             var msg = "";
-            /* if (ratingValue > 1) {
-                msg = "Thanks! You rated this " + ratingValue + " stars.";
-            } else {
-                msg = "We will improve ourselves. You rated this " + ratingValue + " stars.";
-            } */
+            
             if (ratingValue == 5) {
                 msg = "Awesome Product!";
             } else if ( ratingValue == 4) {
@@ -256,6 +252,9 @@ const product_id = $("#display-widget-component").data('product-id');
 const shop_domain = $("#display-widget-component").data('shop-domain');
 const product_url = $("#display-widget-component").data('product-url');
 const product_title = $("#display-widget-component").data('product-title');
+const cust_first_name = $("#display-widget-component").data('cust-first_name');
+const cust_last_name = $("#display-widget-component").data('cust-last_name');
+const cust_email = $("#display-widget-component").data('cust-email');
 //{{ block.settings | json }};
 $(document).ready(function(){
 	loadReviews(page);
@@ -301,6 +300,9 @@ $(document).on("click", "#show_create_review_modal",  function() {
         data: {
             product_id : product_id,
 			shop_domain : shop_domain,
+            cust_first_name : cust_first_name,
+            cust_last_name : cust_last_name,
+            cust_email : cust_email,
 			actionType : 'openModal'
 		},
 		dataType : "json",
@@ -420,6 +422,6 @@ $(document).on("submit", "#review_submit_btn_form",  function(e) {
 });
 
 function validateEmail(email) {
-    var re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    var re = /^[\w+-.]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
     return re.test(email);
 }

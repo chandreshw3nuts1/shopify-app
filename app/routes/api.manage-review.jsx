@@ -2,7 +2,7 @@ import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
 import { GraphQLClient } from "graphql-request";
 // import { mongoConnection } from "./../utils/mongoConnection"; 
-import { findOneRecord } from "./../utils/common"; 
+import { findOneRecord, getShopifyProducts } from "./../utils/common"; 
 import ReplyEmailTemplate from './components/email/ReplyEmailTemplate';
 import ReactDOMServer from 'react-dom/server';
 import { ObjectId } from 'mongodb';
@@ -575,39 +575,14 @@ export async function action({ request} ) {
 					var hasMore = 0;
 					var mapProductDetails = {};
 					if (reviewItems.length > 0) {
-						const shopSessionRecords = await findOneRecord("shopify_sessions", {"shop" : shop});
+						// const shopSessionRecords = await findOneRecord("shopify_sessions", {"shop" : shop});
 
 						var hasMore = 1;
-						const client = new GraphQLClient(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
-						headers: {
-								'X-Shopify-Access-Token': shopSessionRecords.accessToken,
-							},
-						});
 						const uniqueProductIds = [...new Set(reviewItems.map(item => item.product_id))];
 
 						const productIds = uniqueProductIds.map((item) =>  `"gid://shopify/Product/${item}"`);
-
-						const query = `{
-							nodes(ids: [${productIds}]) {
-								... on Product {
-									id
-									title
-									handle
-									description
-									images(first: 1) {
-										edges {
-											node {
-												id
-												transformedSrc(maxWidth: 100, maxHeight: 100)
-											}
-										}
-									}
-								}
-							}
-						} `;
-
-						var productsDetails = await client.request(query);
-
+						var productsDetails = await getShopifyProducts(shop, productIds);
+						
 						if(productsDetails.nodes.length > 0) {
 							productsDetails = productsDetails.nodes;
 							productsDetails.forEach(node => {
