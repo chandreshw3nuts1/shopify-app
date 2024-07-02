@@ -2,6 +2,7 @@ import ItemRating  from './rating';
 import moment from 'moment';
 import StarBigIcon from "../icons/StarBigIcon";
 import {getUploadDocument} from './../../../utils/documentPath';
+import PlayIcon from '../icons/PlayIcon';
 
 
 import {
@@ -77,9 +78,12 @@ const ReviewItem = ({ reviewItems, formParams, shopRecords}) => {
                                                     {media.type === 'image' ? (
                                                         <img src={getUploadDocument(media.url)} />
                                                     ) : (
-                                                        <video  controls>
-                                                            <source src={getUploadDocument(media.url)} type="video/mp4" />
-                                                        </video>
+                                                        <div className='videoth'>
+                                                            <div className='playicon'><PlayIcon /></div>
+                                                            <video>
+                                                                <source src={getUploadDocument(media.url)} type="video/mp4" />
+                                                            </video>
+                                                        </div>
                                                     )}
                                                     
                                                 </div>

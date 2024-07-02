@@ -225,13 +225,19 @@ padding-left: 10px;
 .modal.reviewdetailpopup .revdetailwrap .carousel { height: 100%; position: relative;}
 .modal.reviewdetailpopup .revdetailwrap .carousel-inner { height: 100%;}
 .modal.reviewdetailpopup .revdetailwrap .carousel-item { height: 100%;}
-.modal.reviewdetailpopup .revdetailwrap .carousel-item .imagewrap { position: absolute; left: 0; top: 0; width: 100%; height: 100%;}
+.modal.reviewdetailpopup .revdetailwrap .carousel-item .imagewrap { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: var(--darkColor);}
 .modal.reviewdetailpopup .revdetailwrap .carousel-item .imagewrap img { width: 100%; height: 100%; position: absolute; left: 0; top: 0; object-fit: cover;}
+.modal.reviewdetailpopup .revdetailwrap .carousel-item .imagewrap video { object-fit: contain; width: 100%; height: 100%; position: absolute; left: 0; top: 0;}
+.modal.reviewdetailpopup .revdetailwrap .carousel-item .videowrap { position: absolute; left: 0; top: 0; width: 100%; height: 100%;}
+.modal.reviewdetailpopup .revdetailwrap .carousel-item .videowrap button { position: absolute; left: 50%; top: 50%; width: 44px; height: 44px; background: var(--whiteBg); border-radius: 50px; margin: -22px 0 0 -22px; display: flex; align-items: center; justify-content: center; color: var(--darkColor); border: none; outline: none; box-shadow: none;}
 .modal.reviewdetailpopup .revdetailwrap .carousel-indicators { margin: 0 0 32px 0; padding: 0; display: flex; justify-content: center; width: 100%;}
 .modal.reviewdetailpopup .revdetailwrap .carousel-indicators button { width: 74px; height: 74px; border: none; border-radius: 0; opacity: 1; outline: none; box-shadow: none; position: relative; margin: 0 5px; padding: 0;}
 .modal.reviewdetailpopup .revdetailwrap .carousel-indicators button img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover;}
+.modal.reviewdetailpopup .revdetailwrap .carousel-indicators button video { pointer-events: none; width: 100%; height: 100%; object-fit: cover; position: absolute; left: 0; top: 0;}
 .modal.reviewdetailpopup .revdetailwrap .carousel-control-next, 
 .modal.reviewdetailpopup .revdetailwrap .carousel-control-prev { opacity: 1; width: auto; padding: 0 32px;}
+.modal.reviewdetailpopup .revdetailwrap .carousel-control-next.disabled, 
+.modal.reviewdetailpopup .revdetailwrap .carousel-control-prev.disabled { opacity: 0; pointer-events: none;}
 .modal.reviewdetailpopup .revdetailwrap .carousel-control-next span, 
 .modal.reviewdetailpopup .revdetailwrap .carousel-control-prev span { background: none; width: 44px; height: 44px; display: flex; background: var(--whiteBg); border-radius: 50px; align-items: center; justify-content: center; color: var(--darkColor);}
 .modal.reviewdetailpopup .revdetailwrap .rightinfowrap { width: 100%; max-width: 50%; padding: 24px 44px 24px 24px;}
@@ -278,6 +284,23 @@ padding-left: 10px;
 .review_top_actions .left_actions .starbtn .arrowright svg { display: block; margin: 0; padding: 0; width: 24px; height: 24px;}
 .review_top_actions .left_actions .starbtn.show .arrowright svg { transform: rotate(180deg);}
 .review_top_actions .left_actions .totalreviewcount { margin: 12px 0 0 0; color: var(--lightGreyColor); font-size: 14px; line-height: 1.71; padding: 0;}
+.review_top_actions .stardetaildd { padding: 8px;}
+.review_top_actions .stardetaildd .stardetailrow { align-items: center;}
+.review_top_actions .stardetaildd .stardetailrow + .stardetailrow { margin: 6px 0 0 0;}
+.review_top_actions .stardetaildd .stardetailrow .sratnumber { font-size: 14px; color: var(--darkColor); font-weight: 500; width: 10px;}
+.review_top_actions .stardetaildd .stardetailrow .reviewgiven { font-size: 14px; color: var(--darkColor); font-weight: 500; margin:0 0 0 6px;}
+.review_top_actions .stardetaildd .stardetailrow .starsicons { align-items: center; margin: 0 4px 0 0;}
+.review_top_actions .stardetaildd .stardetailrow .starsicons svg { width: 24px; height: 24px; color: var(--borderColor);}
+.review_top_actions .stardetaildd .stardetailrow .starsicons .stardiv { display: flex; align-items: center; justify-content: center;}
+.review_top_actions .stardetaildd .stardetailrow .starsicons .stardiv + .stardiv { margin-left: -4px;}
+.review_top_actions .stardetaildd .stardetailrow .starsicons.star-1 .stardiv:nth-child(-n+1) svg { color: #FFC107;}
+.review_top_actions .stardetaildd .stardetailrow .starsicons.star-2 .stardiv:nth-child(-n+2) svg { color: #FFC107;}
+.review_top_actions .stardetaildd .stardetailrow .starsicons.star-3 .stardiv:nth-child(-n+3) svg { color: #FFC107;}
+.review_top_actions .stardetaildd .stardetailrow .starsicons.star-4 .stardiv:nth-child(-n+4) svg { color: #FFC107;}
+.review_top_actions .stardetaildd .stardetailrow .starsicons.star-5 .stardiv:nth-child(-n+5) svg { color: #FFC107;}
+.review_top_actions .stardetaildd .stardetailrow .processbar { width: 100px; height: 6px; border-radius: 2px; background: var(--borderColor); position: relative; overflow: hidden;}
+.review_top_actions .stardetaildd .stardetailrow .processbar .activebar { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 2px; background: var(--blueColor); display: block;}
+
 .review_top_actions .right_actions { margin: 0;}
 
 
@@ -449,4 +472,8 @@ form textarea.input_text { height: 80px; padding-top: 8px; padding-bottom: 8px;}
 .frontreviewbox .box-style .review_imageswrap .imagebox { width: 80px; height: 80px; border-radius: 10px; overflow: hidden; position: relative; margin: 0;}
 .frontreviewbox .box-style .review_imageswrap .imagebox + .imagebox { margin-left: 16px;}
 .frontreviewbox .box-style .review_imageswrap .imagebox img { width: 100%; height: 100%; left: 0; top: 0; object-fit: cover; position: absolute;}
+.frontreviewbox .box-style .review_imageswrap .videoth { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none;}
+.frontreviewbox .box-style .review_imageswrap .videoth video { width: 100%; height: 100%; position: absolute; left: 0; top: 0; object-fit: cover;}
+.frontreviewbox .box-style .review_imageswrap .videoth .playicon { position: absolute; left: 50%; top: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; z-index: 1; pointer-events: none; margin: -12px 0 0 -12px; background: var(--whiteBg); color: var(--darkColor); border-radius: 50px;}
+
 
