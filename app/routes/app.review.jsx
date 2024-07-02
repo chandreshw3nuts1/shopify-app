@@ -4,6 +4,8 @@ import { useLoaderData } from '@remix-run/react';
 import { mongoConnection } from './../utils/mongoConnection';
 import { getShopDetails } from './../utils/getShopDetails';
 import { findOneRecord, getCustomQuestions } from './../utils/common';
+import { useNavigate } from 'react-router-dom';
+
 import Breadcrumb from './components/Breadcrumb';
 import ReviewPageSidebar from './components/headerMenu/ReviewPageSidebar';
 import CustomQuestions from "./components/collectReview/CustomQuestions";
@@ -46,20 +48,25 @@ export async function loader({ request }) {
 
 const ReviewPage = () => {
 	const loaderData = useLoaderData();
+	const navigate = useNavigate();
+
 	const settings = loaderData.settings;
 	const customQuestionsData = loaderData.customQuestionsData;
 	const shopRecords = loaderData.shopRecords;
 
 	const [crumbs, setCrumbs] = useState([
-		{ title: 'Review', link: '' },
-		{ title: 'Collect Review', link: '' },
+		{ title : "Review", "link" :"./../review"},
+		{ title : "Collect Review", link: "" },
 	]);
 	const [openNewReview, setOpenNewReview] = useState(false);
 	const [openCustomQuestions, setOpenCustomQuestions] = useState(false);
 	const handleToggleNewReview = useCallback(() => setOpenNewReview(openNewReview => !openNewReview),[]);
 	const handleToggleCustomQuestions = useCallback(() => setOpenCustomQuestions(openCustomQuestions => !openCustomQuestions),[]);
 
+	const showManualRequestForm = () => {
+		navigate('/app/manual-review-requests/');
 
+	}  
 	return (
 		<>
 			<Breadcrumb crumbs={crumbs} />
@@ -156,6 +163,36 @@ const ReviewPage = () => {
 						</LegacyCard>
 					</Layout.Section>
 				</div>
+
+
+				<div className='accordian_rowmain' onClick={showManualRequestForm}>
+					<Layout.Section>
+						<LegacyCard sectioned>
+							<div
+								ariaControls="basic-collapsible"
+							>
+								<div className='flxrow acctitle'>
+									<div className='flxfix iconbox'>
+										<i className='twenty-questions'></i>
+									</div>
+									<div className='flxflexi titledetail'>
+										<Text as="h1" variant="headingMd">
+											Manual review requests
+										</Text>
+										<Text>
+											Send one-time emails to collect reviews of your products
+										</Text>
+									</div>
+									<div className='flxfix arrowicon'>
+										<i className='twenty-arrow-down'></i>
+									</div>
+								</div>
+							</div>
+						</LegacyCard>
+					</Layout.Section>
+				</div>
+
+
 			</Page>
 		</>
 	);

@@ -26,32 +26,41 @@ export const links = () => {
 };
 
 export const loader = async ({ params, request }) => {
-	const { requestId } = params;
-	const url = new URL(request.url);
-	const requestIdQuery = url.searchParams.get("requestId");
-
-	const manualRequestProductsModel = await manualRequestProducts.findById( requestId);
-
-    let manualReviewRequestsModel, shopRecords = null;
-	let customQuestionsData = [];
-	if(manualRequestProductsModel) {
-		manualReviewRequestsModel = await manualReviewRequests.findById(manualRequestProductsModel.manual_request_id);
-		
-		shopRecords = await shopDetails.findById(manualReviewRequestsModel.shop_id);
-
-		customQuestionsData = await getCustomQuestions({
-			shop_id: shopRecords._id,
-		});
+	try{
+		const { requestId } = params;
+		const url = new URL(request.url);
+		const requestIdQuery = url.searchParams.get("requestId");
+	
+		const manualRequestProductsModel = await manualRequestProducts.findById( requestId);
+	
+		let manualReviewRequestsModel, shopRecords = null;
+		let customQuestionsData = [];
+		if(manualRequestProductsModel) {
+			manualReviewRequestsModel = await manualReviewRequests.findById(manualRequestProductsModel.manual_request_id);
+			
+			shopRecords = await shopDetails.findById(manualReviewRequestsModel.shop_id);
+	
+			customQuestionsData = await getCustomQuestions({
+				shop_id: shopRecords._id,
+			});
+		}
+	
+	
+	  return { requestId, requestIdQuery, shopRecords, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel};
+	
+	}catch(error){
+		console.log(error);
 	}
+	return {};
 
-	
-	
-
-  return { requestId, requestIdQuery, shopRecords, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel};
 };
 
 const ReviewRequestForm = () => {
 	const { requestId, requestIdQuery, shopRecords, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel } = useLoaderData();
+	if(!manualRequestProductsModel) {
+		return 'Page Not Found';
+	}
+
 	const [faceStartValue, setFaceStartValue] = useState("");
 	const [faceStarLable, setFaceStarLable] = useState("Please provide star rating");
 	const [rating, setRating] = useState(0); 

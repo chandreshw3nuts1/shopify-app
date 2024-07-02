@@ -18,7 +18,7 @@ const Breadcrumb = (props) => {
                 );
               } else {
                 return(
-                  <li key="selected-li"><Link to={crumb.link}> {crumb.title}</Link></li>
+                  <li key={index}><Link to={crumb.link}> {crumb.title}</Link></li>
                 );
               }
             })

@@ -10,6 +10,7 @@ import { ObjectId } from 'mongodb';
 import { getShopDetailsByShop, findOneRecord, getCustomQuestions } from './../utils/common';
 import { mongoConnection } from './../utils/mongoConnection';
 import productReviews from "./models/productReviews";
+import { getShopifyProducts } from "./../utils/common"; 
 
     export async function loader() {
 
@@ -141,36 +142,11 @@ import productReviews from "./models/productReviews";
                             }
                         }
                     ]);
-
+                    
                     const reviewDetails = reviewItems[0];
-                    const client = new GraphQLClient(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
-                        headers: {
-                            'X-Shopify-Access-Token': shopSessionRecords.accessToken,
-                        },
-                    });
-
-
 					const productId =  `"gid://shopify/Product/${reviewDetails.product_id}"`;
-                    const query = `{
-                        nodes(ids: [${productId}]) {
-                            ... on Product {
-                                id
-                                title
-                                description
-                                images(first: 1) {
-                                    edges {
-                                        node {
-                                            id
-                                            transformedSrc(maxWidth: 100, maxHeight: 100)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } `;
-
-                    var productsDetails = await client.request(query);
-
+                    
+                    var productsDetails = await getShopifyProducts(shop, productId);
                     const dynamicComponent = <ReviewDetailModalWidget shopRecords={shopRecords} reviewDetails={reviewDetails} productsDetails={productsDetails} />;
                     const htmlContent = ReactDOMServer.renderToString(dynamicComponent);
                     return json({

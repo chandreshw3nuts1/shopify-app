@@ -16,7 +16,6 @@ import {
   
 const ReviewDetailModalWidget = ({shopRecords, reviewDetails, productsDetails}) => {
     const videoIcon = `${settingsJson.host_url}/images/play-circle.png`;
-    console.log(productsDetails.nodes[0]);
     return (
         <>
             <div class={`modal fade reviewdetailpopup ${reviewDetails.reviewDocuments.length > 0 ? '' : 'imagemissing'}`} data-bs-backdrop="static"  id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -105,6 +104,7 @@ const ReviewDetailModalWidget = ({shopRecords, reviewDetails, productsDetails}) 
                                             <p>{reviewDetails.description}</p>
                                         </div>
                                     </div>
+                                    {productsDetails.length >0 &&
                                     <div className="bottom_detail flxfix">
                                         <div className="productbox">
                                             <div className="imgbox flxfix">
@@ -113,11 +113,11 @@ const ReviewDetailModalWidget = ({shopRecords, reviewDetails, productsDetails}) 
                                             <div className="detailbox flxflexi">
                                                 <h6>{productsDetails.nodes[0].title}</h6>
                                                 <div className="prolink">
-                                                    <a href="#">View Product <ArrowRightIcon /></a>
+                                                    <a href={`https://${shopRecords.shop}/products/${productsDetails.nodes[0].handle}`} target="_blank">View Product <ArrowRightIcon /></a>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div>}
                                 </div>
                             </div>
                         </div>
