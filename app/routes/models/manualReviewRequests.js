@@ -7,7 +7,11 @@ if (mongoose.models['manual_review_requests']) {
 const manualRequestProductsanualReviewRequestsSchema = new mongoose.Schema({
     
     shop_id: {type: mongoose.Schema.Types.ObjectId, ref: 'shop_details', required: true },
-    email: {type: String, required: true }
+    email: {type: String, required: true },
+    first_name: {type: String },
+    last_name: {type: String },
+    customer_locale: {type: String, default : "en" },
+    order_id: {type: String }
 },{
     timestamps: true
 });

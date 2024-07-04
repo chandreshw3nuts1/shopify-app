@@ -40,17 +40,7 @@ export async function action({ params, request }) {
                     const logo = getUploadDocument(generalAppearancesData.logo, 'logo');
 
                     const productIds = selectedProducts.map((item) => `"gid://shopify/Product/${item}"`);
-                    var productsDetails = await getShopifyProducts(shop, productIds, 200);
-                    var mapProductDetails = [];
-                    if (productsDetails.nodes.length > 0) {
-                        productsDetails = productsDetails.nodes;
-                        productsDetails.forEach(node => {
-                            if (node) {
-                                const id = node.id.split('/').pop();
-                                mapProductDetails.push(node);
-                            }
-                        });
-                    }
+                    var mapProductDetails = await getShopifyProducts(shop, productIds, 200);
 
                     const footer = "";
                     const emailContents = {

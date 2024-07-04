@@ -94,8 +94,8 @@ export async function action({ request }) {
 
 					const productId =  `"gid://shopify/Product/${formData.get('product_id')}"`;
 					var productsDetails = await getShopifyProducts(shop, productId);
-					const productNodes = productsDetails.nodes[0];
-					if(productNodes == null ) {
+					const productNodes = productsDetails[0];
+					if(!productsDetails[0] ) {
 						return json({ success: false });
 					}
 

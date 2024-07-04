@@ -1,11 +1,11 @@
-import { mongoConnection } from './mongoConnection'; 
+import { mongoConnection } from './mongoConnection';
 import { json } from "@remix-run/node";
 import { GraphQLClient } from "graphql-request";
 import customQuestions from './../routes/models/customQuestions';
 
 export async function findOneRecord(collection = "", params = {}) {
-	try{
-		
+	try {
+
 
 		if (collection && params) {
 			const db = await mongoConnection();
@@ -14,40 +14,40 @@ export async function findOneRecord(collection = "", params = {}) {
 			return response;
 		}
 
-  	} catch (error) {
-	  console.error('Error fetching findOneRecord record:', error);
-  	}
+	} catch (error) {
+		console.error('Error fetching findOneRecord record:', error);
+	}
 }
 
 export async function getShopDetailsByShop(shop) {
-	try{
-		return await findOneRecord("shop_details", {"shop" : shop});
+	try {
+		return await findOneRecord("shop_details", { "shop": shop });
 	} catch (error) {
 		console.error('Error fetching shop record by shop:', error);
-  	}
+	}
 }
 
 
-export async function getCustomQuestions(params = {} ) {
-	try{
+export async function getCustomQuestions(params = {}) {
+	try {
 		return await customQuestions.find(params);
 	} catch (error) {
 		console.error('Error fetching custom question record :', error);
-  	}
+	}
 }
 
 
 
 export async function getShopifyProducts(shop, productIds = [], imageSize = 60) {
-	try{
-		const shopSessionRecords = await findOneRecord("shopify_sessions", {"shop" : shop});
+	try {
+		const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shop });
 
 		const client = new GraphQLClient(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
 			headers: {
-					'X-Shopify-Access-Token': shopSessionRecords.accessToken,
-				},
-			});
-	
+				'X-Shopify-Access-Token': shopSessionRecords.accessToken,
+			},
+		});
+
 		const query = `{
 			nodes(ids: [${productIds}]) {
 				... on Product {
@@ -67,11 +67,24 @@ export async function getShopifyProducts(shop, productIds = [], imageSize = 60) 
 			}
 		} `;
 
-		return await client.request(query);
+		var shopifyProducts =  await client.request(query);
+
+		var mapProductDetails = [];
+		if (shopifyProducts.nodes.length > 0) {
+			shopifyProducts = shopifyProducts.nodes;
+			shopifyProducts.forEach(node => {
+				if (node) {
+					mapProductDetails.push(node);
+				}
+			});
+		}
+
+		return mapProductDetails;
+
 
 	} catch (error) {
 		console.error('Error fetching custom question record :', error);
-  	}
+	}
 }
 
 
@@ -81,9 +94,9 @@ export async function fetchAllProducts(storeName, accessToken) {
 	const products = [];
 	let hasNextPage = true;
 	let cursor = null;
-  
+
 	while (hasNextPage) {
-	  const query = `
+		const query = `
 		query ($cursor: String) {
 		  products(first: 250, after: $cursor) {
 			edges {
@@ -108,43 +121,43 @@ export async function fetchAllProducts(storeName, accessToken) {
 		  }
 		}
 	  `;
-  
-	  const variables = { cursor };
-	  const response = await fetch(apiUrl, {
-		method: 'POST',
-		headers: {
-		  'Content-Type': 'application/json',
-		  'X-Shopify-Access-Token': accessToken,
-		},
-		body: JSON.stringify({ query, variables }),
-	  });
-  
-	  const data = await response.json();
-	  if (data.errors) {
-		console.error('GraphQL errors:', data.errors);
-		break;
-	  }
-  
-	  const productEdges = data.data.products.edges;
-	  productEdges.forEach(productEdge => {
 
-		products.push({
-		  id: productEdge.node.id.split('/').pop(),
-		  title: productEdge.node.title,
-		  images: productEdge.node.images.edges.map(imageEdge => ({
-			id: imageEdge.node.id,
-			originalSrc: imageEdge.node.originalSrc,
-			transformedSrc: imageEdge.node.transformedSrc,
-		  })),
+		const variables = { cursor };
+		const response = await fetch(apiUrl, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-Shopify-Access-Token': accessToken,
+			},
+			body: JSON.stringify({ query, variables }),
 		});
-	  });
-  
-	  hasNextPage = data.data.products.pageInfo.hasNextPage;
-	  if (hasNextPage) {
-		cursor = productEdges[productEdges.length - 1].cursor;
-	  }
+
+		const data = await response.json();
+		if (data.errors) {
+			console.error('GraphQL errors:', data.errors);
+			break;
+		}
+
+		const productEdges = data.data.products.edges;
+		productEdges.forEach(productEdge => {
+
+			products.push({
+				id: productEdge.node.id.split('/').pop(),
+				title: productEdge.node.title,
+				images: productEdge.node.images.edges.map(imageEdge => ({
+					id: imageEdge.node.id,
+					originalSrc: imageEdge.node.originalSrc,
+					transformedSrc: imageEdge.node.transformedSrc,
+				})),
+			});
+		});
+
+		hasNextPage = data.data.products.pageInfo.hasNextPage;
+		if (hasNextPage) {
+			cursor = productEdges[productEdges.length - 1].cursor;
+		}
 	}
-  
+
 	return products;
-  }
-  
+}
+
