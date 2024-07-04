@@ -430,7 +430,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 						<div className="reviewrowbox">
 							<div className="topline">
 								{result.reviewDocuments.length > 0 &&
-									<div className="slider_imagebox">
+									<div className="slider_imagebox flxfix">
 										<ImageSlider reviewDocuments={result.reviewDocuments} autoPlay={false} interval={500} />
 									</div>
 								}
@@ -515,7 +515,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 										}
 
 
-										<DropdownButton id="dropdown-basic-button" onSelect={(e) => handleMoreReviewChange(e, result._id, index)} title="More">
+										<DropdownButton id="dropdown-basic-button" onSelect={(e) => handleMoreReviewChange(e, result._id, index)} title="More" align={'end'}>
 											<Dropdown.Item eventKey="change-product" className="custom-dropdown-item">Change Product</Dropdown.Item>
 											
 											{ result.tag_as_feature == false &&  <Dropdown.Item eventKey="feature" className="custom-dropdown-item">Tag as Feature</Dropdown.Item> }
@@ -536,28 +536,28 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 									</div>
 								</div>
 							</div>
-							<div class="timeline-reply replywrap flxrow">
-								{result.replyText &&
-									<>
-										<div className="flxflexi">
-											<h3>Your reply</h3>
-											<p >{result.replyText}</p>
-										</div>
-										{ result.status == "publish" && 
-											<>
-												<div className="flxfix replayaction">
-													<button type="button" class="" onClick={(e) => handleShowEditReplyModal(result._id, index)} >
-														<i className="twenty-editicon2"></i>
-													</button>
-													<button type="button" class="" onClick={(e) => deleteReviewReply(result._id, index)} >
-														<i className="twenty-deleteicon"></i>
-													</button>
+							{result.replyText &&
+								<>
+									<div class="timeline-reply replywrap flxrow">
+												<div className="flxflexi">
+													<h3>Your reply</h3>
+													<p >{result.replyText}</p>
 												</div>
-											</>
-										}
-									</>
-								}
-							</div>
+												{ result.status == "publish" && 
+													<>
+														<div className="flxfix replayaction">
+															<button type="button" class="" onClick={(e) => handleShowEditReplyModal(result._id, index)} >
+																<i className="twenty-editicon2"></i>
+															</button>
+															<button type="button" class="" onClick={(e) => deleteReviewReply(result._id, index)} >
+																<i className="twenty-deleteicon"></i>
+															</button>
+														</div>
+													</>
+												}
+									</div>
+								</>
+							}
 						</div>
 					</div>
 				))}

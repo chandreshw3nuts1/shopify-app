@@ -314,7 +314,7 @@ const ReviewRequestForm = () => {
 								</div>
 							</div>
 							<div className="modal-footer">
-							{ rating > 0 && <a onClick={(e) => nextStep(2)} className="revbtn lightbtn nextbtn">Next <LongArrowRight /></a> }
+							{ rating > 0 && <a onClick={(e) => nextStep(2)} className="revbtn outline lightbtn nextbtn">Next <LongArrowRight /></a> }
 							</div>
 						</div>
 					}
@@ -386,8 +386,8 @@ const ReviewRequestForm = () => {
 								</div>
 							</div>
 							<div className="modal-footer">
-								<a onClick={(e) => prevStep(1)} className="revbtn lightbtn backbtn"><LongArrowLeft /> Back</a>
-								<a onClick={(e) => nextStep(3)} className="revbtn lightbtn nextbtn">Next <LongArrowRight /></a>
+								<a onClick={(e) => prevStep(1)} className="revbtn outline lightbtn backbtn"><LongArrowLeft /> Back</a>
+								<a onClick={(e) => nextStep(3)} className="revbtn outline lightbtn nextbtn">Next <LongArrowRight /></a>
 							</div>
 						</div>
 					}
@@ -423,8 +423,8 @@ const ReviewRequestForm = () => {
 									</div>
 								</div>
 								<div className="modal-footer">
-									<a onClick={(e) => prevStep(2+qIndex)} className="revbtn lightbtn backbtn"><LongArrowLeft /> Back</a>
-									<a onClick={(e) => nextStep(qIndex + 4)}  className={`revbtn lightbtn nextbtn ${customQuestionItem.isMakeRequireQuestion ? '' : ''}`} >Next <LongArrowRight /></a>
+									<a onClick={(e) => prevStep(2+qIndex)} className="revbtn outline lightbtn backbtn"><LongArrowLeft /> Back</a>
+									<a onClick={(e) => nextStep(qIndex + 4)}  className={`revbtn outline lightbtn nextbtn ${customQuestionItem.isMakeRequireQuestion ? '' : ''}`} >Next <LongArrowRight /></a>
 								</div>
 							</div>
 						)
@@ -456,8 +456,8 @@ const ReviewRequestForm = () => {
 								</div>
 							</div>
 							<div className="modal-footer">
-								<a onClick={(e) => prevStep(countTotalQuestions+2)} className="revbtn lightbtn backbtn"><LongArrowLeft /> Back</a>
-								{reviewDescription && <a onClick={(e) => nextStep(countTotalQuestions+4)} className="revbtn lightbtn nextbtn">Next <LongArrowRight /></a>}
+								<a onClick={(e) => prevStep(countTotalQuestions+2)} className="revbtn outline lightbtn backbtn"><LongArrowLeft /> Back</a>
+								{reviewDescription && <a onClick={(e) => nextStep(countTotalQuestions+4)} className="revbtn outline lightbtn nextbtn">Next <LongArrowRight /></a>}
 							</div>
 						</div>
 					}
@@ -507,7 +507,7 @@ const ReviewRequestForm = () => {
 								</div>
 							</div>
 							<div className="modal-footer">
-								<a onClick={(e) => prevStep(countTotalQuestions+3)} className="revbtn lightbtn backbtn"><LongArrowLeft /> Back</a>
+								<a onClick={(e) => prevStep(countTotalQuestions+3)} className="revbtn lightbtn outline backbtn"><LongArrowLeft /> Back</a>
 								<button onClick={submitReview} disabled={disableSubmitBtn} type="button" className="revbtn submitBtn">Submit <LongArrowRight /></button>
 							</div>
 						</div>
@@ -531,7 +531,7 @@ const ReviewRequestForm = () => {
 								</div>
 							</div>
 							<div className="modal-footer">
-								<a href={shopUrl} className="revbtn lightbtn nextbtn" > Continue <LongArrowRight /></a>
+								<a href={shopUrl} className="revbtn nextbtn" > Continue <LongArrowRight /></a>
 							</div>
 						</div>
 					}

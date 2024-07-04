@@ -127,45 +127,56 @@ const ReviewPage = () => {
 		<>
 			<Breadcrumb crumbs={crumbs} />
 			<Page fullWidth>
-				<div className='row'>
+				<div className='row justify-content-center'>
 					<div className='col-md-6'>
 						<div className='collectreviewformbox'>
 							<Card>
 								<div className="formcontent" >
-									<form >
-										<div>
-											<label>Email Addresses:</label>
-											<ReactMultiEmail
-												emails={emails}
-												autoFocus={true}
-												onChange={setEmails}
+									<form>
+										<div className='inside_formcontent'>
+											<div>
+												<label>Email Addresses:</label>
+												<ReactMultiEmail
+													emails={emails}
+													autoFocus={true}
+													onChange={setEmails}
 
-												validateEmail={email => isEmail(email)}
-												getLabel={(email, index, removeEmail) => (
-													<div data-tag key={index}>
-														{email}
-														<span data-tag-handle onClick={() => removeEmail(index)}>×</span>
-													</div>
-												)}
-											/>
-										</div>
-
-										<div>
-
-
-											<ul>
-												{displayProductMemo.map(product => (
-													<li key={product.id}>
-														<p>ID: {product.id}</p>
-														<p>Title: {product.title}</p>
-														<img width="50" src={product.images[0].transformedSrc} alt="Product Image" />
-														<button type="button" onClick={(e) => deleteSelectedProducts(product.id)} >Delete</button>
-													</li>
-												))}
-											</ul>
-
-											<Button onClick={(e) => handleShowProductsModal()}>{displayProductMemo.length > 0 ? 'add/edit products' : 'Select products'}</Button>
-
+													validateEmail={email => isEmail(email)}
+													getLabel={(email, index, removeEmail) => (
+														<div data-tag key={index}>
+															{email}
+															<span data-tag-handle onClick={() => removeEmail(index)}>×</span>
+														</div>
+													)}
+												/>
+											</div>
+											<div className='selectproductwrap'>
+												<label htmlFor="">Select products</label>
+												<div className='productslist'>
+													<ul className='proul'>
+														{displayProductMemo.map(product => (
+															<li key={product.id}>
+																{/* <p>ID: {product.id}</p> */}
+																<div className='imagebox flxfix'>
+																	<img width="50" src={product.images[0].transformedSrc} alt="Product Image" />
+																</div>
+																<div className='flxflexi'>
+																	<p>Title: {product.title}</p>
+																</div>
+																<button className='flxfix' type="button" onClick={(e) => deleteSelectedProducts(product.id)} >
+																	<i className='twenty-closeicon'></i>
+																</button>
+															</li>
+														))}
+													</ul>
+													{displayProductMemo.length <= 4 &&
+														<div className='btninwrap'>
+															<Button className='revbtn bluelightbtn' onClick={(e) => handleShowProductsModal()}>{displayProductMemo.length > 0 ? 'add/edit products' : 'Select products'}</Button>
+														</div>
+													 }
+												</div>
+											</div>
+											
 											<div className="formcontent" >
 												<TextField
 													value={requestEmailSubject}
@@ -177,8 +188,19 @@ const ReviewPage = () => {
 												/>
 
 											</div>
-												
-											<Button  disabled = { (displayProductMemo.length == 0 || emails.length == 0 ) }  onClick={(e) => sendManualRequest()}>Send</Button>
+											<div className='alertbox primarybox'>
+												<div className='iconbox'>
+													<i className='twenty-customizeicon'></i>
+												</div>
+												<div className='flxflexi plaintext'>Your email appearance settings can be customized on the <a href="#">Branding</a> page.</div>
+												<div className='closebtn'>
+													<a href="#"><i className='twenty-closeicon'></i></a>
+												</div>
+											</div>
+											<div className="btnwrap emailbottom align-items-center">
+												<span>By sending this email, I confirm that the recipients have given consent</span>
+												<Button className="revbtn ms-auto" disabled = { (displayProductMemo.length == 0 || emails.length == 0 ) }  onClick={(e) => sendManualRequest()}>Send email <i className='twenty-longarrow-right'></i></Button>
+											</div>
 
 											<Modal show={showProductModal} onHide={handleCloseProductModal} size="lg" backdrop="static">
 												<Modal.Header closeButton>
@@ -199,38 +221,43 @@ const ReviewPage = () => {
 
 													</div>
 
-													<div className="row mt-4">
-														<div className="col-md-6 mb-3">
-															{products.map((product, index) => (
-																<div className="product-item" key={index}>
-																	<div className="form-check mr-3">
-																		<input className="form-check-input" type="checkbox"
-																			value={product.id} id={"product_" + index}
-																			onChange={() => handleCheckboxChange(product.id)}
-																			checked={selectedProducts.includes(product.id)}
-																			disabled={!selectedProducts.includes(product.id) && selectedProducts.length >= 5}
-																		/>
-																		<label className="form-check-label" for={"product_" + index}>
-																			<img width="50" src={product.images[0].transformedSrc} alt="Product Image" />
-																			<h5>{product.title}</h5>
-																		</label>
+													<div className='propopuplist'>
+														<div className="row">
+															<div className="col-md-6">
+																{products.map((product, index) => (
+																	<div className="product-item" key={index}>
+																		<div className="form-check mr-3">
+																			<input className="form-check-input" type="checkbox"
+																				value={product.id} id={"product_" + index}
+																				onChange={() => handleCheckboxChange(product.id)}
+																				checked={selectedProducts.includes(product.id)}
+																				disabled={!selectedProducts.includes(product.id) && selectedProducts.length >= 5}
+																			/>
+																			<label className="form-check-label" for={"product_" + index}>
+																				<div className='imgbox flxfix'>
+																					<img width="50" src={product.images[0].transformedSrc} alt="Product Image" />
+																				</div>
+																				<h5 className='flxflexi'>{product.title}</h5>
+																			</label>
+																		</div>
 																	</div>
-																</div>
-															))}
+																))}
 
+															</div>
 														</div>
 													</div>
 
 												</Modal.Body>
 												<Modal.Footer>
-													<Button variant="secondary" onClick={handleCloseProductModal}>
+													<Button className='revbtn lightbtn' onClick={handleCloseProductModal}>
 														Close
 													</Button>
-													<Button disabled={selectedProducts.length == 0} variant="primary" onClick={submitProducts} >
+													<Button className='revbtn ms-auto' disabled={selectedProducts.length == 0} onClick={submitProducts} >
 														Submit
 													</Button>
 												</Modal.Footer>
 											</Modal>
+											
 										</div>
 									</form>
 								</div>

@@ -394,10 +394,12 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
                 ))}
             </DndProvider>
 
-
-            <Button variant="primary" onClick={handleShowModal}>
-                New Question
-            </Button>
+            
+            <div className='btnwrap'>
+                <Button variant="primary revbtn" onClick={handleShowModal}>
+                    <i className='twenty-addicon'></i> New Question
+                </Button>
+            </div>
 
             <Modal show={show} onHide={handleCloseModal} className='smallmodal' size="lg" backdrop="static">
                 <Modal.Header closeButton>
