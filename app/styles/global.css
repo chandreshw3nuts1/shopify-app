@@ -74,6 +74,7 @@ html body {
 .btnwrap { display: flex; column-gap: 16px; margin: 24px 0 0 0;}
 .btnwrap.centeralign { justify-content: center;} 
 body .revbtn { display: inline-flex; height: 44px; padding: 0 24px; border-radius: 100px; font-size: 14px; font-weight: 400; background: var(--blueColor); text-decoration: none; outline: none; box-shadow: none; color: var(--whiteText); align-items: center; column-gap: 6px; border: none; column-gap: 4px; line-height: 16px;}
+body .revbtn i { font-size: 22px;}
 body .revbtn:disabled { display: inline-flex; height: 44px; padding: 0 24px; border-radius: 100px; font-size: 14px; font-weight: 400; background: var(--blueColor); text-decoration: none; outline: none; box-shadow: none; color: var(--whiteText); align-items: center; column-gap: 6px; border: none; column-gap: 4px; line-height: 16px; opacity: 0.5;}
 body .revbtn:hover { background: var(--blueColor); color: var(--whiteText);}
 body .revbtn.tinybtn { height: 24px; padding: 0 12px; column-gap: 6px;}
@@ -118,7 +119,28 @@ body .revbtn.bigbtn:disabled { padding: 0 20px; font-size: 16px; font-weight: 60
 .accordian_rowmain .Polaris-Layout__Section .Polaris-ShadowBevel::before { opacity: 0; visibility: hidden;}
 .accordian_rowmain .Polaris-Layout__Section .Polaris-ShadowBevel .Polaris-Box { background: var(--whiteBg); border-radius: 10px; overflow: visible; border: solid 1px var(--borderColor); padding: 24px;}
 
-.accordian_rowmain .acctitle { margin: 0; cursor: pointer;}
+body .Polaris-TextField__Input { width: 100%; border: solid 1px var(--borderColor); height: 44px; padding: 0 16px; border-radius: 8px; resize: none; outline: none; box-shadow: none; color: var(--darkColor); font-size: 14px;}
+body .Polaris-TextField--focus .Polaris-TextField__Input { border-color: var(--blueColor);}
+body .Polaris-TextField__Backdrop,
+body .Polaris-Select__Backdrop { display: none;}
+body .Polaris-Select__Content { width: 100%; border: solid 1px var(--borderColor); height: 44px; padding: 0 10px 0 16px; border-radius: 8px; resize: none; outline: none; box-shadow: none; color: var(--darkColor); font-size: 14px;}
+body .Polaris-Select__Content .Polaris-Icon { width: 24px; height: 24px;}
+body .Polaris-Select__Content .Polaris-Icon svg { display: none;}
+body .Polaris-Select__Content .Polaris-Icon::before { font-size: 24px; display: block; padding: 1px 0 0 0;
+    content: "\e902";
+    font-family: 'icon24' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    width: 24px;
+    height: 24px;
+}
+
+
+.accordian_rowmain .acctitle { margin: 0; cursor: pointer; align-items: center;}
 .accordian_rowmain .acctitle .iconbox { width: 52px; height: 52px; border-radius: 10px; background: var(--iconBGcolor); display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 16px 0 0;}
 .accordian_rowmain .acctitle .arrowicon { margin: 0 0 0 16px; display: flex; align-items: center; font-size: 24px;}
 .accordian_rowmain .acctitle .arrowicon i { display: block; transition: all ease-in-out 0.3s; transform-origin: center center; width: 24px; height: 24px;}
@@ -197,12 +219,13 @@ form .input_text { width: 100%; height: 44px; border-radius: 8px; background: va
 .accordian_rowmain + .accordian_rowmain { margin-top: 16px;}
 
 .reviewbunch { margin: 0;}
+.reviewbunch + .reviewbunch { margin-top: 16px;}
 .reviewbunch .reviewrowbox { margin: 0; padding: 24px; background: var(--whiteBg); border: solid 1px var(--borderColor); border-radius: 10px;}
 .reviewbunch .reviewrowbox .topline { display: flex;}
 .reviewbunch .reviewrowbox .slider_imagebox { width: 168px; height: 168px; position: relative; margin: 0 15px 0 0;}
 .reviewbunch .reviewrowbox .imagebox::before { content: ''; display: block; padding-top: 100%; margin: 0 15px 0 0;}
 /* .reviewbunch .reviewrowbox .slider_imagebox img { width: 100%; height: 100%; position: absolute; left: 0; top: 0; object-fit: cover;} */
-.reviewbunch .reviewrowbox .rightinfo { margin: 0;}
+.reviewbunch .reviewrowbox .rightinfo { margin: 0; padding: 0 20px 0 0;}
 .reviewbunch .reviewrowbox .rightinfo .titlebox { width: 100%; display: flex; align-items: flex-start;}
 .reviewbunch .reviewrowbox .rightinfo .checkmark { margin: 0 10px 0 0; display: flex; width: 24px; height: 24px; color: var(--whiteText); background: var(--blueColor); align-items: center; justify-content: center; font-size: 22px; border-radius: 50px;}
 .reviewbunch .reviewrowbox .rightinfo .titlebox h4 { font-size: 20px; color: var(--darkColor); margin: 0; padding: 0; font-weight: 400;}
@@ -244,6 +267,11 @@ body .dropdown-menu .dropdown-item:hover { background: var(--lightGreyBGcolor);}
 .dropdownwrap .dropdown.unpblishstatus .btn { background: var(--iconBGcolor); color: var(--lightGreyColor); line-height: 16px;}
 
 .dropdownwrap.ddlightbtn .dropdown .btn { background: var(--iconBGcolor); color: var(--lightGreyColor); border-radius: 8px; padding: 0 20px; font-size: 16px; font-weight: 600; color: var(--darkColor); line-height: 16px;}
+.slider_imagebox .dropdownwrap { position: absolute; right: 0; top: 0;}
+.slider_imagebox .dropdownwrap.ddlightbtn .dropdown .btn { padding: 0; margin: 0; background: none; border: none; width: 24px; height: 24px; background: var(--whiteBg); border-radius: 50px;}
+.slider_imagebox .dropdownwrap.ddlightbtn .dropdown .btn::after { display: none;}
+body .slider_imagebox .dropdown-menu { padding: 0; min-width: 120px;}
+body .slider_imagebox .dropdown-menu .dropdown-item { padding: 2px 5px; height: auto; font-size: 12px; width: auto; max-width: none; color: var(--darkColor); font-weight: 500;}
 
 
 .questionrow { background: var(--whiteBg); border-radius: 10px; overflow: visible; border: solid 1px var(--borderColor); padding: 24px; margin: 24px 0 0 0; display: flex;}
@@ -269,8 +297,9 @@ body .modal .modal-dialog .modal-content .modal-header .btn-close::before { cont
     line-height: 1;
 }
 body .modal .modal-dialog .modal-content .modal-body { padding: 24px 32px;}
-body .modal .modal-dialog .modal-content .modal-footer { margin: 0 32px; padding: 24px 0; justify-content: flex-start;}
+body .modal .modal-dialog .modal-content .modal-footer { margin: 0 32px; padding: 24px 0; justify-content: flex-start; border-top: solid 1px var(--borderColor);}
 body .modal.smallmodal .modal-dialog { max-width: 564px;}
+body .modal .bottomcheckrow { margin: 16px 0 0 0;}
 
 .modalAnswerItems { position: relative;}
 .modalAnswerItems + .modalAnswerItems { margin-top: 44px;}
@@ -281,3 +310,59 @@ body .modal.smallmodal .modal-dialog { max-width: 564px;}
 .btnwrap.popbtnwrap { margin-top: 44px;}
 .btnwrap.popbtnwrap .revbtn { width: 100%; text-align: center; justify-content: center;}
 .btnwrap.popbtnwrap .revbtn i { font-size: 22px;}
+
+
+.collectreviewformbox { margin: 24px 0 0 0;}
+.collectreviewformbox .Polaris-ShadowBevel { box-shadow: none; background: none; border: none; outline: none; border-radius: 0;}
+.collectreviewformbox .Polaris-ShadowBevel::before { display: none;}
+.collectreviewformbox .Polaris-ShadowBevel .Polaris-Box { background: var(--whiteBg); border-radius: 10px; overflow: visible; border: solid 1px var(--borderColor); padding: 24px; box-shadow: none;}
+.collectreviewformbox form label { font-size: 14px; font-weight: 600; color: var(--darkColor); margin: 0; padding: 0 0 12px 0; line-height: normal;}
+.collectreviewformbox form .react-multi-email { border: solid 1px var(--borderColor); border-radius: 8px; padding: 8px;}
+.collectreviewformbox form .react-multi-email > input { font-size: 14px; color: var(--darkColor); font-weight: 500;}
+.collectreviewformbox form .react-multi-email .data-labels > div { background: var(--iconBGcolor); border-radius: 50px; padding: 6px 12px; color: var(--darkColor);}
+.collectreviewformbox form .react-multi-email [data-tag] [data-tag-handle] { font-size: 0; margin: 0 0 0 4px;}
+.collectreviewformbox form .react-multi-email [data-tag] [data-tag-handle]::before { content: "\e926"; font-size: 16px;
+    font-family: 'icon24' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+}
+.collectreviewformbox form .productslist { background: var(--whiteBg); border-radius: 10px; overflow: visible; border: solid 1px var(--borderColor);}
+.collectreviewformbox form .productslist ul.proul:empty { display: none;}
+.collectreviewformbox form .productslist ul.proul { margin: 0; padding: 0; display: block;}
+.collectreviewformbox form .productslist ul.proul li { margin: 0; padding: 10px 14px; display: flex; align-items: center;}
+.collectreviewformbox form .productslist ul.proul li + li { border-top: solid 1px var(--borderColor);}
+.collectreviewformbox form .productslist ul.proul li .imagebox { width: 40px; height: 40px; border-radius: 4px; border: solid 1px var(--borderColor); position: relative; overflow: hidden; margin: 0 12px 0 0;}
+.collectreviewformbox form .productslist ul.proul li .imagebox img { width: 100%; height: 100%; position: absolute; left: 0; top: 0; object-fit: cover;}
+.collectreviewformbox form .productslist ul.proul li p { font-size: 14px; color: var(--darkColor); font-weight: 500; margin: 0; padding: 0;}
+.collectreviewformbox form .productslist ul.proul li button { background: none; border: none; box-shadow: none; width: 30px; height: 30px; border-radius: 50px; background: var(--iconBGcolor); display: flex; align-items: center; justify-content: center; font-size: 20px;}
+.collectreviewformbox form .inside_formcontent { display: flex; flex-direction: column; row-gap: 24px;}
+.collectreviewformbox form .btninwrap { padding: 16px 24px; display: flex; justify-content: center;}
+.collectreviewformbox form .emailbottom span { font-size: 12px; color: var(--lightGreyColor);}
+
+.propopuplist { margin: 24px 0 0 0;}
+.propopuplist .row { row-gap: 16px;}
+.propopuplist .product-item {}
+.propopuplist .product-item .form-check { margin: 0; padding: 0;}
+.propopuplist .product-item .form-check input[type="checkbox"] { display: none;}
+.propopuplist .product-item .form-check label { display: flex; position: relative; align-items: center; border-radius: 8px; border: solid 1px var(--borderColor); padding: 10px 14px; background: var(--lightGreyBGcolor);}
+.propopuplist .product-item .form-check label::before { content: "\e906"; font-family: 'icon24' !important; display: block; width: 20px; height: 20px; background: var(--whiteBg); border: solid 1px var(--borderColor); margin: 0 10px 0 0; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0;}
+.propopuplist .product-item .form-check label .imgbox { width: 50px; height: 50px; border-radius: 5px; overflow: hidden; position: relative;}
+.propopuplist .product-item .form-check label .imgbox img { width: 100%; height: 100%; position: absolute; left: 0; top: 0; object-fit: cover;}
+.propopuplist .product-item .form-check label h5 { margin: 0 0 0 10px; padding: 0; font-size: 14px; font-weight: 600;}
+.propopuplist .product-item .form-check input[type="checkbox"]:checked + label { background: var(--LightblueColor3); border-color: var(--LightblueColor1);}
+.propopuplist .product-item .form-check input[type="checkbox"]:checked + label::before { font-size: 19px; color: var(--whiteText); background: var(--blueColor); border-color: var(--blueColor);}
+
+.modal-content .modal-footer>* { margin: 0;}
+
+
+.alertbox { width: 100%; padding: 16px; border-radius: 10px; background: var(--lightGreyBGcolor); display: flex; align-items: center;}
+.alertbox .iconbox { margin: 0 6px 0 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 24px;}
+.alertbox .plaintext { font-size: 14px; color: var(--darkColor);}
+.alertbox .plaintext a { color: var(--blueColor); font-weight: 600;}
+.alertbox .closebtn { margin: 0 0 0 16px;}
+.alertbox .closebtn a { text-decoration: none; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: var(--whiteBg); border-radius: 50px; color: var(--darkColor); font-size: 20px;}
+.alertbox.primarybox { background: var(--LightblueColor2);}

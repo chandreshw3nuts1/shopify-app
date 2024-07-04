@@ -11,6 +11,7 @@
     display: flex;
     transition: transform 0.5s ease-in-out;
     height: 100%;
+    width: 100%;
   }
   
   .slide {
@@ -110,7 +111,7 @@
   align-items: center;
   justify-content: center;
 }
-.menu_icon svg { display: none;}
+/* .menu_icon svg { display: none;} */
 .menu_icon::before {
   font-size: 24px;
   font-family: 'icon24' !important;
@@ -121,7 +122,9 @@
   text-transform: none;
   line-height: 1;
   content: "\e91b";
+  display: none;
 }
+.menu_icon button { background: none;}
 
 .menu {
   position: absolute;

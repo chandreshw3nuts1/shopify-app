@@ -173,7 +173,7 @@ const ReviewPage = () => {
 							>
 								<div className='flxrow acctitle'>
 									<div className='flxfix iconbox'>
-										<i className='twenty-questions'></i>
+										<i className='twenty-manualreview'></i>
 									</div>
 									<div className='flxflexi titledetail'>
 										<Text as="h1" variant="headingMd">
@@ -183,8 +183,11 @@ const ReviewPage = () => {
 											Send one-time emails to collect reviews of your products
 										</Text>
 									</div>
+									<div className='flxfix btnwrap m-0'>
+										<a href="#" className='revbtn'>Learn More</a>
+									</div>
 									<div className='flxfix arrowicon'>
-										<i className='twenty-arrow-down'></i>
+										<i className='twenty-longarrow-right'></i>
 									</div>
 								</div>
 							</div>
