@@ -66,6 +66,7 @@ export default function ManageNewReview({ settings, shopRecords }) {
 				field: event.target.name,
 				value: event.target.checked,
 				oid: settings._id,
+				shop: shopRecords.shop
 			};
 			const response = await fetch('/api/collect-review-setting', {
 				method: 'POST',
@@ -112,6 +113,7 @@ export default function ManageNewReview({ settings, shopRecords }) {
 					field: e.target.name,
 					value: reviewNotificationEmail,
 					oid: settings._id,
+					shop: shopRecords.shop
 				};
 				const response = await fetch('/api/collect-review-setting', {
 					method: 'POST',

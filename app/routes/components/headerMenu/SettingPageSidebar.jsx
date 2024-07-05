@@ -9,7 +9,9 @@ const SettingPageSidebar = (props) => {
       <Layout.Section>
           <ul>
               <li><NavLink  to="./../branding"><i className='twenty-collectreviews'></i>Branding</NavLink></li>
-              <li><NavLink  to="./../manage-review"><i className='twenty-managereviews'></i>Manage Reviews</NavLink></li>
+              <li><NavLink  to="./../integrations"><i className='twenty-managereviews'></i>Integrations</NavLink></li>
+              <li><NavLink  to="./../orders"><i className='twenty-managereviews'></i>Orders</NavLink></li>
+              <li><NavLink  to="./../general"><i className='twenty-managereviews'></i>General</NavLink></li>
           </ul>
       </Layout.Section>
     </div>

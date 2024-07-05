@@ -31,8 +31,8 @@ export async function loader({request}) {
 		return json({shopRecords : shopRecords,generalAppearances : generalAppearances});
 
 	  } catch (error) {
-		console.error('Error fetching manage review:', error);
-		return json({ error: 'Error fetching manage review' }, { status: 500 });
+		console.error('Error fetching records:', error);
+		return json({ error: 'Error fetching records' }, { status: 500 });
 	}
 
 }

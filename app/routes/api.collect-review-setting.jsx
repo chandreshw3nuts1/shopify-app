@@ -1,12 +1,10 @@
 import { json } from "@remix-run/node";
-import { mongoConnection } from './../utils/mongoConnection';
-import { getShopDetails } from './../utils/getShopDetails';
+import settings from './models/settings';
 import manualRequestProducts from './models/manualRequestProducts';
 import manualReviewRequests from './models/manualReviewRequests';
 import generalAppearances from './models/generalAppearances';
 
 import { ObjectId } from 'mongodb';
-import { Types } from 'mongoose';
 import { getShopDetailsByShop, getShopifyProducts } from './../utils/common';
 import { sendEmail } from "./../utils/email.server";
 import ReactDOMServer from 'react-dom/server';
@@ -20,12 +18,8 @@ export async function loader() {
 }
 
 export async function action({ params, request }) {
-    const collectionName = 'settings';
-
     const method = request.method;
-
     const requestBody = await request.json();
-
     switch (method) {
         case "POST":
             var { shop, actionType } = requestBody;
@@ -95,13 +89,10 @@ export async function action({ params, request }) {
                         console.error('An error occurred:', error);
                     });
 
-                    
-                    return json({ status : 200, message : "Manual review request sent." });
+
+                    return json({ status: 200, message: "Manual review request sent." });
 
                 } else {
-                    const db = await mongoConnection();
-
-                    const collection = db.collection(collectionName);
 
                     const query = { shop_id: shopRecords._id };
                     const update = {
@@ -109,8 +100,8 @@ export async function action({ params, request }) {
                             [requestBody.field]: requestBody.value
                         }
                     };
-                    const options = { upsert: true };
-                    const result = await collection.findOneAndUpdate(query, update, options);
+                    const options = { upsert: true, returnOriginal: false };
+                    const manualRequestModel = await settings.findOneAndUpdate(query, update, options);
 
                     return json({ "status": 200, "message": "Settings saved" });
 

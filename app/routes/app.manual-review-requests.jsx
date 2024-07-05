@@ -3,12 +3,13 @@ import { ReactMultiEmail, isEmail } from 'react-multi-email';
 import 'react-multi-email/dist/style.css';
 import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import { useNavigate } from 'react-router-dom';
 import Breadcrumb from './components/Breadcrumb';
 import { Modal, Button } from 'react-bootstrap';
 import { getShopDetails } from './../utils/getShopDetails';
 import { findOneRecord } from './../utils/common';
+import  InformationAlert from './components/common/information-alert';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 import {
 	Page,
@@ -184,28 +185,18 @@ const ManualReviewRequestsPage = () => {
 			selectedProducts.includes(product.id)
 		);
 	}, [updateMemo])
-	useEffect(() => {
-		const isVisibleInfo = localStorage.getItem('manualRequestEmailNotificationDismissed');
-		setIsVisibleInfo(!isVisibleInfo);
-	}, []);
-	const handleDismiss = (e) => {
+	
+	const backToReviewPage  = (e) =>{
 		e.preventDefault();
-		setIsVisibleInfo(false);
-		localStorage.setItem('manualRequestEmailNotificationDismissed', 'true');
-	};
-
-	const showBrandingPage = (e) => {
-		e.preventDefault();
-		navigate('/app/branding');
+        navigate('/app/review');
 	}
-
 
 	return (
 		<>
 			<Breadcrumb crumbs={crumbs} />
 			<Page fullWidth>
 				<div className='pagebackbtn'>
-					<a href="#"><i className='twenty-arrow-left'></i>Back</a>
+				<a href="#" onClick={backToReviewPage}><i className='twenty-arrow-left'></i>Back</a>
 				</div>
 				<div className='row justify-content-center'>
 					<div className='col-md-6'>
@@ -276,16 +267,7 @@ const ManualReviewRequestsPage = () => {
 												/>
 
 											</div>
-											{isVisibleInfo &&
-												<div className='alertbox primarybox'>
-													<div className='iconbox'>
-														<i className='twenty-customizeicon'></i>
-													</div>
-													<div className='flxflexi plaintext'>Your email appearance settings can be customized on the <a href="#" onClick={showBrandingPage} >Branding</a> page.</div>
-													<div className='closebtn'>
-														<a href="#" onClick={handleDismiss}><i className='twenty-closeicon'></i></a>
-													</div>
-												</div>}
+											<InformationAlert />
 											<div className="btnwrap emailbottom align-items-center">
 												<span>By sending this email, I confirm that the recipients have given consent</span>
 												<Button className="revbtn ms-auto" disabled={(displayProductMemo.length == 0 || emails.length == 0 || submittingRequest)} onClick={(e) => sendManualRequest()}>Send email <i className='twenty-longarrow-right'></i></Button>
@@ -355,7 +337,7 @@ const ManualReviewRequestsPage = () => {
 														Close
 													</Button>
 													<div className='productselected ms-auto'>
-														You have selected <span>0</span>/<span>5</span> products.
+														You have selected <span>{selectedProducts.length}</span>/<span>5</span> products.
 													</div>
 												</Modal.Footer>
 											</Modal>
