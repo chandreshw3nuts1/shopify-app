@@ -1,5 +1,4 @@
 import { mongoConnection } from './mongoConnection';
-import { json } from "@remix-run/node";
 import { GraphQLClient } from "graphql-request";
 import customQuestions from './../routes/models/customQuestions';
 
