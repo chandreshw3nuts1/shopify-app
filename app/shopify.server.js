@@ -30,6 +30,21 @@ const shopify = shopifyApp({
       deliveryMethod: DeliveryMethod.Http,
       callbackUrl: "/api/webhooks",
     },
+    ORDERS_CREATE: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/api/webhook-orders-create",
+    },
+    ORDERS_PARTIALLY_FULFILLED: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/api/webhook-orders-create",
+    },
+    ORDERS_FULFILLED: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/api/webhook-orders-create",
+    },
+
+
+    
   },
   hooks: {
 

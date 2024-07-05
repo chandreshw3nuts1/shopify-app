@@ -450,16 +450,7 @@ export async function action({ request} ) {
 
 					const reviewItems = await productReviews.aggregate([
 						{ 
-							$match: query 
-						},
-						{
-							$sort: { createdAt: -1 } 
-						},
-						{ 
-							$skip: (page - 1) * limit 
-						},
-						{ 
-							$limit: limit 
+							$match: query // Apply your initial match query
 						},
 						{
 							$lookup: {
@@ -514,7 +505,6 @@ export async function action({ request} ) {
 								tag_as_feature: { $first: "$tag_as_feature" },
 								verify_badge: { $first: "$verify_badge" },
 								add_to_carousel: { $first: "$add_to_carousel" },
-								
 								reviewDocuments: { $first: "$reviewDocuments" }, // Use $first to avoid duplicates
 								reviewQuestionsAnswer: { 
 									$push: {
@@ -534,10 +524,16 @@ export async function action({ request} ) {
 							}
 						},
 						{
-							$match: matchFilterOption
+							$match: matchFilterOption // Apply your second match filter
 						},
 						{
-							$sort: { createdAt: -1 }
+							$sort: { createdAt: -1 } // Sort after matching
+						},
+						{
+							$skip: (page - 1) * limit // Apply pagination
+						},
+						{
+							$limit: limit // Limit the number of results per page
 						},
 						{
 							$project: {
@@ -554,9 +550,9 @@ export async function action({ request} ) {
 								replyText: 1,
 								product_id: 1,
 								is_review_request: 1,
-								tag_as_feature : 1,
-								verify_badge : 1,
-								add_to_carousel : 1,
+								tag_as_feature: 1,
+								verify_badge: 1,
+								add_to_carousel: 1,
 								reviewDocuments: 1,
 								reviewQuestionsAnswer: {
 									$filter: {
@@ -570,10 +566,11 @@ export async function action({ request} ) {
 					]);
 					
 					
-					
 					//return reviewItems;
 					var hasMore = 0;
 					var mapProductDetails = {};
+					console.log('reviewItems.length');
+					console.log(reviewItems.length);
 					if (reviewItems.length > 0) {
 						// const shopSessionRecords = await findOneRecord("shopify_sessions", {"shop" : shop});
 
@@ -583,8 +580,7 @@ export async function action({ request} ) {
 						const productIds = uniqueProductIds.map((item) =>  `"gid://shopify/Product/${item}"`);
 						var productsDetails = await getShopifyProducts(shop, productIds);
 						
-						if(productsDetails.nodes.length > 0) {
-							productsDetails = productsDetails.nodes;
+						if(productsDetails.length > 0) {
 							productsDetails.forEach(node => {
 								if(node) {
 									const id = node.id.split('/').pop();
