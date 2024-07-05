@@ -65,7 +65,7 @@ const ManualReviewRequestsPage = () => {
 	const [requestEmailSubject, setRequestEmailSubject] = useState('');
 	const [loading, setLoading] = useState(false);
 	const [submittingRequest, setSubmittingRequest] = useState(false);
-    const [isVisibleInfo, setIsVisibleInfo] = useState(true);
+	const [isVisibleInfo, setIsVisibleInfo] = useState(true);
 
 
 	const handleCloseProductModal = () => setShowProductModal(false);
@@ -185,10 +185,10 @@ const ManualReviewRequestsPage = () => {
 		);
 	}, [updateMemo])
 	useEffect(() => {
-        const isVisibleInfo = localStorage.getItem('manualRequestEmailNotificationDismissed');
-        setIsVisibleInfo(!isVisibleInfo);
-    }, []);
-    const handleDismiss = (e) => {
+		const isVisibleInfo = localStorage.getItem('manualRequestEmailNotificationDismissed');
+		setIsVisibleInfo(!isVisibleInfo);
+	}, []);
+	const handleDismiss = (e) => {
 		e.preventDefault();
 		setIsVisibleInfo(false);
 		localStorage.setItem('manualRequestEmailNotificationDismissed', 'true');
@@ -198,26 +198,33 @@ const ManualReviewRequestsPage = () => {
 		e.preventDefault();
 		navigate('/app/branding');
 	}
-	
+
 
 	return (
 		<>
 			<Breadcrumb crumbs={crumbs} />
 			<Page fullWidth>
+				<div className='pagebackbtn'>
+					<a href="#"><i className='twenty-arrow-left'></i>Back</a>
+				</div>
 				<div className='row justify-content-center'>
 					<div className='col-md-6'>
 						<div className='collectreviewformbox'>
+							<div className='sectitlebox'>
+								<h2>Send manual review requests</h2>
+								<p>Collect reviews from people who have tried your products</p>
+							</div>
 							<Card>
 								<div className="formcontent" >
 									<form>
 										<div className='inside_formcontent'>
 											<div>
-												<label>Email address : <span className="text-danger" >*</span></label>
+												<label>Email address:</label>
 												<ReactMultiEmail
 													emails={emails}
 													autoFocus={true}
 													onChange={setEmails}
-													placeholder="johnsmith@gmail.com"
+
 													validateEmail={email => isEmail(email)}
 													getLabel={(email, index, removeEmail) => (
 														<div data-tag key={index}>
@@ -226,6 +233,7 @@ const ManualReviewRequestsPage = () => {
 														</div>
 													)}
 												/>
+												<div className='inputnote'>Manual requests count towards your review requests email quota. <a href="#">Learn more</a></div>
 											</div>
 											<div className='selectproductwrap'>
 												<label htmlFor="">Select products <span className="text-danger" >*</span></label>
@@ -252,7 +260,10 @@ const ManualReviewRequestsPage = () => {
 														</div>
 													}
 												</div>
+												<div className='inputnote'>Select up to Five products</div>
 											</div>
+
+
 
 											<div className="formcontent" >
 												<TextField
@@ -265,29 +276,29 @@ const ManualReviewRequestsPage = () => {
 												/>
 
 											</div>
-											{isVisibleInfo && 
-											<div className='alertbox primarybox'>
-												<div className='iconbox'>
-													<i className='twenty-customizeicon'></i>
-												</div>
-												<div className='flxflexi plaintext'>Your email appearance settings can be customized on the <a href="#" onClick={showBrandingPage} >Branding</a> page.</div>
-												<div className='closebtn'>
-													<a href="#" onClick={handleDismiss}><i className='twenty-closeicon'></i></a>
-												</div>
-											</div>}
+											{isVisibleInfo &&
+												<div className='alertbox primarybox'>
+													<div className='iconbox'>
+														<i className='twenty-customizeicon'></i>
+													</div>
+													<div className='flxflexi plaintext'>Your email appearance settings can be customized on the <a href="#" onClick={showBrandingPage} >Branding</a> page.</div>
+													<div className='closebtn'>
+														<a href="#" onClick={handleDismiss}><i className='twenty-closeicon'></i></a>
+													</div>
+												</div>}
 											<div className="btnwrap emailbottom align-items-center">
 												<span>By sending this email, I confirm that the recipients have given consent</span>
 												<Button className="revbtn ms-auto" disabled={(displayProductMemo.length == 0 || emails.length == 0 || submittingRequest)} onClick={(e) => sendManualRequest()}>Send email <i className='twenty-longarrow-right'></i></Button>
 											</div>
 
-											<Modal show={showProductModal} onHide={handleCloseProductModal} size="lg" backdrop="static">
+											<Modal scrollable={true} dialogClassName={'productselect'} show={showProductModal} onHide={handleCloseProductModal} size="lg" backdrop="static">
 												<Modal.Header closeButton>
 													<Modal.Title>Select Products</Modal.Title>
 												</Modal.Header>
 
 												<Modal.Body>
 
-													<div className="formcontent" >
+													<div className="formcontent flxfix" >
 														<TextField
 															value={keyword}
 															onChange={handleKeywordChange}
@@ -306,8 +317,9 @@ const ManualReviewRequestsPage = () => {
 														products.length > 0 ?
 															<div className='propopuplist'>
 																<div className="row">
-																	<div className="col-md-6">
-																		{products.map((product, index) => (
+
+																	{products.map((product, index) => (
+																		<div className="col-md-6">
 																			<div className="product-item" key={index}>
 																				<div className="form-check mr-3">
 																					<input className="form-check-input" type="checkbox"
@@ -324,9 +336,9 @@ const ManualReviewRequestsPage = () => {
 																					</label>
 																				</div>
 																			</div>
-																		))}
 
-																	</div>
+																		</div>
+																	))}
 																</div>
 															</div>
 															: <div>No products found</div>)
@@ -336,12 +348,15 @@ const ManualReviewRequestsPage = () => {
 
 												</Modal.Body>
 												<Modal.Footer>
+													<Button className='revbtn' disabled={selectedProducts.length == 0} onClick={submitProducts} >
+														Submit
+													</Button>
 													<Button className='revbtn lightbtn' onClick={handleCloseProductModal}>
 														Close
 													</Button>
-													<Button className='revbtn ms-auto' disabled={selectedProducts.length == 0} onClick={submitProducts} >
-														Submit
-													</Button>
+													<div className='productselected ms-auto'>
+														You have selected <span>0</span>/<span>5</span> products.
+													</div>
 												</Modal.Footer>
 											</Modal>
 
