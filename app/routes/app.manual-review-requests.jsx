@@ -127,29 +127,20 @@ const ReviewPage = () => {
 		<>
 			<Breadcrumb crumbs={crumbs} />
 			<Page fullWidth>
+				<div className='pagebackbtn'>
+					<a href="#"><i className='twenty-arrow-left'></i>Back</a>
+				</div>
 				<div className='row justify-content-center'>
 					<div className='col-md-6'>
 						<div className='collectreviewformbox'>
+							<div className='sectitlebox'>
+								<h2>Send manual review requests</h2>
+								<p>Collect reviews from people who have tried your products</p>
+							</div>
 							<Card>
 								<div className="formcontent" >
 									<form>
 										<div className='inside_formcontent'>
-											<div>
-												<label>Email Addresses:</label>
-												<ReactMultiEmail
-													emails={emails}
-													autoFocus={true}
-													onChange={setEmails}
-
-													validateEmail={email => isEmail(email)}
-													getLabel={(email, index, removeEmail) => (
-														<div data-tag key={index}>
-															{email}
-															<span data-tag-handle onClick={() => removeEmail(index)}>×</span>
-														</div>
-													)}
-												/>
-											</div>
 											<div className='selectproductwrap'>
 												<label htmlFor="">Select products</label>
 												<div className='productslist'>
@@ -175,7 +166,26 @@ const ReviewPage = () => {
 														</div>
 													 }
 												</div>
+												<div className='inputnote'>Select up to Five products</div>
 											</div>
+											<div>
+												<label>Email Addresses:</label>
+												<ReactMultiEmail
+													emails={emails}
+													autoFocus={true}
+													onChange={setEmails}
+
+													validateEmail={email => isEmail(email)}
+													getLabel={(email, index, removeEmail) => (
+														<div data-tag key={index}>
+															{email}
+															<span data-tag-handle onClick={() => removeEmail(index)}>×</span>
+														</div>
+													)}
+												/>
+												<div className='inputnote'>Manual requests count towards your review requests email quota. <a href="#">Learn more</a></div>
+											</div>
+											
 											
 											<div className="formcontent" >
 												<TextField
@@ -202,14 +212,14 @@ const ReviewPage = () => {
 												<Button className="revbtn ms-auto" disabled = { (displayProductMemo.length == 0 || emails.length == 0 ) }  onClick={(e) => sendManualRequest()}>Send email <i className='twenty-longarrow-right'></i></Button>
 											</div>
 
-											<Modal show={showProductModal} onHide={handleCloseProductModal} size="lg" backdrop="static">
+											<Modal scrollable={true} dialogClassName={'productselect'} show={showProductModal} onHide={handleCloseProductModal} size="lg" backdrop="static">
 												<Modal.Header closeButton>
 													<Modal.Title>Select Products</Modal.Title>
 												</Modal.Header>
 
 												<Modal.Body>
 
-													<div className="formcontent" >
+													<div className="formcontent flxfix" >
 														<TextField
 															value={keyword}
 															onChange={handleKeywordChange}
@@ -221,10 +231,10 @@ const ReviewPage = () => {
 
 													</div>
 
-													<div className='propopuplist'>
+													<div className='propopuplist flxflexi'>
 														<div className="row">
-															<div className="col-md-6">
-																{products.map((product, index) => (
+															{products.map((product, index) => (
+																<div className="col-md-6">
 																	<div className="product-item" key={index}>
 																		<div className="form-check mr-3">
 																			<input className="form-check-input" type="checkbox"
@@ -241,20 +251,23 @@ const ReviewPage = () => {
 																			</label>
 																		</div>
 																	</div>
-																))}
 
-															</div>
+																</div>
+															))}
 														</div>
 													</div>
 
 												</Modal.Body>
 												<Modal.Footer>
+													<Button className='revbtn' disabled={selectedProducts.length == 0} onClick={submitProducts} >
+														Submit
+													</Button>
 													<Button className='revbtn lightbtn' onClick={handleCloseProductModal}>
 														Close
 													</Button>
-													<Button className='revbtn ms-auto' disabled={selectedProducts.length == 0} onClick={submitProducts} >
-														Submit
-													</Button>
+													<div className='productselected ms-auto'>
+													You have selected <span>0</span>/<span>5</span> products.
+													</div>
 												</Modal.Footer>
 											</Modal>
 											
