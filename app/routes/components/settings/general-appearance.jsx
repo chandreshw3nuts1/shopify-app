@@ -152,7 +152,9 @@ export default function GeneralAppearance({ shopRecords,generalAppearances }) {
 									</DropdownButton>
 								</div>
 							</div>
-							<div className='colorbox flxflexi'>asd</div>
+							<div className='colorbox flxflexi'>
+								<input type='text' className='form-control' />
+							</div>
 						</div>
 					</div>
 					<div className='form-group m-0'>
