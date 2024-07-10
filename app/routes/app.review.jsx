@@ -26,7 +26,7 @@ export async function loader({ request }) {
 		const shopRecords = await getShopDetails(request);
 
 		const db = await mongoConnection();
-		const settings = await findOneRecord(collectionName,{
+		const settings = await findOneRecord(collectionName, {
 			shop_id: shopRecords._id,
 		});
 
@@ -36,7 +36,7 @@ export async function loader({ request }) {
 		});
 
 
-		return json({"settings" : settings, "shopRecords" : shopRecords, "customQuestionsData" : customQuestionsData});
+		return json({ "settings": settings, "shopRecords": shopRecords, "customQuestionsData": customQuestionsData });
 	} catch (error) {
 		console.error('Error fetching records from MongoDB:', error);
 		return json(
@@ -55,18 +55,24 @@ const ReviewPage = () => {
 	const shopRecords = loaderData.shopRecords;
 
 	const [crumbs, setCrumbs] = useState([
-		{ title : "Review", "link" :"./../review"},
-		{ title : "Collect Review", link: "" },
+		{ title: "Review", "link": "./../review" },
+		{ title: "Collect Review", link: "" },
 	]);
 	const [openNewReview, setOpenNewReview] = useState(false);
 	const [openCustomQuestions, setOpenCustomQuestions] = useState(false);
-	const handleToggleNewReview = useCallback(() => setOpenNewReview(openNewReview => !openNewReview),[]);
-	const handleToggleCustomQuestions = useCallback(() => setOpenCustomQuestions(openCustomQuestions => !openCustomQuestions),[]);
+	const handleToggleNewReview = useCallback(() => setOpenNewReview(openNewReview => !openNewReview), []);
+	const handleToggleCustomQuestions = useCallback(() => setOpenCustomQuestions(openCustomQuestions => !openCustomQuestions), []);
+
+	const [openEmailSettings, setOpenEmailSettings] = useState(false);
+	const handleToggleEmailSettings = useCallback(() => setOpenEmailSettings(openEmailSettings => !openEmailSettings), []);
 
 	const showManualRequestForm = () => {
 		navigate('/app/manual-review-requests/');
+	}
 
-	}  
+	const showReviewRequestEmailForm = () => {
+		navigate('/app/emails/review-request/');
+	}
 	return (
 		<>
 			<Breadcrumb crumbs={crumbs} />
@@ -111,7 +117,7 @@ const ReviewPage = () => {
 									}}
 									expandOnPrint
 								>
-								<ManageNewReview settings={settings} shopRecords={shopRecords}/>	
+									<ManageNewReview settings={settings} shopRecords={shopRecords} />
 								</Collapsible>
 							</LegacyStack>
 						</LegacyCard>
@@ -135,7 +141,7 @@ const ReviewPage = () => {
 											Custom Questions
 										</Text>
 										<Text>
-										Add your own custom questions to the review form
+											Add your own custom questions to the review form
 										</Text>
 									</div>
 									<div className='flxfix arrowicon'>
@@ -156,6 +162,59 @@ const ReviewPage = () => {
 									<div className='row'>
 										<div className='col-md-12'>
 											<CustomQuestions customQuestionsData={customQuestionsData} shopRecords={shopRecords} />
+										</div>
+									</div>
+								</Collapsible>
+							</LegacyStack>
+						</LegacyCard>
+					</Layout.Section>
+				</div>
+
+
+				<div className='accordian_rowmain'>
+					<Layout.Section>
+						<LegacyCard sectioned>
+							<div
+								onClick={handleToggleEmailSettings}
+								ariaExpanded={openEmailSettings}
+								ariaControls="basic-collapsible"
+								className={openEmailSettings ? 'open' : ''}
+							>
+								<div className='flxrow acctitle'>
+									<div className='flxfix iconbox'>
+										<i className='twenty-questions'></i>
+									</div>
+									<div className='flxflexi titledetail'>
+										<Text as="h1" variant="headingMd">
+											Emails
+										</Text>
+										<Text>
+											Customize the emails sent to your customers
+										</Text>
+									</div>
+									<div className='flxfix btnwrap m-0'>
+										<a href="#" className='revbtn'>Learn More</a>
+									</div>
+									<div className='flxfix arrowicon'>
+										<i className='twenty-arrow-down'></i>
+									</div>
+								</div>
+							</div>
+							<LegacyStack vertical>
+								<Collapsible
+									open={openEmailSettings}
+									id="basic-collapsible"
+									transition={{
+										duration: '300ms',
+										timingFunction: 'ease-in-out',
+									}}
+									expandOnPrint
+								>
+									<div>
+										<div onClick={showReviewRequestEmailForm}>
+											<p>Review Request</p>
+											<span>Encourage your customers to leave a review with an automated email</span>
+											<a href="#" className='revbtn'>Learn More</a>
 										</div>
 									</div>
 								</Collapsible>
@@ -194,7 +253,6 @@ const ReviewPage = () => {
 						</LegacyCard>
 					</Layout.Section>
 				</div>
-
 
 			</Page>
 		</>
