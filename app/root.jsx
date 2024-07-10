@@ -10,7 +10,7 @@ import settings from './utils/settings.json';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import './i18n';
 export default function App() {
   return (
     <html>
