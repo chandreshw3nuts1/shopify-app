@@ -95,7 +95,8 @@ body .revbtn.regularbtn { border-radius: 8px; padding: 0 16px;}
 body .revbtn.regularbtn:disabled { border-radius: 8px; padding: 0 16px; opacity: 0.5;}
 body .revbtn.bigbtn { padding: 0 20px; font-size: 16px; font-weight: 600;}
 body .revbtn.bigbtn:disabled { padding: 0 20px; font-size: 16px; font-weight: 600; opacity: 0.5;}
-
+body .revbtn.wbigbtn { height: 48px; font-weight: 600; font-size: 16px;}
+body .revbtn.wbigbtn:disabled { height: 48px; font-weight: 600; font-size: 16px; opacity: 0.5;}
 
 .main_layout {
     padding: 24px;
@@ -262,7 +263,7 @@ form .input_text { width: 100%; height: 44px; border-radius: 8px; background: va
 
 body .dropdown-menu { padding: 6px; background: var(--whiteBg); border-radius: 10px; border: solid 1px var(--borderColor);}
 body .dropdown-menu .dropdown-item { white-space: nowrap; height: 44px; border-radius: 10px; color: var(--lightGreyColor); font-size: 14px; display: flex; align-items: center; padding: 0 10px;}
-body .dropdown-menu .dropdown-item:hover { background: var(--lightGreyBGcolor);}
+body .dropdown-menu .dropdown-item:hover { background: var(--lightGreyBGcolor); color: var(--darkColor);}
 
 .dropdownwrap .dropdown .btn { display: inline-flex; height: 44px; padding: 0 24px; border-radius: 100px; font-size: 14px; font-weight: 400; background: var(--blueColor); text-decoration: none; outline: none; box-shadow: none; color: var(--whiteText); align-items: center; column-gap: 6px; border: none; line-height: 16px;}
 .dropdownwrap .dropdown.unpblishstatus .btn { background: var(--iconBGcolor); color: var(--lightGreyColor); line-height: 16px;}
@@ -389,3 +390,35 @@ body .modal .modal-dialog.productselect .modal-body .row [class*="col-"] { paddi
 .alertbox .closebtn { margin: 0 0 0 16px;}
 .alertbox .closebtn a { text-decoration: none; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: var(--whiteBg); border-radius: 50px; color: var(--darkColor); font-size: 20px;}
 .alertbox.primarybox { background: var(--LightblueColor2);}
+
+.whitebox { width: 100%; padding: 24px; background: var(--whiteBg); border: solid 1px var(--borderColor); border-radius: 10px;}
+.whitebox + .orderlistmain { margin-top: 24px;}
+
+
+.orderlistmain { display: flex; flex-direction: column; row-gap: 16px;}
+.order_row { width: 100%;}
+.order_row .topmetabox { width: 100%; border-bottom: solid 1px var(--borderColor); display: flex; align-items: center; padding: 0 0 24px 0;}
+.order_row .topmetabox .titlebox { color: var(--darkColor); font-size: 20px; line-height: 1.6; font-weight: 600; margin: 0; padding: 0;}
+.order_row .suborderwrap { width: 100%; display: flex; flex-direction: column; margin: 16px 0 0 0; row-gap: 16px;}
+.order_row .suborderrow { width: 100%; align-items: center;}
+.order_row .suborderrow .ordername { font-size: 16px; color: var(--darkColor); font-weight: 400; margin: 0; padding: 0;}
+.order_row .suborderrow .orderstatus span { display: flex; height: 40px; align-items: center; padding: 0 16px; font-size: 14px; font-weight: 400; color: var(--darkColor); background: var(--lightGreyBGcolor); border-radius: 50px;}
+
+.graywrapbox { background: var(--lightGreyBGcolor); border: solid 1px var(--borderColor); padding: 24px; border-radius: 10px; margin: 0 auto;}
+
+.subtitlebox { padding: 0 0 24px 0;}
+.subtitlebox h2 { margin: 0; padding: 0; color: var(--darkColor); font-size: 18px; font-weight: 700; line-height: normal;}
+.subtitlebox p { margin: 0; padding: 8px 0 0 0; color: var(--lightGreyColor); font-size: 14px; font-weight: 400; line-height: normal;}
+
+
+body .dropdown-toggle::after { content: "\e902"; font-family: 'icon24' !important; line-height: 1; display: flex; width: 24px; height: 24px; border: none; margin: 0; align-items: center; justify-content: center; font-size: 22px;}
+.whitebox.flxcol { row-gap: 16px;}
+
+
+.starlightdd .dropdown .btn { display: inline-flex; height: 44px; padding: 0 10px; border-radius: 8px; font-size: 14px; font-weight: 400; background: var(--whiteBg); text-decoration: none; outline: none; box-shadow: none; color: var(--darkColor); align-items: center; column-gap: 2px; border: solid 1px var(--borderColor); line-height: 16px;}
+.starlightdd .dropdown .btn i { font-size: 32px; width: 32px; height: 32px; line-height: 1; display: flex; align-items: center; justify-content: center;}
+.starlightdd .dropdown .btn:active { background: var(--whiteBg); color: var(--darkColor); border-color: var(--borderColor);}
+.starlightdd .dropdown .dropdown-menu { width: 400px; flex-wrap: wrap;}
+.starlightdd .dropdown .dropdown-menu.show { display: flex; }
+.starlightdd .dropdown .dropdown-menu a { width: 44px; padding: 0; justify-content: center;}
+.starlightdd .dropdown .dropdown-menu i { font-size: 32px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;}
