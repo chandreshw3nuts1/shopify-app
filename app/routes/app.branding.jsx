@@ -50,54 +50,23 @@ export default function Branding() {
 	const handleToggleGeneralAppr = useCallback(() => setOpenGeneralAppr(openGeneralAppr => !openGeneralAppr),[]);
  	return (
 	<>
-	<Breadcrumb crumbs={crumbs}/>
-	<Page fullWidth>
-				<SettingPageSidebar />
-				<div className='accordian_rowmain'>
-					<Layout.Section>
-						<LegacyCard sectioned>
-							<div
-								onClick={handleToggleGeneralAppr}
-								ariaExpanded={openGeneralAppr}
-								ariaControls="basic-collapsible"
-								className={openGeneralAppr ? 'open' : ''}
-							>
-								<div className='flxrow acctitle'>
-									<div className='flxfix iconbox'>
-										<i className='twenty-star'></i>
-									</div>
-									<div className='flxflexi titledetail'>
-										<Text as="h1" variant="headingMd">
-										General appearance
-										</Text>
-										<Text>
-										Customize visual elements to fit your brand's look & feel
-										</Text>
-									</div>
-									<div className='flxfix arrowicon'>
-										<i className='twenty-arrow-down'></i>
-									</div>
-								</div>
-							</div>
-							<LegacyStack vertical>
-								<Collapsible
-									open={openGeneralAppr}
-									id="basic-collapsible"
-									transition={{
-										duration: '300ms',
-										timingFunction: 'ease-in-out',
-									}}
-									expandOnPrint
-								>
-								<GeneralAppearance shopRecords={shopRecords} generalAppearances={generalAppearances}/>
-								</Collapsible>
-							</LegacyStack>
-						</LegacyCard>
-					</Layout.Section>
-				</div>
+		<Breadcrumb crumbs={crumbs}/>
+		<Page fullWidth>
+			<SettingPageSidebar />
+
+				<Layout.Section>
+					<div className="graywrapbox">
+						<div className="subtitlebox">
+							<h2>General appearance</h2>
+							<p>Customize visual elements to fit your brand's look & feel</p>
+						</div>
+						<GeneralAppearance shopRecords={shopRecords} generalAppearances={generalAppearances}/>
+					</div>
 				
-			</Page>
-		</>
+				</Layout.Section>
+
+		</Page>
+	</>
   
     
   );
