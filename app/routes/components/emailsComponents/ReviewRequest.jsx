@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import SingleImageUpload from '../settings/ImageUpload';
+import AlertInfo from '../AlertInfo';
+
 const ReviewRequest = ({ shopRecords, emailReviewRequest }) => {
     const { t, i18n } = useTranslation();
 
@@ -84,6 +86,9 @@ const ReviewRequest = ({ shopRecords, emailReviewRequest }) => {
     };
 
 
+    const alertContent = `You can upload a default banner to all emails in the <a href="#">Branding Setting</a>`
+
+
     return (
         <>
             <div className='graywrapbox mt-24 max1048'>
@@ -93,14 +98,25 @@ const ReviewRequest = ({ shopRecords, emailReviewRequest }) => {
                             <div className="col-lg-5">
                                 <div className="form-group">
                                     <label htmlFor="">Banner</label>
-                                    <SingleImageUpload className="emailbannerimage" hasEdit />
-                                    {/* <img src={t('reviewRequestEmail.bannerPath')} /> */}
+                                    <div className='bannerverticalwrap'>
+                                        <div className='banneruploadimg'>
+                                            <SingleImageUpload className="emailbannerimage" hasEdit />
+                                            {/* <img src={t('reviewRequestEmail.bannerPath')} /> */}
+                                            <div className='inputnote'>You can upload an image in JPG, PNG, or GIF format up to 5 MB. Email banner will be displayed in 500px width, for best results, upload an image between 500-1200px wide</div>
+                                        </div>
+                                        <AlertInfo colorTheme="primarybox" alertContent={`${alertContent}`}  />
+                                    </div>
                                 </div>
                             </div>
                             <div className="col-lg-7">
                                 <div className="form-group">
                                     <label htmlFor="">Subject </label>
                                     <input type="text" onBlur={handleInputBlur} name="subject" value={subject} onChange={changeSubject} className="input_text" placeholder={t('reviewRequestEmail.subject')} />
+                                    <div className='inputnote'>
+                                        <div><strong>Notes:</strong></div>
+                                        <div>Use [order_number] for the customer's order number</div>
+                                        <div>Use [name] or [last_name] as a placeholder for the user's first or last name</div>
+                                    </div>
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="">Body</label>
@@ -117,8 +133,13 @@ const ReviewRequest = ({ shopRecords, emailReviewRequest }) => {
                                     <label htmlFor="">Button Text</label>
                                     <input type="text" onBlur={handleInputBlur} name="buttonText" value={buttonText} onChange={changeButtonText} className="input_text" placeholder={t('reviewRequestEmail.buttonText')} />
                                 </div>
-                                <div className="btnbox">
-                                    <input type="submit" value="Search" className="revbtn" />
+                                <div className='sentrowbanner flxrow'>
+                                    <p>Send review request to your self</p>
+                                    <button type='button' className='revbtn smbtn'>Sent</button>
+                                </div>
+                                <div className="btnwrap">
+                                    <a href="#" className='revbtn'>View sample</a>
+                                    <a href="#" className='revbtn outline'>Customize email appearance</a>
                                 </div>
                             </div>
                         </div>

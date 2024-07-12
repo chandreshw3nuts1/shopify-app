@@ -76,6 +76,7 @@ html body {
 body .revbtn { display: inline-flex; height: 44px; padding: 0 24px; border-radius: 100px; font-size: 14px; font-weight: 400; background: var(--blueColor); text-decoration: none; outline: none; box-shadow: none; color: var(--whiteText); align-items: center; column-gap: 6px; border: none; column-gap: 4px; line-height: 16px;}
 body .revbtn i { font-size: 22px;}
 body .revbtn + .revbtn{ margin-left: 10px;}
+body .btnwrap .revbtn + .revbtn { margin: 0;}
 body .revbtn:disabled { display: inline-flex; height: 44px; padding: 0 24px; border-radius: 100px; font-size: 14px; font-weight: 400; background: var(--blueColor); text-decoration: none; outline: none; box-shadow: none; color: var(--whiteText); align-items: center; column-gap: 6px; border: none; column-gap: 4px; line-height: 16px; opacity: 0.5;}
 body .revbtn:hover { background: var(--blueColor); color: var(--whiteText);}
 body .revbtn.tinybtn { height: 24px; padding: 0 12px; column-gap: 6px;}
@@ -368,8 +369,9 @@ body .modal .modal-dialog.productselect .modal-body .row [class*="col-"] { paddi
 .pagebackbtn a { display: flex; align-items: center; font-size: 16px; font-weight: 600; color: var(--darkColor); line-height: 1.5; text-decoration: none; column-gap: 6px;}
 .pagebackbtn a i { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: var(--lightGreyBGcolor); border-radius: 50px; color: var(--darkColor); font-size: 20px;}
 
-.inputnote { margin: 8px 0 0 0; padding: 0; line-height: normal; font-size: 12px; color: var(--lightGreyColor);}
+.inputnote { margin: 8px 0 0 0; padding: 0; line-height: normal; font-size: 12px; color: var(--lightGreyColor); line-height: 1.66;}
 .inputnote a { color: var(--darkColor);}
+.inputnote strong { font-weight: 600;}
 
 .propopuplist { margin: 24px 0 0 0;}
 .propopuplist .row { row-gap: 16px;}
@@ -476,3 +478,8 @@ body .dropdown-toggle::after { content: "\e902"; font-family: 'icon24' !importan
 
 .pagetitle { display: flex; align-items: center;}
 .pagetitle .pagebackbtn { margin: 0;}
+
+.bannerverticalwrap { display: flex; flex-direction: column; row-gap: 16px;}
+
+.sentrowbanner { align-items: center; justify-content: space-between;}
+.sentrowbanner p { margin: 0; padding: 0; font-size: 12px; color: var(--darkColor);}
