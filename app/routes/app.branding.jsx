@@ -5,6 +5,7 @@ import SettingPageSidebar from "./components/headerMenu/SettingPageSidebar";
 import { getShopDetails } from './../utils/getShopDetails';
 import GeneralAppearance from "./components/settings/general-appearance";
 import { findOneRecord } from './../utils/common';
+import EmailAppearance from "./components/settings/email-appearance";
 
 // import ColorPicker from "./components/svgIconPicker";
 import { json } from "@remix-run/node";
@@ -53,17 +54,21 @@ export default function Branding() {
 		<Breadcrumb crumbs={crumbs}/>
 		<Page fullWidth>
 			<SettingPageSidebar />
-
-				<Layout.Section>
-					<div className="graywrapbox">
-						<div className="subtitlebox">
-							<h2>General appearance</h2>
-							<p>Customize visual elements to fit your brand's look & feel</p>
-						</div>
-						<GeneralAppearance shopRecords={shopRecords} generalAppearances={generalAppearances}/>
+			<div className="pagebox">
+				<div className="graywrapbox gapy24">
+					<div className="subtitlebox">
+						<h2>General appearance</h2>
+						<p>Customize visual elements to fit your brand's look & feel</p>
 					</div>
-				
-				</Layout.Section>
+					<GeneralAppearance shopRecords={shopRecords} generalAppearances={generalAppearances}/>
+					<div className="subtitlebox">
+						<h2>Email appearance</h2>
+						<p>Customize your email colors and font to match your brand</p>
+					</div>
+					<EmailAppearance />
+				</div>
+			
+			</div>
 
 		</Page>
 	</>

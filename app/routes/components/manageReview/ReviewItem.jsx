@@ -574,16 +574,16 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 							rows="6"
 							autoComplete="off"
 						></textarea>
-						<label>{replyHelpText}</label>
+						<div className="inputnote">{replyHelpText}</div>
 
 					</Modal.Body>
 					<Modal.Footer>
-						<Button variant="secondary" onClick={handleCloseReplyModal}>
-							Close
-						</Button>
-						<Button variant="primary" onClick={submitReply} disabled={replyValueError}>
+						<button variant="primary" className="revbtn" onClick={submitReply} disabled={replyValueError}>
 							{replyButtonText}
-						</Button>
+						</button>
+						<button variant="secondary" className="revbtn lightbtn" onClick={handleCloseReplyModal}>
+							Close
+						</button>
 					</Modal.Footer>
 				</Modal>
 

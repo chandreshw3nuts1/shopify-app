@@ -210,11 +210,33 @@ const ReviewPage = () => {
 									}}
 									expandOnPrint
 								>
-									<div>
-										<div onClick={showReviewRequestEmailForm}>
-											<p>Review Request</p>
-											<span>Encourage your customers to leave a review with an automated email</span>
-											<a href="#" className='revbtn'>Learn More</a>
+									<div className='maininsideacc'>
+										{/* Below DIV will be repeat */}
+										<div className='insiderowacc' onClick={showReviewRequestEmailForm}>
+											<div className='titledetail flxflexi'>
+												<h6>Review Request</h6>
+												<p>Encourage your customers to leave a review with an automated email</p>
+											</div>
+											<div className='flxfix btnwrap m-0'>
+												<a href="#" className='revbtn'>Learn More</a>
+											</div>
+											<div className='flxfix arrowicon'>
+												<i class="twenty-longarrow-right"></i>
+											</div>
+										</div>
+										{/* Above DIV will be repeat */}
+										<div className='alertbox primarybox mt-24'>
+											<div className='iconbox'>
+												<i class="twenty-customizeicon"></i>
+											</div>
+											<div className='plaintext flxflexi '>
+												Your email appearance settings can be customized on the <a href="#">Branding</a> page.
+											</div>
+											<div className='closebtn'>
+												<a href="#">
+													<i class="twenty-menuicon"></i>
+												</a>
+											</div>
 										</div>
 									</div>
 								</Collapsible>

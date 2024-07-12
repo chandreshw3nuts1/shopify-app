@@ -76,6 +76,7 @@ html body {
 body .revbtn { display: inline-flex; height: 44px; padding: 0 24px; border-radius: 100px; font-size: 14px; font-weight: 400; background: var(--blueColor); text-decoration: none; outline: none; box-shadow: none; color: var(--whiteText); align-items: center; column-gap: 6px; border: none; column-gap: 4px; line-height: 16px;}
 body .revbtn i { font-size: 22px;}
 body .revbtn + .revbtn{ margin-left: 10px;}
+body .btnwrap .revbtn + .revbtn { margin: 0;}
 body .revbtn:disabled { display: inline-flex; height: 44px; padding: 0 24px; border-radius: 100px; font-size: 14px; font-weight: 400; background: var(--blueColor); text-decoration: none; outline: none; box-shadow: none; color: var(--whiteText); align-items: center; column-gap: 6px; border: none; column-gap: 4px; line-height: 16px; opacity: 0.5;}
 body .revbtn:hover { background: var(--blueColor); color: var(--whiteText);}
 body .revbtn.tinybtn { height: 24px; padding: 0 12px; column-gap: 6px;}
@@ -154,12 +155,13 @@ body .Polaris-Select__Content .Polaris-Icon::before { font-size: 24px; display: 
 .collectreviewformbox .bottomcheckrow { margin: 24px -24px -24px; padding: 12px 24px; border-top: solid 1px var(--borderColor);}
 
 body .form-check { min-height: 20px; margin: 0;}
-body .form-check.form-switch { padding-left: 0; margin: 0; display: flex;}
+body .form-check.form-switch { padding-left: 0; margin: 0; display: flex; align-items: center;}
 body .form-switch .form-check-input { width: 32px; margin: 0; height: 20px; vertical-align: top; --bs-form-switch-bg: url(../images/switch-round.svg); background-color: var(--borderColor); border: none; margin: 0; cursor: pointer;}
 body .form-switch .form-check-input:focus { outline: none; box-shadow: none; --bs-form-switch-bg: url(../images/switch-round.svg);}
 body .form-switch label { display: block; line-height: 20px; margin: 0; color: var(--darkColor); font-size: 14px; cursor: pointer;}
+body .form-switch label span { display: block; padding: 4px 0 0 0; line-height: normal; color: var(--lightGreyColor); font-size: 12px;}
 body .form-switch .form-check-input:checked { --bs-form-switch-bg: url(../images/switch-round.svg); background-color: var(--blueColor);}
-body .form-switch .form-check-input + label { padding: 0 0 0 8px;}
+body .form-switch .form-check-input + label { padding: 0 0 0 10px;}
 body .form-check-input:active { filter: brightness(95%);}
 
 .noreviewyetmain { margin: 0;}
@@ -202,6 +204,9 @@ form .form-group label { display: block; font-size: 14px; line-height: normal; f
 .form-control,
 form .form-control,
 form .input_text { width: 100%; height: 44px; border-radius: 8px; background: var(--whiteBg); border: solid 1px var(--borderColor); padding: 0 16px; outline: none !important; box-shadow: none !important; resize: none; font-size: 14px; resize: none;}
+textarea.form-control,
+form textarea.form-control,
+form textarea.input_text { height: 160px; padding-top: 8px; padding-bottom: 8px;}
 .filterandserchwrap { padding: 24px; border-radius: 10px; background: var(--whiteBg); border: solid 1px var(--borderColor); margin: 24px 0 0 0;}
 .letterlimite { position: absolute; right: 0; top: 100%; font-size: 12px; color: var(--lightGreyColor);}
 
@@ -364,8 +369,9 @@ body .modal .modal-dialog.productselect .modal-body .row [class*="col-"] { paddi
 .pagebackbtn a { display: flex; align-items: center; font-size: 16px; font-weight: 600; color: var(--darkColor); line-height: 1.5; text-decoration: none; column-gap: 6px;}
 .pagebackbtn a i { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: var(--lightGreyBGcolor); border-radius: 50px; color: var(--darkColor); font-size: 20px;}
 
-.inputnote { margin: 8px 0 0 0; padding: 0; line-height: normal; font-size: 12px; color: var(--lightGreyColor);}
+.inputnote { margin: 8px 0 0 0; padding: 0; line-height: normal; font-size: 12px; color: var(--lightGreyColor); line-height: 1.66;}
 .inputnote a { color: var(--darkColor);}
+.inputnote strong { font-weight: 600;}
 
 .propopuplist { margin: 24px 0 0 0;}
 .propopuplist .row { row-gap: 16px;}
@@ -390,9 +396,9 @@ body .modal .modal-dialog.productselect .modal-body .row [class*="col-"] { paddi
 .alertbox .closebtn { margin: 0 0 0 16px;}
 .alertbox .closebtn a { text-decoration: none; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: var(--whiteBg); border-radius: 50px; color: var(--darkColor); font-size: 20px;}
 .alertbox.primarybox { background: var(--LightblueColor2);}
+.mt-24 { margin-top: 24px !important;}
 
 .whitebox { width: 100%; padding: 24px; background: var(--whiteBg); border: solid 1px var(--borderColor); border-radius: 10px;}
-.whitebox + .orderlistmain { margin-top: 24px;}
 
 
 .orderlistmain { display: flex; flex-direction: column; row-gap: 16px;}
@@ -405,8 +411,9 @@ body .modal .modal-dialog.productselect .modal-body .row [class*="col-"] { paddi
 .order_row .suborderrow .orderstatus span { display: flex; height: 40px; align-items: center; padding: 0 16px; font-size: 14px; font-weight: 400; color: var(--darkColor); background: var(--lightGreyBGcolor); border-radius: 50px;}
 
 .graywrapbox { background: var(--lightGreyBGcolor); border: solid 1px var(--borderColor); padding: 24px; border-radius: 10px; margin: 0 auto;}
+.graywrapbox.gapy24 { display: flex; flex-direction: column; row-gap: 24px;}
 
-.subtitlebox { padding: 0 0 24px 0;}
+.subtitlebox { padding: 0 0 0 0;}
 .subtitlebox h2 { margin: 0; padding: 0; color: var(--darkColor); font-size: 18px; font-weight: 700; line-height: normal;}
 .subtitlebox p { margin: 0; padding: 8px 0 0 0; color: var(--lightGreyColor); font-size: 14px; font-weight: 400; line-height: normal;}
 
@@ -414,7 +421,7 @@ body .modal .modal-dialog.productselect .modal-body .row [class*="col-"] { paddi
 body .dropdown-toggle::after { content: "\e902"; font-family: 'icon24' !important; line-height: 1; display: flex; width: 24px; height: 24px; border: none; margin: 0; align-items: center; justify-content: center; font-size: 22px;}
 .whitebox.flxcol { row-gap: 16px;}
 
-
+.input_wrap .iconbox { margin: 0 12px 0 0;}
 .starlightdd .dropdown .btn { display: inline-flex; height: 44px; padding: 0 10px; border-radius: 8px; font-size: 14px; font-weight: 400; background: var(--whiteBg); text-decoration: none; outline: none; box-shadow: none; color: var(--darkColor); align-items: center; column-gap: 2px; border: solid 1px var(--borderColor); line-height: 16px;}
 .starlightdd .dropdown .btn i { font-size: 32px; width: 32px; height: 32px; line-height: 1; display: flex; align-items: center; justify-content: center;}
 .starlightdd .dropdown .btn:active { background: var(--whiteBg); color: var(--darkColor); border-color: var(--borderColor);}
@@ -422,3 +429,57 @@ body .dropdown-toggle::after { content: "\e902"; font-family: 'icon24' !importan
 .starlightdd .dropdown .dropdown-menu.show { display: flex; }
 .starlightdd .dropdown .dropdown-menu a { width: 44px; padding: 0; justify-content: center;}
 .starlightdd .dropdown .dropdown-menu i { font-size: 32px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;}
+
+
+.imageuploadbox { width: 100%; position: relative; background: var(--whiteBg); border: solid 1px var(--borderColor); border-radius: 8px; padding: 12px 16px;}
+.imageuploadbox .filebtnbox { display: flex; align-items: center; justify-content: center; position: relative;}
+.imageuploadbox .filebtnbox .inputfileimage { position: absolute; width: 10px; height: 10px; top: -20px; left: -20px; cursor: pointer; opacity: 0;}
+.imageuploadbox .filebtnbox label:not(.revbtn) { display: flex; align-items: center; justify-content: center; height: 32px; border-radius: 6px; background: var(--lightGreyBGcolor); color: var(--darkColor); font-size: 14px; padding: 0 10px; margin: 0; cursor: pointer;}
+.imageuploadbox .filebtnbox label.revbtn { display: flex; align-items: center; cursor: pointer;}
+.imageuploadbox.hasfile .filebtnbox { display: none;}
+.imageuploadbox .files-list-container { display: flex; justify-content: center;}
+.imageuploadbox .files-list-container .form__image-container { position: relative; width: 80px; height: 80px; background: var(--whiteBg); border: solid 1px var(--borderColor); border-radius: 6px; display: flex; justify-content: center; align-items: center;}
+.imageuploadbox .files-list-container .form__image-container .form__image { max-width: 100%; max-height: 100%; width: auto; height: auto;}
+.imageuploadbox .files-list-container .form__image-container .deleteicon { position: absolute; width: 24px; height: 24px; color: var(--whiteBg); display: flex; align-items: center; justify-content: center; border-radius: 50px; background: var(--redColor); right: -10px; top: -10px; cursor: pointer;}
+.imageuploadbox.emailbannerimage { padding: 0; min-height: 356px;}
+.imageuploadbox.emailbannerimage .files-list-container {}
+.imageuploadbox.emailbannerimage {}
+
+.imageuploadbox.emailbannerimage:not(.hasfile ) { display: flex; justify-content: center; align-items: center;}
+.imageuploadbox.emailbannerimage:not(.hasfile ) .filebtnbox { column-gap: 16px;}
+.imageuploadbox.emailbannerimage.hasfile { min-height: 10px;}
+.imageuploadbox.emailbannerimage.hasfile .btnwrap { display: none;}
+.imageuploadbox.emailbannerimage.hasfile .filebtnbox { display: block; position: absolute; right: 66px; top: 10px; z-index: 1;}
+.imageuploadbox.emailbannerimage.hasfile .filebtnbox label { width: 44px; height: 44px; font-size: 24px; background: var(--whiteBg); color: var(--blueColor); display: flex; align-items: center; justify-content: center; border-radius: 60px;}
+.imageuploadbox.emailbannerimage.hasfile .files-list-container { width: 100%;}
+.imageuploadbox.emailbannerimage.hasfile .files-list-container .listbox { width: 100%;}
+.imageuploadbox.emailbannerimage.hasfile .files-list-container .form__image-container { width: 100%; height: auto; border-radius: 6px; overflow: hidden; border: none;}
+.imageuploadbox.emailbannerimage.hasfile .files-list-container .form__image-container img { width: 100%; height: auto;}
+.imageuploadbox.emailbannerimage.hasfile .files-list-container .form__image-container .deleteicon { width: 44px; height: 44px; border-radius: 60px; right: 10px; top: 10px; background: var(--whiteBg); color: var(--redColor); font-size: 24px;}
+.imageuploadbox.emailbannerimage.hasfile .files-list-container .form__image-container .deleteicon svg { width: 24px; height: 24px;}
+
+
+
+.maininsideacc { margin: 0; padding: 24px; background: var(--whiteBg); margin: 24px 0 0 0; border: solid 1px var(--borderColor); border-radius: 10px;}
+.maininsideacc .insiderowacc { display: flex; align-items: center; cursor: pointer;}
+.maininsideacc .insiderowacc + .insiderowacc { border-top: solid 1px var(--borderColor); padding-top: 16px; margin-top: 16px;}
+.maininsideacc .insiderowacc .titledetail { display: flex; flex-direction: column;}
+.maininsideacc .insiderowacc h6 { color: var(--darkColor); font-size: 14px; font-weight: 700; margin: 0; padding: 0; line-height: normal;}
+.maininsideacc .insiderowacc p { padding: 8px 0 0 0; margin: 0; color: var(--lightGreyColor); font-size: 14px; font-weight: 400; line-height: normal;}
+.maininsideacc .insiderowacc .arrowicon { margin: 0 0 0 16px; display: flex; align-items: center; font-size: 24px;}
+.maininsideacc .insiderowacc .arrowicon i { display: block; transition: all ease-in-out 0.3s; transform-origin: center center; width: 24px; height: 24px;}
+
+
+.form-group.inlinerow { display: flex; align-items: center;}
+.form-group.inlinerow label { white-space: nowrap; margin: 0 12px 0 0; padding: 0;}
+
+.graywrapbox.max1048 { max-width: 1048px;}
+
+
+.pagetitle { display: flex; align-items: center;}
+.pagetitle .pagebackbtn { margin: 0;}
+
+.bannerverticalwrap { display: flex; flex-direction: column; row-gap: 16px;}
+
+.sentrowbanner { align-items: center; justify-content: space-between;}
+.sentrowbanner p { margin: 0; padding: 0; font-size: 12px; color: var(--darkColor);}

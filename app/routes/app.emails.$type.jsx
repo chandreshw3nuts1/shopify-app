@@ -19,7 +19,7 @@ import {
 
 export const loader = async ({ request, params }) => {
 	const shopRecords = await getShopDetails(request);
-	var JsonData = {params, shopRecords};
+	var JsonData = { params, shopRecords };
 	switch (params.type) {
 		case 'review-request':
 			JsonData['emailTemplateObj'] = await emailReviewRequestSettings.findOne({
@@ -30,7 +30,7 @@ export const loader = async ({ request, params }) => {
 			JsonData['emailTemplateObj'] = await emailReviewReplySettings.findOne({
 				shop_id: shopRecords._id,
 			});
-			
+
 			break;
 		default:
 			content = <h4>404 - Page Not Found</h4>;
@@ -90,13 +90,17 @@ export default function EmailTemplateSettings() {
 		<>
 			<Breadcrumb crumbs={crumbs} />
 			<Page fullWidth>
-				<div className='pagebackbtn'>
-					<a href="#" onClick={backToReviewPage}><i className='twenty-arrow-left'></i>Collect reviews</a>
+				<div className='pagetitle'>
+					<div className='pagebackbtn flxflexi'>
+						<a href="#" onClick={backToReviewPage}><i className='twenty-arrow-left'></i>Collect reviews</a>
+					</div>
+					<div className='flxfix'>
+						{generalSettingsModel && generalSettingsModel.multilingual_support &&
+							<LanguageSelector className="inlinerow m-0" />
+						}
+					</div>
 				</div>
-				<div>
-					{generalSettingsModel && generalSettingsModel.multilingual_support &&
-						<LanguageSelector />
-					}
+				<div className='flxfix'>
 					{content}
 				</div>
 

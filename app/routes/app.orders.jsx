@@ -278,7 +278,7 @@ export default function Orders() {
             <Breadcrumb crumbs={crumbs} />
             <Page fullWidth>
                 <SettingPageSidebar />
-                <div className="graywrapbox">
+                <div className="graywrapbox gapy24">
                     <div className="subtitlebox">
                         <h2>Orders</h2>
                         <p>Check you all order review for better decision making.</p>
