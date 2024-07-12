@@ -58,6 +58,7 @@
     "react-bootstrap": "^2.10.2",
     "react-color": "^2.19.3",
     "react-color-palette": "^7.1.1",
+    "react-date-picker": "^11.0.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",

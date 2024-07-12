@@ -125,6 +125,16 @@ export async function action({ request }) {
                         }
                     },
                     {
+                        $addFields: {
+                          reviewDocuments: {
+                            $sortArray: {
+                              input: "$reviewDocuments",
+                              sortBy: { is_cover: -1 }
+                            }
+                          }
+                        }
+                      },
+                    {
                         $project: {
                             _id: 1,
                             description: 1,
@@ -172,7 +182,6 @@ export async function action({ request }) {
                 const formParams = {
                     hideProductThumbnails: hideProductThumbnails,
                 }
-                console.log(formParams);
                 const dynamicComponent = <ReviewDetailModalWidget shopRecords={shopRecords} reviewDetails={reviewDetails} productsDetails={productsDetails} formParams={formParams} />;
                 const htmlContent = ReactDOMServer.renderToString(dynamicComponent);
                 return json({
@@ -259,7 +268,6 @@ export async function action({ request }) {
             if (isNaN(averageRating)) {
                 averageRating = 0;
             }
-            console.log(averageRating);
             
             if (!isNaN(filterByRatting)) {
                 query['rating'] = filterByRatting;

@@ -3,52 +3,75 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from '@remix-run/react';
 import LanguageSelector from "./components/language-selector";
 import ReviewRequest from './components/emailsComponents/ReviewRequest';
+import ReviewReply from './components/emailsComponents/ReviewReply';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from './components/Breadcrumb';
 import { getShopDetails } from './../utils/getShopDetails';
 import emailReviewRequestSettings from './models/emailReviewRequestSettings';
+import emailReviewReplySettings from './models/emailReviewReplySettings';
+import generalSettings from './models/generalSettings';
+
+import { useTranslation } from "react-i18next";
 
 import {
 	Page,
-	Card,
-	Spinner,
-	TextField,
 } from '@shopify/polaris';
 
 export const loader = async ({ request, params }) => {
 	const shopRecords = await getShopDetails(request);
-	
-	const emailReviewRequest = await emailReviewRequestSettings.findOne({
-		shop_id: shopRecords._id,
-	});
+	var JsonData = {params, shopRecords};
+	switch (params.type) {
+		case 'review-request':
+			JsonData['emailTemplateObj'] = await emailReviewRequestSettings.findOne({
+				shop_id: shopRecords._id,
+			});
+			break;
+		case 'review-reply':
+			JsonData['emailTemplateObj'] = await emailReviewReplySettings.findOne({
+				shop_id: shopRecords._id,
+			});
+			
+			break;
+		default:
+			content = <h4>404 - Page Not Found</h4>;
+			break;
+	}
 
-	return json({ params, shopRecords , emailReviewRequest });
+	JsonData['generalSettingsModel'] = await generalSettings.findOne({ shop_id: shopRecords._id });
+	return json(JsonData);
 };
 
 export default function EmailTemplateSettings() {
 
 
-	const { params, shopRecords , emailReviewRequest} = useLoaderData();
+	const { params, shopRecords, emailTemplateObj, generalSettingsModel } = useLoaderData();
+	const { i18n } = useTranslation();
+
 	const type = params.type;
 	const navigate = useNavigate();
 
-	
+	useEffect(() => {
+		const defaultLanguage = (generalSettingsModel && generalSettingsModel.defaul_language) ? generalSettingsModel.defaul_language : "en";
+		i18n.changeLanguage(defaultLanguage);
+
+	}, []);
+
+
 
 	const backToReviewPage = (e) => {
 		e.preventDefault();
 		navigate('/app/review');
 	}
-	// Define the component to render based on the type
 	let content;
 	let emailTemplateName;
 	switch (type) {
 		case 'review-request':
-			content = <ReviewRequest shopRecords={shopRecords} emailReviewRequest={emailReviewRequest}/>;
+			content = <ReviewRequest shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} />;
 			emailTemplateName = "Review request"
 			break;
-		case 'review-reminders':
-			content = <p>review-reminders</p>;
-			emailTemplateName = "Review request reminder"
+		case 'review-reply':
+			content = <ReviewReply shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} />;
+			emailTemplateName = "Reply to review"
 
 			break;
 		default:
@@ -71,7 +94,9 @@ export default function EmailTemplateSettings() {
 					<a href="#" onClick={backToReviewPage}><i className='twenty-arrow-left'></i>Collect reviews</a>
 				</div>
 				<div>
-					<LanguageSelector />
+					{generalSettingsModel && generalSettingsModel.multilingual_support &&
+						<LanguageSelector />
+					}
 					{content}
 				</div>
 

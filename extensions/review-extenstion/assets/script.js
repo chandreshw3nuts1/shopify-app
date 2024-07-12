@@ -169,7 +169,6 @@ $(document).ready(function () {
                 const fileName = file.name;
                 const fileType = file.type;
                 if (!file.type.match("image/") && !file.type.match("video/")) {
-                    alert(file.name + " is not an image");
                     console.log(file.type);
                 } else {
                     const uploadedFiles = {

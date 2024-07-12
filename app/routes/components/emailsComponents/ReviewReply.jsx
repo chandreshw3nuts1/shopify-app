@@ -8,7 +8,6 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj }) => {
     const [currentLanguage, setCurrentLanguage] = useState();
     const [subject, setSubject] = useState('');
     const [body, setBody] = useState('');
-    const [buttonText, setButtonText] = useState('');
     const [initialData, setInitialData] = useState({});
     const [placeHolderLanguageData, setPlaceHolderLanguageData] = useState({});
 
@@ -18,28 +17,22 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj }) => {
         setCurrentLanguage(language);
 
 
-        const { subject, body, buttonText } = (emailTemplateObjState && emailTemplateObjState[currentLanguage]) ? emailTemplateObjState[currentLanguage] : {};
+        const { subject, body } = (emailTemplateObjState && emailTemplateObjState[currentLanguage]) ? emailTemplateObjState[currentLanguage] : {};
         setSubject(subject || '');
         setBody(body || '');
-        setButtonText(buttonText || '');
+
         setInitialData({
             subject: subject || '',
-            body: body || '',
-            buttonText: buttonText || ''
+            body: body || ''
         });
 
         setPlaceHolderLanguageData({
             bannerPath: t('reviewRequestEmail.bannerPath'),
             subject: t('reviewRequestEmail.subject'),
             body: t('reviewRequestEmail.body'),
-            buttonText: t('reviewRequestEmail.buttonText'),
         });
 
     }, [i18n, i18n.language, emailTemplateObjState, currentLanguage]);
-
-    // useEffect(() => {
-        
-    // }, [emailTemplateObjState, currentLanguage]);
 
 
     const changeSubject = (e) => {
@@ -50,10 +43,6 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj }) => {
         setBody(event.target.value);
     };
 
-    const changeButtonText = (event) => {
-        setButtonText(event.target.value);
-    };
-
     const handleInputBlur = async (e) => {
         const language = localStorage.getItem('i18nextLng');
         if (initialData[e.target.name] != e.target.value) {
@@ -62,7 +51,7 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj }) => {
                 value: e.target.value,
                 shop: shopRecords.shop,
                 language: language,
-                actionType: "reviewRequest"
+                actionType: "reviewReply"
             };
             const response = await fetch('/api/email-settings', {
                 method: 'POST',
@@ -127,12 +116,6 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj }) => {
                             </div>
                         </div>
 
-                        <div className="col-lg-6">
-                            <div className="form-group">
-                                <label htmlFor="">Button Text</label>
-                                <input type="text" onBlur={handleInputBlur} name="buttonText" value={buttonText} onChange={changeButtonText} className="input_text" placeholder={placeHolderLanguageData.buttonText} />
-                            </div>
-                        </div>
                         <div className="col-lg-12">
                             <div className="btnbox">
                                 <input type="submit" value="Search" className="revbtn" />

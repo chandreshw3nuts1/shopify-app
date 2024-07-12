@@ -1,8 +1,8 @@
 import { format, formatDistanceToNow } from 'date-fns';
 import moment from 'moment';
 
-export const formatDate = (date) => {
-  return format(new Date(date), "MM ");
+export const formatDate = (date, formatDate= "yyyy-MM-dd") => {
+  return format(new Date(date), formatDate);
 };
 
 export const formatTimeAgo = (date) => {

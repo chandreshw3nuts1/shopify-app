@@ -84,7 +84,6 @@ export default function ManageNewReview({ settings, shopRecords }) {
 			if (eventKey == 'autoPublishReview') {
 				setIsChecked(!event.target.checked);
 			} else if (eventKey == 'reviewNotification') {
-				alert(event.target.checked);
 				setIsCheckedReviewNotification(!event.target.checked);
 			}
 		} catch (error) {

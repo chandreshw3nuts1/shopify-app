@@ -23,7 +23,7 @@ export async function action({ request }) {
 		return json({ message: 'Hmac not matched' });
 	}
 	const bodyObj = JSON.parse(rawBody);
-
+	console.log(bodyObj);
 	if (topic == 'orders/create') {
 		const shopRecords = await getShopDetailsByShop(shopDomain);
 		const manualReviewRequestsModel = await manualReviewRequests({
@@ -32,7 +32,9 @@ export async function action({ request }) {
 			first_name: bodyObj.customer.first_name,
 			last_name: bodyObj.customer.last_name,
 			customer_locale: bodyObj.customer_locale.split('-')[0],
-			order_id: bodyObj.id
+			order_id: bodyObj.id,
+			order_number : bodyObj.order_number,
+			request_status: "pending"
 		});
 		const savedManualReviewRequestsModel = await manualReviewRequestsModel.save();
 		const lastInsertedId = savedManualReviewRequestsModel._id;

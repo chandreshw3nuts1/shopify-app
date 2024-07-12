@@ -1,6 +1,7 @@
 import { json } from "@remix-run/node";
 import settings from './models/settings';
 import emailReviewRequestSettings from './models/emailReviewRequestSettings';
+import emailReviewReplySettings from './models/emailReviewReplySettings';
 
 import { getShopDetailsByShop, getShopifyProducts } from './../utils/common';
 import { sendEmail } from "./../utils/email.server";
@@ -29,9 +30,20 @@ export async function action({ params, request }) {
                             [`${language}.${requestBody.field}`]: requestBody.value
                         }
                     };
-                    console.log(update);
                     const options = { upsert: true, returnOriginal: false };
                     await emailReviewRequestSettings.findOneAndUpdate(query, update, options);
+
+                    return json({ status: 200, message: "Setting saved" });
+
+                } else if (actionType == 'reviewReply') {
+                    const query = { shop_id: shopRecords._id };
+                    const update = {
+                        $set: {
+                            [`${language}.${requestBody.field}`]: requestBody.value
+                        }
+                    };
+                    const options = { upsert: true, returnOriginal: false };
+                    await emailReviewReplySettings.findOneAndUpdate(query, update, options);
 
                     return json({ status: 200, message: "Setting saved" });
 

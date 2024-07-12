@@ -133,15 +133,11 @@ const ReviewRequestForm = () => {
 		const newProperties = {
 			answer: answer,
 		};
-		console.log(customQuestionsDataObj);
 		setCustomQuestionsDataObj(customQuestionsDataObj.map((item, idx) =>
 			idx === index
 				? { ...item, ...newProperties }
 				: item
 		));
-		console.log('-------customQuestionsDataObj');
-
-		console.log(customQuestionsDataObj);
 	}
 
 	const validate = () => {
@@ -204,8 +200,6 @@ const ReviewRequestForm = () => {
 	};
 
 	const deleteDocument = async (index) => {
-		console.log(index);
-		console.log(uploadedDocuments);
 		const deletedUrl = uploadedDocuments[index];
 		const formData = new FormData();
 		formData.append('deleteFileName', deletedUrl);
@@ -219,8 +213,6 @@ const ReviewRequestForm = () => {
 			setUploadedDocuments(uploadedDocuments.filter((item, i) => i !== index));
 			setPreviews(previews.filter((item, i) => i !== index));
 			setFiles(files.filter((item, i) => i !== index));
-			console.log(uploadedDocuments);
-			console.log(files);
 		} catch (error) {
 			console.error('Error uploading file:', error);
 		}

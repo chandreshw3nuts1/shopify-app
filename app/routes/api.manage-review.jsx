@@ -200,7 +200,10 @@ export async function action({ request} ) {
 					
 				} else if (actionType == 'imageSliderAction') {
 					const {doc_id, review_id, subActionType } = requestBody;
-					
+					const reviewDocumentModel = await reviewDocuments.findOne(
+						{ _id : doc_id }
+					);
+					const docType = reviewDocumentModel.type == 'image' ? 'photo' : 'video';
 					if (subActionType == 'makeCoverPhoto') {
 						
 						await reviewDocuments.updateMany(
@@ -217,7 +220,7 @@ export async function action({ request} ) {
 							}
 						);
 						
-						var msg = "Cover photo set";
+						var msg = `Cover ${docType} set`;
 					} else if (subActionType == 'hidePhoto') {
 						
 						await reviewDocuments.updateOne(
@@ -227,7 +230,7 @@ export async function action({ request} ) {
 							}
 						);
 
-						var msg = "Photo hidden";
+						var msg = `${docType.charAt(0).toUpperCase()}${docType.slice(1)} hidden`;
 					} else if (subActionType == 'approvePhoto') {
 						
 						await reviewDocuments.updateOne(
@@ -237,7 +240,7 @@ export async function action({ request} ) {
 							}
 						);
 						
-						var msg = "Photo approve";
+						var msg = `${docType.charAt(0).toUpperCase()}${docType.slice(1)} approve`;
 					}
 					
 
@@ -345,7 +348,6 @@ export async function action({ request} ) {
 									
 						const data = await client.request(query);
 						if(data.productByHandle != null) {
-							console.log(data.productByHandle);
 							const newProductData = data.productByHandle;
 							const newProductId = newProductData.id.split('/').pop();
 							const newProductUrl = `/products/${newProductData.handle}`;
@@ -569,8 +571,6 @@ export async function action({ request} ) {
 					//return reviewItems;
 					var hasMore = 0;
 					var mapProductDetails = {};
-					console.log('reviewItems.length');
-					console.log(reviewItems.length);
 					if (reviewItems.length > 0) {
 						// const shopSessionRecords = await findOneRecord("shopify_sessions", {"shop" : shop});
 

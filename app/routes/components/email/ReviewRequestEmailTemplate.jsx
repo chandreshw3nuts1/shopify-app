@@ -3,13 +3,12 @@ import React from 'react';
 
 const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, footer }) => {
     const productsHtml = mapProductDetails.map((product) => {
-        console.log(product.images);
         const productId = product.id.split('/').pop();
 
         return `
         <img src=${product.images.edges[0].node.transformedSrc} alt=${product.title} class="product-image">
             <p>${product.title}</p>
-            <a class="review-button" href={{review_link_${productId}}} target="_blank">my text button</a>
+            <a class="review-button" href={{review_link_${productId}}} target="_blank">${emailContents.buttonText}</a>
         `;
 
     }).join('');
@@ -68,8 +67,7 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, footer }
     <body>
         <div class="email-container">
             <img src="${emailContents.logo}" alt="Logo" class="logo">
-            <p>Hello,</p>
-            <p>We would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds.</p>
+            <p>${emailContents.body}</p>
             ${productsHtml}
         </div>
     </body>`;

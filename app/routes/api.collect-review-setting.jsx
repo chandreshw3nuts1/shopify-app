@@ -5,11 +5,12 @@ import manualReviewRequests from './models/manualReviewRequests';
 import generalAppearances from './models/generalAppearances';
 
 import { ObjectId } from 'mongodb';
-import { getShopDetailsByShop, getShopifyProducts } from './../utils/common';
+import { getShopDetailsByShop, getShopifyProducts, getLanguageWiseContents } from './../utils/common';
 import { sendEmail } from "./../utils/email.server";
 import ReactDOMServer from 'react-dom/server';
 import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTemplate';
 import { getUploadDocument } from './../utils/documentPath';
+import emailReviewRequestSettings from "./models/emailReviewRequestSettings";
 import settingJson from './../utils/settings.json';
 export async function loader() {
     return json({
@@ -35,11 +36,16 @@ export async function action({ params, request }) {
 
                     const productIds = selectedProducts.map((item) => `"gid://shopify/Product/${item}"`);
                     var mapProductDetails = await getShopifyProducts(shop, productIds, 200);
+                    const customer_locale = 'en';
+
+                    const replaceVars = {
+                    }
+                    const emailContents = await getLanguageWiseContents("review_request", replaceVars, shopRecords._id, customer_locale);
+
+                    emailContents.logo = logo;
 
                     const footer = "";
-                    const emailContents = {
-                        logo: logo,
-                    }
+
                     var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
                         <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} footer={footer} />
                     );
@@ -71,7 +77,7 @@ export async function action({ params, request }) {
                             }));
 
                             // Send request email
-                            const subject = requestBody.requestEmailSubject;
+                            const subject = emailContents.subject;
                             const response = await sendEmail({
                                 to: email,
                                 subject,

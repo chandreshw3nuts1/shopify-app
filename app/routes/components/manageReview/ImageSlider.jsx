@@ -4,8 +4,8 @@ import styles from './imageSlider.module.css';
 import { Modal, DropdownButton, Dropdown } from 'react-bootstrap';
 import { FaEllipsisV } from 'react-icons/fa';  // Import the three dots icon
 import { toast } from 'react-toastify';
-import settingsJson from './../../../utils/settings.json'; 
-import {getUploadDocument} from './../../../utils/documentPath';
+import settingsJson from './../../../utils/settings.json';
+import { getUploadDocument } from './../../../utils/documentPath';
 import MoreIcon from '../../../images/MoreIcon';
 
 import UnPublishedIcon from '../../../images/UnPublishedIcon';
@@ -20,8 +20,8 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 	const [images, setImages] = useState(reviewDocuments);
 
 	useEffect(() => {
-        setImages(reviewDocuments);
-    }, [reviewDocuments]);
+		setImages(reviewDocuments);
+	}, [reviewDocuments]);
 
 	const handleCloseImageModal = () => setShowImageModal(false);
 
@@ -150,13 +150,13 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 	};
 
 	const openImageInNewTab = (imgPath) => {
-		const img =  getUploadDocument(imgPath);
+		const img = getUploadDocument(imgPath);
 
 		window.open(img, '_blank');
 	};
 
 	const downloadImage = (imageUrlPath) => {
-		const imageUrl =  getUploadDocument(imageUrlPath);
+		const imageUrl = getUploadDocument(imageUrlPath);
 
 		const imageName = imageUrl.split('/').pop();
 
@@ -192,25 +192,25 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 						>
 
 							{image.type === 'image' ? (
-								<img onClick={(e) => handleShowImageModal(e,image.type)} className={styles.img} src={getUploadDocument(image.url) } alt={`Slide ${index}`} />
+								<img onClick={(e) => handleShowImageModal(e, image.type)} className={styles.img} src={getUploadDocument(image.url)} alt={`Slide ${index}`} />
 							) : (
-								<video onClick={(e) => handleShowImageModal(e,image.type)} className={styles.img} controls>
+								<video onClick={(e) => handleShowImageModal(e, image.type)} className={styles.img} controls>
 									<source src={getUploadDocument(image.url)} type="video/mp4" />
 								</video>
 							)}
 
 
 							<div className='flxfix dropdownwrap ddlightbtn'>
-							
-								<DropdownButton className={styles.menu_icon}  id="dropdown-basic-button"  title={<MoreIcon />} align={'end'}>
-									{image.is_cover == false && image.is_approve == true ? 
-										<Dropdown.Item onClick={(e) => makeCoverPhoto(e, index)} eventKey="edit" className="custom-dropdown-item" >Make cover photo</Dropdown.Item> : ""}
+
+								<DropdownButton className={styles.menu_icon} id="dropdown-basic-button" title={<MoreIcon />} align={'end'}>
+									{image.is_cover == false && image.is_approve == true ?
+										<Dropdown.Item onClick={(e) => makeCoverPhoto(e, index)} eventKey="edit" className="custom-dropdown-item" >Make cover {image.type=="image" ? "photo" : "video"} </Dropdown.Item> : ""}
 									{image.is_approve == false ?
-										<Dropdown.Item onClick={(e) => approvePhoto(e, index)} eventKey="delete" className="custom-dropdown-item" >Approve photo</Dropdown.Item> : ""}
+										<Dropdown.Item onClick={(e) => approvePhoto(e, index)} eventKey="delete" className="custom-dropdown-item" >Approve {image.type=="image" ? "photo" : "video"}</Dropdown.Item> : ""}
 									{image.is_approve &&
-										<Dropdown.Item onClick={(e) => hidePhoto(e, index)} eventKey="delete" className="custom-dropdown-item" >Hide photo</Dropdown.Item> }
-									<Dropdown.Item onClick={(e) => openImageInNewTab(image.url)} eventKey="delete" className="custom-dropdown-item" >View photo</Dropdown.Item>
-									<Dropdown.Item onClick={(e) => downloadImage(image.url)} eventKey="delete" className="custom-dropdown-item" >Download photo</Dropdown.Item>
+										<Dropdown.Item onClick={(e) => hidePhoto(e, index)} eventKey="delete" className="custom-dropdown-item" >Hide {image.type=="image" ? "photo" : "video"}</Dropdown.Item>}
+									<Dropdown.Item onClick={(e) => openImageInNewTab(image.url)} eventKey="delete" className="custom-dropdown-item" >View {image.type=="image" ? "photo" : "video"}</Dropdown.Item>
+									<Dropdown.Item onClick={(e) => downloadImage(image.url)} eventKey="delete" className="custom-dropdown-item" >Download {image.type=="image" ? "photo" : "video"}</Dropdown.Item>
 
 								</DropdownButton>
 							</div>
@@ -234,11 +234,11 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 							</div> */}
 							{image.is_cover && image.is_approve && (
 								<span className={`${styles.cover_photo_label} ${styles.coverphotolabel}`}>
-									<i className='starsico-single-star'></i> cover photo
+									<i className='starsico-single-star'></i> cover {image.type=="image" ? "photo" : "video"}
 								</span>
 							)}
-							{image.is_approve == false && 
-								<span className={`${styles.cover_photo_label} ${styles.hidephotolabel}`}><UnPublishedIcon/> Hide</span>
+							{image.is_approve == false &&
+								<span className={`${styles.cover_photo_label} ${styles.hidephotolabel}`}><UnPublishedIcon /> Hide</span>
 							}
 						</div>
 					))}
@@ -263,12 +263,14 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 					<Modal.Title>title</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					{documentType === 'image' ? (
-							<img src={getUploadDocument(images[currentIndex].url)} alt={`Slide ${currentIndex}`} style={{ width: '100%' }} />
-					) : (
+					{documentType === 'image' && images[currentIndex] && images[currentIndex].url ? (
+						<img src={getUploadDocument(images[currentIndex].url)} alt={`Slide ${currentIndex}`} style={{ width: '100%' }} />
+					) : documentType === 'video' && images[currentIndex] && images[currentIndex].url ? (
 						<video controls className={styles.videoWidth}>
 							<source src={getUploadDocument(images[currentIndex].url)} type="video/mp4" />
 						</video>
+					) : (
+						<p>No content to display</p>
 					)}
 
 				</Modal.Body>

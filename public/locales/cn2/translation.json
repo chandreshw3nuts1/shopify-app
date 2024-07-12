@@ -1,6 +1,6 @@
 {
     "reviewRequestEmail" : {
-        "subject" : "Order #[order_number], how did it go?",
+        "subject" : "chinis trad Order #[order_number], how did it go?",
         "body" : "Hello [name], \n \n We would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds.",
         "buttonText" : "Write a review"
     }

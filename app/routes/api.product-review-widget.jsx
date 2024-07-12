@@ -215,7 +215,6 @@ export async function action({ request }) {
 						shopifyStoreUrl : shopifyStoreUrl,
 					};
 					const footer = "";
-					console.log(emailContents);
 					const subject = `New review (${formData.get('rating')}★) of ${formData.get('product_title')} ${display_name}`;
 					const emailHtml = ReactDOMServer.renderToStaticMarkup(
 						<EmailTemplate emailContents={emailContents} footer={footer} />

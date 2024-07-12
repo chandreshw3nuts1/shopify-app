@@ -21,7 +21,7 @@ export async function loader({request}) {
 	try {
 
 		const shopRecords = await getShopDetails(request);
-		const limit = settingsJson.manage_review_limit;
+		const limit = settingsJson.page_limit;
 
 		const db = await mongoConnection();
 		const countRating =  await db.collection("product_reviews").aggregate([

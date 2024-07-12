@@ -63,7 +63,6 @@ export async function action({ params, request }) {
                 if(actionType == "deleteLogo") {
 
                     const logoData = await findOneRecord("general_appearances", { "shop_id": shopRecords._id });
-                    console.log(logoData);
                     const res = await generalAppearances.updateOne(
                         { shop_id: shopRecords._id },
                         {
@@ -79,7 +78,6 @@ export async function action({ params, request }) {
                     if (fs.existsSync(filePath)) {
                         try {
                             fs.unlinkSync(filePath);
-                            console.log('File deleted successfully');
                         } catch (error) {
                             console.error('Error deleting file:', error);
                         }
