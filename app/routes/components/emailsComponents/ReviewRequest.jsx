@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import SingleImageUpload from '../settings/ImageUpload';
 const ReviewRequest = ({ shopRecords, emailReviewRequest }) => {
     const { t, i18n } = useTranslation();
 
@@ -85,25 +86,22 @@ const ReviewRequest = ({ shopRecords, emailReviewRequest }) => {
 
     return (
         <>
-            <div className="filterandserchwrap">
-                <form >
-                    <div className="row">
-                        <div className="col-lg-12">
-                            <div className="form-group">
-                                <img src={t('reviewRequestEmail.bannerPath')} />
-                            </div>
-                        </div>
-
-                        <div className="col-lg-6">
-                            <div className="form-group">
-
-                                <label htmlFor="">Subject </label>
-                                <input type="text" onBlur={handleInputBlur} name="subject" value={subject} onChange={changeSubject} className="input_text" placeholder={t('reviewRequestEmail.subject')} />
-                            </div>
-
-                        </div>
+            <div className='graywrapbox mt-24 max1048'>
+                <div className="reviewrequestdefault">
+                    <form>
                         <div className="row">
-                            <div className="col-lg-6">
+                            <div className="col-lg-5">
+                                <div className="form-group">
+                                    <label htmlFor="">Banner</label>
+                                    <SingleImageUpload className="emailbannerimage" hasEdit />
+                                    {/* <img src={t('reviewRequestEmail.bannerPath')} /> */}
+                                </div>
+                            </div>
+                            <div className="col-lg-7">
+                                <div className="form-group">
+                                    <label htmlFor="">Subject </label>
+                                    <input type="text" onBlur={handleInputBlur} name="subject" value={subject} onChange={changeSubject} className="input_text" placeholder={t('reviewRequestEmail.subject')} />
+                                </div>
                                 <div className="form-group">
                                     <label htmlFor="">Body</label>
                                     <textarea
@@ -115,22 +113,17 @@ const ReviewRequest = ({ shopRecords, emailReviewRequest }) => {
                                         value={body}
                                     ></textarea>
                                 </div>
+                                <div className="form-group">
+                                    <label htmlFor="">Button Text</label>
+                                    <input type="text" onBlur={handleInputBlur} name="buttonText" value={buttonText} onChange={changeButtonText} className="input_text" placeholder={t('reviewRequestEmail.buttonText')} />
+                                </div>
+                                <div className="btnbox">
+                                    <input type="submit" value="Search" className="revbtn" />
+                                </div>
                             </div>
                         </div>
-
-                        <div className="col-lg-6">
-                            <div className="form-group">
-                                <label htmlFor="">Button Text</label>
-                                <input type="text" onBlur={handleInputBlur} name="buttonText" value={buttonText} onChange={changeButtonText} className="input_text" placeholder={t('reviewRequestEmail.buttonText')} />
-                            </div>
-                        </div>
-                        <div className="col-lg-12">
-                            <div className="btnbox">
-                                <input type="submit" value="Search" className="revbtn" />
-                            </div>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </>
     );

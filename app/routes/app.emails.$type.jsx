@@ -67,11 +67,15 @@ export default function EmailTemplateSettings() {
 		<>
 			<Breadcrumb crumbs={crumbs} />
 			<Page fullWidth>
-				<div className='pagebackbtn'>
-					<a href="#" onClick={backToReviewPage}><i className='twenty-arrow-left'></i>Collect reviews</a>
+				<div className='pagetitle'>
+					<div className='pagebackbtn flxflexi'>
+						<a href="#" onClick={backToReviewPage}><i className='twenty-arrow-left'></i>Collect reviews</a>
+					</div>
+					<div className='flxfix'>
+						<LanguageSelector className="inlinerow m-0" />
+					</div>
 				</div>
-				<div>
-					<LanguageSelector />
+				<div className='flxfix'>
 					{content}
 				</div>
 

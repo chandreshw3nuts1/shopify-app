@@ -205,7 +205,7 @@ form .form-control,
 form .input_text { width: 100%; height: 44px; border-radius: 8px; background: var(--whiteBg); border: solid 1px var(--borderColor); padding: 0 16px; outline: none !important; box-shadow: none !important; resize: none; font-size: 14px; resize: none;}
 textarea.form-control,
 form textarea.form-control,
-form textarea.input_text { height: 160px;}
+form textarea.input_text { height: 160px; padding-top: 8px; padding-bottom: 8px;}
 .filterandserchwrap { padding: 24px; border-radius: 10px; background: var(--whiteBg); border: solid 1px var(--borderColor); margin: 24px 0 0 0;}
 .letterlimite { position: absolute; right: 0; top: 100%; font-size: 12px; color: var(--lightGreyColor);}
 
@@ -394,6 +394,7 @@ body .modal .modal-dialog.productselect .modal-body .row [class*="col-"] { paddi
 .alertbox .closebtn { margin: 0 0 0 16px;}
 .alertbox .closebtn a { text-decoration: none; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: var(--whiteBg); border-radius: 50px; color: var(--darkColor); font-size: 20px;}
 .alertbox.primarybox { background: var(--LightblueColor2);}
+.mt-24 { margin-top: 24px !important;}
 
 .whitebox { width: 100%; padding: 24px; background: var(--whiteBg); border: solid 1px var(--borderColor); border-radius: 10px;}
 
@@ -429,11 +430,49 @@ body .dropdown-toggle::after { content: "\e902"; font-family: 'icon24' !importan
 
 
 .imageuploadbox { width: 100%; position: relative; background: var(--whiteBg); border: solid 1px var(--borderColor); border-radius: 8px; padding: 12px 16px;}
-.imageuploadbox .filebtnbox { display: flex; align-items: center; justify-content: center;}
-.imageuploadbox .filebtnbox .inputfileimage { position: absolute; width: 100%; height: 100%; top: 0; left: 0; cursor: pointer; opacity: 0;}
-.imageuploadbox .filebtnbox label { display: flex; align-items: center; justify-content: center; height: 32px; border-radius: 6px; background: var(--lightGreyBGcolor); color: var(--darkColor); font-size: 14px; padding: 0 10px; margin: 0;}
+.imageuploadbox .filebtnbox { display: flex; align-items: center; justify-content: center; position: relative;}
+.imageuploadbox .filebtnbox .inputfileimage { position: absolute; width: 10px; height: 10px; top: -20px; left: -20px; cursor: pointer; opacity: 0;}
+.imageuploadbox .filebtnbox label:not(.revbtn) { display: flex; align-items: center; justify-content: center; height: 32px; border-radius: 6px; background: var(--lightGreyBGcolor); color: var(--darkColor); font-size: 14px; padding: 0 10px; margin: 0; cursor: pointer;}
+.imageuploadbox .filebtnbox label.revbtn { display: flex; align-items: center; cursor: pointer;}
 .imageuploadbox.hasfile .filebtnbox { display: none;}
 .imageuploadbox .files-list-container { display: flex; justify-content: center;}
 .imageuploadbox .files-list-container .form__image-container { position: relative; width: 80px; height: 80px; background: var(--whiteBg); border: solid 1px var(--borderColor); border-radius: 6px; display: flex; justify-content: center; align-items: center;}
 .imageuploadbox .files-list-container .form__image-container .form__image { max-width: 100%; max-height: 100%; width: auto; height: auto;}
 .imageuploadbox .files-list-container .form__image-container .deleteicon { position: absolute; width: 24px; height: 24px; color: var(--whiteBg); display: flex; align-items: center; justify-content: center; border-radius: 50px; background: var(--redColor); right: -10px; top: -10px; cursor: pointer;}
+.imageuploadbox.emailbannerimage { padding: 0; min-height: 356px;}
+.imageuploadbox.emailbannerimage .files-list-container {}
+.imageuploadbox.emailbannerimage {}
+
+.imageuploadbox.emailbannerimage:not(.hasfile ) { display: flex; justify-content: center; align-items: center;}
+.imageuploadbox.emailbannerimage:not(.hasfile ) .filebtnbox { column-gap: 16px;}
+.imageuploadbox.emailbannerimage.hasfile { min-height: 10px;}
+.imageuploadbox.emailbannerimage.hasfile .btnwrap { display: none;}
+.imageuploadbox.emailbannerimage.hasfile .filebtnbox { display: block; position: absolute; right: 66px; top: 10px; z-index: 1;}
+.imageuploadbox.emailbannerimage.hasfile .filebtnbox label { width: 44px; height: 44px; font-size: 24px; background: var(--whiteBg); color: var(--blueColor); display: flex; align-items: center; justify-content: center; border-radius: 60px;}
+.imageuploadbox.emailbannerimage.hasfile .files-list-container { width: 100%;}
+.imageuploadbox.emailbannerimage.hasfile .files-list-container .listbox { width: 100%;}
+.imageuploadbox.emailbannerimage.hasfile .files-list-container .form__image-container { width: 100%; height: auto; border-radius: 6px; overflow: hidden; border: none;}
+.imageuploadbox.emailbannerimage.hasfile .files-list-container .form__image-container img { width: 100%; height: auto;}
+.imageuploadbox.emailbannerimage.hasfile .files-list-container .form__image-container .deleteicon { width: 44px; height: 44px; border-radius: 60px; right: 10px; top: 10px; background: var(--whiteBg); color: var(--redColor); font-size: 24px;}
+.imageuploadbox.emailbannerimage.hasfile .files-list-container .form__image-container .deleteicon svg { width: 24px; height: 24px;}
+
+
+
+.maininsideacc { margin: 0; padding: 24px; background: var(--whiteBg); margin: 24px 0 0 0; border: solid 1px var(--borderColor); border-radius: 10px;}
+.maininsideacc .insiderowacc { display: flex; align-items: center; cursor: pointer;}
+.maininsideacc .insiderowacc + .insiderowacc { border-top: solid 1px var(--borderColor); padding-top: 16px; margin-top: 16px;}
+.maininsideacc .insiderowacc .titledetail { display: flex; flex-direction: column;}
+.maininsideacc .insiderowacc h6 { color: var(--darkColor); font-size: 14px; font-weight: 700; margin: 0; padding: 0; line-height: normal;}
+.maininsideacc .insiderowacc p { padding: 8px 0 0 0; margin: 0; color: var(--lightGreyColor); font-size: 14px; font-weight: 400; line-height: normal;}
+.maininsideacc .insiderowacc .arrowicon { margin: 0 0 0 16px; display: flex; align-items: center; font-size: 24px;}
+.maininsideacc .insiderowacc .arrowicon i { display: block; transition: all ease-in-out 0.3s; transform-origin: center center; width: 24px; height: 24px;}
+
+
+.form-group.inlinerow { display: flex; align-items: center;}
+.form-group.inlinerow label { white-space: nowrap; margin: 0 12px 0 0; padding: 0;}
+
+.graywrapbox.max1048 { max-width: 1048px;}
+
+
+.pagetitle { display: flex; align-items: center;}
+.pagetitle .pagebackbtn { margin: 0;}

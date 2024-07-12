@@ -7,7 +7,7 @@ const languages = [
     { code: "hi", lang: "Hindi" },
 ];
 
-const LanguageSelector = () => {
+const LanguageSelector = (props) => {
     const { i18n } = useTranslation();
 
     useEffect(() => {
@@ -20,22 +20,16 @@ const LanguageSelector = () => {
     };
 
     return (
-
-        <div className="col-lg-6">
-            <div className="form-group">
-                <label htmlFor="">Current Language</label>
-                <select  onChange={(e) =>  changeLanguage(e.target.value)} className="input_text">
-                    {languages.map((lng) => {
-                        return (
-                            <option selected={lng.code === i18n.language} value={lng.code}>{lng.lang}</option>
-                        );
-                    })}
-
-                </select>
-            </div>
+        <div className={`form-group ${props.className}`}>
+            <label htmlFor="">Current Language</label>
+            <select  onChange={(e) =>  changeLanguage(e.target.value)} className="input_text">
+                {languages.map((lng) => {
+                    return (
+                        <option selected={lng.code === i18n.language} value={lng.code}>{lng.lang}</option>
+                    );
+                })}
+            </select>
         </div>
-
-
     );
 };
 
