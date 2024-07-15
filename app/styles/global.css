@@ -199,7 +199,7 @@ body .form-check-input:active { filter: brightness(95%);}
 .form-group,
 form .form-group { margin: 0 0 24px 0; width: 100%; position: relative;}
 .form-group label,
-form .form-group label { display: block; font-size: 14px; line-height: normal; font-weight: 600; color: var(--darkColor); margin: 0 0 12px 0; padding: 0;}
+form .form-group label { display: block; font-size: 14px; line-height: normal; font-weight: 500; color: var(--darkColor); margin: 0 0 12px 0; padding: 0;}
 .input_text,
 .form-control,
 form .form-control,
@@ -371,7 +371,7 @@ body .modal .modal-dialog.productselect .modal-body .row [class*="col-"] { paddi
 
 .inputnote { margin: 8px 0 0 0; padding: 0; line-height: normal; font-size: 12px; color: var(--lightGreyColor); line-height: 1.66;}
 .inputnote a { color: var(--darkColor);}
-.inputnote strong { font-weight: 600;}
+.inputnote strong { font-weight: 600; color: var(--darkColor);}
 
 .propopuplist { margin: 24px 0 0 0;}
 .propopuplist .row { row-gap: 16px;}
@@ -412,6 +412,10 @@ body .modal .modal-dialog.productselect .modal-body .row [class*="col-"] { paddi
 
 .graywrapbox { background: var(--lightGreyBGcolor); border: solid 1px var(--borderColor); padding: 24px; border-radius: 10px; margin: 0 auto;}
 .graywrapbox.gapy24 { display: flex; flex-direction: column; row-gap: 24px;}
+.gapx24 { column-gap: 24px;}
+.gapy24 { row-gap: 24px;}
+.gapx16 { column-gap: 16px;}
+.gapy16 { row-gap: 16px;}
 
 .subtitlebox { padding: 0 0 0 0;}
 .subtitlebox h2 { margin: 0; padding: 0; color: var(--darkColor); font-size: 18px; font-weight: 700; line-height: normal;}
@@ -483,3 +487,19 @@ body .dropdown-toggle::after { content: "\e902"; font-family: 'icon24' !importan
 
 .sentrowbanner { align-items: center; justify-content: space-between;}
 .sentrowbanner p { margin: 0; padding: 0; font-size: 12px; color: var(--darkColor);}
+
+.ourplanbox { align-items: center; text-decoration: none;}
+.ourplanbox .iconbox { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; margin: 0 16px 0 0;}
+.ourplanbox .iconbox img { max-width: 100%; max-height: 100%; width: auto; height: auto;}
+.ourplanbox .detailbox { display: flex; flex-direction: column; row-gap: 8px;}
+.ourplanbox .detailbox h6 { font-size: 16px; line-height: normal; font-weight: 700; margin: 0; padding: 0; color: var(--darkColor);}
+.ourplanbox .detailbox p { font-size: 14px; line-height: normal; font-weight: 400; margin: 0; padding: 0; color: var(--lightGreyColor);}
+.ourplanbox .linkicon { font-size: 24px; color: var(--darkColor);}
+.ourplanbox .linkicon i { display: flex; align-items: center; justify-content: center;}
+
+.general_row { margin: 0; padding: 0; display: flex; flex-direction: column; row-gap: 16px;}
+.general_row + .general_row  { margin-top: 24px; padding-top: 24px; border-top: solid 1px var(--borderColor);}
+.general_row .row_title { margin: 0; display: flex; align-items: center;}
+.general_row .row_title .lefttitle { display: flex; flex-direction: column; row-gap: 8px;}
+.general_row .row_title h4 { font-size: 16px; line-height: normal; color: var(--darkColor); padding: 0; margin: 0; font-weight: 700; display: flex;}
+.general_row .row_title p { font-size: 14px; line-height: normal; color: var(--lightGreyColor); padding: 0; margin: 0; font-weight: 400;}

@@ -182,7 +182,7 @@ const ReviewPage = () => {
 							>
 								<div className='flxrow acctitle'>
 									<div className='flxfix iconbox'>
-										<i className='twenty-questions'></i>
+										<i className='twenty-emails'></i>
 									</div>
 									<div className='flxflexi titledetail'>
 										<Text as="h1" variant="headingMd">
