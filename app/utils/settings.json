@@ -29,6 +29,7 @@
 		{ "code": "ar", "lang": "Arabic (العربية)" },
 		{ "code": "pl", "lang": "Polish (Polski)" },
 		{ "code": "lt", "lang": "Lithuanian (Lietuvių)" }
-	]
+	],
+	"defaultViewSampleEmailName" : "John"
 
 }

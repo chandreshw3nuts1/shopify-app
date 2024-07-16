@@ -1,30 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
-import SingleImageUpload from '../settings/ImageUpload';
+import ImageUploadMultiLang from '../settings/ImageUploadMultiLang';
 import AlertInfo from '../AlertInfo';
+import { useNavigate } from 'react-router-dom';
+import { Modal } from 'react-bootstrap';
+import settingsJson from './../../../utils/settings.json';
+import { getDefaultProductImage, getUploadDocument } from './../../../utils/documentPath';
+import SampleReviewRequestEmail from './../email/SampleReviewRequestEmail';
 
 const ReviewRequest = ({ shopRecords, emailTemplateObj }) => {
     const { t, i18n } = useTranslation();
-
+    const bannerType = "reviewRequest";
     const [emailTemplateObjState, setEmailTemplateObjState] = useState(emailTemplateObj);
-    const [currentLanguage, setCurrentLanguage] = useState();
+    const [languageWiseEmailTemplate, setLanguageWiseEmailTemplate] = useState({});
+    const [currentLanguage, setCurrentLanguage] = useState('en');
     const [subject, setSubject] = useState('');
     const [body, setBody] = useState('');
     const [buttonText, setButtonText] = useState('');
     const [initialData, setInitialData] = useState({});
     const [placeHolderLanguageData, setPlaceHolderLanguageData] = useState({});
+    const [emailContents, setEmailContents] = useState({});
+
+    const [showViewSampleModal, setShowViewSampleModal] = useState(false);
+    const handleCloseViewSampleModal = () => setShowViewSampleModal(false);
+
+    const navigate = useNavigate();
 
 
     useEffect(() => {
         const language = localStorage.getItem('i18nextLng');
         setCurrentLanguage(language);
 
+        const emailTemplateInfo = (emailTemplateObjState && emailTemplateObjState[currentLanguage]) ? emailTemplateObjState[currentLanguage] : {};
+        const { subject, body, buttonText } = emailTemplateInfo;
+        setLanguageWiseEmailTemplate(emailTemplateInfo);
 
-        const { subject, body, buttonText } = (emailTemplateObjState && emailTemplateObjState[currentLanguage]) ? emailTemplateObjState[currentLanguage] : {};
         setSubject(subject || '');
         setBody(body || '');
         setButtonText(buttonText || '');
+
+
         setInitialData({
             subject: subject || '',
             body: body || '',
@@ -32,7 +48,6 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj }) => {
         });
 
         setPlaceHolderLanguageData({
-            bannerPath: t('reviewRequestEmail.bannerPath'),
             subject: t('reviewRequestEmail.subject'),
             body: t('reviewRequestEmail.body'),
             buttonText: t('reviewRequestEmail.buttonText'),
@@ -41,7 +56,7 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj }) => {
     }, [i18n, i18n.language, emailTemplateObjState, currentLanguage]);
 
     // useEffect(() => {
-        
+
     // }, [emailTemplateObjState, currentLanguage]);
 
 
@@ -94,9 +109,54 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj }) => {
 
     };
 
+    const sendReviewRequestEmail = async (e) => {
+        const language = localStorage.getItem('i18nextLng');
+        const updateData = {
+            shop: shopRecords.shop,
+            language: language,
+            actionType: "sendReviewRequestEmail"
+        };
+        const response = await fetch('/api/email-settings', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updateData),
+        });
+        const data = await response.json();
+        if (data.status == 200) {
+            toast.success(data.message);
 
-    const alertContent = `You can upload a default banner to all emails in the <a href="#">Branding Setting</a>`
+        } else {
+            toast.error(data.message);
+        }
 
+    };
+
+    const viewSample = (e) => {
+        e.preventDefault();
+
+        const dynamicBody = t('reviewRequestEmail.body').replace('[name]', settingsJson.defaultViewSampleEmailName);
+        const sampleEmailData = {
+            body: body ? body : dynamicBody,
+            buttonText: buttonText ? buttonText : t('reviewRequestEmail.buttonText'),
+            banner : getUploadDocument(languageWiseEmailTemplate.banner, 'banners'),
+            getDefaultProductImage: getDefaultProductImage(),
+        }
+        setEmailContents(sampleEmailData);
+        setShowViewSampleModal(true);
+    }
+
+
+    const showBrandingPage = (e) => {
+        e.preventDefault();
+        navigate('/app/branding');
+    }
+    const alertContent = (
+        <>
+            You can upload a default banner to all emails in the <a href="#" onClick={showBrandingPage}>Branding Setting</a>
+        </>
+    );
 
     return (
         <>
@@ -109,18 +169,16 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj }) => {
                                     <label htmlFor="">Banner</label>
                                     <div className='bannerverticalwrap'>
                                         <div className='banneruploadimg'>
-                                            <SingleImageUpload className="emailbannerimage" hasEdit />
-                                            {/* <img src={t('reviewRequestEmail.bannerPath')} /> */}
-                                            <div className='inputnote'>You can upload an image in JPG, PNG, or GIF format up to 5 MB. Email banner will be displayed in 500px width, for best results, upload an image between 500-1200px wide</div>
+                                            <ImageUploadMultiLang className="emailbannerimage" bannerType={bannerType} shopRecords={shopRecords} currentLanguage={currentLanguage} languageWiseEmailTemplate={languageWiseEmailTemplate} emailTemplateObjState={emailTemplateObjState} setEmailTemplateObjState={setEmailTemplateObjState} hasEdit />
                                         </div>
-                                        <AlertInfo colorTheme="primarybox" alertContent={`${alertContent}`}  />
+                                        <AlertInfo colorTheme="primarybox" alertContent={alertContent} />
                                     </div>
                                 </div>
                             </div>
                             <div className="col-lg-7">
                                 <div className="form-group">
                                     <label htmlFor="">Subject </label>
-                                    <input type="text" onBlur={handleInputBlur} name="subject" value={subject} onChange={changeSubject} className="input_text" placeholder={t('reviewRequestEmail.subject')} />
+                                    <input type="text" onBlur={handleInputBlur} name="subject" value={subject} onChange={changeSubject} className="input_text" placeholder={placeHolderLanguageData.subject} />
                                     <div className='inputnote'>
                                         <div><strong>Notes:</strong></div>
                                         <div>Use [order_number] for the customer's order number</div>
@@ -140,21 +198,30 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj }) => {
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="">Button Text</label>
-                                    <input type="text" onBlur={handleInputBlur} name="buttonText" value={buttonText} onChange={changeButtonText} className="input_text" placeholder={t('reviewRequestEmail.buttonText')} />
+                                    <input type="text" onBlur={handleInputBlur} name="buttonText" value={buttonText} onChange={changeButtonText} className="input_text" placeholder={placeHolderLanguageData.buttonText} />
                                 </div>
                                 <div className='sentrowbanner flxrow'>
                                     <p>Send review request to your self</p>
-                                    <button type='button' className='revbtn smbtn'>Sent</button>
+                                    <button type='button' onClick={sendReviewRequestEmail} className='revbtn smbtn'>Sent</button>
                                 </div>
                                 <div className="btnwrap">
-                                    <a href="#" className='revbtn'>View sample</a>
-                                    <a href="#" className='revbtn outline'>Customize email appearance</a>
+                                    <a href="#" onClick={viewSample} className='revbtn'>View sample</a>
+                                    <a href="#" onClick={showBrandingPage} className='revbtn outline'>Customize email appearance</a>
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
+            <Modal show={showViewSampleModal} className='reviewimagepopup' onHide={handleCloseViewSampleModal} size="lg" backdrop="static">
+                <Modal.Header closeButton>
+                    <Modal.Title>Sample email</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <SampleReviewRequestEmail shopRecords={shopRecords} emailContents={emailContents} />
+
+                </Modal.Body>
+            </Modal>
         </>
     );
 };

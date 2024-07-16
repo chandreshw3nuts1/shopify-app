@@ -73,6 +73,10 @@ const ReviewPage = () => {
 	const showReviewRequestEmailForm = () => {
 		navigate('/app/emails/review-request/');
 	}
+	const showReviewReplyEmailForm = () => {
+		navigate('/app/emails/review-reply/');
+	}
+	
 	return (
 		<>
 			<Breadcrumb crumbs={crumbs} />
@@ -224,6 +228,18 @@ const ReviewPage = () => {
 												<i class="twenty-longarrow-right"></i>
 											</div>
 										</div>
+
+										<div className='insiderowacc' onClick={showReviewReplyEmailForm}>
+											<div className='titledetail flxflexi'>
+												<h6>Reply to review</h6>
+												<p>Inform your customers once you publicly reply to their review</p>
+											</div>
+											
+											<div className='flxfix arrowicon'>
+												<i class="twenty-longarrow-right"></i>
+											</div>
+										</div>
+
 										{/* Above DIV will be repeat */}
 										<div className='alertbox primarybox mt-24'>
 											<div className='iconbox'>

@@ -9,7 +9,9 @@ import Breadcrumb from './components/Breadcrumb';
 import { getShopDetails } from './../utils/getShopDetails';
 import emailReviewRequestSettings from './models/emailReviewRequestSettings';
 import emailReviewReplySettings from './models/emailReviewReplySettings';
+import generalAppearances from './models/generalAppearances';
 import generalSettings from './models/generalSettings';
+import { getUploadDocument } from './../utils/documentPath';
 
 import { useTranslation } from "react-i18next";
 
@@ -20,6 +22,9 @@ import {
 export const loader = async ({ request, params }) => {
 	const shopRecords = await getShopDetails(request);
 	var JsonData = { params, shopRecords };
+	const generalAppearancesData = await generalAppearances.findOne({ shop_id: shopRecords._id });
+	const logo = getUploadDocument(generalAppearancesData.logo, 'logo');
+	JsonData.shopRecords.logo = logo;
 	switch (params.type) {
 		case 'review-request':
 			JsonData['emailTemplateObj'] = await emailReviewRequestSettings.findOne({

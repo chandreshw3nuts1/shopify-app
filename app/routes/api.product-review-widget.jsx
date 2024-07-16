@@ -4,7 +4,7 @@ import { findOneRecord, getShopifyProducts } from "./../utils/common";
 import EmailTemplate from './components/email/EmailTemplate';
 import ReactDOMServer from 'react-dom/server';
 import { ObjectId } from 'mongodb';
-import productReviews  from "./models/productReviews";
+import productReviews from "./models/productReviews";
 import reviewDocuments from "./models/reviewDocuments";
 import productReviewQuestions from "./models/productReviewQuestions";
 import manualRequestProducts from './models/manualRequestProducts';
@@ -41,24 +41,24 @@ export async function action({ request }) {
 	const formData = await request.formData();
 	const validImageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
 	const validVideoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm'];
-  
+
 	const shop = formData.get('shop_domain');
 	const actionType = formData.get('actionType');
-	
+
 	switch (method) {
 		case "POST":
 			try {
-				
-				if(actionType == "uploadDocuments") {
+
+				if (actionType == "uploadDocuments") {
 					const files = formData.getAll("image_and_videos[]");
 					const uploadsDir = path.join(process.cwd(), "public/uploads");
 					fs.mkdirSync(uploadsDir, { recursive: true });
 					const imageAndVideoFiles = [];
 					for (let i = 0; i < files.length; i++) {
-						if (files[i].name != "" && files[i].name != null){
-							const fileName = Date.now()+"-"+files[i].name;
+						if (files[i].name != "" && files[i].name != null) {
+							const fileName = Date.now() + "-" + files[i].name;
 							const fileExtension = fileName.split('.').pop().toLowerCase();
-							if(validImageExtensions.includes(fileExtension) || validVideoExtensions.includes(fileExtension)){
+							if (validImageExtensions.includes(fileExtension) || validVideoExtensions.includes(fileExtension)) {
 								const filePath = path.join(uploadsDir, fileName);
 								const buffer = Buffer.from(await files[i].arrayBuffer());
 								fs.writeFileSync(filePath, buffer);
@@ -67,23 +67,23 @@ export async function action({ request }) {
 						}
 					}
 					return imageAndVideoFiles;
-				}else if(actionType == "deleteDocuments") {
+				} else if (actionType == "deleteDocuments") {
 					const deleteFileName = formData.get("deleteFileName");
-					const filePath = path.join(process.cwd(), "public/uploads")+"/"+deleteFileName;
+					const filePath = path.join(process.cwd(), "public/uploads") + "/" + deleteFileName;
 					if (fs.existsSync(filePath)) {
-                        try {
-                            fs.unlinkSync(filePath);
-                            console.log('File deleted successfully');
-                        } catch (error) {
-                            console.error('Error deleting file:', error);
-                        }
-                    } else {
-                        console.log('File does not exist:', filePath);
-                    }
+						try {
+							fs.unlinkSync(filePath);
+							console.log('File deleted successfully');
+						} catch (error) {
+							console.error('Error deleting file:', error);
+						}
+					} else {
+						console.log('File does not exist:', filePath);
+					}
 					return json({ success: true });
 
 				} else {
-					if(shop == null || formData.get('product_id') == null ) {
+					if (shop == null || formData.get('product_id') == null) {
 						return json({ success: false });
 					}
 
@@ -92,22 +92,22 @@ export async function action({ request }) {
 						shop_id: shopRecords._id,
 					});
 
-					const productId =  `"gid://shopify/Product/${formData.get('product_id')}"`;
+					const productId = `"gid://shopify/Product/${formData.get('product_id')}"`;
 					var productsDetails = await getShopifyProducts(shop, productId);
 					const productNodes = productsDetails[0];
-					if(!productsDetails[0] ) {
+					if (!productsDetails[0]) {
 						return json({ success: false });
 					}
 
 					const shopifyStoreUrl = `${process.env.SHOPIFY_ADMIN_STORE_URL}/${shopRecords.name}/apps/${process.env.SHOPIFY_APP_NAME}/app/manage-review`;
-					
+
 					var reviewStatus = 'publish';
 					const reviewStarRating = parseInt(formData.get('rating'));
 					if (settings.autoPublishReview == false) {
 						var reviewStatus = 'pending';
 					} else {
 
-						if ( settings.reviewPublishMode == 'auto' || settings.reviewPublishMode == '5star') {
+						if (settings.reviewPublishMode == 'auto' || settings.reviewPublishMode == '5star') {
 							var reviewStatus = 'publish';
 						} else if (settings.reviewPublishMode == 'above4' && reviewStarRating >= 4) {
 							var reviewStatus = 'publish';
@@ -117,8 +117,13 @@ export async function action({ request }) {
 							var reviewStatus = 'pending';
 						}
 					}
-
-					const display_name = formData.get('first_name') +" "+ formData.get('last_name').charAt(0);
+					var customer_locale = formData.get('customer_locale') || 'en';
+					if (customer_locale == 'zh-TW') {
+						customer_locale = 'cn2';
+					} else if (customer_locale == 'zh-CN') {
+						customer_locale = 'cn1';
+					}
+					const display_name = formData.get('first_name') + " " + formData.get('last_name').charAt(0);
 					const productReviewModel = new productReviews({
 						shop_id: shopRecords._id,
 						first_name: formData.get('first_name'),
@@ -126,27 +131,28 @@ export async function action({ request }) {
 						display_name: display_name,
 						email: formData.get('email'),
 						description: formData.get('description'),
+						customer_locale: customer_locale,
 						rating: reviewStarRating,
 						product_id: formData.get('product_id'),
 						product_title: productNodes.title,
 						product_url: productNodes.handle,
 						status: reviewStatus,
-						is_review_request : formData.get('requestId') ? true : false
+						is_review_request: formData.get('requestId') ? true : false
 					});
 					const result = await productReviewModel.save();
 
 					const insertedId = result._id;
 
 					await manualRequestProducts.updateOne(
-						{ _id : formData.get('requestId') },
+						{ _id: formData.get('requestId') },
 						{
-						  $set: { status : "received"}
+							$set: { status: "received" }
 						}
 					);
 					// upload images/video
 
 					const file_objects = formData.get("file_objects");
-					if(file_objects != null && file_objects !="") {
+					if (file_objects != null && file_objects != "") {
 						let files = file_objects.split(',');
 
 						for (let i = 0; i < files.length; i++) {
@@ -155,9 +161,9 @@ export async function action({ request }) {
 							var docType = 'image';
 
 							const fileExtension = fileName.split('.').pop().toLowerCase();
-							if(validImageExtensions.includes(fileExtension)){
+							if (validImageExtensions.includes(fileExtension)) {
 								var docType = "image";
-							} else if(validVideoExtensions.includes(fileExtension)){
+							} else if (validVideoExtensions.includes(fileExtension)) {
 								var docType = "video";
 							}
 							const isCover = i === 0; // index 0 will be true, others will be false
@@ -168,12 +174,12 @@ export async function action({ request }) {
 								is_approve: true,
 								is_cover: isCover
 							});
-					
+
 							await reviewDocumentModel.save();
 						}
 					}
-					
-					
+
+
 					//insert questions and answers 
 					var questions = [];
 					for (let i = 0; ; i++) {
@@ -184,8 +190,8 @@ export async function action({ request }) {
 						questions.push({ question_id, answer, question_name });
 					}
 					if (questions.length > 0) {
-						questions.map( async (question, index) => {
-							if(question.answer != null) {
+						questions.map(async (question, index) => {
+							if (question.answer != null) {
 								const productReviewQuestionModel = new productReviewQuestions({
 									review_id: new ObjectId(insertedId),
 									question_id: new ObjectId(question.question_id),
@@ -194,7 +200,7 @@ export async function action({ request }) {
 								});
 								await productReviewQuestionModel.save();
 							}
-							
+
 						});
 					}
 
@@ -202,7 +208,7 @@ export async function action({ request }) {
 
 					const email = settings.reviewNotificationEmail || shopRecords.email;
 					const emailContents = {
-						questions : questions,
+						questions: questions,
 						first_name: formData.get('first_name'),
 						last_name: formData.get('last_name'),
 						display_name: display_name,
@@ -212,7 +218,7 @@ export async function action({ request }) {
 						product_id: formData.get('product_id'),
 						product_title: formData.get('product_title'),
 						product_url: formData.get('product_url'),
-						shopifyStoreUrl : shopifyStoreUrl,
+						shopifyStoreUrl: shopifyStoreUrl,
 					};
 					const footer = "";
 					const subject = `New review (${formData.get('rating')}★) of ${formData.get('product_title')} ${display_name}`;

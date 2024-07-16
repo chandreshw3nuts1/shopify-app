@@ -8,7 +8,7 @@ const AlertInfo = (props) => {
                     <i className={`${props.iconClass}`}></i>
                 </div>
             }
-            <div className="plaintext flxflexi" dangerouslySetInnerHTML={{ __html: props.alertContent }}></div>
+            <div className="plaintext flxflexi" >{props.alertContent}</div>
             {props.alertClose && 
                 <div className="closebtn">
                     <a href="#">

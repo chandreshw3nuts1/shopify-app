@@ -14,10 +14,10 @@ const LanguageSelector = (props) => {
     return (
         <div className={`form-group ${props.className}`}>
             <label htmlFor="">Current Language</label>
-            <select  onChange={(e) =>  changeLanguage(e.target.value)} className="input_text">
+            <select value={i18n.language}  onChange={(e) =>  changeLanguage(e.target.value)} className="input_text">
                 {languages.map((lng) => {
                     return (
-                        <option selected={lng.code === i18n.language} value={lng.code}>{lng.lang}</option>
+                        <option key={lng.code} value={lng.code}>{lng.lang}</option>
                     );
                 })}
             </select>
