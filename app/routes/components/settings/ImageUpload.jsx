@@ -92,7 +92,7 @@ const SingleImageUpload = (props) => {
 	};
 
 	return (
-		<div className={`imageuploadbox ${file ? 'hasfile' : ''} ${props.hasEdit ? 'haseditbtn' : ''} ${props.className}`}>
+		<div className={`imageuploadbox ${file ? 'hasfile' : ''} ${props.hasEdit ? 'haseditbtn' : ''} ${props.className} ${(props.documentObj.banner && props.documentObj.banner != defaultBannerName) ? 'hasdelete' : 'nodeletebtn'}`}>
 			<div className='filebtnbox'>
 				<input type="file" id="upload-banner-file" ref={singleFilebanner} className='inputfileimage singleFilebanner' accept="image/*" onChange={handleFileChangeBanner} />
 				{props.hasEdit && file

@@ -43,7 +43,7 @@ const EmailAppearance = (props) => {
             <div className="col-lg-6">
                 <div className="whitebox h-100">
                     <div className="form-group m-0">
-                        <label htmlFor="">Logo</label>
+                        <label htmlFor="">Email banner</label>
                         <SingleImageUpload className="emailbannerimage" shopRecords={props.shopRecords} documentObj={generalAppearancesObj} setDocumentObj={setGeneralAppearancesObj} hasEdit />
                         <div className="inputnote">You can upload an image in JPG, PNG format up to 5MB. For best compatibility, upload an image size of 1200px by 630px.</div>
                     </div>

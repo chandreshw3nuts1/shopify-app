@@ -461,7 +461,7 @@ body .dropdown-toggle::after { content: "\e902"; font-family: 'icon24' !importan
 .imageuploadbox.emailbannerimage.hasfile .files-list-container .form__image-container img { width: 100%; height: auto;}
 .imageuploadbox.emailbannerimage.hasfile .files-list-container .form__image-container .deleteicon { width: 44px; height: 44px; border-radius: 60px; right: 10px; top: 10px; background: var(--whiteBg); color: var(--redColor); font-size: 24px;}
 .imageuploadbox.emailbannerimage.hasfile .files-list-container .form__image-container .deleteicon svg { width: 24px; height: 24px;}
-
+.imageuploadbox.emailbannerimage.nodeletebtn .filebtnbox { right: 10px;}
 
 
 .maininsideacc { margin: 0; padding: 24px; background: var(--whiteBg); margin: 24px 0 0 0; border: solid 1px var(--borderColor); border-radius: 10px;}

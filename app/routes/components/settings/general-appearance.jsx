@@ -112,22 +112,24 @@ export default function GeneralAppearance({ shopRecords,generalAppearances }) {
 		<div className='row'>
 			<div className='col-md-6'>
 				<div className='whitebox h-100'>
-
-					<UploadLogo className="emailbannerimage" hasEdit />
-					{/* <div className='form-group m-0'>
+					<div className="form-group m-0">
 						<label htmlFor="">Logo</label>
-						<input
-							className="form-control"
-							onChange={handleChangeLogo}
-							type="file"
-							name="logo"
-							id="flexSwitchCheckChecked"
-						/>
-						<img src={imageLogo} alt="" />
-						<button onClick={deleteLogo}>
-							<i className='twenty-closeicon'></i>
-						</button>
-					</div> */}
+						<UploadLogo className="" hasEdit />
+						{/* <div className='form-group m-0'>
+							<label htmlFor="">Logo</label>
+							<input
+								className="form-control"
+								onChange={handleChangeLogo}
+								type="file"
+								name="logo"
+								id="flexSwitchCheckChecked"
+							/>
+							<img src={imageLogo} alt="" />
+							<button onClick={deleteLogo}>
+								<i className='twenty-closeicon'></i>
+							</button>
+						</div> */}
+					</div>
 				</div>
 			</div>
 			<div className='col-md-6'>
