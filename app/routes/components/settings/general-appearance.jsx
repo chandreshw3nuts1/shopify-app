@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { toast } from 'react-toastify';
+import UploadLogo from './UploadLogo';
 import {
 	Card,
 	Select,
@@ -111,7 +112,9 @@ export default function GeneralAppearance({ shopRecords,generalAppearances }) {
 		<div className='row'>
 			<div className='col-md-6'>
 				<div className='whitebox h-100'>
-					<div className='form-group m-0'>
+
+					<UploadLogo className="emailbannerimage" hasEdit />
+					{/* <div className='form-group m-0'>
 						<label htmlFor="">Logo</label>
 						<input
 							className="form-control"
@@ -124,7 +127,7 @@ export default function GeneralAppearance({ shopRecords,generalAppearances }) {
 						<button onClick={deleteLogo}>
 							<i className='twenty-closeicon'></i>
 						</button>
-					</div>
+					</div> */}
 				</div>
 			</div>
 			<div className='col-md-6'>

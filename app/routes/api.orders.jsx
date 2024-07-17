@@ -188,6 +188,7 @@ export async function action({ request }) {
 							"last_name": manualRequestModel.last_name,
 						}
 						const emailContents = await getLanguageWiseContents("review_request", replaceVars, shopRecords._id, customer_locale);
+						emailContents.banner =  getUploadDocument(emailContents.banner, 'banners');
 
 						emailContents.logo = logo;
 

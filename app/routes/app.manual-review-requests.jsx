@@ -160,7 +160,8 @@ const ManualReviewRequestsPage = () => {
 				setEmails([]);
 				setSelectedProducts([]);
 				setUpdateMemo(!updateMemo);
-
+				setUpdateMemo(!updateMemo);
+				setRequestEmailSubject('');
 			} else {
 				toast.error(data.message);
 			}
@@ -210,7 +211,7 @@ const ManualReviewRequestsPage = () => {
 									<form>
 										<div className='inside_formcontent'>
 											<div>
-												<label>Email address:</label>
+												<label>Email address: <span className="text-danger" >*</span></label>
 												<ReactMultiEmail
 													emails={emails}
 													autoFocus={true}

@@ -254,6 +254,7 @@ const product_title = $("#display-widget-component").data('product-title');
 const cust_first_name = $("#display-widget-component").data('cust-first_name');
 const cust_last_name = $("#display-widget-component").data('cust-last_name');
 const cust_email = $("#display-widget-component").data('cust-email');
+const customer_locale = $("#display-widget-component").data('customer-locale');
 //{{ block.settings | json }};
 $(document).ready(function () {
     loadReviews(page);
@@ -308,6 +309,7 @@ $(document).on("click", "#show_create_review_modal", function (e) {
             cust_first_name: cust_first_name,
             cust_last_name: cust_last_name,
             cust_email: cust_email,
+            customer_locale: customer_locale,
             actionType: 'openModal'
         },
         dataType: "json",
@@ -341,7 +343,7 @@ $(document).on("click", ".review-list-item", function () {
             reviewId: reviewId,
             actionType: 'openReviewDetailModal',
             shop_domain: shop_domain,
-            hide_product_thumbnails : settings_vars.hide_product_thumbnails
+            hide_product_thumbnails: settings_vars.hide_product_thumbnails
         },
         dataType: "json",
         success: function (response) {
@@ -402,7 +404,7 @@ $(document).on("submit", "#review_submit_btn_form", function (e) {
         formData.append('product_id', product_id);
         formData.append('product_title', product_title);
         formData.append('product_url', product_url);
-
+        formData.append('customer_locale', customer_locale);
         var reviewUrl = $(this).attr('action');
         $.ajax({
             type: 'POST',

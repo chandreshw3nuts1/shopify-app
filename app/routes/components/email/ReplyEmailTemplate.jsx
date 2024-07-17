@@ -1,7 +1,7 @@
 // app/components/EmailTemplate.jsx
 import React from 'react';
 
-const EmailTemplate = ({  emailContents, footer }) => {
+const EmailTemplate = ({ emailContents, footer }) => {
 
     const emailHtml = `<!DOCTYPE html>
     <html lang="en">
@@ -66,13 +66,8 @@ const EmailTemplate = ({  emailContents, footer }) => {
                 <h1>Welcome to Our Service</h1>
             </div>
             <div class="content">
-                <p><strong>Hello ${emailContents.display_name} </strong>!</p>
-                <p>A reply was added to your review of : ${emailContents.product_title}</p>
-                <p>${emailContents.reply}</p>
-                
-                <p>To respond privately, reply to this email.</p>
-                
-
+            <p> ${emailContents.banner} </p>
+                <p> ${emailContents.body} </p>
             </div>
             <div class="footer">
                 <p>Best regards,</p>

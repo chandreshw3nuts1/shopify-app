@@ -1,19 +1,7 @@
-// app/components/EmailTemplate.jsx
 import React from 'react';
 
-const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, footer }) => {
-    const productsHtml = mapProductDetails.map((product) => {
-        const productId = product.id.split('/').pop();
-
-        return `
-        <img src=${product.images.edges[0].node.transformedSrc} alt=${product.title} class="product-image">
-            <p>${product.title}</p>
-            <a class="review-button" href={{review_link_${productId}}} target="_blank">${emailContents.buttonText}</a>
-        `;
-
-    }).join('');
-
-
+const SampleReviewRequestEmail = ({ shopRecords, emailContents, footer }) => {
+    console.log(emailContents);
     const emailHtml = `<head>
     <style>
     body {
@@ -66,10 +54,12 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, footer }
     </head>
     <body>
         <div class="email-container">
-            <img src="${emailContents.logo}" alt="Logo" class="logo">
-            <img src="${emailContents.banner}" alt="Logo" class="logo">
-            <p>${emailContents.body}</p>
-            ${productsHtml}
+            <img src="${shopRecords.logo}" alt="Logo" class="logo">
+            <div>${emailContents.body}</div>
+            <img src="${emailContents.banner}" alt="banner" class="banner">
+            <img src="${emailContents.getDefaultProductImage}" alt="productimage" class="productimage">
+            <p>Sample Product</p>
+            <a class="review-button" href="#" >${emailContents.buttonText}</a>
         </div>
     </body>`;
 
@@ -78,4 +68,4 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, footer }
 
 };
 
-export default ReviewRequestEmailTemplate;
+export default SampleReviewRequestEmail;

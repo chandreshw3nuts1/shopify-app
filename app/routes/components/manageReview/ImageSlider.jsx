@@ -260,7 +260,6 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 
 			<Modal show={showImageModal} className='reviewimagepopup' onHide={handleCloseImageModal} size="lg" backdrop="static">
 				<Modal.Header closeButton>
-					<Modal.Title>title</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					{documentType === 'image' && images[currentIndex] && images[currentIndex].url ? (

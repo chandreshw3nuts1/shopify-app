@@ -2,7 +2,7 @@ import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
 import { GraphQLClient } from "graphql-request";
 // import { mongoConnection } from "./../utils/mongoConnection"; 
-import { findOneRecord, getShopifyProducts } from "./../utils/common"; 
+import { findOneRecord, getShopifyProducts, getLanguageWiseContents } from "./../utils/common"; 
 import ReplyEmailTemplate from './components/email/ReplyEmailTemplate';
 import ReactDOMServer from 'react-dom/server';
 import { ObjectId } from 'mongodb';
@@ -10,6 +10,7 @@ import productReviews from "./models/productReviews";
 import productReviewQuestions from "./models/productReviewQuestions";
 import reviewDocuments from "./models/reviewDocuments";
 import generalAppearances from "./models/generalAppearances";
+import emailReviewReplySettings from "./models/emailReviewReplySettings";
 
 import {getUploadDocument} from "./../utils/documentPath";
 export async function loader() {
@@ -50,13 +51,12 @@ export async function action({ request} ) {
 			try {
 				if (actionType == 'changeReviewStatus') {
 
-					await productReviews.updateOne(
-						{ _id: requestBody.review_id },
+					const status  = await productReviews.updateOne(
+						{ _id: requestBody.oid },
 						{
 						  $set: { status : requestBody.value}
 						}
 					);
-
 					return json({"status" : 200, "message" : "Status updated!"});
 					
 				} else if (actionType == 'addReviewReply') {
@@ -74,27 +74,28 @@ export async function action({ request} ) {
 					} else{
 
 						/* send email to admin when new reivew receive*/
+						
 						const productReviewsItem = await productReviews.findOne({ _id: requestBody.review_id });
 						
-						const generalAppearancesData = await generalAppearances.findOne({ shop_id: productReviewsItem.shop_id });
+						const replaceVars = {
+							"name": productReviewsItem.display_name,
+							"product": productReviewsItem.product_title,
+							"reply_content": requestBody.reply,
+						}
+						const customer_locale = productReviewsItem.customer_locale ? productReviewsItem.customer_locale : "en";
+						const emailContents = await getLanguageWiseContents("review_reply", replaceVars, productReviewsItem.shop_id, productReviewsItem.customer_locale);
+						emailContents.banner =  getUploadDocument(emailContents.banner, 'banners');
 
+						const generalAppearancesData = await generalAppearances.findOne({ shop_id: productReviewsItem.shop_id });
 						const logo =  getUploadDocument(generalAppearancesData.logo, 'logo');
-						const email = productReviewsItem.email;
-						const emailContents = {
-							logo : logo,
-						 	display_name: productReviewsItem.display_name,
-						 	email: productReviewsItem.email,
-							reply: requestBody.reply,
-							product_title : productReviewsItem.product_title
-						};
+						emailContents.logo = logo;
 						const footer = '';
-						
-						const subject = `In response to your review of ${productReviewsItem.product_title}`;
+						const subject = emailContents.subject;
 						const emailHtml = ReactDOMServer.renderToStaticMarkup(
 							<ReplyEmailTemplate emailContents={emailContents} footer={footer} />
 						);
 						const response = await sendEmail({
-							to: email,
+							to: productReviewsItem.email,
 							subject,
 							html: emailHtml,
 						});

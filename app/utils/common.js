@@ -2,6 +2,7 @@ import { mongoConnection } from './mongoConnection';
 import { GraphQLClient } from "graphql-request";
 import customQuestions from './../routes/models/customQuestions';
 import emailReviewRequestSettings from './../routes/models/emailReviewRequestSettings';
+import emailReviewReplySettings from './../routes/models/emailReviewReplySettings';
 import settingJson from './../utils/settings.json';
 
 export async function findOneRecord(collection = "", params = {}) {
@@ -163,44 +164,66 @@ export async function fetchAllProducts(storeName, accessToken) {
 
 
 
-export async function getLanguageWiseContents(type, replaceVars, shop_id, locale = 'en') {
-	const emailReviewRequestSettingsModel = await emailReviewRequestSettings.findOne({ shop_id: shop_id });
-	const emailReviewRequestSettingJsonData = emailReviewRequestSettingsModel[locale] ? emailReviewRequestSettingsModel[locale] : {};
-
-	const transalationFile = `${settingJson.host_url}/locales/${locale}/translation.json`;
-	const responseFile = await fetch(transalationFile);
-	const transalationContent = await responseFile.json();
-	const transalationReviewRequest = transalationContent.reviewRequestEmail;
-
-	const emailContents = await replaceEmailReviewRequest(replaceVars, emailReviewRequestSettingJsonData, transalationReviewRequest);
-	return emailContents;
-
-}
-
-export async function replaceEmailReviewRequest(replaceVars, emailReviewRequestSettingJsonData, transalationReviewRequest) {
-
-	console.log(replaceVars);
-	console.log(emailReviewRequestSettingJsonData);
-	console.log(transalationReviewRequest);
-	var subject = replacePlaceholders(emailReviewRequestSettingJsonData.subject && emailReviewRequestSettingJsonData.subject !== ""
-		? emailReviewRequestSettingJsonData.subject
-		: transalationReviewRequest.subject, replaceVars);
-
-	var body = replacePlaceholders(emailReviewRequestSettingJsonData.body && emailReviewRequestSettingJsonData.body !== ""
-		? emailReviewRequestSettingJsonData.body
-		: transalationReviewRequest.body, replaceVars);
-
-	var buttonText = emailReviewRequestSettingJsonData.buttonText && emailReviewRequestSettingJsonData.buttonText !== ""
-		? emailReviewRequestSettingJsonData.buttonText
-		: transalationReviewRequest.buttonText;
-
-	return { subject, body, buttonText };
-}
-
 function replacePlaceholders(text, replaceVars) {
 	text = text.replace(/\[name\]/g, replaceVars.name || '');
 	text = text.replace(/\[order_number\]/g, replaceVars.order_number || '');
 	text = text.replace(/\[last_name\]/g, replaceVars.last_name || '');
-
+	text = text.replace(/\[product\]/g, replaceVars.product || '');
+	text = text.replace(/\[reply_content\]/g, replaceVars.reply_content || '');
+	
 	return text;
+}
+
+export async function getLanguageWiseContents(type, replaceVars, shop_id, locale = 'en') {
+	var emailContents = {};
+	const transalationFile = `${settingJson.host_url}/locales/${locale}/translation.json`;
+	const responseFile = await fetch(transalationFile);
+	const transalationContent = await responseFile.json();
+	if (type == 'review_request') {
+		const emailReviewRequestSettingsModel = await emailReviewRequestSettings.findOne({ shop_id: shop_id });
+		const settingJsonData = emailReviewRequestSettingsModel[locale] ? emailReviewRequestSettingsModel[locale] : {};
+		const transalationData = transalationContent.reviewRequestEmail;
+		emailContents = await replaceEmailReviewRequest(replaceVars, settingJsonData, transalationData);
+
+	} else if (type == 'review_reply') {
+		const emailReviewReplySettingsModel = await emailReviewReplySettings.findOne({ shop_id: shop_id });
+		const settingJsonData = emailReviewReplySettingsModel[locale] ? emailReviewReplySettingsModel[locale] : {};
+		const transalationData = transalationContent.reviewReplyEmail;
+		emailContents = await replaceEmailReviewReply(replaceVars, settingJsonData, transalationData);
+
+	}
+	return emailContents;
+
+}
+
+export async function replaceEmailReviewRequest(replaceVars, settingJsonData, transalationData) {
+
+	var subject = replacePlaceholders(settingJsonData.subject && settingJsonData.subject !== ""
+		? settingJsonData.subject
+		: transalationData.subject, replaceVars);
+
+	var body = replacePlaceholders(settingJsonData.body && settingJsonData.body !== ""
+		? settingJsonData.body
+		: transalationData.body, replaceVars);
+
+	var buttonText = settingJsonData.buttonText && settingJsonData.buttonText !== ""
+		? settingJsonData.buttonText
+		: transalationData.buttonText;
+	var banner = settingJsonData.banner || "";
+
+	return { subject, body, buttonText, banner };
+}
+
+
+export async function replaceEmailReviewReply(replaceVars, settingJsonData, transalationData) {
+
+	var subject = replacePlaceholders(settingJsonData.subject && settingJsonData.subject !== ""
+		? settingJsonData.subject
+		: transalationData.subject, replaceVars);
+	
+	var body = replacePlaceholders(settingJsonData.body && settingJsonData.body !== ""
+		? settingJsonData.body
+		: transalationData.body, replaceVars);
+	var banner = settingJsonData.banner || "";
+	return { subject, body, banner };
 }

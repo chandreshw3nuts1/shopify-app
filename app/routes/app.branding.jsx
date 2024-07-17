@@ -65,7 +65,7 @@ export default function Branding() {
 						<h2>Email appearance</h2>
 						<p>Customize your email colors and font to match your brand</p>
 					</div>
-					<EmailAppearance />
+					<EmailAppearance shopRecords={shopRecords} generalAppearances={generalAppearances}/>
 				</div>
 			
 			</div>

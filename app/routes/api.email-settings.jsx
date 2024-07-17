@@ -2,8 +2,9 @@ import { json } from "@remix-run/node";
 import settings from './models/settings';
 import emailReviewRequestSettings from './models/emailReviewRequestSettings';
 import emailReviewReplySettings from './models/emailReviewReplySettings';
+import generalAppearances from "./models/generalAppearances";
 
-import { getShopDetailsByShop, getShopifyProducts } from './../utils/common';
+import { getShopDetailsByShop, getShopifyProducts, getLanguageWiseContents } from './../utils/common';
 import { sendEmail } from "./../utils/email.server";
 import ReactDOMServer from 'react-dom/server';
 import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTemplate';
@@ -34,6 +35,19 @@ export async function action({ params, request }) {
                     await emailReviewRequestSettings.findOneAndUpdate(query, update, options);
 
                     return json({ status: 200, message: "Setting saved" });
+
+                } else if (actionType == 'sendReviewRequestEmail') {
+                    const {language} = requestBody;
+                    const generalAppearancesData = await generalAppearances.findOne({ shop_id: shopRecords._id });
+                    const logo = getUploadDocument(generalAppearancesData.logo, 'logo');
+                    const customer_locale = language ? language : 'en';
+                    const replaceVars = {
+                       
+                    }
+                    const emailContents = await getLanguageWiseContents("review_request", replaceVars, shopRecords._id, customer_locale);
+                    console.log(emailContents);
+
+                    return json({ status: 200, message: "Sample review request email sent" });
 
                 } else if (actionType == 'reviewReply') {
                     const query = { shop_id: shopRecords._id };

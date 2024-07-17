@@ -3,6 +3,7 @@ import settings from './models/settings';
 import manualRequestProducts from './models/manualRequestProducts';
 import manualReviewRequests from './models/manualReviewRequests';
 import generalAppearances from './models/generalAppearances';
+import generalSettings from './models/generalSettings';
 
 import { ObjectId } from 'mongodb';
 import { getShopDetailsByShop, getShopifyProducts, getLanguageWiseContents } from './../utils/common';
@@ -30,17 +31,21 @@ export async function action({ params, request }) {
 
                     const emails = requestBody.emails;
                     const selectedProducts = requestBody.selectedProducts;
-
+                    
+                    
+                    const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
+                    
                     const generalAppearancesData = await generalAppearances.findOne({ shop_id: shopRecords._id });
                     const logo = getUploadDocument(generalAppearancesData.logo, 'logo');
 
                     const productIds = selectedProducts.map((item) => `"gid://shopify/Product/${item}"`);
                     var mapProductDetails = await getShopifyProducts(shop, productIds, 200);
-                    const customer_locale = 'en';
+                    const customer_locale = generalSettingsModel.defaul_language || 'en';
 
                     const replaceVars = {
                     }
                     const emailContents = await getLanguageWiseContents("review_request", replaceVars, shopRecords._id, customer_locale);
+                    emailContents.banner =  getUploadDocument(emailContents.banner, 'banners');
 
                     emailContents.logo = logo;
 
@@ -77,7 +82,7 @@ export async function action({ params, request }) {
                             }));
 
                             // Send request email
-                            const subject = emailContents.subject;
+                            const subject = requestBody.requestEmailSubject != "" ? requestBody.requestEmailSubject : emailContents.subject;
                             const response = await sendEmail({
                                 to: email,
                                 subject,
