@@ -67,7 +67,7 @@ const UploadLogo = (props) => {
 		const formData = new FormData();
 		formData.append("actionType", "deleteEmailBanner");
 		formData.append("actionSubType", props.bannerType);
-		formData.append("shop_domain", props.shopRecords.shop);
+		// formData.append("shop_domain", props.shopRecords.shop);
 		formData.append("language", props.currentLanguage);
 		try {
 			const response = await fetch(`/api/branding`, {
@@ -92,7 +92,7 @@ const UploadLogo = (props) => {
 	};
 
 	return (
-		<div className={`imageuploadbox ${file ? 'hasfile' : ''} ${props.hasEdit ? 'haseditbtn' : ''} ${props.className}`}>
+		<div className={`imageuploadbox ${file ? 'hasfile' : ''} ${props.hasEdit ? 'haseditbtn' : ''} ${props.className} ${props.fullHeight ? 'flxflexi flxrow justify-content-center align-items-center' : ''}`}>
 			<div className='filebtnbox'>
 				<input type="file" id="upload-files" ref={inputfileimage} className='inputfileimage' accept="image/*" onChange={handleFileChange} />
 				{props.hasEdit && file

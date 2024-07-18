@@ -92,7 +92,7 @@ export default function ColorPicker(props) {
 
 	return (
 		<div style={{ position: 'relative' }}>
-			<div style={{ display: 'flex', alignItems: 'center', border: '1px solid #ccc', borderRadius: '4px', padding: '0 5px' }}>
+			<div className="colorpicker_input" style={{ display: 'flex', alignItems: 'center', border: '1px solid #E3E4E5', borderRadius: '8px', padding: '0 8px 0 15px' }}>
 				<span>#</span>
 				<input
 					className='form-control'
