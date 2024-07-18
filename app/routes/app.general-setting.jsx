@@ -334,8 +334,42 @@ export default function GeneralSettings() {
 								<AlertInfo 
 									alertContent="Upgrade to Scale to display your store in an external page"
 									alertClose
-									conlink="/"
+									// conlink="/"
 									colorTheme="primarybox"
+								 />
+							</div>
+						</div>
+					</div>
+					<div className="whitebox">
+						<div className="general_row">
+							<div className="row_title">
+								<div className="flxflexi lefttitle">
+									<h4>SEO</h4>
+									<p>Display the average rating and number of reviews for each product in Google search results</p>
+								</div>
+							</div>
+							<div className="formrow">
+								<div className="form-group m-0">
+									<div class="form-check form-switch">
+										<input class="form-check-input" type="checkbox" role="switch" name="ratingongooglesearch" id="ratingongooglesearch" />
+										<label class="form-check-label" for="ratingongooglesearch">Show product ratings in Google search results</label>
+									</div>
+								</div>
+							</div>
+							<div className="formrow">
+								<AlertInfo 
+									alertContent={`To activate the feature, <a href="#">enable</a> the Loox Core Script. <a href="#">Learn more</a>`}
+									alertClose
+									// conlink="/"
+									colorTheme="primarybox"
+								 />
+							</div>
+							<div className="formrow">
+								<AlertInfo 
+									alertContent={`W3 will add the relevant rich snippets code to your store's theme. <a href="#">Click here to test search result</a>`}
+									// alertClose
+									// conlink="/"
+									colorTheme=""
 								 />
 							</div>
 						</div>

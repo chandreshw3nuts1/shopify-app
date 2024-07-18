@@ -21,9 +21,9 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 	const [widgetFontSelection, setWidgetFontSelection] = useState(generalAppearances?.widgetFont);
 	const [appBranding, setAppBranding] = useState(generalAppearances?.appBranding);
 	const [emailAppearanceSelection, setEmailAppearanceSelection] = useState(generalAppearances?.emailAppearance);
-	
+
 	const [generalAppearancesObj, setGeneralAppearancesObj] = useState(generalAppearances);
-    const [isCheckedEmailBanner, setIsCheckedEmailBanner] = useState(
+	const [isCheckedEmailBanner, setIsCheckedEmailBanner] = useState(
 		generalAppearances?.enabledEmailBanner || false
 	);
 	const ratingIcons = settingsJson.ratingIcons;
@@ -91,7 +91,7 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 					setEmailAppearanceSelection(eventVal);
 				}
 
-				
+
 
 			} else {
 				toast.error(data.message);
@@ -109,7 +109,7 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 			const updateData = {
 				field: event.target.name,
 				value: event.target.checked,
-                actionType : "emailAppearanceSettings",
+				actionType: "emailAppearanceSettings",
 				shop_domain: shopRecords.shop
 			};
 			const response = await fetch('/api/branding', {
@@ -139,8 +139,24 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 			<div className='row'>
 				<div className='col-md-6'>
 					<div className='whitebox h-100'>
-
-						<UploadLogo className="emailbannerimage" hasEdit />
+						<div className="form-group m-0">
+							<label htmlFor="">Logo</label>
+							<UploadLogo className="" hasEdit />
+							{/* <div className='form-group m-0'>
+							<label htmlFor="">Logo</label>
+							<input
+								className="form-control"
+								onChange={handleChangeLogo}
+								type="file"
+								name="logo"
+								id="flexSwitchCheckChecked"
+							/>
+							<img src={imageLogo} alt="" />
+							<button onClick={deleteLogo}>
+								<i className='twenty-closeicon'></i>
+							</button>
+						</div> */}
+						</div>
 					</div>
 				</div>
 				<div className='col-md-6'>
@@ -164,7 +180,7 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 							<div className='input_wrap flxrow'>
 								<div className='iconbox flxfix'>
 									<div className='starlightdd'>
-										<DropdownButton id="dropdown-basic-button" className={''} title={<i style={{color:generalAppearancesObj?.starIconColor || "blue"}} className={starIcon}></i>}>
+										<DropdownButton id="dropdown-basic-button" className={''} title={<i style={{ color: generalAppearancesObj?.starIconColor || "blue" }} className={starIcon}></i>}>
 											{ratingIcons.map((icon, i) => (
 												<Dropdown.Item eventKey={`rating-${i}`} key={i + 1} onClick={() => { changeStarIcon(icon) }} className="custom-dropdown-item">
 													<i className={icon}></i>
@@ -176,7 +192,7 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 									</div>
 								</div>
 								<div className='colorbox flxflexi'>
-									<ColorPicker  generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj}  pickerType="starIconColor"  />
+									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="starIconColor" />
 								</div>
 							</div>
 						</div>
@@ -260,7 +276,7 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 
 						<div className="form-group m-0">
 							<label htmlFor="">Appearance</label>
-							<ColorPicker  generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj}  pickerType="emailBackgroundColor"  />
+							<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="emailBackgroundColor" />
 
 						</div>
 
