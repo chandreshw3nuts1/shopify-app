@@ -1,30 +1,47 @@
-const AllStarBigIcon = () => {
+const AllStarBigIcon = (props) => {
+    var dynamicColor1 = props.color;
+    var dynamicColor2 = props.color;
+    var dynamicColor3 = props.color;
+    var dynamicColor4 = props.color;
+    var dynamicColor5 = props.color;
+    if(props.starRate == 1){
+        dynamicColor2 = "currentColor";
+        dynamicColor3 = "currentColor";
+        dynamicColor4 = "currentColor";
+        dynamicColor5 = "currentColor";
+    } else if(props.starRate == 2){
+        dynamicColor3 = "currentColor";
+        dynamicColor4 = "currentColor";
+        dynamicColor5 = "currentColor";
+    }else if(props.starRate == 3){
+        dynamicColor4 = "currentColor";
+        dynamicColor5 = "currentColor";
+    }else if(props.starRate == 4){
+        dynamicColor5 = "currentColor";
+    }
+    
     return (
         <>
             <div className="stardiv">
-                <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M22.0008 32.1633L15.4379 35.7642C14.0238 36.5406 12.3718 35.2873 12.6413 33.6432L13.8944 26.0138L8.58463 20.6099C7.43985 19.4461 8.07167 17.4182 9.65198 17.1771L16.9902 16.0645L20.2717 9.12217C20.9787 7.62594 23.0211 7.62594 23.7281 9.12217L27.0096 16.0645L34.3479 17.1771C35.9283 17.4165 36.5601 19.4442 35.4156 20.6099L30.1057 26.0138L31.3588 33.6432C31.6283 35.2874 29.9762 36.5406 28.5622 35.7642L22.0008 32.1633Z" fill="currentColor"/>
-                </svg>
+
+                {props.CommonRatingComponent ? <props.CommonRatingComponent color={dynamicColor1}  /> : null}
+
             </div>
             <div className="stardiv">
-                <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M22.0008 32.1633L15.4379 35.7642C14.0238 36.5406 12.3718 35.2873 12.6413 33.6432L13.8944 26.0138L8.58463 20.6099C7.43985 19.4461 8.07167 17.4182 9.65198 17.1771L16.9902 16.0645L20.2717 9.12217C20.9787 7.62594 23.0211 7.62594 23.7281 9.12217L27.0096 16.0645L34.3479 17.1771C35.9283 17.4165 36.5601 19.4442 35.4156 20.6099L30.1057 26.0138L31.3588 33.6432C31.6283 35.2874 29.9762 36.5406 28.5622 35.7642L22.0008 32.1633Z" fill="currentColor"/>
-                </svg>
+                {props.CommonRatingComponent ? <props.CommonRatingComponent color={dynamicColor2} /> : null}
+
             </div>
             <div className="stardiv">
-                <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M22.0008 32.1633L15.4379 35.7642C14.0238 36.5406 12.3718 35.2873 12.6413 33.6432L13.8944 26.0138L8.58463 20.6099C7.43985 19.4461 8.07167 17.4182 9.65198 17.1771L16.9902 16.0645L20.2717 9.12217C20.9787 7.62594 23.0211 7.62594 23.7281 9.12217L27.0096 16.0645L34.3479 17.1771C35.9283 17.4165 36.5601 19.4442 35.4156 20.6099L30.1057 26.0138L31.3588 33.6432C31.6283 35.2874 29.9762 36.5406 28.5622 35.7642L22.0008 32.1633Z" fill="currentColor"/>
-                </svg>
+                {props.CommonRatingComponent ? <props.CommonRatingComponent color={dynamicColor3} /> : null}
+
             </div>
             <div className="stardiv">
-                <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M22.0008 32.1633L15.4379 35.7642C14.0238 36.5406 12.3718 35.2873 12.6413 33.6432L13.8944 26.0138L8.58463 20.6099C7.43985 19.4461 8.07167 17.4182 9.65198 17.1771L16.9902 16.0645L20.2717 9.12217C20.9787 7.62594 23.0211 7.62594 23.7281 9.12217L27.0096 16.0645L34.3479 17.1771C35.9283 17.4165 36.5601 19.4442 35.4156 20.6099L30.1057 26.0138L31.3588 33.6432C31.6283 35.2874 29.9762 36.5406 28.5622 35.7642L22.0008 32.1633Z" fill="currentColor"/>
-                </svg>
+                {props.CommonRatingComponent ? <props.CommonRatingComponent color={dynamicColor4} /> : null}
+
             </div>
             <div className="stardiv">
-                <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M22.0008 32.1633L15.4379 35.7642C14.0238 36.5406 12.3718 35.2873 12.6413 33.6432L13.8944 26.0138L8.58463 20.6099C7.43985 19.4461 8.07167 17.4182 9.65198 17.1771L16.9902 16.0645L20.2717 9.12217C20.9787 7.62594 23.0211 7.62594 23.7281 9.12217L27.0096 16.0645L34.3479 17.1771C35.9283 17.4165 36.5601 19.4442 35.4156 20.6099L30.1057 26.0138L31.3588 33.6432C31.6283 35.2874 29.9762 36.5406 28.5622 35.7642L22.0008 32.1633Z" fill="currentColor"/>
-                </svg>
+                {props.CommonRatingComponent ? <props.CommonRatingComponent color={dynamicColor5} /> : null}
+
             </div>
         </>
     )

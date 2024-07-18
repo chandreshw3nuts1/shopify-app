@@ -2,6 +2,7 @@ import shopDetails from './../routes/models/shopDetails';
 import settings from './../routes/models/settings';
 import generalAppearances from './../routes/models/generalAppearances';
 import appInstallLogs from './../routes/models/appInstallLogs';
+import settingsJson from './../utils/settings.json';
 
 export async function storeShopDetails(session) {
 	try {
@@ -54,9 +55,22 @@ export async function storeShopDetails(session) {
 			{
 				$setOnInsert: {
 					shop_id: shopRecords._id,
-					banner: "default-banner.png",
+					banner: settingsJson.defaultColors.defaultBanner,
 					enabledEmailBanner: true,
-					starIcon: "rating-star-rounded"
+					starIcon: settingsJson.defaultColors.starIcon,
+					cornerRadius: settingsJson.defaultColors.cornerRadius,
+					widgetFont: settingsJson.defaultColors.widgetFont,
+					starIconColor: settingsJson.defaultColors.starIconColor,
+					emailBackgroundColor: settingsJson.defaultColors.emailBackgroundColor,
+					contentBackgroundColor: settingsJson.defaultColors.contentBackgroundColor,
+					emailTextColor: settingsJson.defaultColors.emailTextColor,
+					buttonBackgroundColor: settingsJson.defaultColors.buttonBackgroundColor,
+					buttonBorderColor: settingsJson.defaultColors.buttonBorderColor,
+					buttonTitleColor: settingsJson.defaultColors.buttonTitleColor,
+					fontType: settingsJson.defaultColors.fontType,
+					fontSize: settingsJson.defaultColors.fontSize,
+					appBranding : settingsJson.defaultColors.appBranding,
+					emailAppearance : settingsJson.defaultColors.emailAppearance,
 				}
 			},
 			{ upsert: true }

@@ -1,21 +1,17 @@
-import ItemRating  from './rating';
 import moment from 'moment';
-import StarBigIcon from "../icons/StarBigIcon";
 import {getUploadDocument} from './../../../utils/documentPath';
 import PlayIcon from '../icons/PlayIcon';
-
 
 import {
   Text,
 } from "@shopify/polaris";
 
-const ReviewItem = ({ reviewItems, formParams, shopRecords}) => {
+const ReviewItem = (props) => {
 	return (
 	  <>
         
-        
-        {reviewItems.length > 0  &&
-            reviewItems.map((review, i) => (
+        {props.reviewItems.length > 0  &&
+            props.reviewItems.map((review, i) => (
                 <div className="review-list-item frontreviewbox" data-reviewid={review._id} >
                     <div className='row'>
                         <div className="col">
@@ -32,11 +28,14 @@ const ReviewItem = ({ reviewItems, formParams, shopRecords}) => {
                                             <div className="star-rating">
                                                 <div className='ratingcount'>{review.rating}.0</div>
                                                 <div class={`ratingstars flxrow star-${review.rating}`}>
-                                                    <StarBigIcon className="ratingstar" />
-                                                    <StarBigIcon className="ratingstar" />
-                                                    <StarBigIcon className="ratingstar" />
-                                                    <StarBigIcon className="ratingstar" />
-                                                    <StarBigIcon className="ratingstar" />
+
+                                                
+                                                    {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 1 ? props.generalAppearancesModel.starIconColor : "currentColor"}  /> : null}
+                                                    {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 2 ? props.generalAppearancesModel.starIconColor : "currentColor"}  /> : null}
+                                                    {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 3 ? props.generalAppearancesModel.starIconColor : "currentColor"}  /> : null}
+                                                    {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 4 ? props.generalAppearancesModel.starIconColor : "currentColor"}  /> : null}
+                                                    {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 5 ? props.generalAppearancesModel.starIconColor : "currentColor"}  /> : null}
+
                                                 </div>
                                             </div>
                                         </div>
@@ -50,16 +49,16 @@ const ReviewItem = ({ reviewItems, formParams, shopRecords}) => {
                                     {review.replyText && 
                                     <div className="text_content">
                                         <p>
-                                            <b>{shopRecords.name}</b> Replied :
+                                            <b>{props.shopRecords.name}</b> Replied :
                                         </p>
                                         <p>
                                             {review.replyText}
                                         </p>
                                     </div>}
-                                    {(formParams.hideProductThumbnails !== 'true' || review.reviewDocuments.length > 0) && 
+                                    {(props.formParams.hideProductThumbnails !== 'true' || review.reviewDocuments.length > 0) && 
 
                                     <div className='review_bottomwrap'>
-                                        { (formParams.hideProductThumbnails != 'true' && review.productDetails ) && 
+                                        { (props.formParams.hideProductThumbnails != 'true' && review.productDetails ) && 
                                             <div className="product-container product-thumb-detail">
                                                 <div className="image flxfix">
                                                     <img src={review.productDetails.images.edges[0].node.transformedSrc} />

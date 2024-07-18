@@ -1,38 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
-import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import ItemRating from './rating';
 import ReviewItem from './review-item';
-import moment from 'moment';
-import StarBigIcon from "../icons/StarBigIcon";
 import ArrowDownIcon from '../icons/ArrowDownIcon';
 import FullStarGrIcon from "../icons/FullStarGrIcon";
 import FilterIcon from "../icons/FilterIcon";
 import AllStarBigIcon from "../icons/AllStarBigIcon";
 
-import {
-	Page,
-	Layout,
-	Text,
-	Card,
-	Button,
-	BlockStack,
-	Box,
-	Link,
-	InlineStack,
-	Grid,
-	List,
-	LegacyCard,
-	LegacyStack,
-	Collapsible,
-	TextContainer,
-	Checkbox,
-	Select
-} from "@shopify/polaris";
-
-const ProductReviewWidget = ({ shopRecords, reviewItems, formParams }) => {
-
-
+const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppearancesModel, CommonRatingComponent }) => {
 
 	let five_start_percent, five_start_count = 0;
 	let four_start_percent, four_start_count = 0;
@@ -62,23 +35,29 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams }) => {
 
 		}
 	});
+
+	
 	return (
 		<>
 			{
 				formParams.page == 1 ? <div className="container">
 
-					<div className="review_top_actions">
+					<div className="review_top_actions" style={{fontFamily: generalAppearancesModel.widgetFont}}>
 						<div className="left_actions flxfix">
 							<div className="section_title">Customer Reviews</div>
 							<div className="star-rating">
 								<div className="dropdown">
 									<button className="dropdown-toggle starbtn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 										<div className={`ratingstars flxrow star-${formParams.averageRating}`}>
-											<StarBigIcon className="ratingstar" />
-											<StarBigIcon className="ratingstar" />
-											<StarBigIcon className="ratingstar" />
-											<StarBigIcon className="ratingstar" />
-											<StarBigIcon className="ratingstar" />
+											<div>
+												{CommonRatingComponent ? <CommonRatingComponent color={formParams.averageRating >= 1 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+												{CommonRatingComponent ? <CommonRatingComponent color={formParams.averageRating >= 2 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+												{CommonRatingComponent ? <CommonRatingComponent color={formParams.averageRating >= 3 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+												{CommonRatingComponent ? <CommonRatingComponent color={formParams.averageRating >= 4 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+												{CommonRatingComponent ? <CommonRatingComponent color={formParams.averageRating >= 5 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+											</div>
+
+
 										</div>
 										{formParams.totalReviewItems > 0 &&
 											<>
@@ -95,31 +74,47 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams }) => {
 												<div className="stardetaildd">
 													<div className="stardetailrow flxrow">
 														<div className="sratnumber" data-review={five_start_count}>5</div>
-														<div className="starsicons flxrow star-5"><AllStarBigIcon /></div>
+														<div className="starsicons flxrow star-5">
+
+															<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="5" />
+
+														</div>
 														<div className="processbar"><div className="activebar" style={{ width: `${five_start_percent}%` }}></div></div>
 														<div className="reviewgiven">({five_start_count})</div>
 													</div>
 													<div className="stardetailrow flxrow">
 														<div className="sratnumber" data-review={four_start_count}>4</div>
-														<div className="starsicons flxrow star-4"><AllStarBigIcon /></div>
+														<div className="starsicons flxrow star-4">
+															<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="4" />
+
+														</div>
 														<div className="processbar"><div className="activebar" style={{ width: `${four_start_percent}%` }}></div></div>
 														<div className="reviewgiven">({four_start_count})</div>
 													</div>
 													<div className="stardetailrow flxrow">
 														<div className="sratnumber" data-review={three_start_count}>3</div>
-														<div className="starsicons flxrow star-3"><AllStarBigIcon /></div>
+														<div className="starsicons flxrow star-3">
+															<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="3" />
+
+														</div>
 														<div className="processbar"><div className="activebar" style={{ width: `${three_start_percent}%` }}></div></div>
 														<div className="reviewgiven">({three_start_count})</div>
 													</div>
 													<div className="stardetailrow flxrow">
 														<div className="sratnumber" data-review={two_start_count}>2</div>
-														<div className="starsicons flxrow star-2"><AllStarBigIcon /></div>
+														<div className="starsicons flxrow star-2">
+															<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="2" />
+
+														</div>
 														<div className="processbar"><div className="activebar" style={{ width: `${two_start_percent}%` }}></div></div>
 														<div className="reviewgiven">({two_start_count})</div>
 													</div>
 													<div className="stardetailrow flxrow">
 														<div className="sratnumber" data-review={one_start_count}>1</div>
-														<div className="starsicons flxrow star-1"><AllStarBigIcon /></div>
+														<div className="starsicons flxrow star-1">
+															<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="1" />
+
+														</div>
 														<div className="processbar"><div className="activebar" style={{ width: `${one_start_percent}%` }}></div></div>
 														<div className="reviewgiven">({one_start_count})</div>
 													</div>
@@ -179,7 +174,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams }) => {
 					{reviewItems.length > 0 ?
 						<div className="main_review_block">
 
-							<ReviewItem reviewItems={reviewItems} formParams={formParams} shopRecords={shopRecords} />
+							<ReviewItem reviewItems={reviewItems} formParams={formParams} shopRecords={shopRecords} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={CommonRatingComponent} />
 
 						</div>
 						:
@@ -191,17 +186,17 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams }) => {
 
 						</>
 					}
-			{formParams.hasMore == 1 ?
-				<div className="load_more_review">
-					<a href="javascript:void(0)" url="javascript:void(0)" id="load_more_review" className="revbtn">Load more</a>
-				</div> :
-				""
+					{formParams.hasMore == 1 ?
+						<div className="load_more_review">
+							<a href="javascript:void(0)" url="javascript:void(0)" id="load_more_review" className="revbtn">Load more</a>
+						</div> :
+						""
+					}
+				</div > :
+
+					<ReviewItem reviewItems={reviewItems} formParams={formParams} shopRecords={shopRecords} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={CommonRatingComponent} />
+
 			}
-		</div > :
-
-	<ReviewItem reviewItems={reviewItems} formParams={formParams} shopRecords={shopRecords} />
-
-}
 		</>
 
 	);

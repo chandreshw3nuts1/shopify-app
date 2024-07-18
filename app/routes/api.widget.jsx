@@ -10,7 +10,9 @@ import { ObjectId } from 'mongodb';
 import { getShopDetailsByShop, findOneRecord, getCustomQuestions } from './../utils/common';
 import { mongoConnection } from './../utils/mongoConnection';
 import productReviews from "./models/productReviews";
+import generalAppearances from "./models/generalAppearances";
 import { getShopifyProducts } from "./../utils/common";
+import { ratingbabycloth, ratingbasket, ratingbones, ratingcoffeecup, ratingcrisamascap, ratingdiamondfront, ratingdiamondtop, ratingdogsleg, ratingfireflame, ratingflight, ratingfood, ratinggraduationcap, ratingheartround, ratingheartsq, ratingleafcanada, ratingleafnormal, ratinglikenormal, ratinglikerays, ratingpethouse, ratingplant, ratingshirt, ratingshoppingbag1, ratingshoppingbag2, ratingshoppingbag3, ratingstarrays, ratingstarrounded, ratingstarsq, ratingsunglass, ratingteacup, ratingtrophy1, ratingtrophy2, ratingtrophy3, ratingtshirt, ratingwine } from './../routes/components/icons/CommonIcons';
 
 export async function loader() {
 
@@ -27,6 +29,17 @@ export async function action({ request }) {
         const shop = formData.get('shop_domain');
         const shopRecords = await getShopDetailsByShop(shop);
         const shopSessionRecords = await findOneRecord("shopify_sessions", { shop: shop });
+        const generalAppearancesModel = await generalAppearances.findOne({
+            shop_id: shopRecords._id
+        });
+
+
+        const StarIcon = generalAppearancesModel.starIcon.replace(/-/g, '');
+        const iconComponents = {
+            ratingbabycloth, ratingbasket, ratingbones, ratingcoffeecup, ratingcrisamascap, ratingdiamondfront, ratingdiamondtop, ratingdogsleg, ratingfireflame, ratingflight, ratingfood, ratinggraduationcap, ratingheartround, ratingheartsq, ratingleafcanada, ratingleafnormal, ratinglikenormal, ratinglikerays, ratingpethouse, ratingplant, ratingshirt, ratingshoppingbag1, ratingshoppingbag2, ratingshoppingbag3, ratingstarrays, ratingstarrounded, ratingstarsq, ratingsunglass, ratingteacup, ratingtrophy1, ratingtrophy2, ratingtrophy3, ratingtshirt, ratingwine
+        };
+        const IconComponent = iconComponents[StarIcon] || ratingstarrounded;
+
 
         if (actionType == "openModal") {
             const customQuestionsData = await getCustomQuestions({
@@ -37,7 +50,7 @@ export async function action({ request }) {
                 cust_last_name: formData.get('cust_last_name'),
                 cust_email: formData.get('cust_email'),
             }
-            const dynamicModalComponent = <CreateReviewModalWidget shopRecords={shopRecords} customQuestionsData={customQuestionsData} paramObj={paramObj} />;
+            const dynamicModalComponent = <CreateReviewModalWidget shopRecords={shopRecords} customQuestionsData={customQuestionsData} paramObj={paramObj} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} />;
             const htmlModalContent = ReactDOMServer.renderToString(dynamicModalComponent);
             return json({
                 htmlModalContent: htmlModalContent
@@ -126,14 +139,14 @@ export async function action({ request }) {
                     },
                     {
                         $addFields: {
-                          reviewDocuments: {
-                            $sortArray: {
-                              input: "$reviewDocuments",
-                              sortBy: { is_cover: -1 }
+                            reviewDocuments: {
+                                $sortArray: {
+                                    input: "$reviewDocuments",
+                                    sortBy: { is_cover: -1 }
+                                }
                             }
-                          }
                         }
-                      },
+                    },
                     {
                         $project: {
                             _id: 1,
@@ -182,7 +195,7 @@ export async function action({ request }) {
                 const formParams = {
                     hideProductThumbnails: hideProductThumbnails,
                 }
-                const dynamicComponent = <ReviewDetailModalWidget shopRecords={shopRecords} reviewDetails={reviewDetails} productsDetails={productsDetails} formParams={formParams} />;
+                const dynamicComponent = <ReviewDetailModalWidget shopRecords={shopRecords} reviewDetails={reviewDetails} productsDetails={productsDetails} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent}/>;
                 const htmlContent = ReactDOMServer.renderToString(dynamicComponent);
                 return json({
                     body: htmlContent,
@@ -232,7 +245,7 @@ export async function action({ request }) {
             if (showAllReviews == 'false' && productId != "") {
                 query['product_id'] = productId;
             }
-            
+
 
             let matchFilterOption = {};
             if (showImageReviews == 'true') {
@@ -268,7 +281,7 @@ export async function action({ request }) {
             if (isNaN(averageRating)) {
                 averageRating = 0;
             }
-            
+
             if (!isNaN(filterByRatting)) {
                 query['rating'] = filterByRatting;
             }
@@ -288,7 +301,7 @@ export async function action({ request }) {
             const totalReviewItemsResult = await productReviews.aggregate(totalReviewItemsPipeline);
             const totalReviewItems = totalReviewItemsResult.length > 0 ? totalReviewItemsResult[0].total : 0;
             // const averageRating = Math.round((mapRatting.reduce((acc, item) => acc + item.stars * item.count, 0) / totalReviewItems).toFixed(1));
-            
+
             const reviewItems = await productReviews.aggregate([
                 {
                     $match: query
@@ -446,7 +459,7 @@ export async function action({ request }) {
 
             }
 
-            const dynamicComponent = <ProductReviewWidget shopRecords={shopRecords} reviewItems={reviewItems} formParams={formParams} />;
+            const dynamicComponent = <ProductReviewWidget shopRecords={shopRecords} reviewItems={reviewItems} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} />;
             const htmlContent = ReactDOMServer.renderToString(dynamicComponent);
 
 

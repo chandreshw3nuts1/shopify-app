@@ -67,9 +67,7 @@ $(document).ready(function () {
 
         let parentDiv = jQuery(this).parents('.reviewsteps');
         console.log(parentDiv);
-        jQuery(parentDiv).removeClass('activestep');
-        jQuery(parentDiv).addClass('d-none');
-        jQuery(parentDiv).next().removeClass('d-none');
+        jQuery(parentDiv).addClass('activestep');
     });
 
 

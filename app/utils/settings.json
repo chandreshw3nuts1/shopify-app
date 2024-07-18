@@ -150,6 +150,10 @@
 		"rating-wine"
 	],
 	"defaultColors": {
+		"defaultBanner" : "default-banner.png",
+		"starIcon" : "rating-star-rounded",
+		"cornerRadius" : "sharp",
+		"widgetFont" : "Roboto",
 		"starIconColor": "000000",
 		"emailBackgroundColor": "ebebeb",
 		"contentBackgroundColor": "ffffff",
@@ -158,6 +162,9 @@
 		"buttonBorderColor": "000000",
 		"buttonTitleColor": "ffffff",
 		"fontType": "Arial",
-		"fontSize": "14"
+		"fontSize": "14",
+		"appBranding" : "show",
+		"emailAppearance" : "boxed"
+		
 	}
 }

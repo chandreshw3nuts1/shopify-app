@@ -1,4 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { mongoConnection } from "./../utils/mongoConnection"; 
+
 import { ReactMultiEmail, isEmail } from 'react-multi-email';
 import 'react-multi-email/dist/style.css';
 import { json } from '@remix-run/node';
@@ -18,6 +20,7 @@ import {
 	TextField,
 } from '@shopify/polaris';
 export async function loader({ request }) {
+	const db = await mongoConnection();
 	const shopRecords = await getShopDetails(request);
 	const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shopRecords.shop });
 

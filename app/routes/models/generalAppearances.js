@@ -13,7 +13,7 @@ const generalAppearancesSchema = new mongoose.Schema({
     starIcon: {type : String},
     cornerRadius: {type : String},
     widgetFont: {type : String},
-    appBranding: {type : String},
+    appBranding: {type : String, Default : "show"},
     starIconColor: {type : String},
     emailBackgroundColor: {type : String},
     contentBackgroundColor: {type : String},
@@ -22,7 +22,8 @@ const generalAppearancesSchema = new mongoose.Schema({
     buttonBorderColor: {type : String},
     buttonTitleColor: {type : String},
     fontType: {type : String},
-    fontSize: {type : String}
+    fontSize: {type : String},
+    emailAppearance : {type : String}
     
 
 },{

@@ -10,12 +10,7 @@ import InfoIcon from "../icons/InfoIcon";
 import ArrowRightIcon from "../icons/ArrowRightIcon";
 import PlayIcon from "../icons/PlayIcon";
 
-import {
-    Text,
-} from "@shopify/polaris";
-
-
-const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, formParams }) => {
+const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, formParams, generalAppearancesModel, CommonRatingComponent }) => {
     const videoIcon = `${settingsJson.host_url}/images/play-circle.png`;
 
     return (
@@ -94,11 +89,12 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                         {/* <div>{JSON.stringify(reviewDetails.reviewDocuments)}</div> */}
                                         <div className="reviewanddates">
                                             <div class={`ratingstars flxrow star-${reviewDetails.rating}`}>
-                                                <StarBigIcon className="ratingstar" />
-                                                <StarBigIcon className="ratingstar" />
-                                                <StarBigIcon className="ratingstar" />
-                                                <StarBigIcon className="ratingstar" />
-                                                <StarBigIcon className="ratingstar" />
+												{CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 1 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+												{CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 2 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+												{CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 3 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+												{CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 4 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+												{CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 5 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+                                            
                                             </div>
                                             <div className="datebox">
                                                 {moment(reviewDetails.created_at).format('M/D/YYYY')}
