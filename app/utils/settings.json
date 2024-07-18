@@ -1,35 +1,163 @@
 {
-    "host_url" : "https://assumed-easy-ou-preview.trycloudflare.com",
-    "page_limit" : 20,
-    "manage_new_review_options" : [
-		{ "label" : "All reviews", "value": "auto" },
-		{ "label" : "5 star reviews", "value" : "5star" },
-		{ "label" : "4 stars and up", "value" : "above4" },
-		{ "label" : "3 stars and up", "value" : "above3" }
+	"host_url": "https://assumed-easy-ou-preview.trycloudflare.com",
+	"page_limit": 20,
+	"manage_new_review_options": [
+		{
+			"label": "All reviews",
+			"value": "auto"
+		},
+		{
+			"label": "5 star reviews",
+			"value": "5star"
+		},
+		{
+			"label": "4 stars and up",
+			"value": "above4"
+		},
+		{
+			"label": "3 stars and up",
+			"value": "above3"
+		}
 	],
-	"languages" : [
-		{ "code": "en", "lang": "English" },
-		{ "code": "es", "lang": "Spanish (Español)" },
-		{ "code": "fr", "lang": "French (Français)" },
-		{ "code": "it", "lang": "Italian (Italiano)" },
-		{ "code": "de", "lang": "German (Deutsch)" },
-		{ "code": "nl", "lang": "Dutch (Nederlands)" },
-		{ "code": "pt", "lang": "Portuguese (Português)" },
-		{ "code": "tr", "lang": "Turkish (Türkçe)" },
-		{ "code": "ru", "lang": "Russian (Русский)" },
-		{ "code": "ja", "lang": "Japanese (日本語)" },
-		{ "code": "cn1", "lang": "Chinese Simplified (汉语)" },
-		{ "code": "cn2", "lang": "Chinese Traditional (漢語)" },
-		{ "code": "sv", "lang": "Swedish (Svenska)" },
-		{ "code": "da", "lang": "Danish (Dansk)" },
-		{ "code": "no", "lang": "Norwegian (Norsk)" },
-		{ "code": "fi", "lang": "Finnish (Suomi)" },
-		{ "code": "ko", "lang": "Korean (한국어)" },
-		{ "code": "he", "lang": "Hebrew (עברית)" },
-		{ "code": "ar", "lang": "Arabic (العربية)" },
-		{ "code": "pl", "lang": "Polish (Polski)" },
-		{ "code": "lt", "lang": "Lithuanian (Lietuvių)" }
+	"languages": [
+		{
+			"code": "en",
+			"lang": "English"
+		},
+		{
+			"code": "es",
+			"lang": "Spanish (Español)"
+		},
+		{
+			"code": "fr",
+			"lang": "French (Français)"
+		},
+		{
+			"code": "it",
+			"lang": "Italian (Italiano)"
+		},
+		{
+			"code": "de",
+			"lang": "German (Deutsch)"
+		},
+		{
+			"code": "nl",
+			"lang": "Dutch (Nederlands)"
+		},
+		{
+			"code": "pt",
+			"lang": "Portuguese (Português)"
+		},
+		{
+			"code": "tr",
+			"lang": "Turkish (Türkçe)"
+		},
+		{
+			"code": "ru",
+			"lang": "Russian (Русский)"
+		},
+		{
+			"code": "ja",
+			"lang": "Japanese (日本語)"
+		},
+		{
+			"code": "cn1",
+			"lang": "Chinese Simplified (汉语)"
+		},
+		{
+			"code": "cn2",
+			"lang": "Chinese Traditional (漢語)"
+		},
+		{
+			"code": "sv",
+			"lang": "Swedish (Svenska)"
+		},
+		{
+			"code": "da",
+			"lang": "Danish (Dansk)"
+		},
+		{
+			"code": "no",
+			"lang": "Norwegian (Norsk)"
+		},
+		{
+			"code": "fi",
+			"lang": "Finnish (Suomi)"
+		},
+		{
+			"code": "ko",
+			"lang": "Korean (한국어)"
+		},
+		{
+			"code": "he",
+			"lang": "Hebrew (עברית)"
+		},
+		{
+			"code": "ar",
+			"lang": "Arabic (العربية)"
+		},
+		{
+			"code": "pl",
+			"lang": "Polish (Polski)"
+		},
+		{
+			"code": "lt",
+			"lang": "Lithuanian (Lietuvių)"
+		}
 	],
-	"defaultViewSampleEmailName" : "John"
-
+	"defaultSampleEmailInfo": {
+		"name": "John",
+		"last_name": "John",
+		"product": "Sample Product",
+		"reply_content": "Sample reply",
+		"order_number": "1234"
+	},
+	"bannerHelpText": "You can upload an image in JPG, PNG, or GIF format up to 5 MB. for best results, upload an image between 500-1200px wide.",
+	"ratingIcons": [
+		"rating-star-rounded",
+		"rating-star-sq",
+		"rating-babycloth",
+		"rating-basket",
+		"rating-bones",
+		"rating-coffee-cup",
+		"rating-crisamas-cap",
+		"rating-diamond-front",
+		"rating-diamond-top",
+		"rating-dogs-leg",
+		"rating-fire-flame",
+		"rating-flight",
+		"rating-food",
+		"rating-graduation-cap",
+		"rating-heart-round",
+		"rating-heart-sq",
+		"rating-leaf-canada",
+		"rating-leaf-normal",
+		"rating-like-normal",
+		"rating-like-rays",
+		"rating-pet-house",
+		"rating-plant",
+		"rating-shirt",
+		"rating-shopping-bag1",
+		"rating-shopping-bag2",
+		"rating-shopping-bag3",
+		"rating-star-rays",
+		"rating-sunglass",
+		"rating-tea-cup",
+		"rating-trophy-1",
+		"rating-trophy-2",
+		"rating-trophy-3",
+		"rating-tshirt",
+		"rating-wine"
+	],
+	"defaultColors": {
+		"starIconColor": "000000",
+		"emailBackgroundColor": "ebebeb",
+		"contentBackgroundColor": "ffffff",
+		"emailTextColor": "010101",
+		"buttonBackgroundColor": "000000",
+		"buttonBorderColor": "000000",
+		"buttonTitleColor": "ffffff",
+		"fontType": "Arial",
+		"fontSize": "14"
+	}
 }

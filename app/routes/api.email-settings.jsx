@@ -4,7 +4,7 @@ import emailReviewRequestSettings from './models/emailReviewRequestSettings';
 import emailReviewReplySettings from './models/emailReviewReplySettings';
 import generalAppearances from "./models/generalAppearances";
 
-import { getShopDetailsByShop, getShopifyProducts, getLanguageWiseContents } from './../utils/common';
+import { getShopDetailsByShop, getLanguageWiseContents } from './../utils/common';
 import { sendEmail } from "./../utils/email.server";
 import ReactDOMServer from 'react-dom/server';
 import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTemplate';
@@ -37,15 +37,36 @@ export async function action({ params, request }) {
                     return json({ status: 200, message: "Setting saved" });
 
                 } else if (actionType == 'sendReviewRequestEmail') {
-                    const {language} = requestBody;
+                    const { language } = requestBody;
                     const generalAppearancesData = await generalAppearances.findOne({ shop_id: shopRecords._id });
                     const logo = getUploadDocument(generalAppearancesData.logo, 'logo');
                     const customer_locale = language ? language : 'en';
                     const replaceVars = {
-                       
+                        "name": settingJson.defaultSampleEmailInfo.name,
+                        "last_name": settingJson.defaultSampleEmailInfo.last_name,
+                        "product": settingJson.defaultSampleEmailInfo.product,
+                        "order_number": settingJson.defaultSampleEmailInfo.order_number
                     }
                     const emailContents = await getLanguageWiseContents("review_request", replaceVars, shopRecords._id, customer_locale);
-                    console.log(emailContents);
+                    emailContents.banner = getUploadDocument(emailContents.banner, 'banners');
+                    emailContents.logo = logo;
+
+                    const defaultProductImg = settingJson.host_url + '/app/images/product-default.png';
+                    emailContents.defaultProductImg = defaultProductImg;
+
+
+                    const footer = "";
+                    var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
+                        <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={[]} footer={footer} />
+                    );
+                    const email = "chands@gmail.com";
+                    // Send request email
+                    const subject = emailContents.subject;
+                    const response = await sendEmail({
+                        to: email,
+                        subject,
+                        html: emailHtmlContent,
+                    });
 
                     return json({ status: 200, message: "Sample review request email sent" });
 

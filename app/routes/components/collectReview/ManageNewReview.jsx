@@ -142,7 +142,7 @@ export default function ManageNewReview({ settings, shopRecords }) {
 			const updateData = {
 				field: event.target.name,
 				value: !isAddOnsiteReview,
-				oid: settings._id,
+				shop: shopRecords.shop
 			};
 			const response = await fetch('/api/collect-review-setting', {
 				method: 'POST',
@@ -201,7 +201,7 @@ export default function ManageNewReview({ settings, shopRecords }) {
 								/>
 								<label
 									className="form-check-label"
-									for="flexSwitchCheckChecked"
+									htmlFor="flexSwitchCheckChecked"
 								>
 									Auto-publish new reviews
 								</label>
@@ -249,7 +249,7 @@ export default function ManageNewReview({ settings, shopRecords }) {
 								/>
 								<label
 									className="form-check-label"
-									for="revNotiSwitchCheckChecked"
+									htmlFor="revNotiSwitchCheckChecked"
 								>
 									Review notifications
 								</label>
@@ -279,7 +279,7 @@ export default function ManageNewReview({ settings, shopRecords }) {
 								/>
 								<label
 									className="form-check-label"
-									for="addonsiteNotiSwitchCheckChecked"
+									htmlFor="addonsiteNotiSwitchCheckChecked"
 								>
 									Add onsite reviewers to Shopify Customers list
 								</label>

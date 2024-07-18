@@ -15,7 +15,7 @@ const AlertInfo = (props) => {
             {props.alertClose &&
                 <div className="closebtn">
                     <a href="#">
-                        <i class="twenty-closeicon"></i>
+                        <i className="twenty-closeicon"></i>
                     </a>
                 </div>
             }

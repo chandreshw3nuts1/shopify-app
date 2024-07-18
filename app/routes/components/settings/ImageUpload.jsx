@@ -9,7 +9,7 @@ const SingleImageUpload = (props) => {
 	const singleFilebanner = useRef(null);
 	useEffect(() => {
 
-		const bannerImgUrl = getUploadDocument(props.documentObj.banner, 'banners');
+		const bannerImgUrl = getUploadDocument(props.documentObj?.banner, 'banners');
 		setFile(bannerImgUrl);
 
 	}, []);
@@ -18,8 +18,8 @@ const SingleImageUpload = (props) => {
 		const selectedFile = event.target.files[0];
 		if (!selectedFile) return;
 
-		if (!selectedFile.type.match("image/(jpeg|jpg|png)")) {
-			toast.error("You can upload an image in jpg, jpeg, or png format");
+		if (!selectedFile.type.match("image/(jpeg|jpg|png|gif)")) {
+			toast.error("You can upload an image in jpg, jpeg, png or gif format");
 			return;
 		}
 

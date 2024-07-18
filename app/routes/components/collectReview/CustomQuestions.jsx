@@ -37,7 +37,7 @@ const DraggableQuestion = ({ id, index, questionItem, shopRecords, customQuestio
 
     const handleDrop = async () => {
         const customParams = {
-            shopRecords: shopRecords,
+            shop_domain: shopRecords.shop,
             questionList: customQuestionsAnswer,
             actionType: "reorderQuestion"
         };
@@ -81,7 +81,7 @@ const DraggableQuestion = ({ id, index, questionItem, shopRecords, customQuestio
                 </div>
                 <div className='morequestions_wrap flxrow flxwrap'>
                     {questionItem.answers.map((ansItem, ansIndex) => (
-                        <div className='singlequestion'>{ansItem.val}</div>
+                        <div key={ansIndex} className='singlequestion'>{ansItem.val}</div>
                     ))}
                 </div>
             </div>
@@ -264,7 +264,7 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
         const customParams = {
             question: questionTitle,
             answers: customAnswer,
-            shopRecords: shopRecords,
+            shop_domain: shopRecords.shop,
             updatingQuestionId: updatingQuestionId,
             isHideAnswers: isHideAnswers,
             isMakeRequireQuestion: isMakeRequireQuestion,

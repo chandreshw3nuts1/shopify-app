@@ -1,78 +1,9 @@
-// app/components/EmailTemplate.jsx
 import React from 'react';
 
-const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, footer }) => {
-    var productsHtml = "";
-    if (mapProductDetails.length > 0) {
-
-        productsHtml = mapProductDetails.map((product) => {
-            const productId = product.id.split('/').pop();
-
-            return `
-            <tr>
-            <td style="padding: 20px;">
-                <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                    <tr>
-                        <td align="center">
-                            <img src=${product.images.edges[0].node.transformedSrc} alt=${product.title}>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding-top: 10px;"></td>
-                    </tr>
-                    <tr>
-                        <td align="center" style="font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana;font-size:16px;color:#222222; font-weight: 600;">${product.title}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding-top: 12px;"></td>
-                    </tr>
-                    <tr>
-                        <td align="center">
-                            <a style="display: inline-block; line-height: 24px; background: #222222; border-radius: 50px; padding: 8px 24px; color: #FFFFFF; text-decoration: none; font-size: 14px; font-weight: bold; font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana; vertical-align: top;" href={{review_link_${productId}}} target="_blank">${emailContents.buttonText}</a>    
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding-top: 12px;"></td>
-                    </tr>
-                </table>
-            </td>
-        </tr> `;
-
-        }).join('');
-    } else {
-        productsHtml = ` <tr>
-            <td style="padding: 20px;">
-                <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                    <tr>
-                        <td align="center">
-                            <img src="${emailContents.defaultProductImg}" alt="">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding-top: 10px;"></td>
-                    </tr>
-                    <tr>
-                        <td align="center" style="font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana;font-size:16px;color:#222222; font-weight: 600;">T Shirt 1</td>
-                    </tr>
-                    <tr>
-                        <td style="padding-top: 12px;"></td>
-                    </tr>
-                    <tr>
-                        <td align="center">
-                            <a href="#" style="display: inline-block; line-height: 24px; background: #222222; border-radius: 50px; padding: 8px 24px; color: #FFFFFF; text-decoration: none; font-size: 14px; font-weight: bold; font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana; vertical-align: top;">${emailContents.buttonText}</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding-top: 12px;"></td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    `;
-    }
-
+const SampleReviewRequestEmail = ({ shopRecords, emailContents, footer }) => {
 
     var bannerHtml = "";
+    var logoHtml = "";
     if (emailContents.banner != null && emailContents.banner != "") {
         bannerHtml = ` <tr>
                 <td align="center">
@@ -85,6 +16,28 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, footer }
     `;
     }
 
+
+    if (shopRecords.logo != null && shopRecords.logo != "") {
+        logoHtml = ` <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                        <tr>
+                            <td></td>
+                            <td width="600">
+                                <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            <img src="${shopRecords.logo}" width="132" height="60" alt="">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-top: 32px;"></td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+    `;
+    }
     const emailHtml = `<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -98,24 +51,7 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, footer }
         <tbody>
             <tr>
                 <td style="padding: 15px;">
-                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                        <tr>
-                            <td></td>
-                            <td width="600">
-                                <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                                    <tr>
-                                        <td align="center">
-                                            <img src="${emailContents.logo}" width="132" height="60" alt="">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding-top: 32px;"></td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td></td>
-                        </tr>
-                    </table>
+                    ${logoHtml}
                     <table cellpadding="0" cellspacing="0" border="0" width="100%">
                         <tr>
                             <td></td>
@@ -132,15 +68,12 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, footer }
                                                 
                                                 <tr>
                                                     <td style="font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana;font-size:14px;color:#222222;">
-                                                        ${emailContents.body}
+                                                    ${emailContents.body}
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="padding-top: 24px;"></td>
                                                 </tr>
-                                            </table>
-                                            <table cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#FFFFFF" style="border-radius: 10px;">
-                                                ${productsHtml}
                                             </table>
                                         </td>
                                     </tr>
@@ -190,4 +123,4 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, footer }
 
 };
 
-export default ReviewRequestEmailTemplate;
+export default SampleReviewRequestEmail;

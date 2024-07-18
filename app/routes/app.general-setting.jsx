@@ -57,7 +57,7 @@ export default function GeneralSettings() {
 
 			<div className="pagebox">
 				<div className="graywrapbox gapy24">
-					{/* <div class="subtitlebox">
+					{/* <div className="subtitlebox">
 						<h2>General setting</h2>
 						<p>Choose the right Loox plan to grow your business</p>
 					</div> */}
@@ -168,9 +168,9 @@ export default function GeneralSettings() {
 									<p>Display text in the footer of Loox emails</p>
 								</div>
 								<div className="flxfix rightaction">
-									<div class="form-check form-switch">
-										<input class="form-check-input" type="checkbox" role="switch" name="DisplayFooter" id="DisplayFooter" />
-										<label class="form-check-label" for="DisplayFooter">Display Footer</label>
+									<div className="form-check form-switch">
+										<input className="form-check-input" type="checkbox" role="switch" name="DisplayFooter" id="DisplayFooter" />
+										<label className="form-check-label" for="DisplayFooter">Display Footer</label>
 									</div>
 								</div>
 							</div>
@@ -255,41 +255,41 @@ export default function GeneralSettings() {
 									</div>
 									<div className="col-lg-12">
 										<div className="form-group m-0">
-											<div class="form-check form-switch">
-												<input class="form-check-input" type="checkbox" role="switch" name="Transparency01" id="Transparency01" />
-												<label class="form-check-label" for="Transparency01">Indicate that a review was imported from an external source <span>Display a disclosure in the review detail popup about reviews that were imported from a CSV file or another external source.</span></label>
+											<div className="form-check form-switch">
+												<input className="form-check-input" type="checkbox" role="switch" name="Transparency01" id="Transparency01" />
+												<label className="form-check-label" for="Transparency01">Indicate that a review was imported from an external source <span>Display a disclosure in the review detail popup about reviews that were imported from a CSV file or another external source.</span></label>
 											</div>
 										</div>
 									</div>
 									<div className="col-lg-12">
 										<div className="form-group m-0">
-											<div class="form-check form-switch">
-												<input class="form-check-input" type="checkbox" role="switch" name="Transparency02" id="Transparency02" />
-												<label class="form-check-label" for="Transparency02">Indicate that a review was marked as verified by the store owner<span>Display a disclosure in the review detail popup about site visitor reviews and imported reviews that you marked as verified.</span></label>
+											<div className="form-check form-switch">
+												<input className="form-check-input" type="checkbox" role="switch" name="Transparency02" id="Transparency02" />
+												<label className="form-check-label" for="Transparency02">Indicate that a review was marked as verified by the store owner<span>Display a disclosure in the review detail popup about site visitor reviews and imported reviews that you marked as verified.</span></label>
 											</div>
 										</div>
 									</div>
 									<div className="col-lg-12">
 										<div className="form-group m-0">
-											<div class="form-check form-switch">
-												<input class="form-check-input" type="checkbox" role="switch" name="Transparency03" id="Transparency03" />
-												<label class="form-check-label" for="Transparency03">Indicate that a review was written by a site visitor<span>Display a disclosure in the review detail popup about reviews that were submitted by a visitor on your store.</span></label>
+											<div className="form-check form-switch">
+												<input className="form-check-input" type="checkbox" role="switch" name="Transparency03" id="Transparency03" />
+												<label className="form-check-label" for="Transparency03">Indicate that a review was written by a site visitor<span>Display a disclosure in the review detail popup about reviews that were submitted by a visitor on your store.</span></label>
 											</div>
 										</div>
 									</div>
 									<div className="col-lg-12">
 										<div className="form-group m-0">
-											<div class="form-check form-switch">
-												<input class="form-check-input" type="checkbox" role="switch" name="Transparency04" id="Transparency04" />
-												<label class="form-check-label" for="Transparency04">Indicate that a review is not verified<span>Display a disclosure about reviews from non-verified customers.</span></label>
+											<div className="form-check form-switch">
+												<input className="form-check-input" type="checkbox" role="switch" name="Transparency04" id="Transparency04" />
+												<label className="form-check-label" for="Transparency04">Indicate that a review is not verified<span>Display a disclosure about reviews from non-verified customers.</span></label>
 											</div>
 										</div>
 									</div>
 									<div className="col-lg-12">
 										<div className="form-group m-0">
-											<div class="form-check form-switch">
-												<input class="form-check-input" type="checkbox" role="switch" name="Transparency05" id="Transparency05" />
-												<label class="form-check-label" for="Transparency05">Indicate that the reviewer received a future purchase discount for adding media to their review<span>Display a disclosure when the reviewer received an incentive for adding a photo or a video to their review.</span></label>
+											<div className="form-check form-switch">
+												<input className="form-check-input" type="checkbox" role="switch" name="Transparency05" id="Transparency05" />
+												<label className="form-check-label" for="Transparency05">Indicate that the reviewer received a future purchase discount for adding media to their review<span>Display a disclosure when the reviewer received an incentive for adding a photo or a video to their review.</span></label>
 											</div>
 										</div>
 									</div>

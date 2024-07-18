@@ -5,18 +5,13 @@ import SettingPageSidebar from "./components/headerMenu/SettingPageSidebar";
 import { getShopDetails } from './../utils/getShopDetails';
 import GeneralAppearance from "./components/settings/general-appearance";
 import { findOneRecord } from './../utils/common';
-import EmailAppearance from "./components/settings/email-appearance";
-
 // import ColorPicker from "./components/svgIconPicker";
 import { json } from "@remix-run/node";
+// import  SketchPicker   from 'react-color';
+// import ColorPicker from "./components/settings/ColorPicker";
 
 import {
-  Layout,
-  Page,
-  LegacyCard,
-  Spinner,
-  Text,
-  Card,LegacyStack, TextField, Button, FormLayout,Collapsible
+  Page
 } from "@shopify/polaris";
 
 export async function loader({request}) {
@@ -26,8 +21,6 @@ export async function loader({request}) {
 		const generalAppearances = await findOneRecord('general_appearances',{
 			shop_id: shopRecords._id,
 		});
-
-		// const getUploadDocumentss =  getUploadDocument();
 
 		return json({shopRecords : shopRecords,generalAppearances : generalAppearances});
 
@@ -42,16 +35,20 @@ export default function Branding() {
 	const loaderData = useLoaderData();
 	const shopRecords = loaderData.shopRecords;
 	const generalAppearances = loaderData.generalAppearances;
-	
+	const [isClient, setIsClient] = useState(false);
+
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
+
 	const [crumbs, setCrumbs] = useState([
 		{"title" : "Settings", "link" :"./../branding"},
 		{"title" : "Branding", "link" :""}
 	]);
-	const [openGeneralAppr, setOpenGeneralAppr] = useState(false);
-	const handleToggleGeneralAppr = useCallback(() => setOpenGeneralAppr(openGeneralAppr => !openGeneralAppr),[]);
  	return (
 	<>
 		<Breadcrumb crumbs={crumbs}/>
+		 
 		<Page fullWidth>
 			<SettingPageSidebar />
 			<div className="pagebox">
@@ -61,11 +58,7 @@ export default function Branding() {
 						<p>Customize visual elements to fit your brand's look & feel</p>
 					</div>
 					<GeneralAppearance shopRecords={shopRecords} generalAppearances={generalAppearances}/>
-					<div className="subtitlebox">
-						<h2>Email appearance</h2>
-						<p>Customize your email colors and font to match your brand</p>
-					</div>
-					<EmailAppearance shopRecords={shopRecords} generalAppearances={generalAppearances}/>
+
 				</div>
 			
 			</div>

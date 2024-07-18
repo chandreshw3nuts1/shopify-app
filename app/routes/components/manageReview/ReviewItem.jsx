@@ -446,13 +446,13 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 										</h4>
 									</div>
 									<div className="displayname">Display name: {result.display_name}</div>
-									<div class="ratingstars flxrow">
-										<div class="inside_ratingstars">
-											<div class="filledicon" style={{ width: `${result.rating * 20}%` }}>
-												<i class="starsico-stars"></i>
+									<div className="ratingstars flxrow">
+										<div className="inside_ratingstars">
+											<div className="filledicon" style={{ width: `${result.rating * 20}%` }}>
+												<i className="starsico-stars"></i>
 											</div>
-											<div class="dficon">
-												<i class="starsico-stars"></i>
+											<div className="dficon">
+												<i className="starsico-stars"></i>
 											</div>
 										</div>
 										<div className="rating_time">{formatTimeAgo(result.createdAt)}</div>
@@ -511,7 +511,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 										
 										
 										{!result.replyText && result.status == "publish" && 
-											<button type="button" class="revbtn lightbtn outline" onClick={(e) => handleShowReplyModal(result._id, index)} >Reply <ReplyIcon /></button>
+											<button type="button" className="revbtn lightbtn outline" onClick={(e) => handleShowReplyModal(result._id, index)} >Reply <ReplyIcon /></button>
 										}
 
 
@@ -531,14 +531,14 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 											<Dropdown.Item eventKey="delete" className="custom-dropdown-item">Delete</Dropdown.Item>
 										</DropdownButton>
 
-										{/* <button type="button" class="revbtn lightbtn outline" onClick={(e) => handleDeleteReviewItem(result._id, index)} >Delete Review</button> */}
+										{/* <button type="button" className="revbtn lightbtn outline" onClick={(e) => handleDeleteReviewItem(result._id, index)} >Delete Review</button> */}
 
 									</div>
 								</div>
 							</div>
 							{result.replyText &&
 								<>
-									<div class="timeline-reply replywrap flxrow">
+									<div className="timeline-reply replywrap flxrow">
 												<div className="flxflexi">
 													<h3>Your reply</h3>
 													<p >{result.replyText}</p>
@@ -546,10 +546,10 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 												{ result.status == "publish" && 
 													<>
 														<div className="flxfix replayaction">
-															<button type="button" class="" onClick={(e) => handleShowEditReplyModal(result._id, index)} >
+															<button type="button" className="" onClick={(e) => handleShowEditReplyModal(result._id, index)} >
 																<i className="twenty-editicon2"></i>
 															</button>
-															<button type="button" class="" onClick={(e) => deleteReviewReply(result._id, index)} >
+															<button type="button" className="" onClick={(e) => deleteReviewReply(result._id, index)} >
 																<i className="twenty-deleteicon"></i>
 															</button>
 														</div>

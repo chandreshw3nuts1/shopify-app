@@ -1,85 +1,126 @@
-// app/components/EmailTemplate.jsx
 import React from 'react';
 
-const EmailTemplate = ({ emailContents, footer }) => {
+const ReplyEmailTemplate = ({ emailContents, footer }) => {
 
-    const emailHtml = `<!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                margin: 0;
-                padding: 0;
-                background-color: #fff;
-                
-            }
-            .container {
-                max-width: 500px;
-                margin: 0 auto;
-                padding: 20px;
-                background-color: #fff;
-                border-radius: 5px;
-                box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.1);
-            }
-            .container-logo {
-                max-width: 500px;
-                margin: 0 auto;
-                padding: 20px;
-            }
-            .header, .footer {
-                text-align: center;
-                padding: 10px 0;
-            }
-            .content {
-                padding: 20px 0;
-            }
-            .btn-start {
-                display: inline-block;
-                padding: 10px 20px;
-                margin-top: 20px;
-                font-size: 16px;
-                color: #fff !important;
-                background-color: #007bff;
-                text-decoration: none;
-                border-radius: 5px;
-            }
-            .btn-start:hover {
-                background-color: #0056b3;
-            }
-            .footer {
-                font-size: 12px;
-                color: #6c757d;
-            }
-        </style>
-    </head>
-    <body style=" background-color:#edf2f7;  height: 100%;  width: 100%!important">
-        <div class="container-logo">
-            <div class="header">
-                <img src="${emailContents.logo}" width=100>
-            </div>
-            
-        </div>
+    var bannerHtml = "";
+    var logoHtml = "";
+    if (emailContents.banner != null && emailContents.banner != "") {
+        bannerHtml = ` <tr>
+                <td align="center">
+                    <img src="${emailContents.banner}" width="96" height="96" alt="" style="width: 100%; height: auto; border-radius: 10px;">
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-top: 18px;"></td>
+            </tr>
+    `;
+    }
 
-        <div class="container">
-            <div class="header">
-                <h1>Welcome to Our Service</h1>
-            </div>
-            <div class="content">
-            <p> ${emailContents.banner} </p>
-                <p> ${emailContents.body} </p>
-            </div>
-            <div class="footer">
-                <p>Best regards,</p>
-                <p>Your Company Name</p>
-                <p><a href="https://example.com">www.example.com</a></p>
-            </div>
-        </div>
-    </body>
-    </html>`;
 
-    return <div dangerouslySetInnerHTML={{ __html: emailHtml }} />;
+    if (emailContents.logo != null && emailContents.logo != "") {
+        logoHtml = ` <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                        <tr>
+                            <td></td>
+                            <td width="600">
+                                <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            <img src="${emailContents.logo}" width="132" height="60" alt="">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-top: 32px;"></td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+    `;
+    }
+    const emailHtml = `<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email template</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+    </style>
+</head>
+<body>
+    <table bgcolor="#ffffff" cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tbody>
+            <tr>
+                <td style="padding: 15px;">
+                    ${logoHtml}
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                        <tr>
+                            <td></td>
+                            <td width="600">
+                                <table bgcolor="#F8F9FB" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-radius: 20px;">
+                                    <tr>
+                                        <td style="padding: 32px 32px;">
+                                            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+
+                                                <!-- If banner Has : Start -->
+                                                ${bannerHtml}
+                                                <!-- If banner Has : End -->
+                                                
+                                                
+                                                <tr>
+                                                    <td style="font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana;font-size:14px;color:#222222;">
+                                                    ${emailContents.body}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-top: 24px;"></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td width="600">
+                                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <td style="padding-top: 24px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td align="center" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#222222">
+                                                    This email is sent for <a href="#" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#222222;text-decoration:underline">companyname@gmail.com</a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-top: 12px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td align="center" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#2196F3"><a href="#" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#2196F3;text-decoration:underline">Unsubscribe</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+</body>`;
+
+
+    return <html lang="en" dangerouslySetInnerHTML={{ __html: emailHtml }} />;
 
 };
 
-export default EmailTemplate;
+export default ReplyEmailTemplate;

@@ -8,6 +8,9 @@ import productReviews from "./models/productReviews";
 import reviewDocuments from "./models/reviewDocuments";
 import productReviewQuestions from "./models/productReviewQuestions";
 import manualRequestProducts from './models/manualRequestProducts';
+import generalAppearances from './models/generalAppearances';
+import { getUploadDocument } from "./../utils/documentPath";
+
 
 import fs from "fs";
 import path from "path";
@@ -83,6 +86,8 @@ export async function action({ request }) {
 					return json({ success: true });
 
 				} else {
+
+
 					if (shop == null || formData.get('product_id') == null) {
 						return json({ success: false });
 					}
@@ -98,6 +103,9 @@ export async function action({ request }) {
 					if (!productsDetails[0]) {
 						return json({ success: false });
 					}
+
+					const generalAppearancesData = await generalAppearances.findOne({ shop_id: shopRecords._id });
+                    const logo = getUploadDocument(generalAppearancesData.logo, 'logo');
 
 					const shopifyStoreUrl = `${process.env.SHOPIFY_ADMIN_STORE_URL}/${shopRecords.name}/apps/${process.env.SHOPIFY_APP_NAME}/app/manage-review`;
 
@@ -219,12 +227,17 @@ export async function action({ request }) {
 						product_title: formData.get('product_title'),
 						product_url: formData.get('product_url'),
 						shopifyStoreUrl: shopifyStoreUrl,
+						logo : logo,
+						shop_domain : shopRecords.shop,
+
 					};
+
 					const footer = "";
 					const subject = `New review (${formData.get('rating')}★) of ${formData.get('product_title')} ${display_name}`;
 					const emailHtml = ReactDOMServer.renderToStaticMarkup(
 						<EmailTemplate emailContents={emailContents} footer={footer} />
 					);
+
 					const response = await sendEmail({
 						to: email,
 						subject,

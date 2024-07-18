@@ -3,6 +3,7 @@ import { mongoConnection } from "./../utils/mongoConnection";
 import { ObjectId } from 'mongodb';
 import productReviewQuestions from "./models/productReviewQuestions";
 import customQuestions from "./models/customQuestions";
+import { getShopDetailsByShop } from './../utils/common';
 
 export async function loader() {
 	return json({});
@@ -11,16 +12,15 @@ export async function loader() {
 
 export async function action({ request} ) {
 	const requestBody = await request.json();
-	const collectionName = 'custom_questions';
 
     const method = request.method;
     switch(method){
         case "POST":
-            const {shopRecords, actionType } = requestBody;
+            const {shop_domain, actionType } = requestBody;
             try {
-                const db = await mongoConnection();         
-                const collection = db.collection(collectionName);
-                const shopObjectId = new ObjectId(shopRecords._id);
+                const db = await mongoConnection();
+                const shopRecords = await getShopDetailsByShop(shop_domain);
+                const shopObjectId = shopRecords._id;
 
                 if (actionType == 'reorderQuestion') {
                     const {questionList } = requestBody;

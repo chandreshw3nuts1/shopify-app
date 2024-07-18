@@ -195,6 +195,41 @@ export async function action({ params, request }) {
                     await generalAppearances.findOneAndUpdate(query, update, options);
 
                     return json({ "status": 200, "message": "Settings saved" });
+                } else if (actionType == "updateStarIcon") {
+                    const query = { shop_id: shopRecords._id };
+                    const update = {
+                        $set: {
+                            starIcon: requestJson.value
+                        }
+                    };
+                    const options = { upsert: true };
+                    await generalAppearances.findOneAndUpdate(query, update, options);
+
+                    return json({ "status": 200, "message": "Settings saved" });
+                }else if (actionType == "updateGeneralAppearance") {
+                    const query = { shop_id: shopRecords._id };
+                    const update = {
+                        $set: {
+                            [requestJson.field]: requestJson.value
+                        }
+                    };
+                    const options = { upsert: true, returnOriginal: false };
+
+                    await generalAppearances.findOneAndUpdate(query, update, options);
+
+                    return json({ "status": 200, "message": "Settings saved" });
+                }else if (actionType == "updateColorCode") {
+                    const query = { shop_id: shopRecords._id };
+                    const update = {
+                        $set: {
+                            [requestJson.field]: requestJson.color
+                        }
+                    };
+                    const options = { upsert: true, returnOriginal: false };
+
+                    await generalAppearances.findOneAndUpdate(query, update, options);
+
+                    return json({ "status": 200, "message": "Settings saved" });
                 }
 
 

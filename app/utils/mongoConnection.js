@@ -7,7 +7,6 @@ const dbName = process.env.MONGO_CONNECTION_DATABASE;
 export async function mongoConnection() {
   try {
     mongoose.connect(`${process.env.MONGO_CONNECTION_STRING}/${process.env.MONGO_CONNECTION_DATABASE}`, {
-      useNewUrlParser: true,
       useUnifiedTopology: true,
     });
     

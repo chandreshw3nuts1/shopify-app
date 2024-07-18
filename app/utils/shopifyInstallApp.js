@@ -1,5 +1,6 @@
 import shopDetails from './../routes/models/shopDetails';
 import settings from './../routes/models/settings';
+import generalAppearances from './../routes/models/generalAppearances';
 import appInstallLogs from './../routes/models/appInstallLogs';
 
 export async function storeShopDetails(session) {
@@ -36,13 +37,26 @@ export async function storeShopDetails(session) {
 
 		const shopRecords = await shopDetails.findOneAndUpdate(query, update, options);
 
-		const testvar = await settings.updateOne(
+		await settings.updateOne(
 			{ shop_id: shopRecords._id },
 			{
 				$setOnInsert: {
 					shop_id: shopRecords._id,
 					autoPublishReview: true,
 					reviewPublishMode: "auto"
+				}
+			},
+			{ upsert: true }
+		);
+
+		await generalAppearances.updateOne(
+			{ shop_id: shopRecords._id },
+			{
+				$setOnInsert: {
+					shop_id: shopRecords._id,
+					banner: "default-banner.png",
+					enabledEmailBanner: true,
+					starIcon: "rating-star-rounded"
 				}
 			},
 			{ upsert: true }

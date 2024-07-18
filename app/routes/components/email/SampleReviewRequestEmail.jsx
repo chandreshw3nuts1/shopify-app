@@ -1,67 +1,153 @@
 import React from 'react';
 
 const SampleReviewRequestEmail = ({ shopRecords, emailContents, footer }) => {
-    console.log(emailContents);
+
+    var bannerHtml = "";
+    var logoHtml = "";
+    if (emailContents.banner != null && emailContents.banner != "") {
+        bannerHtml = ` <tr>
+                <td align="center">
+                    <img src="${emailContents.banner}" width="96" height="96" alt="" style="width: 100%; height: auto; border-radius: 10px;">
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-top: 18px;"></td>
+            </tr>
+    `;
+    }
+
+
+    if (shopRecords.logo != null && shopRecords.logo != "") {
+        logoHtml = ` <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                        <tr>
+                            <td></td>
+                            <td width="600">
+                                <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            <img src="${shopRecords.logo}" width="132" height="60" alt="">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-top: 32px;"></td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+    `;
+    }
     const emailHtml = `<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email template</title>
     <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #e0c0e0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }
-
-    .email-container {
-        background-color: #d2a8d2;
-        padding: 20px;
-        text-align: center;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        width: 300px;
-    }
-
-    .logo {
-        width: 100%;
-        max-width: 250px;
-        height: auto;
-        margin-bottom: 20px;
-    }
-
-    .product-image {
-        width: 100%;
-        height: auto;
-        margin: 20px 0;
-        border-radius: 10px;
-    }
-
-    .review-button {
-        background-color: #000;
-        color: #fff;
-        border: none;
-        padding: 10px 20px;
-        font-size: 16px;
-        cursor: pointer;
-        border-radius: 5px;
-    }
-
-    .review-button:hover {
-        background-color: #444;
-    }
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
     </style>
-    </head>
-    <body>
-        <div class="email-container">
-            <img src="${shopRecords.logo}" alt="Logo" class="logo">
-            <div>${emailContents.body}</div>
-            <img src="${emailContents.banner}" alt="banner" class="banner">
-            <img src="${emailContents.getDefaultProductImage}" alt="productimage" class="productimage">
-            <p>Sample Product</p>
-            <a class="review-button" href="#" >${emailContents.buttonText}</a>
-        </div>
-    </body>`;
+</head>
+<body>
+    <table bgcolor="#ffffff" cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tbody>
+            <tr>
+                <td style="padding: 15px;">
+                    ${logoHtml}
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                        <tr>
+                            <td></td>
+                            <td width="600">
+                                <table bgcolor="#F8F9FB" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-radius: 20px;">
+                                    <tr>
+                                        <td style="padding: 32px 32px;">
+                                            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+
+                                                <!-- If banner Has : Start -->
+                                                ${bannerHtml}
+                                                <!-- If banner Has : End -->
+                                                
+                                                
+                                                <tr>
+                                                    <td style="font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana;font-size:14px;color:#222222;">
+                                                    ${emailContents.body}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-top: 24px;"></td>
+                                                </tr>
+                                            </table>
+                                            <table cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#FFFFFF" style="border-radius: 10px;">
+                                               
+                                                <tr>
+                                                    <td style="padding: 20px;">
+                                                        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                                            <tr>
+                                                                <td align="center">
+                                                                    <img src="${emailContents.getDefaultProductImage}" alt="">
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="padding-top: 10px;"></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td align="center" style="font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana;font-size:16px;color:#222222; font-weight: 600;">T Shirt 1</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="padding-top: 12px;"></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td align="center">
+                                                                    <a href="#" style="display: inline-block; line-height: 24px; background: #222222; border-radius: 50px; padding: 8px 24px; color: #FFFFFF; text-decoration: none; font-size: 14px; font-weight: bold; font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana; vertical-align: top;">${emailContents.buttonText}</a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="padding-top: 12px;"></td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td width="600">
+                                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <td style="padding-top: 24px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td align="center" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#222222">
+                                                    This email is sent for <a href="#" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#222222;text-decoration:underline">companyname@gmail.com</a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-top: 12px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td align="center" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#2196F3"><a href="#" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#2196F3;text-decoration:underline">Unsubscribe</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+</body>`;
 
 
     return <html lang="en" dangerouslySetInnerHTML={{ __html: emailHtml }} />;

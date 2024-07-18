@@ -135,10 +135,10 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj }) => {
 
     const viewSample = (e) => {
         e.preventDefault();
+        // var dynamicBody = t('reviewRequestEmail.body').replace('[name]', settingsJson.defaultViewSampleEmailName);
 
-        const dynamicBody = t('reviewRequestEmail.body').replace('[name]', settingsJson.defaultViewSampleEmailName);
         const sampleEmailData = {
-            body: body ? body : dynamicBody,
+            body: body ? body : t('reviewRequestEmail.body'),
             buttonText: buttonText ? buttonText : t('reviewRequestEmail.buttonText'),
             banner : getUploadDocument(languageWiseEmailTemplate.banner, 'banners'),
             getDefaultProductImage: getDefaultProductImage(),

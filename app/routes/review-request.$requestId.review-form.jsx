@@ -316,13 +316,13 @@ const ReviewRequestForm = () => {
 							<div className="reviewsteps step-2 ">
 								<div className="modal-header">
 									<div className="flxflexi">
-										<h1 class="modal-title">Show it off</h1>
+										<h1 className="modal-title">Show it off</h1>
 										<div className="subtextbox">We'd love to see it in action.</div>
 									</div>
 								</div>
 								<div className="modal-body">
 									<div className="filesupload_wrap">
-										<label class="form__container" id="upload-container">
+										<label className="form__container" id="upload-container">
 											{files.length == 0 &&
 												<>
 													<div className="iconimage">
@@ -340,7 +340,7 @@ const ReviewRequestForm = () => {
 													Add Photos or Videos
 												</span>
 											</div>
-											<input onChange={handleFileChange} class="form__file" name="image_and_videos[]" id="upload-files" type="file" accept="image/*,video/mp4,video/x-m4v,video/*" multiple="multiple" />
+											<input onChange={handleFileChange} className="form__file" name="image_and_videos[]" id="upload-files" type="file" accept="image/*,video/mp4,video/x-m4v,video/*" multiple="multiple" />
 										</label>
 
 
@@ -350,12 +350,12 @@ const ReviewRequestForm = () => {
 										<div className="discountrow">
 											<div className="discountbox">Your <strong>15%</strong> off discount is wait for you!</div>
 										</div>
-										<div class="form__files-container" id="files-list-container">
+										<div className="form__files-container" id="files-list-container">
 
 											{previews.map((preview, index) => (
 												<>
-													<div class="listbox">
-														<div class="form__image-container js-remove-image" data-index="' + index + '">
+													<div className="listbox">
+														<div className="form__image-container js-remove-image" data-index="' + index + '">
 															{preview.type.startsWith('image') ? (
 																<img className="form__image" src={preview.url} alt={`preview ${index}`} />
 															) : (
@@ -364,7 +364,7 @@ const ReviewRequestForm = () => {
 																</video>
 															)}
 
-															<div class="deleteicon" onClick={(e) => deleteDocument(index)}><DeleteIcon /> </div>
+															<div className="deleteicon" onClick={(e) => deleteDocument(index)}><DeleteIcon /> </div>
 														</div>
 													</div>
 												</>

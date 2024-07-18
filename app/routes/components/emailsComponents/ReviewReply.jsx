@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import settingsJson from './../../../utils/settings.json';
 import { getDefaultProductImage, getUploadDocument } from './../../../utils/documentPath';
-import SampleReviewRequestEmail from './../email/SampleReviewRequestEmail';
+import SampleReviewReplyEmail from './../email/SampleReviewReplyEmail';
 
 const ReviewReply = ({ shopRecords, emailTemplateObj }) => {
     const { t, i18n } = useTranslation();
@@ -101,14 +101,13 @@ const ReviewReply = ({ shopRecords, emailTemplateObj }) => {
 
     const viewSample = (e) => {
         e.preventDefault();
+        // var dynamicBody = t('reviewReplyEmail.body').replace('[name]', settingsJson.defaultViewSampleEmailName);
 
-        const dynamicBody = t('reviewRequestEmail.body').replace('[name]', settingsJson.defaultViewSampleEmailName);
         const sampleEmailData = {
-            body: body ? body : dynamicBody,
-            banner: getUploadDocument(languageWiseEmailTemplate.banner, 'banners'),
+            body: body ? body : t('reviewReplyEmail.body'),
+            banner : getUploadDocument(languageWiseEmailTemplate.banner, 'banners'),
             getDefaultProductImage: getDefaultProductImage(),
         }
-        console.log(sampleEmailData);
         setEmailContents(sampleEmailData);
         setShowViewSampleModal(true);
     }
@@ -178,7 +177,7 @@ const ReviewReply = ({ shopRecords, emailTemplateObj }) => {
                     <Modal.Title>Sample email</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <SampleReviewRequestEmail shopRecords={shopRecords} emailContents={emailContents} />
+                    <SampleReviewReplyEmail shopRecords={shopRecords} emailContents={emailContents} />
 
                 </Modal.Body>
             </Modal>

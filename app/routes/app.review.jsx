@@ -88,8 +88,8 @@ const ReviewPage = () => {
 						<LegacyCard sectioned>
 							<div
 								onClick={handleToggleNewReview}
-								ariaExpanded={openNewReview}
-								ariaControls="basic-collapsible"
+								aria-expanded={openNewReview}
+								aria-controls="basic-collapsible"
 								className={openNewReview ? 'open' : ''}
 							>
 								<div className='flxrow acctitle'>
@@ -132,8 +132,8 @@ const ReviewPage = () => {
 						<LegacyCard sectioned>
 							<div
 								onClick={handleToggleCustomQuestions}
-								ariaExpanded={openCustomQuestions}
-								ariaControls="basic-collapsible"
+								aria-expanded={openCustomQuestions}
+								aria-controls="basic-collapsible"
 								className={openCustomQuestions ? 'open' : ''}
 							>
 								<div className='flxrow acctitle'>
@@ -180,8 +180,8 @@ const ReviewPage = () => {
 						<LegacyCard sectioned>
 							<div
 								onClick={handleToggleEmailSettings}
-								ariaExpanded={openEmailSettings}
-								ariaControls="basic-collapsible"
+								aria-expanded={openEmailSettings}
+								aria-controls="basic-collapsible"
 								className={openEmailSettings ? 'open' : ''}
 							>
 								<div className='flxrow acctitle'>
@@ -225,7 +225,7 @@ const ReviewPage = () => {
 												<a href="#" className='revbtn'>Learn More</a>
 											</div>
 											<div className='flxfix arrowicon'>
-												<i class="twenty-longarrow-right"></i>
+												<i className="twenty-longarrow-right"></i>
 											</div>
 										</div>
 
@@ -236,21 +236,21 @@ const ReviewPage = () => {
 											</div>
 											
 											<div className='flxfix arrowicon'>
-												<i class="twenty-longarrow-right"></i>
+												<i className="twenty-longarrow-right"></i>
 											</div>
 										</div>
 
 										{/* Above DIV will be repeat */}
 										<div className='alertbox primarybox mt-24'>
 											<div className='iconbox'>
-												<i class="twenty-customizeicon"></i>
+												<i className="twenty-customizeicon"></i>
 											</div>
 											<div className='plaintext flxflexi '>
 												Your email appearance settings can be customized on the <a href="#">Branding</a> page.
 											</div>
 											<div className='closebtn'>
 												<a href="#">
-													<i class="twenty-menuicon"></i>
+													<i className="twenty-menuicon"></i>
 												</a>
 											</div>
 										</div>
@@ -266,7 +266,7 @@ const ReviewPage = () => {
 					<Layout.Section>
 						<LegacyCard sectioned>
 							<div
-								ariaControls="basic-collapsible"
+								aria-controls="basic-collapsible"
 							>
 								<div className='flxrow acctitle'>
 									<div className='flxfix iconbox'>
