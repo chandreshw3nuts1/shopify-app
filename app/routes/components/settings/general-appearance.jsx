@@ -139,9 +139,9 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 			<div className='row'>
 				<div className='col-md-6'>
 					<div className='whitebox h-100'>
-						<div className="form-group m-0">
+						<div className="form-group m-0 flxcol h-100">
 							<label htmlFor="">Logo</label>
-							<UploadLogo className="" hasEdit />
+							<UploadLogo fullHeight className="" shopRecords={shopRecords} hasEdit />
 							{/* <div className='form-group m-0'>
 							<label htmlFor="">Logo</label>
 							<input
@@ -231,16 +231,7 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 
 			<div className="row">
 				<div className="col-lg-6">
-					<div className="whitebox h-100">
-						<div className="form-group m-0">
-							<label htmlFor="">Logo</label>
-							<SingleImageUpload className="emailbannerimage" shopRecords={shopRecords} documentObj={generalAppearancesObj} setDocumentObj={setGeneralAppearancesObj} hasEdit />
-							<div className="inputnote">{settingsJson.bannerHelpText}</div>
-						</div>
-					</div>
-				</div>
-				<div className="col-lg-6">
-					<div className="whitebox h-100 flxcol">
+					<div className="whitebox flxcol">
 						<div class="form-check form-switch">
 
 							<input
@@ -273,14 +264,66 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 							</select>
 						</div>
 
-
-						<div className="form-group m-0">
-							<label htmlFor="">Appearance</label>
-							<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="emailBackgroundColor" />
-
+						<div className='custom-email-options'>
+							<div className="form-group m-0 horizontal-form">
+								<label htmlFor="">Email background color</label>
+								<div className='sideinput mw300 flxflexi'>
+									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="emailBackgroundColor" />
+								</div>
+							</div>
+							<div className="form-group m-0 horizontal-form">
+								<label htmlFor="">Content background color</label>
+								<div className='sideinput mw300 flxflexi'>
+									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="emailBackgroundColor" />
+								</div>
+							</div>
+							<div className="form-group m-0 horizontal-form">
+								<label htmlFor="">Email text color</label>
+								<div className='sideinput mw300 flxflexi'>
+									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="emailBackgroundColor" />
+								</div>
+							</div>
+							<div className="form-group m-0 horizontal-form">
+								<label htmlFor="">Button background color</label>
+								<div className='sideinput mw300 flxflexi'>
+									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="emailBackgroundColor" />
+								</div>
+							</div>
+							<div className="form-group m-0 horizontal-form">
+								<label htmlFor="">Button border color</label>
+								<div className='sideinput mw300 flxflexi'>
+									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="emailBackgroundColor" />
+								</div>
+							</div>
+							<div className="form-group m-0 horizontal-form">
+								<label htmlFor="">Button title color</label>
+								<div className='sideinput mw300 flxflexi'>
+									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="emailBackgroundColor" />
+								</div>
+							</div>
+							<div className="form-group m-0 horizontal-form">
+								<label htmlFor="">Font type</label>
+								<div className='sideinput mw300 flxflexi'>
+									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="emailBackgroundColor" />
+								</div>
+							</div>
+							<div className="form-group m-0 horizontal-form">
+								<label htmlFor="">Font size</label>
+								<div className='sideinput mw300 flxflexi'>
+									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="emailBackgroundColor" />
+								</div>
+							</div>
 						</div>
 
-
+					</div>
+				</div>
+				<div className="col-lg-6">
+					<div className="whitebox">
+						<div className="form-group m-0">
+							<label htmlFor="">Email banner</label>
+							<SingleImageUpload className="emailbannerimage" shopRecords={shopRecords} documentObj={generalAppearancesObj} setDocumentObj={setGeneralAppearancesObj} hasEdit />
+							<div className="inputnote">{settingsJson.bannerHelpText}</div>
+						</div>
 					</div>
 				</div>
 			</div>

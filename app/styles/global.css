@@ -503,3 +503,9 @@ body .dropdown-toggle::after { content: "\e902"; font-family: 'icon24' !importan
 .general_row .row_title .lefttitle { display: flex; flex-direction: column; row-gap: 8px;}
 .general_row .row_title h4 { font-size: 16px; line-height: normal; color: var(--darkColor); padding: 0; margin: 0; font-weight: 700; display: flex;}
 .general_row .row_title p { font-size: 14px; line-height: normal; color: var(--lightGreyColor); padding: 0; margin: 0; font-weight: 400;}
+
+.form-group.horizontal-form { display: flex; align-items: center;}
+.form-group.horizontal-form label { margin: 0; width: 190px;}
+.colorpicker_input .form-control { height: 42px;}
+.custom-email-options { display: flex; row-gap: 8px; flex-direction: column;}
+.custom-email-options .sideinput.mw300 { max-width: 300px;}
