@@ -84,7 +84,7 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 		});
 		const data = await response.json();
 		if (data.status == 200) {
-			toast.success(data.message);
+			toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 		} else {
 			toast.error(data.message);
 		}
@@ -112,7 +112,7 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 		});
 		const data = await response.json();
 		if (data.status == 200) {
-			toast.success(data.message);
+			toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 		} else {
 			toast.error(data.message);
 		}
@@ -138,7 +138,7 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 		});
 		const data = await response.json();
 		if (data.status == 200) {
-			toast.success(data.message);
+			toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 		} else {
 			toast.error(data.message);
 		}

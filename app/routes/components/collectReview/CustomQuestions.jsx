@@ -7,6 +7,7 @@ import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import update from 'immutability-helper';
 import MoreIcon from '../../../images/MoreIcon';
+import settingsJson from './../../../utils/settings.json';
 
 
 const QuestionItemType = 'icon';
@@ -51,7 +52,7 @@ const DraggableQuestion = ({ id, index, questionItem, shopRecords, customQuestio
 
         const data = await response.json();
         if (data.status == 200) {
-            toast.success(data.message);
+            toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
         } else {
             toast.error(data.message);
         }
@@ -279,7 +280,7 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
         });
         const data = await response.json();
         if (data.status == 200) {
-            toast.success(data.message);
+            toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 
             if (updatingQuestionId) {
                 setCustomQuestionsAnswer(prevQuestionAnswers => {
@@ -334,7 +335,7 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
 
                     const data = await response.json();
                     if (data.status == 200) {
-                        toast.success(data.message);
+                        toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 
                         setCustomQuestionsAnswer(customQuestionsAnswer.filter((item, i) => i !== index));
                     } else {

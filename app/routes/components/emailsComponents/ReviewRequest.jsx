@@ -91,7 +91,7 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj }) => {
             });
             const data = await response.json();
             if (data.status == 200) {
-                toast.success(data.message);
+                toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 
                 setEmailTemplateObjState({
                     ...emailTemplateObjState,
@@ -125,7 +125,7 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj }) => {
         });
         const data = await response.json();
         if (data.status == 200) {
-            toast.success(data.message);
+            toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 
         } else {
             toast.error(data.message);

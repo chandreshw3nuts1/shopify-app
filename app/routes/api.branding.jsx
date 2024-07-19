@@ -59,7 +59,7 @@ export async function action({ params, request }) {
                         );
 
                     }
-                    return json({ "status": 200, "message": 'Setting saved' });
+                    return json({ "status": 200, "message": 'Setting saved' , 'logo': fileName});
 
                 } else if (actionType == "uploadEmailBanner") {
                     const actionSubType = formData.get('actionSubType');

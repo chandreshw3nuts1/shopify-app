@@ -105,6 +105,7 @@
 			"lang": "Lithuanian (Lietuvių)"
 		}
 	],
+	"toasterCloseTime": 2000,
 	"defaultSampleEmailInfo": {
 		"name": "John",
 		"last_name": "John",
@@ -150,10 +151,10 @@
 		"rating-wine"
 	],
 	"defaultColors": {
-		"defaultBanner" : "default-banner.png",
-		"starIcon" : "rating-star-rounded",
-		"cornerRadius" : "sharp",
-		"widgetFont" : "Roboto",
+		"defaultBanner": "default-banner.png",
+		"starIcon": "rating-star-rounded",
+		"cornerRadius": "sharp",
+		"widgetFont": "Roboto",
 		"starIconColor": "000000",
 		"emailBackgroundColor": "ebebeb",
 		"contentBackgroundColor": "ffffff",
@@ -163,8 +164,30 @@
 		"buttonTitleColor": "ffffff",
 		"fontType": "Arial",
 		"fontSize": "14",
-		"appBranding" : "show",
-		"emailAppearance" : "boxed"
-		
-	}
+		"appBranding": "show",
+		"emailAppearance": "boxed"
+	},
+	"emailTemplateFontTypes": [
+		"Arial",
+		"Comic Sans MS",
+		"Courier New",
+		"Georgia",
+		"Tahoma",
+		"Times New Roman",
+		"Trebuchet MS",
+		"Verdana"
+	],
+	"emailTemplateFontSizes": [
+		"12",
+		"14",
+		"16",
+		"18",
+		"20",
+		"22",
+		"24",
+		"26",
+		"28",
+		"30"
+	],
+	"defaultSampleEmailBody" : "Hello [name], \n \nWe would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds."
 }

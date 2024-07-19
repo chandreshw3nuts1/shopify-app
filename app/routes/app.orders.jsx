@@ -198,7 +198,7 @@ export default function Orders() {
         const data = await response.json();
 
         if (data.status == 200) {
-            toast.success(data.message);
+            toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
             setFilteredOrders(filteredOrders.map((item, idx) => {
                 if (idx === index) {
                     return {
@@ -238,7 +238,7 @@ export default function Orders() {
         const data = await response.json();
 
         if (data.status == 200) {
-            toast.success(data.message);
+            toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 
             setFilteredOrders(filteredOrders.map((item, idx) => {
                 if (idx === index) {

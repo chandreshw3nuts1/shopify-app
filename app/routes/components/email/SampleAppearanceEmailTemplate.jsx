@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SampleReviewRequestEmail = ({ shopRecords, emailContents, footer }) => {
+const SampleReviewRequestEmail = ({  emailContents, footer }) => {
 
     var bannerHtml = "";
     var logoHtml = "";
@@ -17,7 +17,7 @@ const SampleReviewRequestEmail = ({ shopRecords, emailContents, footer }) => {
     }
 
 
-    if (shopRecords.logo != null && shopRecords.logo != "") {
+    if (emailContents.logo != null && emailContents.logo != "") {
         logoHtml = ` <table cellpadding="0" cellspacing="0" border="0" width="100%">
                         <tr>
                             <td></td>
@@ -25,7 +25,7 @@ const SampleReviewRequestEmail = ({ shopRecords, emailContents, footer }) => {
                                 <table cellpadding="0" cellspacing="0" border="0" width="100%">
                                     <tr>
                                         <td align="center">
-                                            <img src="${shopRecords.logo}" width="132" height="60" alt="">
+                                            <img src="${emailContents.logo}" width="132" height="60" alt="">
                                         </td>
                                     </tr>
                                     <tr>
@@ -96,7 +96,7 @@ const SampleReviewRequestEmail = ({ shopRecords, emailContents, footer }) => {
                                                             </tr>
                                                             <tr>
                                                                 <td align="center">
-                                                                    <a href="#" style="display: inline-block; line-height: 24px; background: #222222; border-radius: 50px; padding: 8px 24px; color: #FFFFFF; text-decoration: none; font-size: 14px; font-weight: bold; font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana; vertical-align: top;">${emailContents.buttonText}</a>
+                                                                    <a href="#" style="display: inline-block; line-height: 24px; background: #222222; border-radius: 50px; padding: 8px 24px; color: #FFFFFF; text-decoration: none; font-size: 14px; font-weight: bold; font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana; vertical-align: top;">Write a review</a>
                                                                 </td>
                                                             </tr>
                                                             <tr>

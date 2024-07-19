@@ -12,6 +12,7 @@ import { findOneRecord } from './../utils/common';
 import  InformationAlert from './components/common/information-alert';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import settingsJson from './../utils/settings.json';
 
 import {
 	Page,
@@ -159,7 +160,7 @@ const ManualReviewRequestsPage = () => {
 			});
 			const data = await response.json();
 			if (data.status == 200) {
-				toast.success(data.message);
+				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 				setEmails([]);
 				setSelectedProducts([]);
 				setUpdateMemo(!updateMemo);

@@ -1,34 +1,36 @@
 import { useState, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import UploadLogo from './UploadLogo';
-import {
-	Card,
-	Select,
-	TextField
-} from '@shopify/polaris';
-import { getUploadDocument } from '../../../utils/documentPath';
+
+import {getDefaultProductImage, getUploadDocument } from '../../../utils/documentPath';
 import { Dropdown, DropdownButton, Modal, Button } from 'react-bootstrap';
 import settingsJson from './../../../utils/settings.json';
 import SingleImageUpload from "./ImageUpload";
 import ColorPicker from "./ColorPicker";
+import SampleAppearanceEmailTemplate from './../email/SampleAppearanceEmailTemplate';
 
 
 export default function GeneralAppearance({ shopRecords, generalAppearances }) {
-	const [imageLogo, setImageLogo] = useState(getUploadDocument(generalAppearances?.logo, 'logo'));
-
 	const [starIcon, setStarIcon] = useState(generalAppearances?.starIcon);
 	const [cornerRadiusSelection, setCornerRadiusSelection] = useState(generalAppearances?.cornerRadius);
 	const [widgetFontSelection, setWidgetFontSelection] = useState(generalAppearances?.widgetFont);
 	const [appBranding, setAppBranding] = useState(generalAppearances?.appBranding);
 	const [emailAppearanceSelection, setEmailAppearanceSelection] = useState(generalAppearances?.emailAppearance);
+	const [fontTypeSelection, setFontTypeSelection] = useState(generalAppearances?.fontType);
+	const [fontSizeSelection, setFontSizeSelection] = useState(generalAppearances?.fontSize);
 
 	const [generalAppearancesObj, setGeneralAppearancesObj] = useState(generalAppearances);
 	const [isCheckedEmailBanner, setIsCheckedEmailBanner] = useState(
 		generalAppearances?.enabledEmailBanner || false
 	);
-	const ratingIcons = settingsJson.ratingIcons;
-	const changeStarIcon = async (icon) => {
+	const [isHideBanner, setIsHideBanner] = useState(generalAppearances?.enabledEmailBanner);
+    const [showViewSampleModal, setShowViewSampleModal] = useState(false);
+    const handleCloseViewSampleModal = () => setShowViewSampleModal(false);
+    const [emailContents, setEmailContents] = useState({});
 
+	const ratingIcons = settingsJson.ratingIcons;
+
+	const changeStarIcon = async (icon) => {
 		try {
 
 			const updateData = {
@@ -45,7 +47,7 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 			});
 			const data = await response.json();
 			if (data.status == 200) {
-				toast.success(data.message);
+				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 				setStarIcon(icon);
 
 			} else {
@@ -80,7 +82,7 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 			const data = await response.json();
 
 			if (data.status == 200) {
-				toast.success(data.message);
+				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 				if (eventKey == "cornerRadius") {
 					setCornerRadiusSelection(eventVal);
 				} else if (eventKey == "widgetFont") {
@@ -89,9 +91,11 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 					setAppBranding(eventVal);
 				} else if (eventKey == "emailAppearance") {
 					setEmailAppearanceSelection(eventVal);
+				} else if (eventKey == "fontType") {
+					setFontTypeSelection(eventVal);
+				} else if (eventKey == "fontSize") {
+					setFontSizeSelection(eventVal);
 				}
-
-
 
 			} else {
 				toast.error(data.message);
@@ -121,19 +125,33 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 			});
 			const data = await response.json();
 			if (data.status == 200) {
-				toast.success(data.message);
+				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 			} else {
 				toast.error(data.message);
 			}
 			if (eventKey == 'enabledEmailBanner') {
 				setIsCheckedEmailBanner(!event.target.checked);
+				setIsHideBanner(!isHideBanner);
+
 			}
 		} catch (error) {
 			console.error('Error updating record:', error);
 		}
 
 	};
+	const viewSample = (e) => {
+		e.preventDefault();
 
+		const sampleEmailData = {
+			logo: getUploadDocument(generalAppearances?.logo, 'logo'),
+			body: settingsJson.defaultSampleEmailBody,
+			banner: getUploadDocument(generalAppearances?.banner, 'banners'),
+			getDefaultProductImage: getDefaultProductImage(),
+		}
+
+		setEmailContents(sampleEmailData);
+		setShowViewSampleModal(true);
+	}
 	return (
 		<>
 			<div className='row'>
@@ -141,21 +159,7 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 					<div className='whitebox h-100'>
 						<div className="form-group m-0 flxcol h-100">
 							<label htmlFor="">Logo</label>
-							<UploadLogo fullHeight className="" shopRecords={shopRecords} hasEdit />
-							{/* <div className='form-group m-0'>
-							<label htmlFor="">Logo</label>
-							<input
-								className="form-control"
-								onChange={handleChangeLogo}
-								type="file"
-								name="logo"
-								id="flexSwitchCheckChecked"
-							/>
-							<img src={imageLogo} alt="" />
-							<button onClick={deleteLogo}>
-								<i className='twenty-closeicon'></i>
-							</button>
-						</div> */}
+							<UploadLogo fullHeight className="" shopRecords={shopRecords} documentObj={generalAppearancesObj} setDocumentObj={setGeneralAppearancesObj} hasEdit />
 						</div>
 					</div>
 				</div>
@@ -232,7 +236,7 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 			<div className="row">
 				<div className="col-lg-6">
 					<div className="whitebox flxcol">
-						<div class="form-check form-switch">
+						<div className="form-check form-switch">
 
 							<input
 								checked={
@@ -248,7 +252,7 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 								id="enabledEmailBanner"
 							/>
 
-							<label class="form-check-label" htmlFor="enabledEmailBanner">
+							<label className="form-check-label" htmlFor="enabledEmailBanner">
 								Enable email banners
 								<span>Display email banners for all emails sent to customers</span>
 							</label>
@@ -274,59 +278,89 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 							<div className="form-group m-0 horizontal-form">
 								<label htmlFor="">Content background color</label>
 								<div className='sideinput mw300 flxflexi'>
-									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="emailBackgroundColor" />
+									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="contentBackgroundColor" />
 								</div>
 							</div>
 							<div className="form-group m-0 horizontal-form">
 								<label htmlFor="">Email text color</label>
 								<div className='sideinput mw300 flxflexi'>
-									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="emailBackgroundColor" />
+									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="emailTextColor" />
 								</div>
 							</div>
 							<div className="form-group m-0 horizontal-form">
 								<label htmlFor="">Button background color</label>
 								<div className='sideinput mw300 flxflexi'>
-									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="emailBackgroundColor" />
+									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="buttonBackgroundColor" />
 								</div>
 							</div>
 							<div className="form-group m-0 horizontal-form">
 								<label htmlFor="">Button border color</label>
 								<div className='sideinput mw300 flxflexi'>
-									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="emailBackgroundColor" />
+									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="buttonBorderColor" />
 								</div>
 							</div>
 							<div className="form-group m-0 horizontal-form">
 								<label htmlFor="">Button title color</label>
 								<div className='sideinput mw300 flxflexi'>
-									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="emailBackgroundColor" />
+									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="buttonTitleColor" />
 								</div>
 							</div>
 							<div className="form-group m-0 horizontal-form">
 								<label htmlFor="">Font type</label>
 								<div className='sideinput mw300 flxflexi'>
-									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="emailBackgroundColor" />
+									<select value={fontTypeSelection}
+										name="fontType"
+										onChange={changeSelectOption} className='input_text'>
+										{settingsJson.emailTemplateFontTypes.map((item, i) => (
+											<option key={i} value={item}>{item}</option>
+										))};
+
+									</select>
+
 								</div>
 							</div>
 							<div className="form-group m-0 horizontal-form">
 								<label htmlFor="">Font size</label>
 								<div className='sideinput mw300 flxflexi'>
-									<ColorPicker generalAppearancesObj={generalAppearancesObj} shopRecords={shopRecords} setDocumentObj={setGeneralAppearancesObj} pickerType="emailBackgroundColor" />
+									<select value={fontSizeSelection}
+										name="fontSize"
+										onChange={changeSelectOption} className='input_text'>
+										{settingsJson.emailTemplateFontSizes.map((item, i) => (
+											<option key={i} value={item}>{item}</option>
+										))};
+									</select>
 								</div>
 							</div>
 						</div>
-
 					</div>
 				</div>
-				<div className="col-lg-6">
-					<div className="whitebox">
-						<div className="form-group m-0">
-							<label htmlFor="">Email banner</label>
-							<SingleImageUpload className="emailbannerimage" shopRecords={shopRecords} documentObj={generalAppearancesObj} setDocumentObj={setGeneralAppearancesObj} hasEdit />
-							<div className="inputnote">{settingsJson.bannerHelpText}</div>
+				{isHideBanner &&
+					<div className="col-lg-6">
+						<div className="whitebox">
+							<div className="form-group m-0">
+								<label htmlFor="">Email banner</label>
+								<SingleImageUpload className="emailbannerimage" shopRecords={shopRecords} documentObj={generalAppearancesObj} setDocumentObj={setGeneralAppearancesObj} hasEdit />
+								<div className="inputnote">{settingsJson.bannerHelpText}</div>
+							</div>
 						</div>
 					</div>
+				}
+				<div className="col-lg-6">
+					<div className="btnwrap">
+						<a href="#" onClick={viewSample} className='revbtn'>View sample</a>
+					</div>
 				</div>
-			</div>
+			</div >
+
+			<Modal show={showViewSampleModal} className='reviewimagepopup' onHide={handleCloseViewSampleModal} size="lg" backdrop="static">
+                <Modal.Header closeButton>
+                    <Modal.Title>Sample email</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <SampleAppearanceEmailTemplate emailContents={emailContents} />
+
+                </Modal.Body>
+            </Modal>
 		</>
 
 	);

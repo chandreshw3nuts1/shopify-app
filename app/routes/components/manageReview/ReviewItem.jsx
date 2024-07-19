@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { formatDate, formatTimeAgo } from './../../../utils/dateFormat';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
-import settings from './../../../utils/settings.json';
+import settingsJson from './../../../utils/settings.json';
 
 import NiceSelect from './../../../NiceSelect/NiceSelect';
 
@@ -95,7 +95,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 		});
 		const data = await response.json();
 		if (data.status == 200) {
-			toast.success(data.message);
+			toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 		} else {
 			toast.error(data.message);
 		}
@@ -125,7 +125,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 		});
 		const data = await response.json();
 		if (data.status == 200) {
-			toast.success(data.message);
+			toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 			setFilteredReviews(filteredReviews.map((item, idx) =>
 				idx === changeProductIndex 
 					? {
@@ -159,7 +159,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 		}).then(async (result) => {
 			if (result.isConfirmed) {
 				try {
-					const response = await fetch(`${settings.host_url}/api/manage-review`, {
+					const response = await fetch(`${settingsJson.host_url}/api/manage-review`, {
 						method: 'DELETE',
 						headers: {
 							'Content-Type': 'application/json'
@@ -169,7 +169,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 
 					const data = await response.json();
 					if (data.status == 200) {
-						toast.success(data.message);
+						toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 						setFilteredReviewsTotal(--filteredReviewsTotal);
 						setFilteredReviews(filteredReviews.filter((item, i) => i !== index));
 
@@ -234,7 +234,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 					const data = await response.json();
 
 					if (data.status == 200) {
-						toast.success(data.message);
+						toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 					} else {
 						toast.error(data.message);
 					}
@@ -288,7 +288,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 					});
 					const data = await response.json();
 					if (data.status == 200) {
-						toast.success(data.message);
+						toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 					} else {
 						toast.error(data.message);
 					}
@@ -331,7 +331,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 			const data = await response.json();
 
 			if (data.status == 200) {
-				toast.success(data.message);
+				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 				if(statusValue == 'feature') {
 					setFilteredReviews(filteredReviews.map((item, idx) =>
 						idx === index ? { ...item, tag_as_feature: true } : item

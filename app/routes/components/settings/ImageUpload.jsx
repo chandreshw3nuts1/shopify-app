@@ -1,17 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { getUploadDocument } from './../../../utils/documentPath';
 import { toast } from 'react-toastify';
+import settingsJson from './../../../utils/settings.json';
 
 const defaultBannerName = 'default-banner.png';
 const SingleImageUpload = (props) => {
 	const [file, setFile] = useState('');
-
 	const singleFilebanner = useRef(null);
 	useEffect(() => {
-
 		const bannerImgUrl = getUploadDocument(props.documentObj?.banner, 'banners');
 		setFile(bannerImgUrl);
-
 	}, []);
 
 	const handleFileChangeBanner = async (event) => {
@@ -44,7 +42,7 @@ const SingleImageUpload = (props) => {
 			});
 			const data = await response.json();
 			if (data.status == 200) {
-				toast.success(data.message);
+				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 				props.setDocumentObj({
 					...props.documentObj,
 					banner: data.banner
@@ -71,7 +69,7 @@ const SingleImageUpload = (props) => {
 			});
 			const data = await response.json();
 			if (data.status == 200) {
-				toast.success(data.message);
+				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 				const bannerImgUrl = getUploadDocument(defaultBannerName, 'banners');
 				setFile(bannerImgUrl);
 				props.setDocumentObj({
@@ -87,7 +85,6 @@ const SingleImageUpload = (props) => {
 		} catch (error) {
 			console.error('Error uploading image:', error);
 		}
-
 
 	};
 

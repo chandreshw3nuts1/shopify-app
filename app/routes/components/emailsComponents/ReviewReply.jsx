@@ -80,7 +80,7 @@ const ReviewReply = ({ shopRecords, emailTemplateObj }) => {
             });
             const data = await response.json();
             if (data.status == 200) {
-                toast.success(data.message);
+                toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 
                 setEmailTemplateObjState({
                     ...emailTemplateObjState,
@@ -105,7 +105,7 @@ const ReviewReply = ({ shopRecords, emailTemplateObj }) => {
 
         const sampleEmailData = {
             body: body ? body : t('reviewReplyEmail.body'),
-            banner : getUploadDocument(languageWiseEmailTemplate.banner, 'banners'),
+            banner: getUploadDocument(languageWiseEmailTemplate.banner, 'banners'),
             getDefaultProductImage: getDefaultProductImage(),
         }
         setEmailContents(sampleEmailData);
@@ -160,8 +160,8 @@ const ReviewReply = ({ shopRecords, emailTemplateObj }) => {
                                     ></textarea>
                                 </div>
                                 <div className='inputnote'>
-                                        <div><strong>Note:</strong> Use [reply_content] for your reply text</div>
-                                    </div>
+                                    <div><strong>Note:</strong> Use [reply_content] for your reply text</div>
+                                </div>
 
                                 <div className="btnwrap">
                                     <a href="#" onClick={viewSample} className='revbtn'>View sample</a>

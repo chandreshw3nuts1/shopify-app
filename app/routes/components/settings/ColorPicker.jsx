@@ -21,7 +21,7 @@ export async function updateColorCode(color, props) {
 		});
 		const data = await response.json();
 		if (data.status === 200) {
-			toast.success(data.message, { autoClose: 1000 });
+			toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 			props.setDocumentObj({
 				...props.generalAppearancesObj,
 				[props.pickerType]: color
@@ -79,7 +79,7 @@ export default function ColorPicker(props) {
 				setIsColorInputEmpty(false);
 
 			} else {
-				toast.error('Invalid color code', { autoClose: 1000 });
+				toast.error('Invalid color code');
 
 			}
 		}

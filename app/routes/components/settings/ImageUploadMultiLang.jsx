@@ -48,7 +48,7 @@ const ImageUploadMultiLang = (props) => {
 			});
 			const data = await response.json();
 			if (data.status == 200) {
-				toast.success(data.message);
+				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 				props.setEmailTemplateObjState({
 					...props.emailTemplateObjState,
 					[props.currentLanguage]: {
@@ -81,7 +81,7 @@ const ImageUploadMultiLang = (props) => {
 			});
 			const data = await response.json();
 			if (data.status == 200) {
-				toast.success(data.message);
+				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 
 				props.setEmailTemplateObjState({
 					...props.emailTemplateObjState,
@@ -119,7 +119,7 @@ const ImageUploadMultiLang = (props) => {
 			});
 			const data = await response.json();
 			if (data.status == 200) {
-				toast.success(data.message);
+				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 				props.setEmailTemplateObjState({
 					...props.emailTemplateObjState,
 					[props.currentLanguage]: {

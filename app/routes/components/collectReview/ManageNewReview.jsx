@@ -48,7 +48,7 @@ export default function ManageNewReview({ settings, shopRecords }) {
 		});
 		const data = await response.json();
 		if (data.status == 200) {
-			toast.success(data.message);
+			toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 		} else {
 			toast.error(data.message);
 		}
@@ -77,7 +77,7 @@ export default function ManageNewReview({ settings, shopRecords }) {
 			});
 			const data = await response.json();
 			if (data.status == 200) {
-				toast.success(data.message);
+				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 			} else {
 				toast.error(data.message);
 			}
@@ -124,7 +124,7 @@ export default function ManageNewReview({ settings, shopRecords }) {
 
 				const data = await response.json();
 				if (data.status == 200) {
-					toast.success(data.message);
+					toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 				} else {
 					toast.error(data.message);
 				}
@@ -153,7 +153,7 @@ export default function ManageNewReview({ settings, shopRecords }) {
 			});
 			const data = await response.json();
 			if (data.status == 200) {
-				toast.success(data.message);
+				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 			} else {
 				toast.error(data.message);
 			}
