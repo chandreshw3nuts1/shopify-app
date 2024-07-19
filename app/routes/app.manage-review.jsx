@@ -179,7 +179,7 @@ export default function ManageReview() {
 
 	const [crumbs, setCrumbs] = useState([
 		{title : "Review", "link" :"./../review"},
-		{title : "Manage Review", "link" :""}
+		{title : "Manage review", "link" :""}
 	]);
 		
 	const handleSubmit = (e) => {

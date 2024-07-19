@@ -56,7 +56,7 @@ const ReviewPage = () => {
 
 	const [crumbs, setCrumbs] = useState([
 		{ title: "Review", "link": "./../review" },
-		{ title: "Collect Review", link: "" },
+		{ title: "Collect review", link: "" },
 	]);
 	const [openNewReview, setOpenNewReview] = useState(false);
 	const [openCustomQuestions, setOpenCustomQuestions] = useState(false);
