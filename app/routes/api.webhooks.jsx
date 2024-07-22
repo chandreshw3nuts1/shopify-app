@@ -26,12 +26,21 @@ export async function action({ request }) {
 	console.log(bodyObj);
 	if (topic == 'orders/create') {
 		const shopRecords = await getShopDetailsByShop(shopDomain);
+
+		var language= "";
+		if(bodyObj.customer_locale == 'zh-CN') {
+			language = 'cn1';
+		} else if(bodyObj.customer_locale == 'zh-TW') {
+			language = 'cn2';
+		} else {
+			language = bodyObj.customer_locale.split('-')[0];
+		}
 		const manualReviewRequestsModel = await manualReviewRequests({
 			shop_id: shopRecords._id,
 			email: bodyObj.customer.email,
 			first_name: bodyObj.customer.first_name,
 			last_name: bodyObj.customer.last_name,
-			customer_locale: bodyObj.customer_locale.split('-')[0],
+			customer_locale: language,
 			order_id: bodyObj.id,
 			order_number : bodyObj.order_number,
 			request_status: "pending"

@@ -16,6 +16,7 @@ export async function loader() {
     });
 }
 
+
 export async function action({ params, request }) {
     const method = request.method;
     const requestBody = await request.json();
@@ -38,8 +39,8 @@ export async function action({ params, request }) {
 
                 } else if (actionType == 'sendReviewRequestEmail') {
                     const { language } = requestBody;
-                    const generalAppearancesData = await generalAppearances.findOne({ shop_id: shopRecords._id });
-                    const logo = getUploadDocument(generalAppearancesData.logo, 'logo');
+                    const generalAppearancesObj = await generalAppearances.findOne({ shop_id: shopRecords._id });
+                    const logo = getUploadDocument(generalAppearancesObj.logo, 'logo');
                     const customer_locale = language ? language : 'en';
                     const replaceVars = {
                         "name": settingJson.defaultSampleEmailInfo.name,
@@ -57,9 +58,13 @@ export async function action({ params, request }) {
 
                     const footer = "";
                     var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
-                        <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={[]} footer={footer} />
+                        <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={[]}  generalAppearancesObj={generalAppearancesObj} footer={footer} />
                     );
-                    const email = "chands@gmail.com";
+
+                    const settingsModel = await settings.findOne({
+						shop_id: shopRecords._id,
+					});
+					const email = settingsModel?.reviewNotificationEmail || shopRecords.email;
                     // Send request email
                     const subject = emailContents.subject;
                     const response = await sendEmail({

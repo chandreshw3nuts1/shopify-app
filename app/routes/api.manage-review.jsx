@@ -85,13 +85,13 @@ export async function action({ request} ) {
 						const emailContents = await getLanguageWiseContents("review_reply", replaceVars, productReviewsItem.shop_id, productReviewsItem.customer_locale);
 						emailContents.banner =  getUploadDocument(emailContents.banner, 'banners');
 
-						const generalAppearancesData = await generalAppearances.findOne({ shop_id: productReviewsItem.shop_id });
-						const logo =  getUploadDocument(generalAppearancesData.logo, 'logo');
+						const generalAppearancesObj = await generalAppearances.findOne({ shop_id: productReviewsItem.shop_id });
+						const logo =  getUploadDocument(generalAppearancesObj.logo, 'logo');
 						emailContents.logo = logo;
 						const footer = '';
 						const subject = emailContents.subject;
 						const emailHtml = ReactDOMServer.renderToStaticMarkup(
-							<ReplyEmailTemplate emailContents={emailContents} footer={footer} />
+							<ReplyEmailTemplate emailContents={emailContents}  generalAppearancesObj={generalAppearancesObj} footer={footer} />
 						);
 						const response = await sendEmail({
 							to: productReviewsItem.email,

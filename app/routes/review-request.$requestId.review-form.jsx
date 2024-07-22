@@ -1,6 +1,7 @@
 import { useLoaderData } from "@remix-run/react";
+// import {mongoConnection} from './../utils/mongoConnection';
 import settingsJson from './../utils/settings.json';
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { getCustomQuestions } from './../utils/common';
 import StarBigIcon from "./components/icons/StarBigIcon";
 import LongArrowRight from "./components/icons/LongArrowRight";
@@ -18,6 +19,8 @@ import FaceStar5 from "./components/images/FaceStar5";
 import shopDetails from "./models/shopDetails";
 import manualReviewRequests from './models/manualReviewRequests';
 import manualRequestProducts from './models/manualRequestProducts';
+import generalAppearances from './models/generalAppearances';
+import { ratingbabycloth, ratingbasket, ratingbones, ratingcoffeecup, ratingcrisamascap, ratingdiamondfront, ratingdiamondtop, ratingdogsleg, ratingfireflame, ratingflight, ratingfood, ratinggraduationcap, ratingheartround, ratingheartsq, ratingleafcanada, ratingleafnormal, ratinglikenormal, ratinglikerays, ratingpethouse, ratingplant, ratingshirt, ratingshoppingbag1, ratingshoppingbag2, ratingshoppingbag3, ratingstarrays, ratingstarrounded, ratingstarsq, ratingsunglass, ratingteacup, ratingtrophy1, ratingtrophy2, ratingtrophy3, ratingtshirt, ratingwine } from './../routes/components/icons/CommonIcons';
 
 
 export const links = () => {
@@ -35,6 +38,7 @@ export const loader = async ({ params, request }) => {
 
 		let manualReviewRequestsModel, shopRecords = null;
 		let customQuestionsData = [];
+		let StarIcon = "";
 		if (manualRequestProductsModel) {
 			manualReviewRequestsModel = await manualReviewRequests.findById(manualRequestProductsModel.manual_request_id);
 
@@ -43,10 +47,16 @@ export const loader = async ({ params, request }) => {
 			customQuestionsData = await getCustomQuestions({
 				shop_id: shopRecords._id,
 			});
+
+			const generalAppearancesModel = await generalAppearances.findOne({
+				shop_id: shopRecords._id
+			});
+			StarIcon = generalAppearancesModel.starIcon.replace(/-/g, '');
+
 		}
 
 
-		return { requestId, requestIdQuery, shopRecords, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel };
+		return { requestId, requestIdQuery, shopRecords, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon };
 
 	} catch (error) {
 		console.log(error);
@@ -56,7 +66,7 @@ export const loader = async ({ params, request }) => {
 };
 
 const ReviewRequestForm = () => {
-	const { requestId, requestIdQuery, shopRecords, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel } = useLoaderData();
+	const { requestId, requestIdQuery, shopRecords, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon } = useLoaderData();
 	if (!manualRequestProductsModel) {
 		return 'Page Not Found';
 	}
@@ -90,6 +100,11 @@ const ReviewRequestForm = () => {
 		}
 	}, []);
 
+	const iconComponents = {
+		ratingbabycloth, ratingbasket, ratingbones, ratingcoffeecup, ratingcrisamascap, ratingdiamondfront, ratingdiamondtop, ratingdogsleg, ratingfireflame, ratingflight, ratingfood, ratinggraduationcap, ratingheartround, ratingheartsq, ratingleafcanada, ratingleafnormal, ratinglikenormal, ratinglikerays, ratingpethouse, ratingplant, ratingshirt, ratingshoppingbag1, ratingshoppingbag2, ratingshoppingbag3, ratingstarrays, ratingstarrounded, ratingstarsq, ratingsunglass, ratingteacup, ratingtrophy1, ratingtrophy2, ratingtrophy3, ratingtshirt, ratingwine
+	};
+
+	const IconComponent = iconComponents[StarIcon] || ratingstarrounded;
 
 	const starRatingObj = [
 		{ "star": 1, "title": "Terrible!" },
@@ -233,6 +248,8 @@ const ReviewRequestForm = () => {
 			formData.append('file_objects', uploadedDocuments);
 			formData.append('description', reviewDescription);
 			formData.append('requestId', requestId);
+			formData.append('customer_locale', manualReviewRequestsModel?.customer_locale);
+			
 
 			customQuestionsDataObj.forEach((item, index) => {
 				if (item.answer != "" && typeof item.answer != 'undefined') {
@@ -296,7 +313,8 @@ const ReviewRequestForm = () => {
 														title={star.title}
 														data-value={star.star}
 													>
-														<StarBigIcon />
+														{IconComponent ? <IconComponent /> : <StarBigIcon /> }
+
 													</li>
 												))}
 												<input type='hidden' id='review_rating' name='rating' value={rating} />
@@ -416,7 +434,7 @@ const ReviewRequestForm = () => {
 									</div>
 									<div className="modal-footer">
 										<a onClick={(e) => prevStep(2 + qIndex)} className="revbtn outline lightbtn backbtn"><LongArrowLeft /> Back</a>
-										{ (customQuestionItem.isMakeRequireQuestion == false || customQuestionItem.answer ) &&
+										{(customQuestionItem.isMakeRequireQuestion == false || customQuestionItem.answer) &&
 											<a onClick={(e) => nextStep(qIndex + 4)} className={`revbtn outline lightbtn nextbtn ${customQuestionItem.isMakeRequireQuestion ? '' : ''}`} >Next <LongArrowRight /></a>
 										}
 									</div>

@@ -275,7 +275,8 @@ function loadReviews(page) {
             sort_by: sort_by,
             page: page,
             product_id: product_id,
-            shop_domain: shop_domain
+            shop_domain: shop_domain,
+            customer_locale: customer_locale
         },
         dataType: "json",
         success: function (response) {

@@ -138,7 +138,7 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                                 <input type="hidden" name={"questions[" + qIndex + "][question_name]"} value={customQuestionItem.question} />
                                                 <div className="answers_wrap">
                                                     {customQuestionItem.answers.map((answerItems, aIndex) =>
-                                                        <div className="anserbox">
+                                                        <div className="anserbox" key={aIndex}>
                                                             <input type="radio" className="check-answer" id={"answer" + qIndex + "_" + aIndex} value={answerItems.val} name={"questions[" + qIndex + "][answer]"} />
                                                             <label htmlFor={"answer" + qIndex + "_" + aIndex}>
                                                                 <strong>{answerItems.val}</strong>

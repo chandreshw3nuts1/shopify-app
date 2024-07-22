@@ -12,7 +12,7 @@ const ReviewItem = (props) => {
         
         {props.reviewItems.length > 0  &&
             props.reviewItems.map((review, i) => (
-                <div className="review-list-item frontreviewbox" data-reviewid={review._id} >
+                <div key={i} className="review-list-item frontreviewbox" data-reviewid={review._id} >
                     <div className='row'>
                         <div className="col">
                             <div className="box-style">
@@ -27,7 +27,7 @@ const ReviewItem = (props) => {
                                         <div className='star_reviews flxfix'>
                                             <div className="star-rating">
                                                 <div className='ratingcount'>{review.rating}.0</div>
-                                                <div class={`ratingstars flxrow star-${review.rating}`}>
+                                                <div className={`ratingstars flxrow star-${review.rating}`}>
 
                                                 
                                                     {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 1 ? props.generalAppearancesModel.starIconColor : "currentColor"}  /> : null}
@@ -73,7 +73,7 @@ const ReviewItem = (props) => {
                                         <div className='review_imageswrap flxrow'>
                                             
                                             {review.reviewDocuments.map((media, i) => (
-                                                <div className='imagebox'>
+                                                <div className='imagebox' key={i}>
                                                     {media.type === 'image' ? (
                                                         <img src={getUploadDocument(media.url)} />
                                                     ) : (

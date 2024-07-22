@@ -10,28 +10,11 @@ import productReviewQuestions from "./models/productReviewQuestions";
 import manualRequestProducts from './models/manualRequestProducts';
 import generalAppearances from './models/generalAppearances';
 import { getUploadDocument } from "./../utils/documentPath";
-
-
 import fs from "fs";
 import path from "path";
+
+
 export async function loader() {
-
-	const email = 'chandresh.w3nuts@gmail.com';
-	const recipientName = "Chands";
-	const content = "okok okoko ko ko ";
-	const footer = "footer footerfooterfooter ";
-
-	const subject = 'my subject';
-	const emailHtml = ReactDOMServer.renderToStaticMarkup(
-		<EmailTemplate recipientName={recipientName} content={content} footer={footer} />
-	);
-	const response = await sendEmail({
-		to: email,
-		subject,
-		html: emailHtml,
-	});
-
-
 	return json({
 		name: 'response'
 	});
@@ -99,13 +82,13 @@ export async function action({ request }) {
 
 					const productId = `"gid://shopify/Product/${formData.get('product_id')}"`;
 					var productsDetails = await getShopifyProducts(shop, productId);
-					const productNodes = productsDetails[0];
 					if (!productsDetails[0]) {
 						return json({ success: false });
 					}
+					const productNodes = productsDetails[0];
 
 					const generalAppearancesData = await generalAppearances.findOne({ shop_id: shopRecords._id });
-                    const logo = getUploadDocument(generalAppearancesData.logo, 'logo');
+					const logo = getUploadDocument(generalAppearancesData.logo, 'logo');
 
 					const shopifyStoreUrl = `${process.env.SHOPIFY_ADMIN_STORE_URL}/${shopRecords.name}/apps/${process.env.SHOPIFY_APP_NAME}/app/manage-review`;
 
@@ -212,6 +195,29 @@ export async function action({ request }) {
 						});
 					}
 
+					/*Create new customer in shopify Start */
+					if (settings.addOnsiteReview == true) {
+						const customerData = {
+							customer: {
+								first_name: formData.get('first_name'),
+								last_name: formData.get('last_name'),
+								email: formData.get('email')
+							}
+						};
+						const url = `https://${shopRecords.shop}/admin/api/2024-01/customers.json`;
+
+						const custResponse = await fetch(url, {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+								'X-Shopify-Access-Token': "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",
+							},
+							body: JSON.stringify(customerData),
+						});
+					}
+
+					/*Create new customer in shopify End */
+
 					/* send email to admin when new reivew receive*/
 
 					const email = settings.reviewNotificationEmail || shopRecords.email;
@@ -224,16 +230,17 @@ export async function action({ request }) {
 						description: formData.get('description'),
 						rating: reviewStarRating,
 						product_id: formData.get('product_id'),
-						product_title: formData.get('product_title'),
-						product_url: formData.get('product_url'),
+						product_title: productNodes.title,
+						product_url: productNodes.handle,
 						shopifyStoreUrl: shopifyStoreUrl,
-						logo : logo,
-						shop_domain : shopRecords.shop,
+						logo: logo,
+						shop_domain: shopRecords.shop,
+						status: reviewStatus
 
 					};
 
 					const footer = "";
-					const subject = `New review (${formData.get('rating')}★) of ${formData.get('product_title')} ${display_name}`;
+					const subject = `New review (${formData.get('rating')}★) of ${productNodes.title} ${display_name}`;
 					const emailHtml = ReactDOMServer.renderToStaticMarkup(
 						<EmailTemplate emailContents={emailContents} footer={footer} />
 					);

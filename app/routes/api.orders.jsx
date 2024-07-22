@@ -169,8 +169,8 @@ export async function action({ request }) {
 					if (manualRequestModel) {
 						const manualRequestProductsModel = await manualRequestProducts.find({ manual_request_id: manualRequestModel._id });
 
-						const generalAppearancesData = await generalAppearances.findOne({ shop_id: shopRecords._id });
-						const logo = getUploadDocument(generalAppearancesData.logo, 'logo');
+						const generalAppearancesObj = await generalAppearances.findOne({ shop_id: shopRecords._id });
+						const logo = getUploadDocument(generalAppearancesObj.logo, 'logo');
 
 						const uniqueProductIds = manualRequestProductsModel.map(item => item.product_id);
 
@@ -194,7 +194,7 @@ export async function action({ request }) {
 
 
 						var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
-							<ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} footer={footer} />
+							<ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} footer={footer} />
 						);
 
 						await Promise.all(manualRequestProductsModel.map(async (product, index) => {

@@ -77,11 +77,10 @@ const ManualReviewRequestsPage = () => {
 
 	const handleShowProductsModal = async () => {
 		setShowProductModal(true);
-
 		try {
 			setLoading(true);
 			const customParams = {
-				storeName: shopRecords.name,
+				storeName: shopRecords.shop,
 				accessToken: shopSessionRecords.accessToken,
 			};
 			const response = await fetch(`/api/shopify-products`, {
@@ -95,8 +94,6 @@ const ManualReviewRequestsPage = () => {
 
 			if (response.ok) {
 				setProducts(data);
-			} else {
-				setError(data.error);
 			}
 		} catch (error) {
 			console.log(error);
@@ -124,7 +121,7 @@ const ManualReviewRequestsPage = () => {
 		setKeyword(value);
 		try {
 			setLoading(true);
-			const filteredProducts = await getShopifyProducts(shopRecords.name, shopSessionRecords.accessToken, value.trim());
+			const filteredProducts = await getShopifyProducts(shopRecords.shop, shopSessionRecords.accessToken, value.trim());
 			setProducts(filteredProducts);
 		} catch (error) {
 			console.log(error);

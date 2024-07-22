@@ -5,10 +5,7 @@ import SettingPageSidebar from "./components/headerMenu/SettingPageSidebar";
 import { getShopDetails } from './../utils/getShopDetails';
 import GeneralAppearance from "./components/settings/general-appearance";
 import { findOneRecord } from './../utils/common';
-// import ColorPicker from "./components/svgIconPicker";
 import { json } from "@remix-run/node";
-// import  SketchPicker   from 'react-color';
-// import ColorPicker from "./components/settings/ColorPicker";
 
 import {
   Page

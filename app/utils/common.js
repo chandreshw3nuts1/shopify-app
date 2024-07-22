@@ -90,8 +90,8 @@ export async function getShopifyProducts(shop, productIds = [], imageSize = 60) 
 
 
 
-export async function fetchAllProducts(storeName, accessToken) {
-	const apiUrl = `https://${storeName}.myshopify.com/admin/api/2023-01/graphql.json`;
+export async function fetchAllProductsOld(storeName, accessToken) {
+	const apiUrl = `https://${storeName}.myshopify.com/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`;
 	const products = [];
 	let hasNextPage = true;
 	let cursor = null;

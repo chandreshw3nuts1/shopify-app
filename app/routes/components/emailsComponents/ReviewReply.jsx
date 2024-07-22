@@ -9,7 +9,7 @@ import settingsJson from './../../../utils/settings.json';
 import { getDefaultProductImage, getUploadDocument } from './../../../utils/documentPath';
 import SampleReviewReplyEmail from './../email/SampleReviewReplyEmail';
 
-const ReviewReply = ({ shopRecords, emailTemplateObj }) => {
+const ReviewReply = ({ shopRecords, emailTemplateObj, generalAppearances }) => {
     const { t, i18n } = useTranslation();
     const bannerType = "reviewReply";
     const [emailTemplateObjState, setEmailTemplateObjState] = useState(emailTemplateObj);
@@ -101,9 +101,9 @@ const ReviewReply = ({ shopRecords, emailTemplateObj }) => {
 
     const viewSample = (e) => {
         e.preventDefault();
-        // var dynamicBody = t('reviewReplyEmail.body').replace('[name]', settingsJson.defaultViewSampleEmailName);
 
         const sampleEmailData = {
+            logo: getUploadDocument(generalAppearances?.logo, 'logo'),
             body: body ? body : t('reviewReplyEmail.body'),
             banner: getUploadDocument(languageWiseEmailTemplate.banner, 'banners'),
             getDefaultProductImage: getDefaultProductImage(),
@@ -177,7 +177,7 @@ const ReviewReply = ({ shopRecords, emailTemplateObj }) => {
                     <Modal.Title>Sample email</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <SampleReviewReplyEmail shopRecords={shopRecords} emailContents={emailContents} />
+                    <SampleReviewReplyEmail shopRecords={shopRecords} emailContents={emailContents} generalAppearancesObj={generalAppearances}/>
 
                 </Modal.Body>
             </Modal>

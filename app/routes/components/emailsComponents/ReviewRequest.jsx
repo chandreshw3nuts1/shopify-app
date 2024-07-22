@@ -9,7 +9,7 @@ import settingsJson from './../../../utils/settings.json';
 import { getDefaultProductImage, getUploadDocument } from './../../../utils/documentPath';
 import SampleReviewRequestEmail from './../email/SampleReviewRequestEmail';
 
-const ReviewRequest = ({ shopRecords, emailTemplateObj }) => {
+const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances }) => {
     const { t, i18n } = useTranslation();
     const bannerType = "reviewRequest";
     const [emailTemplateObjState, setEmailTemplateObjState] = useState(emailTemplateObj);
@@ -135,9 +135,9 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj }) => {
 
     const viewSample = (e) => {
         e.preventDefault();
-        // var dynamicBody = t('reviewRequestEmail.body').replace('[name]', settingsJson.defaultViewSampleEmailName);
 
         const sampleEmailData = {
+            logo: getUploadDocument(generalAppearances?.logo, 'logo'),
             body: body ? body : t('reviewRequestEmail.body'),
             buttonText: buttonText ? buttonText : t('reviewRequestEmail.buttonText'),
             banner : getUploadDocument(languageWiseEmailTemplate.banner, 'banners'),
@@ -218,7 +218,7 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj }) => {
                     <Modal.Title>Sample email</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <SampleReviewRequestEmail shopRecords={shopRecords} emailContents={emailContents} />
+                    <SampleReviewRequestEmail  emailContents={emailContents} generalAppearancesObj={generalAppearances} />
 
                 </Modal.Body>
             </Modal>

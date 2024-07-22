@@ -15,24 +15,24 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
 
     return (
         <>
-            <div class={`modal fade reviewdetailpopup ${reviewDetails.reviewDocuments.length > 0 ? '' : 'imagemissing'}`} data-bs-backdrop="static" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
+            <div className={`modal fade reviewdetailpopup ${reviewDetails.reviewDocuments.length > 0 ? '' : 'imagemissing'}`} data-bs-backdrop="static" id="staticBackdrop" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content">
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <CloseIcon />
                         </button>
 
 
-                        <div class="modal-body">
+                        <div className="modal-body">
                             <div className="revdetailwrap flxrow">
                                 {reviewDetails.reviewDocuments.length > 0 &&
                                     <div className="imagesliderwrap">
 
-                                        <div id="carouselExampleCaptions" class="carousel slide">
+                                        <div id="carouselExampleCaptions" className="carousel slide">
 
-                                            <div class="carousel-indicators">
+                                            <div className="carousel-indicators">
                                                 {reviewDetails.reviewDocuments.map((media, i) => (
-                                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to={i} class={i == 0 ? "active" : ""} aria-current={i == 0 ? "true" : ""} aria-label="Slide 1">
+                                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to={i} className={i == 0 ? "active" : ""} aria-current={i == 0 ? "true" : ""} aria-label="Slide 1">
                                                         {media.type === 'image' ? (
                                                             <Image src={getUploadDocument(media.url)} alt="" />
                                                         ) : (
@@ -45,9 +45,9 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                                 ))}
 
                                             </div>
-                                            <div class="carousel-inner">
+                                            <div className="carousel-inner">
                                                 {reviewDetails.reviewDocuments.map((media, i) => (
-                                                    <div class={`carousel-item ${i == 0 ? "active" : ""}`}>
+                                                    <div className={`carousel-item ${i == 0 ? "active" : ""}`}>
                                                         <div className="imagewrap">
                                                             {media.type === 'image' ? (
                                                                 <Image src={getUploadDocument(media.url)} alt="" />
@@ -65,13 +65,13 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                                 ))}
 
                                             </div>
-                                            <button class={`carousel-control-prev ${reviewDetails.reviewDocuments.length < 2 ? 'disabled' : ''}`} type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                                                <span class="carousel-control-prev-icon" aria-hidden="true">
+                                            <button className={`carousel-control-prev ${reviewDetails.reviewDocuments.length < 2 ? 'disabled' : ''}`} type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                                                <span className="carousel-control-prev-icon" aria-hidden="true">
                                                     <LongArrowLeft />
                                                 </span>
                                             </button>
-                                            <button class={`carousel-control-next ${reviewDetails.reviewDocuments.length < 2 ? 'disabled' : ''}`} type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                                                <span class="carousel-control-next-icon" aria-hidden="true">
+                                            <button className={`carousel-control-next ${reviewDetails.reviewDocuments.length < 2 ? 'disabled' : ''}`} type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                                                <span className="carousel-control-next-icon" aria-hidden="true">
                                                     <LongArrowRight />
                                                 </span>
                                             </button>
@@ -88,7 +88,7 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                         </div>
                                         {/* <div>{JSON.stringify(reviewDetails.reviewDocuments)}</div> */}
                                         <div className="reviewanddates">
-                                            <div class={`ratingstars flxrow star-${reviewDetails.rating}`}>
+                                            <div className={`ratingstars flxrow star-${reviewDetails.rating}`}>
 												{CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 1 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
 												{CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 2 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
 												{CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 3 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}

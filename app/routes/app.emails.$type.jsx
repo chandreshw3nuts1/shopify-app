@@ -12,7 +12,6 @@ import emailReviewReplySettings from './models/emailReviewReplySettings';
 import generalAppearances from './models/generalAppearances';
 import generalSettings from './models/generalSettings';
 import { getUploadDocument } from './../utils/documentPath';
-
 import { useTranslation } from "react-i18next";
 
 import {
@@ -23,8 +22,8 @@ export const loader = async ({ request, params }) => {
 	const shopRecords = await getShopDetails(request);
 	var JsonData = { params, shopRecords };
 	const generalAppearancesData = await generalAppearances.findOne({ shop_id: shopRecords._id });
-	const logo = getUploadDocument(generalAppearancesData.logo, 'logo');
-	JsonData.shopRecords.logo = logo;
+	JsonData.generalAppearances = generalAppearancesData;
+
 	switch (params.type) {
 		case 'review-request':
 			JsonData['emailTemplateObj'] = await emailReviewRequestSettings.findOne({
@@ -49,7 +48,7 @@ export const loader = async ({ request, params }) => {
 export default function EmailTemplateSettings() {
 
 
-	const { params, shopRecords, emailTemplateObj, generalSettingsModel } = useLoaderData();
+	const { params, shopRecords, emailTemplateObj, generalSettingsModel, generalAppearances } = useLoaderData();
 	const { i18n } = useTranslation();
 
 	const type = params.type;
@@ -71,11 +70,11 @@ export default function EmailTemplateSettings() {
 	let emailTemplateName;
 	switch (type) {
 		case 'review-request':
-			content = <ReviewRequest shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} />;
+			content = <ReviewRequest shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} />;
 			emailTemplateName = "Review request"
 			break;
 		case 'review-reply':
-			content = <ReviewReply shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} />;
+			content = <ReviewReply shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} />;
 			emailTemplateName = "Reply to review"
 
 			break;

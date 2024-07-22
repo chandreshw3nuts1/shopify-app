@@ -285,7 +285,7 @@ padding-left: 10px;
 .review_top_actions .left_actions .starbtn.show .arrowright svg { transform: rotate(180deg);}
 .review_top_actions .left_actions .totalreviewcount { margin: 12px 0 0 0; color: var(--lightGreyColor); font-size: 14px; line-height: 1.71; padding: 0;}
 .review_top_actions .stardetaildd { padding: 8px;}
-.review_top_actions .stardetaildd .stardetailrow { align-items: center;}
+.review_top_actions .stardetaildd .stardetailrow { align-items: center; cursor: pointer}
 .review_top_actions .stardetaildd .stardetailrow + .stardetailrow { margin: 6px 0 0 0;}
 .review_top_actions .stardetaildd .stardetailrow .sratnumber { font-size: 14px; color: var(--darkColor); font-weight: 500; width: 10px;}
 .review_top_actions .stardetaildd .stardetailrow .reviewgiven { font-size: 14px; color: var(--darkColor); font-weight: 500; margin:0 0 0 6px;}

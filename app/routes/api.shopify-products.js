@@ -21,7 +21,8 @@ export const action = async ({ request }) => {
 };
 
 async function fetchAllProducts(storeName, accessToken, searchTitle) {
-	const apiUrl = `https://${storeName}.myshopify.com/admin/api/2023-01/graphql.json`;
+
+	const apiUrl = `https://${storeName}/admin/api/2023-01/graphql.json`;
 	const products = [];
 	let hasNextPage = true;
 	let cursor = null;

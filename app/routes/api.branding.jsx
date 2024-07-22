@@ -6,6 +6,7 @@ import path from "path";
 import generalAppearances from './../routes/models/generalAppearances';
 import emailReviewRequestSettings from './../routes/models/emailReviewRequestSettings';
 import emailReviewReplySettings from './../routes/models/emailReviewReplySettings';
+import productReviewWidgetCustomizes from './../routes/models/productReviewWidgetCustomizes';
 
 export async function loader() {
     return json({
@@ -18,13 +19,17 @@ export async function action({ params, request }) {
     let formData;
     let actionType;
     let shop;
+    let subActionType;
     if (request.headers.get('Content-Type') === 'application/json') {
         requestJson = await request.json();
         actionType = requestJson.actionType;
+        subActionType = requestJson.subActionType || null;
         shop = requestJson.shop_domain;
     } else {
         formData = await request.formData();
         actionType = formData.get('actionType');
+        subActionType = formData.get('subActionType') || null;
+
         shop = formData.get('shop_domain');
     }
 
@@ -59,7 +64,7 @@ export async function action({ params, request }) {
                         );
 
                     }
-                    return json({ "status": 200, "message": 'Setting saved' , 'logo': fileName});
+                    return json({ "status": 200, "message": 'Setting saved', 'logo': fileName });
 
                 } else if (actionType == "uploadEmailBanner") {
                     const actionSubType = formData.get('actionSubType');
@@ -206,7 +211,7 @@ export async function action({ params, request }) {
                     await generalAppearances.findOneAndUpdate(query, update, options);
 
                     return json({ "status": 200, "message": "Settings saved" });
-                }else if (actionType == "updateGeneralAppearance") {
+                } else if (actionType == "updateGeneralAppearance") {
                     const query = { shop_id: shopRecords._id };
                     const update = {
                         $set: {
@@ -218,7 +223,8 @@ export async function action({ params, request }) {
                     await generalAppearances.findOneAndUpdate(query, update, options);
 
                     return json({ "status": 200, "message": "Settings saved" });
-                }else if (actionType == "updateColorCode") {
+                } else if (actionType == "updateColorCode") {
+
                     const query = { shop_id: shopRecords._id };
                     const update = {
                         $set: {
@@ -227,9 +233,14 @@ export async function action({ params, request }) {
                     };
                     const options = { upsert: true, returnOriginal: false };
 
-                    await generalAppearances.findOneAndUpdate(query, update, options);
 
-                    return json({ "status": 200, "message": "Settings saved" });
+                    if (subActionType == "brandingSetting") {
+                        await generalAppearances.findOneAndUpdate(query, update, options);
+                    } else if (subActionType == "productWidgetCustomize") {
+                        await productReviewWidgetCustomizes.findOneAndUpdate(query, update, options);
+                    }
+
+                    return json({ "status": 200, "message": "Settings saved " });
                 }
 
 
@@ -279,7 +290,7 @@ export async function action({ params, request }) {
 
 
                     const deleteFileName = logoData.logo;
-                    const filePath = path.join(process.cwd(), "public/uploads/logo") + "/" + deleteFileName;
+                    const filePath = path.join(process.cwd(), "public/uploads/banners") + "/" + deleteFileName;
                     if (fs.existsSync(filePath)) {
                         try {
                             fs.unlinkSync(filePath);

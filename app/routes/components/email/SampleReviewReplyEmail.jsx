@@ -1,7 +1,27 @@
 import React from 'react';
 
-const SampleReviewRequestEmail = ({ shopRecords, emailContents, footer }) => {
-
+const SampleReviewRequestEmail = ({ emailContents, generalAppearancesObj }) => {
+    var emailContentColor = "#ffffff";
+    var emailBgColor = `bgcolor=#f8f9fb`;
+    var emailTextColor = `#222222`;
+    var buttonBackgroundColor = `#222222`;
+    var buttonBorderColor = `#222222`;
+    var buttonTitleColor = `#ffffff`;
+    var fontSize = `14px`;
+    var fontType = `Manrope`;
+    
+    if (generalAppearancesObj.emailAppearance == "modern") {
+        emailBgColor = null;
+    } else if(generalAppearancesObj.emailAppearance == "custom") {
+        emailContentColor = generalAppearancesObj.contentBackgroundColor
+        emailBgColor = `bgcolor=${generalAppearancesObj.emailBackgroundColor}`;
+        emailTextColor = generalAppearancesObj.emailTextColor
+        buttonBackgroundColor = generalAppearancesObj.buttonBackgroundColor
+        buttonBorderColor = generalAppearancesObj.buttonBorderColor
+        buttonTitleColor = generalAppearancesObj.buttonTitleColor
+        fontSize = `${generalAppearancesObj.fontSize}px`;
+        fontType = generalAppearancesObj.fontType;
+    }
     var bannerHtml = "";
     var logoHtml = "";
     if (emailContents.banner != null && emailContents.banner != "") {
@@ -17,7 +37,7 @@ const SampleReviewRequestEmail = ({ shopRecords, emailContents, footer }) => {
     }
 
 
-    if (shopRecords.logo != null && shopRecords.logo != "") {
+    if (emailContents.logo != null && emailContents.logo != "") {
         logoHtml = ` <table cellpadding="0" cellspacing="0" border="0" width="100%">
                         <tr>
                             <td></td>
@@ -25,7 +45,7 @@ const SampleReviewRequestEmail = ({ shopRecords, emailContents, footer }) => {
                                 <table cellpadding="0" cellspacing="0" border="0" width="100%">
                                     <tr>
                                         <td align="center">
-                                            <img src="${shopRecords.logo}" width="132" height="60" alt="">
+                                            <img src="${emailContents.logo}" height="60" alt="">
                                         </td>
                                     </tr>
                                     <tr>
@@ -47,7 +67,7 @@ const SampleReviewRequestEmail = ({ shopRecords, emailContents, footer }) => {
     </style>
 </head>
 <body>
-    <table bgcolor="#ffffff" cellpadding="0" cellspacing="0" border="0" width="100%">
+    <table bgcolor="${emailContentColor}" cellpadding="0" cellspacing="0" border="0" width="100%">
         <tbody>
             <tr>
                 <td style="padding: 15px;">
@@ -56,7 +76,7 @@ const SampleReviewRequestEmail = ({ shopRecords, emailContents, footer }) => {
                         <tr>
                             <td></td>
                             <td width="600">
-                                <table bgcolor="#F8F9FB" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-radius: 20px;">
+                                <table ${emailBgColor} cellpadding="0" cellspacing="0" border="0" width="100%" style="border-radius: 20px;">
                                     <tr>
                                         <td style="padding: 32px 32px;">
                                             <table cellpadding="0" cellspacing="0" border="0" width="100%">
@@ -67,7 +87,7 @@ const SampleReviewRequestEmail = ({ shopRecords, emailContents, footer }) => {
                                                 
                                                 
                                                 <tr>
-                                                    <td style="font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana;font-size:14px;color:#222222;">
+                                                    <td style="font-family:'${fontType}', sans-serif, Roboto, arial,tahoma,verdana;font-size:${fontSize};color:${emailTextColor}; white-space:pre-line">
                                                     ${emailContents.body}
                                                     </td>
                                                 </tr>
@@ -75,6 +95,7 @@ const SampleReviewRequestEmail = ({ shopRecords, emailContents, footer }) => {
                                                     <td style="padding-top: 24px;"></td>
                                                 </tr>
                                             </table>
+                                            
                                         </td>
                                     </tr>
                                 </table>

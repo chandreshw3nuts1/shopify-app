@@ -1,17 +1,17 @@
 import { json } from "@remix-run/node";
+import { mongoConnection } from './../utils/mongoConnection';
+
 import settings from './models/settings';
 import manualRequestProducts from './models/manualRequestProducts';
 import manualReviewRequests from './models/manualReviewRequests';
 import generalAppearances from './models/generalAppearances';
 import generalSettings from './models/generalSettings';
 
-import { ObjectId } from 'mongodb';
 import { getShopDetailsByShop, getShopifyProducts, getLanguageWiseContents } from './../utils/common';
 import { sendEmail } from "./../utils/email.server";
 import ReactDOMServer from 'react-dom/server';
 import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTemplate';
 import { getUploadDocument } from './../utils/documentPath';
-import emailReviewRequestSettings from "./models/emailReviewRequestSettings";
 import settingJson from './../utils/settings.json';
 export async function loader() {
     return json({
@@ -26,17 +26,17 @@ export async function action({ params, request }) {
         case "POST":
             var { shop, actionType } = requestBody;
             try {
+                const db = await mongoConnection();
                 const shopRecords = await getShopDetailsByShop(shop);
                 if (actionType == 'manualReviewRequest') {
 
                     const emails = requestBody.emails;
                     const selectedProducts = requestBody.selectedProducts;
-                    
-                    
+
                     const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
-                    
-                    const generalAppearancesData = await generalAppearances.findOne({ shop_id: shopRecords._id });
-                    const logo = getUploadDocument(generalAppearancesData.logo, 'logo');
+
+                    const generalAppearancesObj = await generalAppearances.findOne({ shop_id: shopRecords._id });
+                    const logo = getUploadDocument(generalAppearancesObj.logo, 'logo');
 
                     const productIds = selectedProducts.map((item) => `"gid://shopify/Product/${item}"`);
                     var mapProductDetails = await getShopifyProducts(shop, productIds, 200);
@@ -45,16 +45,14 @@ export async function action({ params, request }) {
                     const replaceVars = {
                     }
                     const emailContents = await getLanguageWiseContents("review_request", replaceVars, shopRecords._id, customer_locale);
-                    emailContents.banner =  getUploadDocument(emailContents.banner, 'banners');
+                    emailContents.banner = getUploadDocument(emailContents.banner, 'banners');
 
                     emailContents.logo = logo;
 
                     const footer = "";
-
                     var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
-                        <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} footer={footer} />
+                        <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} footer={footer} />
                     );
-
                     const updateEmailsAndSendRequests = async () => {
                         const emailPromises = emails.map(async (email, index) => {
                             const query = { email: email };

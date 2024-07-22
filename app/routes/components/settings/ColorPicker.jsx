@@ -10,6 +10,7 @@ export async function updateColorCode(color, props) {
 			color: color,
 			field: props.pickerType,
 			actionType: "updateColorCode",
+			subActionType: props.pickerContent ? props.pickerContent : "brandingSetting",
 			shop_domain: props.shopRecords.shop
 		};
 		const response = await fetch('/api/branding', {
@@ -23,7 +24,7 @@ export async function updateColorCode(color, props) {
 		if (data.status === 200) {
 			toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 			props.setDocumentObj({
-				...props.generalAppearancesObj,
+				...props.documentObj,
 				[props.pickerType]: color
 			});
 		} else {
@@ -36,13 +37,17 @@ export async function updateColorCode(color, props) {
 }
 
 export default function ColorPicker(props) {
-	const defaultColor = settingsJson.defaultColors[props.pickerType];
-	const [selectedColor, setSelectedColor] = useState(props.generalAppearancesObj[props.pickerType] || `#${defaultColor}`);
+
+	const defaultColor = props.pickerContent
+		? settingsJson[props.pickerContent][props.pickerType]
+		: settingsJson.defaultColors[props.pickerType];
+
+	const [selectedColor, setSelectedColor] = useState(props.documentObj && props.documentObj[props.pickerType] ? props.documentObj[props.pickerType] : `#${defaultColor}`);
 	const [isPickerVisible, setIsPickerVisible] = useState(false);
 	const [isColorInputEmpty, setIsColorInputEmpty] = useState(false);
 	const pickerRef = useRef(null);
 	const inputRef = useRef(null);
-	
+
 	useEffect(() => {
 		const handleClickOutside = (event) => {
 			if (pickerRef.current && !pickerRef.current.contains(event.target) &&
@@ -72,7 +77,7 @@ export default function ColorPicker(props) {
 			await updateColorCode(`#${defaultColor}`, props);
 			console.log(selectedColor);
 			setIsColorInputEmpty(true);
-		} else 	if (inputValue.length == 6) {
+		} else if (inputValue.length == 6) {
 			const hexRegex = /^#[0-9a-fA-F]{6}$/;
 			if (hexRegex.test(`#${inputValue}`)) {
 				await updateColorCode(`#${inputValue}`, props);
@@ -105,7 +110,7 @@ export default function ColorPicker(props) {
 					maxLength={6}
 					placeholder={defaultColor}
 				/>
-				<div style={{ width: '30px', height: '30px', backgroundColor: isColorInputEmpty ? `#${defaultColor}` : selectedColor , borderRadius: '4px', marginLeft: '5px' }}></div>
+				<div style={{ width: '30px', height: '30px', backgroundColor: isColorInputEmpty ? `#${defaultColor}` : selectedColor, borderRadius: '4px', marginLeft: '5px' }}></div>
 			</div>
 			{isPickerVisible && (
 				<div style={{ position: 'absolute', zIndex: 1, top: '45px', left: '0' }} ref={pickerRef}>

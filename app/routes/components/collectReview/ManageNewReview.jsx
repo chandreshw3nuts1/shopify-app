@@ -30,14 +30,14 @@ export default function ManageNewReview({ settings, shopRecords }) {
 	);
 
 	const [isAddOnsiteReview, setIsAddOnsiteReview] = useState(
-		settings?.AddOnsiteReview || false
+		settings?.addOnsiteReview || false
 	);
 
 	const handleSelectChange = async (value, name) => {
 		const updateData = {
 			field: name,
 			value: value,
-			oid: settings._id,
+			shop: shopRecords.shop
 		};
 		const response = await fetch('/api/collect-review-setting', {
 			method: 'POST',
@@ -226,7 +226,7 @@ export default function ManageNewReview({ settings, shopRecords }) {
 								helpText={`Leave empty to have notifications sent to: ${shopRecords.email}`}
 								placeholder='Notification Email'
 							/>
-							{!isValidReviewNotificationEmail && <small class="text-danger">Email address is invalid.</small>}
+							{!isValidReviewNotificationEmail && <small className="text-danger">Email address is invalid.</small>}
 
 						</div>
 

@@ -2,12 +2,12 @@ import React from 'react';
 import settingJson from './../../../utils/settings.json';
 
 const EmailTemplate = ({ emailContents, footer }) => {
-    
+
     const checkMarkEmail = settingJson.host_url + '/app/images/email_template/check-mark-email.png';
     const mainStarIcon = settingJson.host_url + '/app/images/email_template/main-star-icon.png';
     const eyeIcon = settingJson.host_url + '/app/images/email_template/eye-icon.png';
     const logoImg = settingJson.host_url + '/app/images/email_template/logo.png';
-    
+
     const productUrl = `https://${emailContents.shop_domain}/products/${emailContents.product_url}`;
     const starIcon = settingJson.host_url + `/app/images/email_template/star-${emailContents.rating}.png`;
     const questionsHtml = emailContents.questions.map((item) => {
@@ -34,7 +34,7 @@ const EmailTemplate = ({ emailContents, footer }) => {
 
     }).join('');
 
-    const questionsContent = questionsHtml  ? 
+    const questionsContent = questionsHtml ?
         `<table cellpadding="0" cellspacing="0" border="0" width="100%">
             <tr>
                 <td style="padding-top: 12px;"></td>
@@ -44,9 +44,27 @@ const EmailTemplate = ({ emailContents, footer }) => {
             </tr>
             ${questionsHtml}
         </table>`
-     : null;
+        : '';
 
-    
+    var autoPublishNote = "";
+    var autoPublishOption = "";
+    if (emailContents.status == 'publish') {
+        autoPublishNote = `<table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="display: block; line-height: 24px; background: #C2F7AA; border-radius: 50px; padding: 12px 24px; color: #222222; text-decoration: none; font-size: 16px; font-weight: bold; font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana;">
+                                        <img src=${checkMarkEmail} width="24" height="24" alt="" style="vertical-align: top; margin-right: 5px;">
+                                        This review was automatically published. <a href="#" style="color: #222222; text-decoration: underline;">Learn more</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 32px;"></td>
+                                </tr>
+                            </table>`;
+        autoPublishOption = `<td align="center">
+            <a href=${emailContents.shopifyStoreUrl} style="display: inline-block; line-height: 24px; background: #F8F9FB; border-radius: 50px; padding: 8px 24px; color: #222222; text-decoration: none; font-size: 16px; font-weight: bold; font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana; vertical-align: top;"><img src=${eyeIcon} width="24" height="24" alt="" style="vertical-align: top; margin-right: 5px;">Unpublish review</a>
+        </td>`;
+    }
+
     const emailHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,17 +94,7 @@ const EmailTemplate = ({ emailContents, footer }) => {
                                         <td style="padding-top: 32px;"></td>
                                     </tr>
                                 </table>
-                                <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                                    <tr>
-                                        <td style="display: block; line-height: 24px; background: #C2F7AA; border-radius: 50px; padding: 12px 24px; color: #222222; text-decoration: none; font-size: 16px; font-weight: bold; font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana;">
-                                            <img src=${checkMarkEmail} width="24" height="24" alt="" style="vertical-align: top; margin-right: 5px;">
-                                            This review was automatically published. <a href="#" style="color: #222222; text-decoration: underline;">Learn more</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding-top: 32px;"></td>
-                                    </tr>
-                                </table>
+                                ${autoPublishNote}
                             </td>
                             <td></td>
                         </tr>
@@ -199,9 +207,7 @@ const EmailTemplate = ({ emailContents, footer }) => {
                                         <td>
                                             <table cellpadding="0" cellspacing="0" border="0" width="100%">
                                                 <tr>
-                                                    <td align="center">
-                                                        <a href=${emailContents.shopifyStoreUrl} style="display: inline-block; line-height: 24px; background: #F8F9FB; border-radius: 50px; padding: 8px 24px; color: #222222; text-decoration: none; font-size: 16px; font-weight: bold; font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana; vertical-align: top;"><img src=${eyeIcon} width="24" height="24" alt="" style="vertical-align: top; margin-right: 5px;">Unpublish review</a>
-                                                    </td>
+                                                    ${autoPublishOption}
                                                     <td>
                                                         <a href=${emailContents.shopifyStoreUrl} style="display: inline-block; line-height: 24px; background: #2196F3; border-radius: 50px; padding: 8px 24px; color: #FFFFFF; text-decoration: none; font-size: 16px; font-weight: bold; font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana; vertical-align: top;">View, Reply or Share</a>
                                                     </td>
