@@ -6,6 +6,16 @@ import { getShopDetails } from './../utils/getShopDetails';
 import GeneralAppearance from "./components/settings/general-appearance";
 import { findOneRecord } from './../utils/common';
 import { json } from "@remix-run/node";
+import { Image } from "react-bootstrap";
+import widgetThumb01 from './../images/widget-thumbs/Review-Widget-image.jpg'
+import widgetThumb02 from './../images/widget-thumbs/Star-Rating-Badge-image.jpg'
+import widgetThumb03 from './../images/widget-thumbs/Questions-and-Answers-image.jpg'
+import widgetThumb04 from './../images/widget-thumbs/Reviews-Carousel-image.jpg'
+import widgetThumb05 from './../images/widget-thumbs/All-Reviews-Page-image.jpg'
+import widgetThumb06 from './../images/widget-thumbs/Floating-Reviews-Tab-image.jpg'
+import widgetThumb07 from './../images/widget-thumbs/W3-Reviews-Medals-image.jpg'
+import widgetThumb08 from './../images/widget-thumbs/Verified-Reviews-Counter-image.jpg'
+import widgetThumb09 from './../images/widget-thumbs/All-Reviews-Counter-image.jpg'
 
 import {
     Page
@@ -45,12 +55,148 @@ export default function DisplayReviewWidget() {
     return (
         <>
             <Breadcrumb crumbs={crumbs} />
-
             <Page fullWidth>
                 <ReviewPageSidebar />
                 <div className="pagebox">
-                    <h2>Reviews widgets</h2>
-
+                    <div className="widget_main_wrap">
+                        <div className="widgetrow">
+                            <div className="widgetboxwrp">
+                                <div className="widgetbox flxcol">
+                                    <div className="imagebox flxfix">
+                                        <Image src={widgetThumb01} alt="" />
+                                    </div>
+                                    <div className="detailbox flxflexi">
+                                        <h3>Review Widget</h3>
+                                        <p>Collect and display product reviews on your product pages.</p>
+                                        <div className="btnwrap">
+                                            <a href="#" className="simplelink">Customize</a>
+                                            <a href="#" className="revbtn smbtn">Add to theme</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="widgetboxwrp">
+                                <div className="widgetbox flxcol">
+                                    <div className="imagebox flxfix">
+                                        <Image src={widgetThumb02} alt="" />
+                                    </div>
+                                    <div className="detailbox flxflexi">
+                                        <h3>Star Rating Badge</h3>
+                                        <p>Show the average rating of your products and how many reviews they've received.</p>
+                                        <div className="btnwrap">
+                                            <a href="#" className="simplelink">Customize</a>
+                                            <a href="#" className="revbtn smbtn">Add to theme</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="widgetboxwrp">
+                                <div className="widgetbox flxcol">
+                                    <div className="imagebox flxfix">
+                                        <Image src={widgetThumb03} alt="" />
+                                    </div>
+                                    <div className="detailbox flxflexi">
+                                        <h3>Questions and Answers</h3>
+                                        <p>Let potential customers ask questions about your products.</p>
+                                        <div className="btnwrap">
+                                            <a href="#" className="simplelink">Customize</a>
+                                            <a href="#" className="revbtn smbtn">Add to theme</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="widgetboxwrp">
+                                <div className="widgetbox flxcol">
+                                    <div className="imagebox flxfix">
+                                        <Image src={widgetThumb04} alt="" />
+                                    </div>
+                                    <div className="detailbox flxflexi">
+                                        <h3>Reviews Carousel</h3>
+                                        <p>Showcase your best reviews in a carousel on a page of your choice.</p>
+                                        <div className="btnwrap">
+                                            <a href="#" className="simplelink">Customize</a>
+                                            <a href="#" className="revbtn smbtn">Add to theme</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="widgetboxwrp">
+                                <div className="widgetbox flxcol">
+                                    <div className="imagebox flxfix">
+                                        <Image src={widgetThumb05} alt="" />
+                                    </div>
+                                    <div className="detailbox flxflexi">
+                                        <h3>All Reviews Page</h3>
+                                        <p>Show all your reviews and collect shop-level reviews on a dedicated page.</p>
+                                        <div className="btnwrap">
+                                            <a href="#" className="simplelink">Customize</a>
+                                            <a href="#" className="revbtn smbtn">Add to theme</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="widgetboxwrp">
+                                <div className="widgetbox flxcol">
+                                    <div className="imagebox flxfix">
+                                        <Image src={widgetThumb06} alt="" />
+                                    </div>
+                                    <div className="detailbox flxflexi">
+                                        <h3>Floating Reviews Tab</h3>
+                                        <p>Floating Reviews Tab Access all your reviews and collect store reviews through a floating tab at the side of the page.</p>
+                                        <div className="btnwrap">
+                                            <a href="#" className="simplelink">Customize</a>
+                                            <a href="#" className="revbtn smbtn">Add to theme</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="widgetboxwrp">
+                                <div className="widgetbox flxcol">
+                                    <div className="imagebox flxfix">
+                                        <Image src={widgetThumb07} alt="" />
+                                    </div>
+                                    <div className="detailbox flxflexi">
+                                        <h3>W3 Reviews Medals</h3>
+                                        <p>Display your W3 Reviews Medals as a badge. Manage.</p>
+                                        <div className="btnwrap">
+                                            <a href="#" className="simplelink">Customize</a>
+                                            <a href="#" className="revbtn smbtn">Add to theme</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="widgetboxwrp">
+                                <div className="widgetbox flxcol">
+                                    <div className="imagebox flxfix">
+                                        <Image src={widgetThumb08} alt="" />
+                                    </div>
+                                    <div className="detailbox flxflexi">
+                                        <h3>Verified Reviews Counter</h3>
+                                        <p>Display the number of verified reviews your products have received.</p>
+                                        <div className="btnwrap">
+                                            <a href="#" className="simplelink">Customize</a>
+                                            <a href="#" className="revbtn smbtn">Add to theme</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="widgetboxwrp">
+                                <div className="widgetbox flxcol">
+                                    <div className="imagebox flxfix">
+                                        <Image src={widgetThumb09} alt="" />
+                                    </div>
+                                    <div className="detailbox flxflexi">
+                                        <h3>All Reviews Counter</h3>
+                                        <p>Shows the total number of published reviews you've received and their average rating.</p>
+                                        <div className="btnwrap">
+                                            <a href="#" className="simplelink">Customize</a>
+                                            <a href="#" className="revbtn smbtn">Add to theme</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </Page>
