@@ -21,6 +21,7 @@ import manualReviewRequests from './models/manualReviewRequests';
 import manualRequestProducts from './models/manualRequestProducts';
 import generalAppearances from './models/generalAppearances';
 import { ratingbabycloth, ratingbasket, ratingbones, ratingcoffeecup, ratingcrisamascap, ratingdiamondfront, ratingdiamondtop, ratingdogsleg, ratingfireflame, ratingflight, ratingfood, ratinggraduationcap, ratingheartround, ratingheartsq, ratingleafcanada, ratingleafnormal, ratinglikenormal, ratinglikerays, ratingpethouse, ratingplant, ratingshirt, ratingshoppingbag1, ratingshoppingbag2, ratingshoppingbag3, ratingstarrays, ratingstarrounded, ratingstarsq, ratingsunglass, ratingteacup, ratingtrophy1, ratingtrophy2, ratingtrophy3, ratingtshirt, ratingwine } from './../routes/components/icons/CommonIcons';
+import { getDiscounts } from "./../utils/common";
 
 
 export const links = () => {
@@ -39,6 +40,7 @@ export const loader = async ({ params, request }) => {
 		let manualReviewRequestsModel, shopRecords = null;
 		let customQuestionsData = [];
 		let StarIcon = "";
+		let discountObj = {};
 		if (manualRequestProductsModel) {
 			manualReviewRequestsModel = await manualReviewRequests.findById(manualRequestProductsModel.manual_request_id);
 
@@ -53,10 +55,13 @@ export const loader = async ({ params, request }) => {
 			});
 			StarIcon = generalAppearancesModel.starIcon.replace(/-/g, '');
 
+
+			discountObj = await getDiscounts(shopRecords, true);
+
 		}
 
 
-		return { requestId, requestIdQuery, shopRecords, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon };
+		return { requestId, requestIdQuery, shopRecords, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon, discountObj };
 
 	} catch (error) {
 		console.log(error);
@@ -66,7 +71,7 @@ export const loader = async ({ params, request }) => {
 };
 
 const ReviewRequestForm = () => {
-	const { requestId, requestIdQuery, shopRecords, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon } = useLoaderData();
+	const { requestId, requestIdQuery, shopRecords, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon, discountObj } = useLoaderData();
 	if (!manualRequestProductsModel) {
 		return 'Page Not Found';
 	}
@@ -128,10 +133,7 @@ const ReviewRequestForm = () => {
 	};
 
 	const changeReviewDescription = (event) => {
-
-		if ((event.target.value).trim() != "") {
-			setReviewDescription(event.target.value);
-		}
+		setReviewDescription(event.target.value);
 	}
 
 	const changeFirstName = (event) => {
@@ -249,7 +251,7 @@ const ReviewRequestForm = () => {
 			formData.append('description', reviewDescription);
 			formData.append('requestId', requestId);
 			formData.append('customer_locale', manualReviewRequestsModel?.customer_locale);
-			
+
 
 			customQuestionsDataObj.forEach((item, index) => {
 				if (item.answer != "" && typeof item.answer != 'undefined') {
@@ -269,12 +271,16 @@ const ReviewRequestForm = () => {
 		}
 
 	}
-	const paramObj = {
-		cust_first_name: "",
-		cust_last_name: "",
-		cust_email: "",
-	}
-
+	let discountHtml = "";
+    if (discountObj) {
+        if (discountObj.isSameDiscount) {
+            discountHtml = settingsJson.addReviewSameDiscountText.replace(/\[discount\]/g, discountObj.discount);
+        } else {
+            discountHtml = settingsJson.addReviewDifferentDiscountText;
+            discountHtml = discountHtml.replace(/\[photo_discount\]/g, discountObj.photoDiscount);
+            discountHtml = discountHtml.replace(/\[video_discount\]/g, discountObj.videoDiscount);
+        }
+    }
 	return (
 		<>
 			<div className="review-content">
@@ -313,7 +319,7 @@ const ReviewRequestForm = () => {
 														title={star.title}
 														data-value={star.star}
 													>
-														{IconComponent ? <IconComponent /> : <StarBigIcon /> }
+														{IconComponent ? <IconComponent /> : <StarBigIcon />}
 
 													</li>
 												))}
@@ -324,7 +330,9 @@ const ReviewRequestForm = () => {
 									</div>
 								</div>
 								<div className="modal-footer">
-									{rating > 0 && <a onClick={(e) => nextStep(2)} className="revbtn outline lightbtn nextbtn">Next <LongArrowRight /></a>}
+
+									<button onClick={(e) => nextStep(2)} disabled={rating == 0 ? true : false} type="button" className="revbtn outline lightbtn nextbtn">Next <LongArrowRight /></button>
+
 								</div>
 							</div>
 						}
@@ -365,9 +373,10 @@ const ReviewRequestForm = () => {
 										{noOFfileUploadErr && <div className="discountrow uploadDocError ">
 											<div className="discountbox"><strong>You can select up to 5 photos</strong></div>
 										</div>}
+										{discountHtml &&
 										<div className="discountrow">
-											<div className="discountbox">Your <strong>15%</strong> off discount is wait for you!</div>
-										</div>
+											<div className="discountbox">{discountHtml}</div>
+										</div>}
 										<div className="form__files-container" id="files-list-container">
 
 											{previews.map((preview, index) => (
@@ -462,14 +471,14 @@ const ReviewRequestForm = () => {
 											></textarea>
 
 										</div>
-										<div className="discountrow">
-											<div className="discountbox">Your <strong>15%</strong> off discount is wait for you!</div>
-										</div>
+
 									</div>
 								</div>
 								<div className="modal-footer">
 									<a onClick={(e) => prevStep(countTotalQuestions + 2)} className="revbtn outline lightbtn backbtn"><LongArrowLeft /> Back</a>
-									{reviewDescription && <a onClick={(e) => nextStep(countTotalQuestions + 4)} className="revbtn outline lightbtn nextbtn">Next <LongArrowRight /></a>}
+									
+									<button onClick={(e) => nextStep(countTotalQuestions + 4)} disabled={reviewDescription ? false : true} type="button" className="revbtn outline lightbtn nextbtn">Next <LongArrowRight /></button>
+
 								</div>
 							</div>
 						}

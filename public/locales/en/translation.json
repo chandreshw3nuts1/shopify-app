@@ -7,5 +7,26 @@
     "reviewReplyEmail" : {
         "subject" : "In response to your review of [product]",
         "body" : "Hello [name],\n \nA reply was added to your review of [product]:\n[reply_content]\nTo respond privately, reply to this email."
-    }
+    },
+    "dicountPhotoVideoReviewEmail" : {
+        "subject" : "Your discount code at [store]",
+        "body" : "Hello [name],\n\nThank you for sharing your experience!\n\nUse the following discount code for [discount] off your next purchase at [store]",
+        "buttonText" : "Shop now"
+    },
+    "addReviewSameDiscountText" : "Your [discount] off discount is wait for you!",
+	"addReviewDifferentDiscountText" : "Upload a photo to get [photo_discount] off or a video to get [video_discount] off your next purchase!",
+    "customer_review" : "Customer Review",
+    "sort_by" : "Sort By",
+    "featured" : "Featured",
+    "newest" : "Newest",
+    "highest_rating" : "Highest Rating",
+    "lowest_rating" : "Lowest Rating",
+    "replied" : "Replied",
+    "global_ratings" : "global ratings",
+    "out_of" : "out of",
+    "next_link" : "Next",
+    "back_link" : "Back",
+    "submit_button" : "Submit",
+    "upload_photo_video_label" : "Upload Photo Or Video"
+
 }

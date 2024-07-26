@@ -70,13 +70,10 @@ const ReviewPage = () => {
 		navigate('/app/manual-review-requests/');
 	}
 
-	const showReviewRequestEmailForm = () => {
-		navigate('/app/emails/review-request/');
+	const showEmailSettingsForm = (emailType = "") => {
+		navigate(`/app/emails/${emailType}/`);
 	}
-	const showReviewReplyEmailForm = () => {
-		navigate('/app/emails/review-reply/');
-	}
-	
+
 	return (
 		<>
 			<Breadcrumb crumbs={crumbs} />
@@ -216,7 +213,7 @@ const ReviewPage = () => {
 								>
 									<div className='maininsideacc'>
 										{/* Below DIV will be repeat */}
-										<div className='insiderowacc' onClick={showReviewRequestEmailForm}>
+										<div className='insiderowacc' onClick={() => showEmailSettingsForm("review-request")}>
 											<div className='titledetail flxflexi'>
 												<h6>Review Request</h6>
 												<p>Encourage your customers to leave a review with an automated email</p>
@@ -229,12 +226,23 @@ const ReviewPage = () => {
 											</div>
 										</div>
 
-										<div className='insiderowacc' onClick={showReviewReplyEmailForm}>
+										<div className='insiderowacc' onClick={() => showEmailSettingsForm("review-reply")}>
 											<div className='titledetail flxflexi'>
 												<h6>Reply to review</h6>
 												<p>Inform your customers once you publicly reply to their review</p>
 											</div>
-											
+
+											<div className='flxfix arrowicon'>
+												<i className="twenty-longarrow-right"></i>
+											</div>
+										</div>
+
+										<div className='insiderowacc' onClick={() => showEmailSettingsForm("discount-photo-video-review")}>
+											<div className='titledetail flxflexi'>
+												<h6>Discount for photo/video review</h6>
+												<p>Send customers a next-purchase code after submitting a review with a photo/video</p>
+											</div>
+
 											<div className='flxfix arrowicon'>
 												<i className="twenty-longarrow-right"></i>
 											</div>

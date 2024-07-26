@@ -42,7 +42,11 @@ const shopify = shopifyApp({
       deliveryMethod: DeliveryMethod.Http,
       callbackUrl: "/api/webhooks",
     },
-
+    SHOP_UPDATE: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/api/webhooks",
+    }
+    
     
   },
   hooks: {

@@ -5,7 +5,7 @@ import FullStarGrIcon from "../icons/FullStarGrIcon";
 import FilterIcon from "../icons/FilterIcon";
 import AllStarBigIcon from "../icons/AllStarBigIcon";
 
-const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppearancesModel, CommonRatingComponent }) => {
+const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppearancesModel, CommonRatingComponent, translations }) => {
 
 	let five_start_percent, five_start_count = 0;
 	let four_start_percent, four_start_count = 0;
@@ -44,7 +44,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 
 					<div className="review_top_actions" style={{fontFamily: generalAppearancesModel.widgetFont}}>
 						<div className="left_actions flxfix">
-							<div className="section_title">Customer Reviews</div>
+							<div className="section_title">{translations.customer_review}</div>
 							<div className="star-rating">
 								<div className="dropdown">
 									<button className="dropdown-toggle starbtn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -61,7 +61,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 										</div>
 										{formParams.totalReviewItems > 0 &&
 											<>
-												<div className='ratingcount'>{formParams.averageRating} out of <span>5</span></div>
+												<div className='ratingcount'>{formParams.averageRating} {translations.out_of} <span>5</span></div>
 												<div className="arrowright">
 													<ArrowDownIcon />
 												</div>
@@ -127,7 +127,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 							</div>
 							{formParams.totalReviewItems > 0 &&
 								<div className="totalreviewcount">
-									<span>{formParams.totalReviewItems}</span> global ratings
+									<span>{formParams.totalReviewItems}</span> {translations.global_ratings}
 								</div>
 							}
 						</div>
@@ -151,17 +151,17 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 							<div className="dropdown">
 								<button className="dropdown-toggle revbtn lightbtn wbigbtn noafter" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 									<FilterIcon />
-									Sort By
+									{translations.sort_by}
 									<div className="arrowright">
 										<ArrowDownIcon />
 									</div>
 								</button>
 								{formParams.totalReviewItems > 0 &&
 									<>	<ul className="dropdown-menu dropdown-menu-end">
-										<li><a className="dropdown-item sort_by_filter" data-sort="tag_as_feature" href="#">Featured</a></li>
-										<li><a className="dropdown-item sort_by_filter" data-sort="newest" href="#">Newest</a></li>
-										<li><a className="dropdown-item sort_by_filter" data-sort="highest_ratings" href="#">Highest Rating</a></li>
-										<li><a className="dropdown-item sort_by_filter" data-sort="lowest_ratings" href="#">Lowest Rating</a></li>
+										<li><a className="dropdown-item sort_by_filter" data-sort="tag_as_feature" href="#">{translations.featured}</a></li>
+										<li><a className="dropdown-item sort_by_filter" data-sort="newest" href="#">{translations.newest}</a></li>
+										<li><a className="dropdown-item sort_by_filter" data-sort="highest_ratings" href="#">{translations.highest_rating}</a></li>
+										<li><a className="dropdown-item sort_by_filter" data-sort="lowest_ratings" href="#">{translations.lowest_rating}</a></li>
 									</ul>
 										<input type="hidden" id="sort_by_filter" value={formParams.sortBy} />
 									</>
@@ -174,7 +174,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 					{reviewItems.length > 0 ?
 						<div className="main_review_block">
 
-							<ReviewItem reviewItems={reviewItems} formParams={formParams} shopRecords={shopRecords} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={CommonRatingComponent} />
+							<ReviewItem reviewItems={reviewItems} formParams={formParams} shopRecords={shopRecords} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={CommonRatingComponent} translations={translations}/>
 
 						</div>
 						:
@@ -194,7 +194,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 					}
 				</div > :
 
-					<ReviewItem reviewItems={reviewItems} formParams={formParams} shopRecords={shopRecords} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={CommonRatingComponent} />
+					<ReviewItem reviewItems={reviewItems} formParams={formParams} shopRecords={shopRecords} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={CommonRatingComponent} translations={translations}/>
 
 			}
 		</>

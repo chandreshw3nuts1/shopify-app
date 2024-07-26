@@ -23,7 +23,8 @@ const productReviewsSchema = new mongoose.Schema({
     tag_as_feature: { type: Boolean, default: false },
     verify_badge: { type: Boolean, default: false },
     add_to_carousel: { type: Boolean, default: false },
-    
+    discount_code_id : { type: String, default : null},
+    discount_price_rule_id : { type: String, default : null},
 },{
     timestamps: true
 });

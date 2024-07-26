@@ -49,7 +49,7 @@ const ReviewItem = (props) => {
                                     {review.replyText && 
                                     <div className="text_content">
                                         <p>
-                                            <b>{props.shopRecords.name}</b> Replied :
+                                            <b>{props.shopRecords.name}</b> {props.translations.replied} :
                                         </p>
                                         <p>
                                             {review.replyText}

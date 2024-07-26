@@ -4,11 +4,14 @@ import { useLoaderData } from '@remix-run/react';
 import LanguageSelector from "./components/language-selector";
 import ReviewRequest from './components/emailsComponents/ReviewRequest';
 import ReviewReply from './components/emailsComponents/ReviewReply';
+import DiscountPhotoVideoReview from './components/emailsComponents/DiscountPhotoVideoReview';
+
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from './components/Breadcrumb';
 import { getShopDetails } from './../utils/getShopDetails';
 import emailReviewRequestSettings from './models/emailReviewRequestSettings';
 import emailReviewReplySettings from './models/emailReviewReplySettings';
+import emailDiscountPhotoVideoReviewSettings from './models/emailDiscountPhotoVideoReviewSettings';
 import generalAppearances from './models/generalAppearances';
 import generalSettings from './models/generalSettings';
 import { getUploadDocument } from './../utils/documentPath';
@@ -32,6 +35,12 @@ export const loader = async ({ request, params }) => {
 			break;
 		case 'review-reply':
 			JsonData['emailTemplateObj'] = await emailReviewReplySettings.findOne({
+				shop_id: shopRecords._id,
+			});
+
+			break;
+		case 'discount-photo-video-review':
+			JsonData['emailTemplateObj'] = await emailDiscountPhotoVideoReviewSettings.findOne({
 				shop_id: shopRecords._id,
 			});
 
@@ -76,6 +85,11 @@ export default function EmailTemplateSettings() {
 		case 'review-reply':
 			content = <ReviewReply shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} />;
 			emailTemplateName = "Reply to review"
+
+			break;
+		case 'discount-photo-video-review':
+			content = <DiscountPhotoVideoReview shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} />;
+			emailTemplateName = "Discount for photo/video review"
 
 			break;
 		default:

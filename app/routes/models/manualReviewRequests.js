@@ -11,6 +11,8 @@ const manualRequestProductsanualReviewRequestsSchema = new mongoose.Schema({
     first_name: {type: String },
     last_name: {type: String },
     customer_locale: {type: String, default : "en" },
+    country_code: {type: String },
+    product_ids: {type: Array },
     order_id: {type: String },
     order_number: {type: String },
     request_status: {type: String }

@@ -5,6 +5,7 @@ import appInstallLogs from './models/appInstallLogs';
 import { getShopDetailsByShop } from './../utils/common';
 import manualReviewRequests from './../routes/models/manualReviewRequests';
 import manualRequestProducts from './../routes/models/manualRequestProducts';
+import shopDetails from './../routes/models/shopDetails';
 
 export async function action({ request }) {
 	const hmacHeader = request.headers.get('X-Shopify-Hmac-Sha256');
@@ -27,10 +28,10 @@ export async function action({ request }) {
 	if (topic == 'orders/create') {
 		const shopRecords = await getShopDetailsByShop(shopDomain);
 
-		var language= "";
-		if(bodyObj.customer_locale == 'zh-CN') {
+		var language = "";
+		if (bodyObj.customer_locale == 'zh-CN') {
 			language = 'cn1';
-		} else if(bodyObj.customer_locale == 'zh-TW') {
+		} else if (bodyObj.customer_locale == 'zh-TW') {
 			language = 'cn2';
 		} else {
 			language = bodyObj.customer_locale.split('-')[0];
@@ -41,8 +42,9 @@ export async function action({ request }) {
 			first_name: bodyObj.customer.first_name,
 			last_name: bodyObj.customer.last_name,
 			customer_locale: language,
+			country_code : bodyObj.shipping_address.country_code,
 			order_id: bodyObj.id,
-			order_number : bodyObj.order_number,
+			order_number: bodyObj.order_number,
 			request_status: "pending"
 		});
 		const savedManualReviewRequestsModel = await manualReviewRequestsModel.save();
@@ -59,6 +61,14 @@ export async function action({ request }) {
 				await requestProductsModel.save();
 
 			}));
+
+			const productIds = bodyObj.line_items.map(item => item.product_id);
+			console.log(productIds);
+			await manualReviewRequests.updateOne(
+				{ _id: lastInsertedId },
+				{ $set: { product_ids : productIds } }
+			);
+
 		}
 
 	} else if (topic == 'orders/partially_fulfilled' || topic == 'orders/fulfilled') {
@@ -93,7 +103,25 @@ export async function action({ request }) {
 		await appInstallLogsModel.save();
 
 		console.log(`---App uninstalled from shop: ${shop}`);
+	} else if (topic == 'shop/update') {
+		try {
+			const shopRecords = await getShopDetailsByShop(shopDomain);
+			if (shopRecords) {
+				const currency_symbol = bodyObj.money_format.replace(/{{.*?}}/g, '').trim();
+
+				const updateResult = await shopDetails.updateOne(
+					{ _id: shopRecords._id },
+					{ $set: { currency: bodyObj.currency, currency_symbol: currency_symbol, timezone : bodyObj.iana_timezone } }
+				);
+			} else {
+				console.log('No shop records found for the given shop domain.');
+			}
+		} catch (error) {
+			console.error('Error updating currency symbol:', error);
+		}
+
 	}
+
 
 	console.log(`---Webhook completed---`);
 

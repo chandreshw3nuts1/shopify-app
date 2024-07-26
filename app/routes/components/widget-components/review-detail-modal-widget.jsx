@@ -9,6 +9,7 @@ import settingsJson from './../../../utils/settings.json';
 import InfoIcon from "../icons/InfoIcon";
 import ArrowRightIcon from "../icons/ArrowRightIcon";
 import PlayIcon from "../icons/PlayIcon";
+import PauseIcon from "../icons/PauseIcon";
 
 const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, formParams, generalAppearancesModel, CommonRatingComponent }) => {
     const videoIcon = `${settingsJson.host_url}/images/play-circle.png`;
@@ -53,10 +54,11 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                                                 <Image src={getUploadDocument(media.url)} alt="" />
                                                             ) : (
                                                                 <div className="videowrap">
-                                                                    <video>
+                                                                    <video id="mainVideoPlayer">
                                                                         <source src={getUploadDocument(media.url)} type="video/mp4" />
                                                                     </video>
-                                                                    <button><PlayIcon /></button>
+                                                                    <button id="mainVideoPlayButton"><PlayIcon /></button>
+                                                                    <button id="mainVideoPauseButton" style={{ display: 'none' }} ><PauseIcon /></button>
                                                                 </div>
                                                             )}
 
@@ -89,12 +91,12 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                         {/* <div>{JSON.stringify(reviewDetails.reviewDocuments)}</div> */}
                                         <div className="reviewanddates">
                                             <div className={`ratingstars flxrow star-${reviewDetails.rating}`}>
-												{CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 1 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
-												{CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 2 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
-												{CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 3 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
-												{CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 4 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
-												{CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 5 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
-                                            
+                                                {CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 1 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+                                                {CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 2 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+                                                {CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 3 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+                                                {CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 4 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+                                                {CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 5 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+
                                             </div>
                                             <div className="datebox">
                                                 {moment(reviewDetails.created_at).format('M/D/YYYY')}
@@ -117,7 +119,7 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
 
                                         </div>
                                     </div>
-                                    
+
                                     {productsDetails.length > 0 && formParams.hideProductThumbnails == 'false' && (
                                         <div className="bottom_detail flxfix">
                                             <div className="productbox">

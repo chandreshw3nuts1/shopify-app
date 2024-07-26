@@ -35,7 +35,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 	const [replyButtonText, setReplyButtonText] = useState('');
 	const [replyHelpText, setReplyHelpText] = useState('');
 	const handleCloseReplyModal = () => setShowReplayModal(false);
-	
+
 	const handleShowReplyModal = (review_id, index) => {
 		setShowReplayModal(true);
 		setReplyReviewId(review_id);
@@ -109,12 +109,12 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 
 
 	const submitChangeProduct = async () => {
-		 
+
 		const customParams = {
 			review_id: changeProductReviewId,
 			changeProductHandle: changeProductHandle,
 			actionType: "changeProductHandle",
-			shop : shopRecords.shop,
+			shop: shopRecords.shop,
 		};
 		const response = await fetch(`/api/manage-review`, {
 			method: 'POST',
@@ -127,14 +127,14 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 		if (data.status == 200) {
 			toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 			setFilteredReviews(filteredReviews.map((item, idx) =>
-				idx === changeProductIndex 
+				idx === changeProductIndex
 					? {
-						...item, 
-						productDetails: { 
-						...item.productDetails, 
-						title: data.updatedProductData.product_title, 
-						handle: data.updatedProductData.product_url 
-						} 
+						...item,
+						productDetails: {
+							...item.productDetails,
+							title: data.updatedProductData.product_title,
+							handle: data.updatedProductData.product_url
+						}
 					}
 					: item
 			));
@@ -143,10 +143,10 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 		} else {
 			toast.error(data.message);
 		}
-		
+
 	};
 
-	
+
 	const handleDeleteReviewItem = async (recordId, index) => {
 		Swal.fire({
 			title: 'Are you sure you want to delete this review?',
@@ -309,12 +309,15 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 	};
 
 
-	const handleMoreReviewChange = async (statusValue, review_id, index) => {
-		
-		if(statusValue == 'delete'){
+	const handleMoreReviewChange = async (statusValue, result, index) => {
+		const review_id = result._id;
+		if (statusValue == 'delete') {
 			handleDeleteReviewItem(review_id, index);
-		} else if(statusValue == 'change-product'){
+		} else if (statusValue == 'change-product') {
 			handleShowChangeProductModal(review_id, index);
+		} else if (statusValue === 'discount') {
+			const discountDetailsUrl = `https://admin.shopify.com/store/${shopRecords.name}/discounts/${result.discount_price_rule_id}`;
+			window.open(discountDetailsUrl, "_blank");
 		} else {
 			const updateData = {
 				actionType: "moreOptionChange",
@@ -332,32 +335,32 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 
 			if (data.status == 200) {
 				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
-				if(statusValue == 'feature') {
+				if (statusValue == 'feature') {
 					setFilteredReviews(filteredReviews.map((item, idx) =>
 						idx === index ? { ...item, tag_as_feature: true } : item
 					));
-				} else if(statusValue == 'remove-feature') {
+				} else if (statusValue == 'remove-feature') {
 					setFilteredReviews(filteredReviews.map((item, idx) =>
 						idx === index ? { ...item, tag_as_feature: false } : item
 					));
-				} else if(statusValue == 'verify-badge') {
+				} else if (statusValue == 'verify-badge') {
 					setFilteredReviews(filteredReviews.map((item, idx) =>
 						idx === index ? { ...item, verify_badge: true } : item
 					));
-				} else if(statusValue == 'remove-verify-badge') {
+				} else if (statusValue == 'remove-verify-badge') {
 					setFilteredReviews(filteredReviews.map((item, idx) =>
 						idx === index ? { ...item, verify_badge: false } : item
 					));
-				} else if(statusValue == 'add-to-carousel') {
+				} else if (statusValue == 'add-to-carousel') {
 					setFilteredReviews(filteredReviews.map((item, idx) =>
 						idx === index ? { ...item, add_to_carousel: true } : item
 					));
-				} else if(statusValue == 'remove-add-to-carousel') {
+				} else if (statusValue == 'remove-add-to-carousel') {
 					setFilteredReviews(filteredReviews.map((item, idx) =>
 						idx === index ? { ...item, add_to_carousel: false } : item
 					));
 				}
-				
+
 
 			} else {
 				toast.error(data.message);
@@ -366,17 +369,17 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 
 	};
 
-	
+
 
 	const shareOnFacebook = () => {
-		const url = shopRecords.shop; 
+		const url = shopRecords.shop;
 		const encodedUrl = encodeURIComponent(`https://${url}`);
 		const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
 		window.open(shareUrl, '_blank', 'width=600,height=400');
 	}
 
 	const shareOnTwitter = () => {
-		const url = `https://${shopRecords.shop}`; 
+		const url = `https://${shopRecords.shop}`;
 		const text = "";
 		const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
 		window.open(twitterUrl, '_blank', 'width=600,height=400');
@@ -384,23 +387,23 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 	};
 
 	const shareOnPinterest = () => {
-		const url = `https://${shopRecords.shop}`; 
+		const url = `https://${shopRecords.shop}`;
 		const image = "https://chandstest.myshopify.com/cdn/shop/files/shitr.jpg?v=1714996209";
 		const description = "test";
 		const pinterestUrl = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&media=${encodeURIComponent(image)}&description=${encodeURIComponent(description)}`;
 
 		window.open(pinterestUrl, '_blank', 'width=600,height=400');
 	};
-	
 
-	  
-	
+
+
+
 
 	const getTitle = (status) => {
 		if (status === 'publish') {
-		  	return <><PublishedIcon /> Published</>;
-		} else if (status === 'unpublish'){
-		  	return <><UnPublishedIcon /> Unpublished</>;
+			return <><PublishedIcon /> Published</>;
+		} else if (status === 'unpublish') {
+			return <><UnPublishedIcon /> Unpublished</>;
 		} else {
 			return <><UnPublishedIcon /> Pending</>;
 		}
@@ -441,8 +444,8 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 											<i className="twenty-checkicon"></i>
 										</div>
 										<h4 className="fleflexi"><strong>{result.first_name} {result.last_name}</strong> about <strong>
-												{result.productDetails ? <a href={`https://${shopRecords.shop}/products/${result.productDetails.handle}`} target="_blank"> {result.productDetails.title} </a> : ''}
-											</strong>
+											{result.productDetails ? <a href={`https://${shopRecords.shop}/products/${result.productDetails.handle}`} target="_blank"> {result.productDetails.title} </a> : ''}
+										</strong>
 										</h4>
 									</div>
 									<div className="displayname">Display name: {result.display_name}</div>
@@ -480,16 +483,16 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 
 									<p>{result.description}</p>
 
-									
+
 								</div>
 								<div className="rightactions flxfix flxcol">
-									{ result.status == "publish" && 
+									{result.status == "publish" &&
 										<>
 											<div className="sociallinks flxrow">
 												<a href="#" onClick={(e) => { e.preventDefault(); shareOnFacebook(); }}>
-											      	<Image src={facebookSocial} width={24} height={24} />
-											    </a>
-											    <a href="#" onClick={(e) => { e.preventDefault(); shareOnTwitter(); }}>
+													<Image src={facebookSocial} width={24} height={24} />
+												</a>
+												<a href="#" onClick={(e) => { e.preventDefault(); shareOnTwitter(); }}>
 													<Image src={twitterxicon} width={24} height={24} ></Image>
 												</a>
 												<a href="#" onClick={(e) => { e.preventDefault(); shareOnPinterest(); }}>
@@ -500,34 +503,37 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 									}
 									<div className="bottombuttons dropdownwrap">
 										<DropdownButton id="dropdown-basic-button" className={result.status == 'publish' ? 'publishstatus' : 'unpblishstatus'} onSelect={(e) => handleRatingStatusChange(e, index)} title={getTitle(result.status)}>
-											{ result.status == "unpublish" && <Dropdown.Item eventKey="publish" className="custom-dropdown-item">Publish</Dropdown.Item> }
-											{ result.status == "publish" && <Dropdown.Item eventKey="unpublish" className="custom-dropdown-item">Unpublish</Dropdown.Item> }
-											{ result.status == "pending" && <>
+											{result.status == "unpublish" && <Dropdown.Item eventKey="publish" className="custom-dropdown-item">Publish</Dropdown.Item>}
+											{result.status == "publish" && <Dropdown.Item eventKey="unpublish" className="custom-dropdown-item">Unpublish</Dropdown.Item>}
+											{result.status == "pending" && <>
 												<Dropdown.Item eventKey="publish" className="custom-dropdown-item">Publish</Dropdown.Item>
-												<Dropdown.Item eventKey="unpublish" className="custom-dropdown-item">Unpublish</Dropdown.Item> 
-												</>
+												<Dropdown.Item eventKey="unpublish" className="custom-dropdown-item">Unpublish</Dropdown.Item>
+											</>
 											}
 										</DropdownButton>
-										
-										
-										{!result.replyText && result.status == "publish" && 
+
+
+										{!result.replyText && result.status == "publish" &&
 											<button type="button" className="revbtn lightbtn outline" onClick={(e) => handleShowReplyModal(result._id, index)} >Reply <ReplyIcon /></button>
 										}
 
 
-										<DropdownButton id="dropdown-basic-button" onSelect={(e) => handleMoreReviewChange(e, result._id, index)} title="More" align={'end'}>
+										<DropdownButton id="dropdown-basic-button" onSelect={(e) => handleMoreReviewChange(e, result, index)} title="More" align={'end'}>
 											<Dropdown.Item eventKey="change-product" className="custom-dropdown-item">Change Product</Dropdown.Item>
-											
-											{ result.tag_as_feature == false &&  <Dropdown.Item eventKey="feature" className="custom-dropdown-item">Tag as Feature</Dropdown.Item> }
-											{ result.tag_as_feature == true && <Dropdown.Item eventKey="remove-feature" className="custom-dropdown-item">Remove feature tag</Dropdown.Item> }
-											
-											{ result.verify_badge == false && <Dropdown.Item eventKey="verify-badge" className="custom-dropdown-item">Add verified badge</Dropdown.Item> }
-											{ result.verify_badge == true && <Dropdown.Item eventKey="remove-verify-badge" className="custom-dropdown-item">Remove verified badge</Dropdown.Item> }
-											
-											{ result.add_to_carousel == false && <Dropdown.Item eventKey="add-to-carousel" className="custom-dropdown-item">Add to Carousel</Dropdown.Item> }
-											{ result.add_to_carousel == true && <Dropdown.Item eventKey="remove-add-to-carousel" className="custom-dropdown-item">Remove from Carousel</Dropdown.Item> }
-											
-											
+
+											{result.discount_price_rule_id != null && <Dropdown.Item eventKey="discount" className="custom-dropdown-item">See discount details</Dropdown.Item>}
+
+
+											{result.tag_as_feature == false && <Dropdown.Item eventKey="feature" className="custom-dropdown-item">Tag as Feature</Dropdown.Item>}
+											{result.tag_as_feature == true && <Dropdown.Item eventKey="remove-feature" className="custom-dropdown-item">Remove feature tag</Dropdown.Item>}
+
+											{result.verify_badge == false && <Dropdown.Item eventKey="verify-badge" className="custom-dropdown-item">Add verified badge</Dropdown.Item>}
+											{result.verify_badge == true && <Dropdown.Item eventKey="remove-verify-badge" className="custom-dropdown-item">Remove verified badge</Dropdown.Item>}
+
+											{result.add_to_carousel == false && <Dropdown.Item eventKey="add-to-carousel" className="custom-dropdown-item">Add to Carousel</Dropdown.Item>}
+											{result.add_to_carousel == true && <Dropdown.Item eventKey="remove-add-to-carousel" className="custom-dropdown-item">Remove from Carousel</Dropdown.Item>}
+
+
 											<Dropdown.Item eventKey="delete" className="custom-dropdown-item">Delete</Dropdown.Item>
 										</DropdownButton>
 
@@ -539,22 +545,22 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 							{result.replyText &&
 								<>
 									<div className="timeline-reply replywrap flxrow">
-												<div className="flxflexi">
-													<h3>Your reply</h3>
-													<p >{result.replyText}</p>
+										<div className="flxflexi">
+											<h3>Your reply</h3>
+											<p >{result.replyText}</p>
+										</div>
+										{result.status == "publish" &&
+											<>
+												<div className="flxfix replayaction">
+													<button type="button" className="" onClick={(e) => handleShowEditReplyModal(result._id, index)} >
+														<i className="twenty-editicon2"></i>
+													</button>
+													<button type="button" className="" onClick={(e) => deleteReviewReply(result._id, index)} >
+														<i className="twenty-deleteicon"></i>
+													</button>
 												</div>
-												{ result.status == "publish" && 
-													<>
-														<div className="flxfix replayaction">
-															<button type="button" className="" onClick={(e) => handleShowEditReplyModal(result._id, index)} >
-																<i className="twenty-editicon2"></i>
-															</button>
-															<button type="button" className="" onClick={(e) => deleteReviewReply(result._id, index)} >
-																<i className="twenty-deleteicon"></i>
-															</button>
-														</div>
-													</>
-												}
+											</>
+										}
 									</div>
 								</>
 							}
@@ -592,10 +598,10 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 
 					<Modal.Body>
 						<h4>Change Product</h4>
-						<input  className="form-control" value={changeProductHandle} onChange={(e) => handleShowChangeProduct(e)} placeholder="Product handle on Shopify (e.g. blue-t-shirt)"/>
+						<input className="form-control" value={changeProductHandle} onChange={(e) => handleShowChangeProduct(e)} placeholder="Product handle on Shopify (e.g. blue-t-shirt)" />
 						<span>A product handle is the last part of the product URL. For example, for this product:&nbsp;</span>
-						<span  style={{ textDecoration: "underline" }}> http://www.store.com/products/</span>
-						<b style={{textDecoration:"underline"}}>blue-t-shirt</b> the handle is <b>blue-t-shirt</b>
+						<span style={{ textDecoration: "underline" }}> http://www.store.com/products/</span>
+						<b style={{ textDecoration: "underline" }}>blue-t-shirt</b> the handle is <b>blue-t-shirt</b>
 					</Modal.Body>
 					<Modal.Footer>
 						<Button variant="secondary" onClick={handleCloseChangeProductModal}>

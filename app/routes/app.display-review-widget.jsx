@@ -4,8 +4,11 @@ import Breadcrumb from "./components/Breadcrumb";
 import ReviewPageSidebar from "./components/headerMenu/ReviewPageSidebar";
 import { getShopDetails } from './../utils/getShopDetails';
 import GeneralAppearance from "./components/settings/general-appearance";
-import { findOneRecord } from './../utils/common';
+import { findOneRecord, getShopifyLatestProducts } from './../utils/common';
 import { json } from "@remix-run/node";
+import { useNavigate } from 'react-router-dom';
+import settingsJson from  './../utils/settings.json';
+
 import { Image } from "react-bootstrap";
 import widgetThumb01 from './../images/widget-thumbs/Review-Widget-image.jpg'
 import widgetThumb02 from './../images/widget-thumbs/Star-Rating-Badge-image.jpg'
@@ -29,7 +32,16 @@ export async function loader({ request }) {
             shop_id: shopRecords._id,
         });
 
-        return json({ shopRecords: shopRecords, generalAppearances: generalAppearances });
+        const shopifyProduct = await getShopifyLatestProducts(shopRecords.shop);
+        const productName = (shopifyProduct.products) ? encodeURIComponent(`/products/${shopifyProduct.products[0]['handle']}`) : "/products";
+        const productWidgetExtenstionId = encodeURIComponent(settingsJson.appThemeExtension.productReviewWidget.addAppBlockId);
+        
+        const productReviewWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?previewPath=${productName}&addAppBlockId=${productWidgetExtenstionId}&target=sectionId`;
+        const extensionUrs = {
+            productReviewWidgetUrl: productReviewWidgetUrl
+        }
+        
+        return json({ shopRecords, generalAppearances, extensionUrs });
 
     } catch (error) {
         console.error('Error fetching records:', error);
@@ -41,17 +53,28 @@ export async function loader({ request }) {
 export default function DisplayReviewWidget() {
     const loaderData = useLoaderData();
     const shopRecords = loaderData.shopRecords;
+    const extensionUrs = loaderData.extensionUrs;
     const generalAppearances = loaderData.generalAppearances;
     const [isClient, setIsClient] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         setIsClient(true);
     }, []);
 
-    const [crumbs, setCrumbs] = useState([
+    const redirectToCustomizePage = (e, type = "") => {
+        console.log(type);
+        // /productWidget
+        e.preventDefault();
+        
+        if(type == 'productWidget') {
+            navigate('/app/widget-customize/product-review-widget');
+        }
+    }
+    const crumbs = [
         { title: "Review", "link": "./../review" },
-        { title: "Reviews widgets", "link": "" }
-    ]);
+        { title: "Reviews widgets", "link": "" },
+    ];
     return (
         <>
             <Breadcrumb crumbs={crumbs} />
@@ -69,8 +92,8 @@ export default function DisplayReviewWidget() {
                                         <h3>Review Widget</h3>
                                         <p>Collect and display product reviews on your product pages.</p>
                                         <div className="btnwrap">
-                                            <a href="#" className="simplelink">Customize</a>
-                                            <a href="#" className="revbtn smbtn">Add to theme</a>
+                                            <a href="#" onClick={(e) => redirectToCustomizePage(e, "productWidget")} className="simplelink">Customize</a>
+                                            <a href={extensionUrs.productReviewWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
                                         </div>
                                     </div>
                                 </div>

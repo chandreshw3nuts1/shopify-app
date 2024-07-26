@@ -14,9 +14,21 @@ import FaceStar3 from "../images/FaceStar3";
 import FaceStar4 from "../images/FaceStar4";
 import FaceStar5 from "../images/FaceStar5";
 
-const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, generalAppearancesModel, CommonRatingComponent }) => {
+const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, generalAppearancesModel, CommonRatingComponent, translations }) => {
     const proxyUrl = "https://" + shopRecords.shop + "/apps/custom-proxy/product-review-widget";
     const countTotalQuestions = customQuestionsData.length;
+    let discountHtml = "";
+    if (paramObj?.discountObj) {
+        if (paramObj.discountObj.isSameDiscount) {
+            discountHtml = translations.addReviewSameDiscountText.replace(/\[discount\]/g, paramObj.discountObj.discount);
+        } else {
+            discountHtml = translations.addReviewDifferentDiscountText;
+            discountHtml = discountHtml.replace(/\[photo_discount\]/g, paramObj.discountObj.photoDiscount);
+            discountHtml = discountHtml.replace(/\[video_discount\]/g, paramObj.discountObj.videoDiscount);
+
+        }
+    }
+
     return (
         <>
             <div id="createReviewModal" className="modal fade addreviewpopup">
@@ -27,7 +39,7 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                         </button>
                         <div className="modal_step_wrap">
                             <form action={proxyUrl} method="post" className="popupform" id="review_submit_btn_form">
-                                <div className="reviewsteps step-1">
+                                <div className="reviewsteps activestep step-1">
                                     <div className="modal-header">
                                         <div className="flxflexi">
                                             <h1 className="modal-title">Create Review</h1>
@@ -52,19 +64,19 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                             <div className='rating-stars text-center'>
                                                 <ul id='stars'>
                                                     <li className='star' title='Poor' data-value='1'>
-                                                        {CommonRatingComponent ? <CommonRatingComponent  /> : null}
+                                                        {CommonRatingComponent ? <CommonRatingComponent /> : null}
                                                     </li>
                                                     <li className='star' title='Fair' data-value='2'>
-                                                        {CommonRatingComponent ? <CommonRatingComponent  /> : null}
+                                                        {CommonRatingComponent ? <CommonRatingComponent /> : null}
                                                     </li>
                                                     <li className='star' title='Good' data-value='3'>
-                                                        {CommonRatingComponent ? <CommonRatingComponent  /> : null}
+                                                        {CommonRatingComponent ? <CommonRatingComponent /> : null}
                                                     </li>
                                                     <li className='star' title='Excellent' data-value='4'>
-                                                        {CommonRatingComponent ? <CommonRatingComponent  /> : null}
+                                                        {CommonRatingComponent ? <CommonRatingComponent /> : null}
                                                     </li>
                                                     <li className='star' title='WOW!!!' data-value='5'>
-                                                        {CommonRatingComponent ? <CommonRatingComponent  /> : null}
+                                                        {CommonRatingComponent ? <CommonRatingComponent /> : null}
                                                     </li>
                                                     <input type="hidden" id="review_rating" name="rating" value="3" />
                                                 </ul>
@@ -76,7 +88,7 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                     </div>
                                     <div className="modal-footer">
                                         {/* <button type="button" className="revbtn lightbtn" data-bs-dismiss="modal">Close</button> */}
-                                        <a href="#" className="revbtn lightbtn nextbtn">Next <LongArrowRight /></a>
+                                        <button type="button" className="revbtn lightbtn nextbtn" disabled="disabled">Next <LongArrowRight /></button>
                                         {/* <button type="button" id="review_submit_btn" className="revbtn lightbtn">Next <LongArrowRight /></button> */}
                                     </div>
                                 </div>
@@ -106,13 +118,15 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                                 <input className="form__file" name="image_and_videos[]" id="upload-files" type="file" accept="image/*,video/mp4,video/x-m4v,video/*" multiple="multiple" />
                                             </label>
 
-
                                             <div className="discountrow uploadDocError d-none">
                                                 <div className="discountbox"><strong>You can select up to 5 photos</strong></div>
                                             </div>
+                                            {discountHtml &&
                                             <div className="discountrow">
-                                                <div className="discountbox">Your <strong>15%</strong> off discount is wait for you!</div>
-                                            </div>
+                                                {/* <div className="discountbox">Your <strong>15%</strong> off discount is wait for you!</div> */}
+                                                <div className="discountbox">{discountHtml}</div>
+                                            </div>}
+
                                             <div className="form__files-container" id="files-list-container"></div>
                                             <input type="hidden" name="file_objects" id="file_objects" />
                                         </div>
@@ -170,15 +184,11 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                             <div className="form-group">
                                                 <textarea className="form-control review-description" name="description" placeholder="Share your experience..."></textarea>
                                             </div>
-                                            <div className="discountrow">
-                                                <div className="discountbox">Your <strong>15%</strong> off discount is wait for you!</div>
-                                            </div>
                                         </div>
                                     </div>
                                     <div className="modal-footer">
                                         <a href="#" className="revbtn lightbtn backbtn"><LongArrowLeft /> Back</a>
-                                        <a href="#" className="revbtn lightbtn nextbtn d-none">Next <LongArrowRight /></a>
-                                    </div>
+                                        <button type="button" className="revbtn lightbtn nextbtn" disabled="disabled">Next <LongArrowRight /></button>                                    </div>
                                 </div>
                                 <div className={`reviewsteps step-${countTotalQuestions + 4} d-none`}>
                                     <div className="modal-header">

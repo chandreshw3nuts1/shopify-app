@@ -7,16 +7,17 @@ import { useNavigate } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import settingsJson from './../../../utils/settings.json';
 import { getDefaultProductImage, getUploadDocument } from './../../../utils/documentPath';
-import SampleReviewReplyEmail from './../email/SampleReviewReplyEmail';
+import SampleDiscountPhotoVideoReviewEmail from './../email/SampleDiscountPhotoVideoReviewEmail';
 
-const ReviewReply = ({ shopRecords, emailTemplateObj, generalAppearances }) => {
+const DiscountPhotoVideoReview = ({ shopRecords, emailTemplateObj, generalAppearances }) => {
     const { t, i18n } = useTranslation();
-    const bannerType = "reviewReply";
+    const bannerType = "discountPhotoVideoReview";
     const [emailTemplateObjState, setEmailTemplateObjState] = useState(emailTemplateObj);
     const [languageWiseEmailTemplate, setLanguageWiseEmailTemplate] = useState({});
     const [currentLanguage, setCurrentLanguage] = useState('en');
     const [subject, setSubject] = useState('');
     const [body, setBody] = useState('');
+    const [buttonText, setButtonText] = useState('');
     const [initialData, setInitialData] = useState({});
     const [placeHolderLanguageData, setPlaceHolderLanguageData] = useState({});
     const [emailContents, setEmailContents] = useState({});
@@ -32,25 +33,31 @@ const ReviewReply = ({ shopRecords, emailTemplateObj, generalAppearances }) => {
         setCurrentLanguage(language);
 
         const emailTemplateInfo = (emailTemplateObjState && emailTemplateObjState[currentLanguage]) ? emailTemplateObjState[currentLanguage] : {};
-        console.log(emailTemplateInfo);
-        const { subject, body } = emailTemplateInfo;
+        const { subject, body, buttonText } = emailTemplateInfo;
         setLanguageWiseEmailTemplate(emailTemplateInfo);
 
         setSubject(subject || '');
         setBody(body || '');
+        setButtonText(buttonText || '');
 
 
         setInitialData({
             subject: subject || '',
             body: body || '',
+            buttonText: buttonText || ''
         });
 
         setPlaceHolderLanguageData({
-            subject: t('reviewReplyEmail.subject'),
-            body: t('reviewReplyEmail.body'),
+            subject: t('dicountPhotoVideoReviewEmail.subject'),
+            body: t('dicountPhotoVideoReviewEmail.body'),
+            buttonText: t('dicountPhotoVideoReviewEmail.buttonText'),
         });
 
     }, [i18n, i18n.language, emailTemplateObjState, currentLanguage]);
+
+    // useEffect(() => {
+
+    // }, [emailTemplateObjState, currentLanguage]);
 
 
     const changeSubject = (e) => {
@@ -61,6 +68,10 @@ const ReviewReply = ({ shopRecords, emailTemplateObj, generalAppearances }) => {
         setBody(event.target.value);
     };
 
+    const changeButtonText = (event) => {
+        setButtonText(event.target.value);
+    };
+
     const handleInputBlur = async (e) => {
         const language = localStorage.getItem('i18nextLng');
         if (initialData[e.target.name] != e.target.value) {
@@ -69,7 +80,7 @@ const ReviewReply = ({ shopRecords, emailTemplateObj, generalAppearances }) => {
                 value: e.target.value,
                 shop: shopRecords.shop,
                 language: language,
-                actionType: "reviewReply"
+                actionType: "discountPhotoVideoReview"
             };
             const response = await fetch('/api/email-settings', {
                 method: 'POST',
@@ -82,7 +93,6 @@ const ReviewReply = ({ shopRecords, emailTemplateObj, generalAppearances }) => {
             if (data.status == 200) {
                 toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 
-
                 setEmailTemplateObjState(prevState => ({
                     ...(prevState || {}),  // Ensure prevState is an object
                     [currentLanguage]: {
@@ -90,16 +100,6 @@ const ReviewReply = ({ shopRecords, emailTemplateObj, generalAppearances }) => {
                         [e.target.name]: e.target.value
                     }
                 }));
-                
-
-
-                // setEmailTemplateObjState({
-                //     ...emailTemplateObjState,
-                //     [currentLanguage]: {
-                //         ...emailTemplateObjState[currentLanguage],
-                //         [e.target.name]: e.target.value
-                //     }
-                // });
 
             } else {
                 toast.error(data.message);
@@ -115,9 +115,9 @@ const ReviewReply = ({ shopRecords, emailTemplateObj, generalAppearances }) => {
 
         const sampleEmailData = {
             logo: getUploadDocument(generalAppearances?.logo, 'logo'),
-            body: body ? body : t('reviewReplyEmail.body'),
-            banner: getUploadDocument(languageWiseEmailTemplate.banner, 'banners'),
-            getDefaultProductImage: getDefaultProductImage(),
+            body: body ? body : t('dicountPhotoVideoReviewEmail.body'),
+            buttonText: buttonText ? buttonText : t('dicountPhotoVideoReviewEmail.buttonText'),
+            banner : getUploadDocument(languageWiseEmailTemplate.banner, 'banners'),
         }
         setEmailContents(sampleEmailData);
         setShowViewSampleModal(true);
@@ -156,7 +156,8 @@ const ReviewReply = ({ shopRecords, emailTemplateObj, generalAppearances }) => {
                                     <label htmlFor="">Subject </label>
                                     <input type="text" onBlur={handleInputBlur} name="subject" value={subject} onChange={changeSubject} className="input_text" placeholder={placeHolderLanguageData.subject} />
                                     <div className='inputnote'>
-                                        <div><strong>Note:</strong> Use [product] for the product name</div>
+                                        <div><strong>Note:</strong></div>
+                                        <div>Use [name] or [last_name] as a placeholder for the user's first or last name</div>
                                     </div>
                                 </div>
                                 <div className="form-group">
@@ -169,11 +170,17 @@ const ReviewReply = ({ shopRecords, emailTemplateObj, generalAppearances }) => {
                                         placeholder={placeHolderLanguageData.body}
                                         value={body}
                                     ></textarea>
+                                    <div className='inputnote'>
+                                        <div><strong>Notes:</strong></div>
+                                        <div>Use [store] for your store name</div>
+                                        <div>Use [discount] for the discount amount</div>
+                                    </div>
                                 </div>
-                                <div className='inputnote'>
-                                    <div><strong>Note:</strong> Use [reply_content] for your reply text</div>
+                                <div className="form-group">
+                                    <label htmlFor="">Button Text</label>
+                                    <input type="text" onBlur={handleInputBlur} name="buttonText" value={buttonText} onChange={changeButtonText} className="input_text" placeholder={placeHolderLanguageData.buttonText} />
                                 </div>
-
+                               
                                 <div className="btnwrap">
                                     <a href="#" onClick={viewSample} className='revbtn'>View sample</a>
                                     <a href="#" onClick={showBrandingPage} className='revbtn outline'>Customize email appearance</a>
@@ -188,7 +195,7 @@ const ReviewReply = ({ shopRecords, emailTemplateObj, generalAppearances }) => {
                     <Modal.Title>Sample email</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <SampleReviewReplyEmail shopRecords={shopRecords} emailContents={emailContents} generalAppearancesObj={generalAppearances}/>
+                    <SampleDiscountPhotoVideoReviewEmail  emailContents={emailContents} generalAppearancesObj={generalAppearances} />
 
                 </Modal.Body>
             </Modal>
@@ -196,4 +203,4 @@ const ReviewReply = ({ shopRecords, emailTemplateObj, generalAppearances }) => {
     );
 };
 
-export default ReviewReply;
+export default DiscountPhotoVideoReview;

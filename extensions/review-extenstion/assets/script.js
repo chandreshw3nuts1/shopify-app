@@ -67,7 +67,7 @@ $(document).ready(function () {
 
         let parentDiv = jQuery(this).parents('.reviewsteps');
         console.log(parentDiv);
-        jQuery(parentDiv).addClass('activestep');
+        jQuery(parentDiv).find(".nextbtn").removeAttr('disabled');
     });
 
 
@@ -229,9 +229,9 @@ $(document).on('click', '.check-answer', function () {
 
 $(document).on('keyup', '.review-description', function () {
     if (typeof $(this).val() == 'undefined' || $.trim($(this).val()) == "") {
-        $(this).parents(".reviewsteps").find('.nextbtn').addClass('d-none');
+        $(this).parents(".reviewsteps").find('.nextbtn').attr('disabled', 'disabled');
     } else {
-        $(this).parents(".reviewsteps").find('.nextbtn').removeClass('d-none');
+        $(this).parents(".reviewsteps").find('.nextbtn').removeAttr('disabled');
     }
 });
 
@@ -399,6 +399,10 @@ $(document).on("submit", "#review_submit_btn_form", function (e) {
     }
     if (isValid) {
         var formData = new FormData($(this)[0]);
+        if (formData.get('description') == "") {
+            formData.delete('description');
+            formData.append('description', 'N/A');
+        }
         formData.append('shop_domain', shop_domain);
         formData.append('product_id', product_id);
         formData.append('product_title', product_title);
@@ -451,4 +455,29 @@ $(document).on("click", ".dropdown-menu .sort_by_filter", function (e) {
     $("#sort_by_filter").val(sortType);
     page = 1;
     loadReviews(page);
+});
+
+
+
+// Play video when play button is clicked
+$(document).on("click", "#mainVideoPlayButton", function () {
+    var video = document.getElementById('mainVideoPlayer');
+    if (video) {
+        video.play().then(function () {
+            $('#mainVideoPlayButton').hide();
+            $('#mainVideoPauseButton').show();
+        }).catch(function (error) {
+            console.error('Error playing video:', error);
+        });
+    }
+});
+
+// Pause video when pause button is clicked
+$(document).on("click", "#mainVideoPauseButton", function () {
+    var video = document.getElementById('mainVideoPlayer');
+    if (video) {
+        video.pause();
+        $('#mainVideoPlayButton').show();
+        $('#mainVideoPauseButton').hide();
+    }
 });

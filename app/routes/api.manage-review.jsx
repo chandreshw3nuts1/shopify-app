@@ -507,6 +507,7 @@ export async function action({ request} ) {
 								tag_as_feature: { $first: "$tag_as_feature" },
 								verify_badge: { $first: "$verify_badge" },
 								add_to_carousel: { $first: "$add_to_carousel" },
+								discount_price_rule_id: { $first: "$discount_price_rule_id" },
 								reviewDocuments: { $first: "$reviewDocuments" }, // Use $first to avoid duplicates
 								reviewQuestionsAnswer: { 
 									$push: {
@@ -555,6 +556,7 @@ export async function action({ request} ) {
 								tag_as_feature: 1,
 								verify_badge: 1,
 								add_to_carousel: 1,
+								discount_price_rule_id : 1,
 								reviewDocuments: 1,
 								reviewQuestionsAnswer: {
 									$filter: {

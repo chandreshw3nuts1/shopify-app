@@ -49,14 +49,14 @@ const ImageUploadMultiLang = (props) => {
 			const data = await response.json();
 			if (data.status == 200) {
 				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
-				props.setEmailTemplateObjState({
-					...props.emailTemplateObjState,
+
+				props.setEmailTemplateObjState(prevState => ({
+					...((prevState || {})[props.currentLanguage] || {}), // Ensure prevState and currentLanguage object are not null
 					[props.currentLanguage]: {
-						...props.emailTemplateObjState[props.currentLanguage],
+						...(prevState ? prevState[props.currentLanguage] : {}), // Default to empty object if undefined
 						banner: data.fileName
 					}
-				});
-
+				}));
 
 			} else {
 				toast.error(data.message);
@@ -120,13 +120,14 @@ const ImageUploadMultiLang = (props) => {
 			const data = await response.json();
 			if (data.status == 200) {
 				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
-				props.setEmailTemplateObjState({
-					...props.emailTemplateObjState,
+
+				props.setEmailTemplateObjState(prevState => ({
+					...((prevState || {})[props.currentLanguage] || {}), // Ensure prevState and currentLanguage object are not null
 					[props.currentLanguage]: {
-						...props.emailTemplateObjState[props.currentLanguage],
+						...(prevState ? prevState[props.currentLanguage] : {}), // Default to empty object if undefined
 						banner: data.fileName
 					}
-				});
+				}));
 
 				const bannerImgUrl = getUploadDocument(data.fileName, 'banners');
 				setFile(bannerImgUrl);

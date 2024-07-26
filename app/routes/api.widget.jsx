@@ -4,15 +4,18 @@ import ReactDOMServer from 'react-dom/server';
 import ProductReviewWidget from './components/widget-components/product-review-widget';
 import CreateReviewModalWidget from './components/widget-components/create-review-modal-widget';
 import ReviewDetailModalWidget from './components/widget-components/review-detail-modal-widget';
-
 import { ObjectId } from 'mongodb';
 
 import { getShopDetailsByShop, findOneRecord, getCustomQuestions } from './../utils/common';
 import { mongoConnection } from './../utils/mongoConnection';
 import productReviews from "./models/productReviews";
 import generalAppearances from "./models/generalAppearances";
-import { getShopifyProducts } from "./../utils/common";
+import generalSettings from "./models/generalSettings";
+
+
+import { getShopifyProducts, getDiscounts } from "./../utils/common";
 import { ratingbabycloth, ratingbasket, ratingbones, ratingcoffeecup, ratingcrisamascap, ratingdiamondfront, ratingdiamondtop, ratingdogsleg, ratingfireflame, ratingflight, ratingfood, ratinggraduationcap, ratingheartround, ratingheartsq, ratingleafcanada, ratingleafnormal, ratinglikenormal, ratinglikerays, ratingpethouse, ratingplant, ratingshirt, ratingshoppingbag1, ratingshoppingbag2, ratingshoppingbag3, ratingstarrays, ratingstarrounded, ratingstarsq, ratingsunglass, ratingteacup, ratingtrophy1, ratingtrophy2, ratingtrophy3, ratingtshirt, ratingwine } from './../routes/components/icons/CommonIcons';
+import settingsJson from './../utils/settings.json';
 
 export async function loader() {
 
@@ -28,11 +31,33 @@ export async function action({ request }) {
         const actionType = formData.get('actionType');
         const shop = formData.get('shop_domain');
         const shopRecords = await getShopDetailsByShop(shop);
+       
+        const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
+
+
+        var customer_locale = formData.get('customer_locale') || generalSettingsModel.defaul_language;
         const shopSessionRecords = await findOneRecord("shopify_sessions", { shop: shop });
         const generalAppearancesModel = await generalAppearances.findOne({
             shop_id: shopRecords._id
         });
 
+        /* Fetch transation languge*/
+        if(customer_locale == 'zh-CN') {
+            customer_locale = 'cn1';
+        } else if(customer_locale == 'zh-TW') {
+            customer_locale = 'cn2';
+        }
+
+        const language = settingsJson.languages.find(language => language.code === customer_locale);
+        customer_locale = language ? language.code : generalSettingsModel.defaul_language;
+
+        const apiUrl = `${settingsJson.host_url}/locales/${customer_locale}/translation.json`;
+        const lang = await fetch(apiUrl, {
+			method: 'GET'
+		});
+        const translations = await lang.json();
+        
+        /* Fetch transation languge End*/
 
         const StarIcon = generalAppearancesModel.starIcon.replace(/-/g, '');
         const iconComponents = {
@@ -45,12 +70,14 @@ export async function action({ request }) {
             const customQuestionsData = await getCustomQuestions({
                 shop_id: shopRecords._id,
             });
+            const discountObj = await getDiscounts(shopRecords);
             const paramObj = {
                 cust_first_name: formData.get('cust_first_name'),
                 cust_last_name: formData.get('cust_last_name'),
                 cust_email: formData.get('cust_email'),
+                discountObj : discountObj
             }
-            const dynamicModalComponent = <CreateReviewModalWidget shopRecords={shopRecords} customQuestionsData={customQuestionsData} paramObj={paramObj} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} />;
+            const dynamicModalComponent = <CreateReviewModalWidget shopRecords={shopRecords} customQuestionsData={customQuestionsData} paramObj={paramObj} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} translations={translations} />;
             const htmlModalContent = ReactDOMServer.renderToString(dynamicModalComponent);
             return json({
                 htmlModalContent: htmlModalContent
@@ -459,7 +486,7 @@ export async function action({ request }) {
 
             }
 
-            const dynamicComponent = <ProductReviewWidget shopRecords={shopRecords} reviewItems={reviewItems} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} />;
+            const dynamicComponent = <ProductReviewWidget shopRecords={shopRecords} reviewItems={reviewItems} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} translations={translations} />;
             const htmlContent = ReactDOMServer.renderToString(dynamicComponent);
 
 

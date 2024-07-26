@@ -11,6 +11,7 @@ const shopDetailsSchema = new mongoose.Schema({
     country_name: { type: String, required: true },
     email: { type: String, required: true },
     currency: { type: String, required: true },
+    currency_symbol: { type: String, required: true },
     timezone: { type: String , required: true },
     shop_owner: { type: String,required: true  },
     name: { type: String, required: true },

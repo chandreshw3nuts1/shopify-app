@@ -93,13 +93,13 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances }) =>
             if (data.status == 200) {
                 toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
 
-                setEmailTemplateObjState({
-                    ...emailTemplateObjState,
+                setEmailTemplateObjState(prevState => ({
+                    ...(prevState || {}),  // Ensure prevState is an object
                     [currentLanguage]: {
-                        ...emailTemplateObjState[currentLanguage],
+                        ...(prevState ? prevState[currentLanguage] : {}),  // Ensure nested object is an object
                         [e.target.name]: e.target.value
                     }
-                });
+                }));
 
             } else {
                 toast.error(data.message);

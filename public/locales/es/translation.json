@@ -1,11 +1,27 @@
 {
     "reviewRequestEmail" : {
-        "subject" : "Order #[order_number], how did it go?",
-        "body" : "Hello [name], \n \nWe would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds.",
-        "buttonText" : "Write a review"
+        "subject" : "Pedido #[order_number], ¿cómo te fue?",
+        "body" : "Hola [name],\n\nNos encantaría saber cómo te fue con tu compra. Tu opinión nos ayuda a nosotros y a la comunidad que nos apoya, y solo toma unos segundos.",
+        "buttonText" : "Escribe una reseña"
     },
     "reviewReplyEmail" : {
-        "subject" : "In response to your review of [product]",
-        "body" : "Hello [name],\n \nA reply was added to your review of [product]:\n[reply_content]\nTo respond privately, reply to this email."
-    }
+        "subject" : "En respuesta a tu reseña de [product]",
+        "body" : "Hola [name],\n\nSe ha añadido una respuesta a tu reseña de [product]:\n[reply_content]\nPara responder de forma privada, responde a este correo."
+    },
+    "dicountPhotoVideoReviewEmail" : {
+        "subject" : "Tu código de descuento en [store]",
+        "body" : "Hola [name],\n\n¡Gracias por compartir tu experiencia!\n\nUsa el siguiente código de descuento para obtener [discount] de descuento en tu próxima compra en [store]",
+        "buttonText" : "Comprar ahora"
+    },
+    "addReviewSameDiscountText" : "¡Tu descuento de [discount] te está esperando!",
+    "addReviewDifferentDiscountText" : "¡Sube una foto para obtener [photo_discount] de descuento o un video para obtener [video_discount] de descuento en tu próxima compra!",
+    "customer_review" : "Reseña de Clientes",
+    "sort_by" : "Ordenar Por",
+    "featured" : "Destacados",
+    "newest" : "Más Recientes",
+    "highest_rating" : "Mayor Calificación",
+    "lowest_rating" : "Menor Calificación",
+    "replied" : "Respondido",
+    "global_ratings" : "calificaciones globales",
+    "out_of" : "de"
 }

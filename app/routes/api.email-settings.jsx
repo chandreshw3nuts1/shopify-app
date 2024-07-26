@@ -10,6 +10,7 @@ import ReactDOMServer from 'react-dom/server';
 import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTemplate';
 import { getUploadDocument } from './../utils/documentPath';
 import settingJson from './../utils/settings.json';
+import emailDiscountPhotoVideoReviewSettings from "./models/emailDiscountPhotoVideoReviewSettings";
 export async function loader() {
     return json({
         name: "loading"
@@ -58,13 +59,13 @@ export async function action({ params, request }) {
 
                     const footer = "";
                     var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
-                        <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={[]}  generalAppearancesObj={generalAppearancesObj} footer={footer} />
+                        <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={[]} generalAppearancesObj={generalAppearancesObj} footer={footer} />
                     );
 
                     const settingsModel = await settings.findOne({
-						shop_id: shopRecords._id,
-					});
-					const email = settingsModel?.reviewNotificationEmail || shopRecords.email;
+                        shop_id: shopRecords._id,
+                    });
+                    const email = settingsModel?.reviewNotificationEmail || shopRecords.email;
                     // Send request email
                     const subject = emailContents.subject;
                     const response = await sendEmail({
@@ -84,6 +85,18 @@ export async function action({ params, request }) {
                     };
                     const options = { upsert: true, returnOriginal: false };
                     await emailReviewReplySettings.findOneAndUpdate(query, update, options);
+
+                    return json({ status: 200, message: "Setting saved" });
+
+                } else if (actionType == 'discountPhotoVideoReview') {
+                    const query = { shop_id: shopRecords._id };
+                    const update = {
+                        $set: {
+                            [`${language}.${requestBody.field}`]: requestBody.value
+                        }
+                    };
+                    const options = { upsert: true, returnOriginal: false };
+                    await emailDiscountPhotoVideoReviewSettings.findOneAndUpdate(query, update, options);
 
                     return json({ status: 200, message: "Setting saved" });
 
