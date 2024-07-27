@@ -163,7 +163,7 @@ body .form-switch .form-check-input:focus { outline: none; box-shadow: none; --b
 body .form-switch label { display: block; line-height: 20px; margin: 0; color: var(--darkColor); font-size: 14px; cursor: pointer;}
 body .form-switch label span { display: block; padding: 4px 0 0 0; line-height: normal; color: var(--lightGreyColor); font-size: 12px;}
 body .form-switch .form-check-input:checked { --bs-form-switch-bg: url(../images/switch-round.svg); background-color: var(--blueColor);}
-body .form-switch .form-check-input + label { padding: 0 0 0 10px;}
+body .form-switch .form-check-input + label { padding: 0 0 0 10px !important;}
 body .form-check-input:active { filter: brightness(95%);}
 
 .noreviewyetmain { margin: 0;}
@@ -198,17 +198,17 @@ body .form-check-input:active { filter: brightness(95%);}
 
 .dividerblk { margin: 24px 0; height: 1px; background: var(--borderColor); width: 100%;}
 
-.form-group,
-form .form-group { margin: 0 0 24px 0; width: 100%; position: relative;}
-.form-group label,
-form .form-group label { display: block; font-size: 14px; line-height: normal; font-weight: 500; color: var(--darkColor); margin: 0 0 12px 0; padding: 0;}
-.input_text,
-.form-control,
-form .form-control,
-form .input_text { width: 100%; height: 44px; border-radius: 8px; background: var(--whiteBg); border: solid 1px var(--borderColor); padding: 0 16px; outline: none !important; box-shadow: none !important; resize: none; font-size: 14px; resize: none;}
-textarea.form-control,
-form textarea.form-control,
-form textarea.input_text { height: 160px; padding-top: 8px; padding-bottom: 8px;}
+body .form-group,
+body form .form-group { margin: 0 0 24px 0; width: 100%; position: relative;}
+body .form-group label,
+body form .form-group label { display: block; font-size: 14px; line-height: normal; font-weight: 500; color: var(--darkColor); margin: 0 0 12px 0; padding: 0;}
+body .input_text,
+body .form-control,
+body form .form-control,
+body form .input_text { width: 100%; height: 44px; border-radius: 8px; background: var(--whiteBg); border: solid 1px var(--borderColor); padding: 0 16px; outline: none !important; box-shadow: none !important; resize: none; font-size: 14px; resize: none;}
+body textarea.form-control,
+body form textarea.form-control,
+body form textarea.input_text { height: 160px; padding-top: 8px; padding-bottom: 8px;}
 .filterandserchwrap { padding: 24px; border-radius: 10px; background: var(--whiteBg); border: solid 1px var(--borderColor); margin: 24px 0 0 0;}
 .letterlimite { position: absolute; right: 0; top: 100%; font-size: 12px; color: var(--lightGreyColor);}
 
@@ -418,6 +418,8 @@ body .modal .modal-dialog.productselect .modal-body .row [class*="col-"] { paddi
 .gapy24 { row-gap: 24px;}
 .gapx16 { column-gap: 16px;}
 .gapy16 { row-gap: 16px;}
+.gapx18 { column-gap: 18px;}
+.gapy18 { row-gap: 18px;}
 
 .subtitlebox { padding: 0 0 0 0;}
 .subtitlebox h2 { margin: 0; padding: 0; color: var(--darkColor); font-size: 18px; font-weight: 700; line-height: normal;}
@@ -508,9 +510,13 @@ body .dropdown-toggle::after { content: "\e902"; font-family: 'icon24' !importan
 
 .form-group.horizontal-form { display: flex; align-items: center;}
 .form-group.horizontal-form label { margin: 0; width: 190px;}
+.form-group.horizontal-form.alightop { align-items: flex-start;}
+.form-group.horizontal-form.alightop label { line-height: 20px; padding-top: 12px;}
 .colorpicker_input .form-control { height: 42px;}
 .custom-email-options { display: flex; row-gap: 8px; flex-direction: column;}
 .custom-email-options .sideinput.mw300 { max-width: 300px;}
+.widget-theme-options .form-group.horizontal-form label { width: 240px;}
+
 
 
 .widgetrow {
@@ -530,3 +536,36 @@ body .dropdown-toggle::after { content: "\e902"; font-family: 'icon24' !importan
 .widgetbox .detailbox h3 { margin: 0; padding: 0; color: var(--darkColor); font-size: 18px; font-weight: 700;}
 .widgetbox .detailbox p { margin: 0; padding: 8px 0 0 0; color: var(--lightGreyColor); font-size: 14px; line-height: normal; font-weight: 400;}
 .widgetbox .btnwrap { margin: auto 0 0 0; padding: 24px 0 0 0; align-items: center; justify-content: space-between;}
+
+
+.widget-theme-options { display: flex; row-gap: 18px; flex-direction: column;}
+.widget-theme-options .sideinput.mw300 { max-width: 300px;}
+.sideinput.mw300 { max-width: 300px;}
+.radiogroup { display: flex; align-items: center; row-gap: 14px;}
+.radiogroup.vertical { flex-direction: column; align-items: flex-start; row-gap: 12px;}
+.radiogroup .radiobox { display: flex; align-items: center;}
+.radiogroup .radiobox label { width: auto; font-weight: 500; position: relative; padding: 0 0 0 34px; display: flex; align-items: center; line-height: 24px; font-size: 14px; color: var(--lightGreyColor); cursor: pointer;}
+.radiogroup .radiobox input[type="radio"] { margin-right: 8px; display: none;}
+.radiogroup .radiobox label::after,
+.radiogroup .radiobox label::before { width: 24px; height: 24px; position: absolute; left: 0; top: 0; content: ''; border-radius: 50px; pointer-events: none;}
+.radiogroup .radiobox label::before { box-shadow: 0 0 0 1px var(--borderColor) inset;}
+.radiogroup .radiobox label::after { border: solid 1px; border-color: transparent; background: var(--blueColor); box-shadow: 0 0 0 7px var(--whiteBg) inset; opacity: 0; visibility: hidden;}
+.radiogroup .radiobox input[type="radio"]:checked + label { color: var(--darkColor);}
+.radiogroup .radiobox input[type="radio"]:checked + label::before { box-shadow: 0 0 0 1px var(--blueColor) inset;}
+.radiogroup .radiobox input[type="radio"]:checked + label::after { opacity: 1; visibility: visible;}
+
+.custwidtitle { display: flex; align-items: center; margin: 0; border-bottom: solid 1px var(--borderColor); padding: 16px 24px;}
+.custwidtitle h3 { color: var(--darkColor); font-size: 18px; font-weight: 700; margin: 0; padding: 0;}
+
+.whitebox.p-0 .insidewhitecard { padding: 16px 24px;}
+
+.customize_wrap { display: flex; flex-direction: column; row-gap: 16px;}
+
+.layoutstr { display: flex; align-items: flex-start; column-gap: 16px;}
+.layoutstr .layoutbox input[type="radio"] { display: none;}
+.layoutstr .layoutbox label { display: flex; flex-direction: column; margin: 0; cursor: pointer; color: #C0CDDF;}
+.layoutstr .layoutbox label .iconbox { display: flex; align-items: center; justify-content: center; background: var(--lightGreyBGcolor); border-radius: 10px; margin: 0 0 12px 0; border: solid 1px; border-color: transparent;}
+.layoutstr .layoutbox label span { display: block; color: var(--lightGreyColor);}
+.layoutstr .layoutbox input[type="radio"]:checked + label { color: var(--blueColor);}
+.layoutstr .layoutbox input[type="radio"]:checked + label .iconbox { border-color: var(--blueColor);}
+.layoutstr .layoutbox input[type="radio"]:checked + label span { color: var(--darkColor);}

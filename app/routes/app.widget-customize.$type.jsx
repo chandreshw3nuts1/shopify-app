@@ -90,11 +90,10 @@ export default function WidgetCustomize() {
                 </div>
 
                 <div className="pagebox">
-                    <div className="graywrapbox gapy24">
+                    <div className="graywrapbox gapy24 mt-24">
                         <div className="subtitlebox">
-                            <h2>Product Reviews Widget  - Learn more </h2>
-                            <p>Convert visitors into buyers with an eye-catching gallery showcasing your reviews. Choose from multiple layouts.
-                            </p>
+                            <h2>Review Widget</h2>
+                            <p>Collect and display product reviews on your product pages.</p>
                         </div>
                         <div className='flxfix'>
                             {content}
