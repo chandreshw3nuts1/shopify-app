@@ -17,6 +17,19 @@ import {
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 import Breadcrumb from "./components/Breadcrumb";
+import bannerImage from "./../images/medium-shot-young-people-with-reviews.jpg"
+import { Dropdown, DropdownButton, Image } from 'react-bootstrap';
+
+import ReviewRequestsSentIcon from "./components/icons/ReviewRequestsSentIcon";
+import PhotoVideoReviewsIcon from "./components/icons/PhotoVideoReviewsIcon";
+import UpsellsDashIcon from "./components/icons/UpsellsDashIcon";
+import StoreVisitsIcon from "./components/icons/StoreVisitsIcon";
+import SharesDashIcon from "./components/icons/SharesDashIcon";
+import ReviewsCollectedIcon from "./components/icons/ReviewsCollectedIcon";
+import OrdersDashIcon from "./components/icons/OrdersDashIcon";
+import ImpressionsDashIcon from "./components/icons/ImpressionsDashIcon";
+import InfoFillIcon from "./components/icons/InfoFillIcon";
+
 
 export const loader = async ({ request }) => {
   await authenticate.admin(request);
@@ -112,227 +125,194 @@ export default function Index() {
   const [crumbs, setCrumbs] = useState([
     
   ]);
-  return (
-    <>
-    <Page fullWidth>
-      <Breadcrumb crumbs={crumbs}/>
-    </Page>
-    
-      
 
-    <Page>
-      <BlockStack gap="500">
-        <Layout>
-          <Layout.Section>
-            <Card>
-              <BlockStack gap="500">
-                <BlockStack gap="200">
-                  
-                  <Text variant="bodyMd" as="p">
-                    This embedded app template uses{" "}
-                    <Link
-                      url="https://shopify.dev/docs/apps/tools/app-bridge"
-                      target="_blank"
-                      removeUnderline
-                    >
-                      App Bridge
-                    </Link>{" "}
-                    interface examples like an{" "}
-                    <Link url="/app/additional" removeUnderline>
-                      additional page in the app nav
-                    </Link>
-                    , as well as an{" "}
-                    <Link
-                      url="https://shopify.dev/docs/api/admin-graphql"
-                      target="_blank"
-                      removeUnderline
-                    >
-                      Admin GraphQL
-                    </Link>{" "}
-                    mutation demo, to provide a starting point for app
-                    development.
-                  </Text>
-                </BlockStack>
-                <BlockStack gap="200">
-                  <Text as="h3" variant="headingMd">
-                    Get started with products
-                  </Text>
-                  <Text as="p" variant="bodyMd">
-                    Generate a product with GraphQL and get the JSON output for
-                    that product. Learn more about the{" "}
-                    <Link
-                      url="https://shopify.dev/docs/api/admin-graphql/latest/mutations/productCreate"
-                      target="_blank"
-                      removeUnderline
-                    >
-                      productCreate
-                    </Link>{" "}
-                    mutation in our API references.
-                  </Text>
-                </BlockStack>
-                <InlineStack gap="300">
-                  <Button loading={isLoading} onClick={generateProduct}>
-                    Generate a product
-                  </Button>
-                  {actionData?.product && (
-                    <Button
-                      url={`shopify:admin/products/${productId}`}
-                      target="_blank"
-                      variant="plain"
-                    >
-                      View product
-                    </Button>
-                  )}
-                </InlineStack>
-                {actionData?.product && (
-                  <>
-                    <Text as="h3" variant="headingMd">
-                      {" "}
-                      productCreate mutation
-                    </Text>
-                    <Box
-                      padding="400"
-                      background="bg-surface-active"
-                      borderWidth="025"
-                      borderRadius="200"
-                      borderColor="border"
-                      overflowX="scroll"
-                    >
-                      <pre style={{ margin: 0 }}>
-                        <code>
-                          {JSON.stringify(actionData.product, null, 2)}
-                        </code>
-                      </pre>
-                    </Box>
-                    <Text as="h3" variant="headingMd">
-                      {" "}
-                      productVariantUpdate mutation
-                    </Text>
-                    <Box
-                      padding="400"
-                      background="bg-surface-active"
-                      borderWidth="025"
-                      borderRadius="200"
-                      borderColor="border"
-                      overflowX="scroll"
-                    >
-                      <pre style={{ margin: 0 }}>
-                        <code>
-                          {JSON.stringify(actionData.variant, null, 2)}
-                        </code>
-                      </pre>
-                    </Box>
-                  </>
-                )}
-              </BlockStack>
-            </Card>
-          </Layout.Section>
-          <Layout.Section variant="oneThird">
-            <BlockStack gap="500">
-              <Card>
-                <BlockStack gap="200">
-                  <Text as="h2" variant="headingMd">
-                    App template specs
-                  </Text>
-                  <BlockStack gap="200">
-                    <InlineStack align="space-between">
-                      <Text as="span" variant="bodyMd">
-                        Framework
-                      </Text>
-                      <Link
-                        url="https://remix.run"
-                        target="_blank"
-                        removeUnderline
-                      >
-                        Remix
-                      </Link>
-                    </InlineStack>
-                    <InlineStack align="space-between">
-                      <Text as="span" variant="bodyMd">
-                        Database
-                      </Text>
-                      <Link
-                        url="https://www.prisma.io/"
-                        target="_blank"
-                        removeUnderline
-                      >
-                        Prisma
-                      </Link>
-                    </InlineStack>
-                    <InlineStack align="space-between">
-                      <Text as="span" variant="bodyMd">
-                        Interface
-                      </Text>
-                      <span>
-                        <Link
-                          url="https://polaris.shopify.com"
-                          target="_blank"
-                          removeUnderline
-                        >
-                          Polaris
-                        </Link>
-                        {", "}
-                        <Link
-                          url="https://shopify.dev/docs/apps/tools/app-bridge"
-                          target="_blank"
-                          removeUnderline
-                        >
-                          App Bridge
-                        </Link>
-                      </span>
-                    </InlineStack>
-                    <InlineStack align="space-between">
-                      <Text as="span" variant="bodyMd">
-                        API
-                      </Text>
-                      <Link
-                        url="https://shopify.dev/docs/api/admin-graphql"
-                        target="_blank"
-                        removeUnderline
-                      >
-                        GraphQL API
-                      </Link>
-                    </InlineStack>
-                  </BlockStack>
-                </BlockStack>
-              </Card>
-              <Card>
-                <BlockStack gap="200">
-                  <Text as="h2" variant="headingMd">
-                    Next steps
-                  </Text>
-                  <List>
-                    <List.Item>
-                      Build an{" "}
-                      <Link
-                        url="https://shopify.dev/docs/apps/getting-started/build-app-example"
-                        target="_blank"
-                        removeUnderline
-                      >
-                        {" "}
-                        example app
-                      </Link>{" "}
-                      to get started
-                    </List.Item>
-                    <List.Item>
-                      Explore Shopify’s API with{" "}
-                      <Link
-                        url="https://shopify.dev/docs/apps/tools/graphiql-admin-api"
-                        target="_blank"
-                        removeUnderline
-                      >
-                        GraphiQL
-                      </Link>
-                    </List.Item>
-                  </List>
-                </BlockStack>
-              </Card>
-            </BlockStack>
-          </Layout.Section>
-        </Layout>
-      </BlockStack>
-    </Page>
-    </>
-    
-  );
+	const [daystitle, setDaystitle] = useState('30 days');
+
+	const titles = {
+		days7: '7 days',
+		days14: '14 days',
+		days30: '30 days',
+		days60: '60 days',
+		days90: '90 days',
+		daysall: 'All time',
+	};
+	const handleSelect = (eventKey) => {
+		setDaystitle(titles[eventKey]);
+	};
+
+
+  	return (
+		<>
+			<Page fullWidth>
+				<Breadcrumb crumbs={crumbs}/>
+			</Page>
+			<div className="dashboardwrap max1048 mx-auto">
+				
+				<div className="dashalertbox">
+					<div className="logobox flxfix">Logo</div>
+					<div className="detailbox flxflexi flxcol">
+						<h4>Our Software is here to help you jump-start your business!</h4>
+						<p>Enjoy free access to Loox while the store is password protected on your Shopify trial.</p>
+					</div>
+					<div class="closebtn">
+						<a href="#"><i class="twenty-closeicon"></i></a>
+					</div>
+				</div>
+				<div className="dashbbanner">
+					<div className="detailbox flxflexi">
+						<h2>Ensure your best reviews get seen</h2>
+						<p>Use the pop-up widget to build trust faster by making sure your reviews are never missed</p>
+						<div className="btnwrap">
+							<a href="#" className="revbtn smbtn">Add a pop-up</a>
+						</div>
+					</div>
+					<div className="imagebox flxfix">
+						<Image src={bannerImage} />
+					</div>
+				</div>
+
+				<div className="dashdatawrap">
+					<div className="maintitle">
+						<h2>Performance Overview</h2>
+						<div className="rightbox dropdownwrap ms-auto ddverylightbtn">
+							<DropdownButton
+								id="dropdown-basic-button"
+								title={daystitle}
+								align={'end'}
+								onSelect={handleSelect}
+							>
+								{Object.entries(titles).map((title, i)=>{
+									return (
+										<Dropdown.Item eventKey={title[0]} className="custom-dropdown-item">{title[1]}</Dropdown.Item>
+									)
+								})}
+							</DropdownButton>
+						</div>
+					</div>
+					<div className="dashstetesticsbox">
+						<div className="titlebox">
+							<h3>Reviews</h3>
+							<div className="btnwrap m-0 ms-auto">
+								<a href="#" className="revbtn plainlink">Manage reviews <i className="twenty-arrow-right"></i></a>
+							</div>
+						</div>
+						<div className="numberboxwrap">
+							<div className="numberbox">
+								<div className="iconbox flxfix">
+									<ReviewRequestsSentIcon />
+								</div>
+								<div className="detailbox flxflexi">
+									<h3>00</h3>
+									<p>Review Requests Sent</p>
+								</div>
+							</div>
+							<div className="numberbox">
+								<div className="iconbox flxfix">
+									<ReviewsCollectedIcon />
+								</div>
+								<div className="detailbox flxflexi">
+									<h3>00</h3>
+									<p>Review Requests Sent</p>
+								</div>
+							</div>
+							<div className="numberbox">
+								<div className="iconbox flxfix">
+									<PhotoVideoReviewsIcon />
+								</div>
+								<div className="detailbox flxflexi">
+									<h3>00</h3>
+									<p>Photo/Video Reviews</p>
+								</div>
+							</div>
+						</div>
+						<div className="revenuebox">
+							<p><strong>$00</strong> Reviews-Generated Revenue</p>
+							<a href="#" className="infolink">
+								<InfoFillIcon />
+							</a>
+						</div>
+					</div>
+					<div className="dashstetesticsbox">
+						<div className="titlebox">
+							<h3>Referrals</h3>
+							<div className="btnwrap m-0 ms-auto">
+								<a href="#" className="revbtn plainlink">Manage referrals <i className="twenty-arrow-right"></i></a>
+							</div>
+						</div>
+						<div className="numberboxwrap">
+							<div className="numberbox">
+								<div className="iconbox flxfix">
+									<SharesDashIcon />
+								</div>
+								<div className="detailbox flxflexi">
+									<h3>00</h3>
+									<p>Shares</p>
+								</div>
+							</div>
+							<div className="numberbox">
+								<div className="iconbox flxfix">
+									<StoreVisitsIcon />
+								</div>
+								<div className="detailbox flxflexi">
+									<h3>00</h3>
+									<p>Store Visits</p>
+								</div>
+							</div>
+							<div className="numberbox">
+								<div className="iconbox flxfix">
+									<OrdersDashIcon />
+								</div>
+								<div className="detailbox flxflexi">
+									<h3>00</h3>
+									<p>Orders</p>
+								</div>
+							</div>
+						</div>
+						<div className="revenuebox">
+							<p><strong>$00</strong> Referrals-Generated Revenue</p>
+							<a href="#" className="infolink">
+								<InfoFillIcon />
+							</a>
+						</div>
+					</div>
+					<div className="dashstetesticsbox">
+						<div className="titlebox">
+							<h3>Upsells</h3>
+							<div className="btnwrap m-0 ms-auto">
+								<a href="#" className="revbtn blueblacklightbtn bigbtn"><i className="twenty-Info_icon"></i> Complete Setup</a>
+							</div>
+						</div>
+						<div className="numberboxwrap">
+							<div className="numberbox">
+								<div className="iconbox flxfix">
+									<ImpressionsDashIcon />
+								</div>
+								<div className="detailbox flxflexi">
+									<h3>00</h3>
+									<p>Impressions</p>
+								</div>
+							</div>
+							<div className="numberbox">
+								<div className="iconbox flxfix">
+									<UpsellsDashIcon />
+								</div>
+								<div className="detailbox flxflexi">
+									<h3>00</h3>
+									<p>Upsells</p>
+								</div>
+							</div>
+						</div>
+						<div className="revenuebox">
+							<p><strong>$00</strong> Upsells-Generated Revenue</p>
+							<a href="#" className="infolink">
+								<InfoFillIcon />
+							</a>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</>
+  	);
 }
