@@ -6,6 +6,7 @@ import manualRequestProducts from './models/manualRequestProducts';
 import manualReviewRequests from './models/manualReviewRequests';
 import generalAppearances from './models/generalAppearances';
 import generalSettings from './models/generalSettings';
+import reviewRequestTimingSettings from './models/reviewRequestTimingSettings';
 
 import { getShopDetailsByShop, getShopifyProducts, getLanguageWiseContents } from './../utils/common';
 import { sendEmail } from "./../utils/email.server";
@@ -101,6 +102,18 @@ export async function action({ params, request }) {
 
                     return json({ status: 200, message: "Manual review request sent." });
 
+                } else if (actionType == 'reviewRequestTiming') {
+
+                    const query = { shop_id: shopRecords._id };
+                    const update = {
+                        $set: {
+                            [requestBody.field]: requestBody.value
+                        }
+                    };
+                    const options = { upsert: true, returnOriginal: false };
+                    await reviewRequestTimingSettings.findOneAndUpdate(query, update, options);
+                    return json({ "status": 200, "message": "Settings saved" });
+
                 } else {
 
                     const query = { shop_id: shopRecords._id };
@@ -124,7 +137,7 @@ export async function action({ params, request }) {
 
         default:
 
-            return json({ "message": "hello", "method": "POST" });
+            return json({ "message": "", "method": "" });
 
     }
 }

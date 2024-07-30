@@ -8,7 +8,8 @@ import { ObjectId } from 'mongodb';
 import manualReviewRequests from "./models/manualReviewRequests";
 import manualRequestProducts from "./models/manualRequestProducts";
 import generalAppearances from "./models/generalAppearances";
-import emailReviewRequestSettings from "./models/emailReviewRequestSettings";
+import reviewRequestTimingSettings from './models/reviewRequestTimingSettings';
+
 import { getUploadDocument } from './../utils/documentPath';
 import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTemplate';
 import settingJson from './../utils/settings.json';
@@ -43,7 +44,6 @@ export async function action({ request }) {
 							$lt: new Date(end_date + " 23:59:59")
 						};
 					}
-					console.log(query);
 					if (filter_status == 'all') {
 						delete query['manualRequestProducts.status'];
 					}
@@ -99,6 +99,7 @@ export async function action({ request }) {
 								customer_locale: { $first: "$customer_locale" },
 								order_id: { $first: "$order_id" },
 								request_status: { $first: "$request_status" },
+								country_code: { $first: "$country_code" },
 								manualRequestProducts: {
 									$push: {
 										_id: "$manualRequestProducts._id",
@@ -106,6 +107,7 @@ export async function action({ request }) {
 										product_id: "$manualRequestProducts.product_id",
 										line_item_id: "$manualRequestProducts.line_item_id",
 										status: "$manualRequestProducts.status",
+										filfillment_date: "$manualRequestProducts.filfillment_date",
 										createdAt: "$manualRequestProducts.createdAt",
 										updatedAt: "$manualRequestProducts.updatedAt"
 									}
@@ -132,6 +134,7 @@ export async function action({ request }) {
 								order_id: 1,
 								customer_locale: 1,
 								request_status: 1,
+								country_code : 1,
 								manualRequestProducts: 1
 							}
 						}
@@ -161,8 +164,10 @@ export async function action({ request }) {
 						}
 					}
 
-
-					return json({ ordersItems, mapProductDetails, hasMore });
+					const reviewRequestTimingSettingsModel = await reviewRequestTimingSettings.findOne({
+						shop_id: shopRecords._id
+					});
+					return json({ ordersItems, mapProductDetails, hasMore, reviewRequestTimingSettings:reviewRequestTimingSettingsModel });
 				} else if (actionType == 'sendRequest') {
 					const { requestId } = requestBody;
 					const manualRequestModel = await manualReviewRequests.findOne({ _id: requestId });
@@ -258,7 +263,7 @@ export async function action({ request }) {
 				return json({ "status": 400, "message": "Operation failed" });
 			}
 		default:
-			return json({ "message": "hello", "method": "POST" });
+			return json({ "message": "", "method": "POST" });
 	}
 
 }

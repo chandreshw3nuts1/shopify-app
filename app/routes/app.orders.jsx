@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-
+import { mongoConnection } from './../utils/mongoConnection';
 import { useLoaderData } from '@remix-run/react';
 import Breadcrumb from "./components/Breadcrumb";
 import SettingPageSidebar from "./components/headerMenu/SettingPageSidebar";
 import { getShopDetails } from './../utils/getShopDetails';
 import settingsJson from './../utils/settings.json';
-import { formatTimeAgo, formatDate } from './../utils/dateFormat';
+import { formatTimeAgo, formatDate, addDaysToDate } from './../utils/dateFormat';
 import { toast } from 'react-toastify';
 import DatePicker from 'react-date-picker';
 import 'react-date-picker/dist/DatePicker.css';
@@ -24,6 +24,7 @@ import {
 
 export async function loader({ request }) {
     try {
+        const db = await mongoConnection();
 
         const shopRecords = await getShopDetails(request);
 
@@ -58,8 +59,8 @@ export async function fetchAllOrdersApi(requestParams) {
             },
             body: JSON.stringify(requestParams)
         });
-
         const data = await response.json();
+        console.log(data);
         return data;
 
     } catch (error) {
@@ -70,11 +71,13 @@ export default function Orders() {
     const loaderData = useLoaderData();
     const [searchFormData, setSearchFormData] = useState(loaderData.defaultSearchParams);
     const shopRecords = loaderData.shopRecords;
+
     const [submitHandle, setSubmitHandle] = useState(false);
     const [hasMore, setHasMore] = useState(1);
     const [loading, setLoading] = useState(false);
     const [filteredOrders, setFilteredOrders] = useState([]);
     const [productDetails, setProductDetails] = useState({});
+    const [reviewRequestTimingSettings, setReviewRequestTimingSettings] = useState({});
 
     const [selectedStatus, setSelectedStatus] = useState('all');
     const [selectedTimes, setSelectedTimes] = useState('all');
@@ -103,7 +106,7 @@ export default function Orders() {
 
     const handleStartDateChange = (date) => {
 
-        
+
         setStartDate(date);
         setSearchFormData({ ...searchFormData, start_date: formatDate(date) });
 
@@ -166,8 +169,8 @@ export default function Orders() {
                     ...response.mapProductDetails
                 }));
             }
+            setReviewRequestTimingSettings({ ...response.reviewRequestTimingSettings });
             setHasMore(response.hasMore);
-
             setLoading(false);
 
         })()
@@ -269,10 +272,87 @@ export default function Orders() {
         setSubmitHandle(!submitHandle);
 
     };
-    const [crumbs, setCrumbs] = useState([
+
+    const renderOrderStatus = (order, products) => {
+        switch (products.status) {
+            case "sent":
+                return <span>Sent : {formatDate(products.updatedAt, shopRecords.timezone)}</span>;
+            case "cancelled":
+                return <span>Cancelled</span>;
+            case "received":
+                return <span>Review received</span>;
+            case "pending":
+                if (!reviewRequestTimingSettings.is_different_timing) {
+
+                    if (reviewRequestTimingSettings.default_day_timing == 'never') {
+                        return 'Paused'; 
+                    }
+                    if (reviewRequestTimingSettings.default_order_timing == 'purchase') {
+                        return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone)}</span>;
+
+                    } else if (reviewRequestTimingSettings.default_order_timing == 'fulfillment') {
+                        return 'Awaiting fulfillment';
+                    }
+                } else {
+                    if(shopRecords.country_code == order.country_code) {
+                        if (reviewRequestTimingSettings.domestic_order_timing == 'purchase') {
+                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone)}</span>;
+    
+                        } else if (reviewRequestTimingSettings.domestic_order_timing == 'fulfillment') {
+                            return 'Awaiting fulfillment';
+                        }
+                    } else {
+
+                        if (reviewRequestTimingSettings.intenational_order_timing == 'purchase') {
+                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.intenational_day_timing, shopRecords.timezone)}</span>;
+    
+                        } else if (reviewRequestTimingSettings.intenational_order_timing == 'fulfillment') {
+                            return 'Awaiting fulfillment';
+                        }
+                    }
+                }
+            case "fulfilled":
+                if (!reviewRequestTimingSettings.is_different_timing) {
+
+                    if (reviewRequestTimingSettings.default_day_timing == 'never') {
+                        return 'Paused';
+                    }
+                    if (reviewRequestTimingSettings.default_order_timing == 'purchase') {
+                        return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone)}</span>;
+                    } else if (reviewRequestTimingSettings.default_order_timing == 'fulfillment') {
+                        return <span>Scheduled for {addDaysToDate(products.filfillment_date, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone)}</span>;
+                    }else {
+                        return "Awaiting delivery";
+                    }
+                } else {
+                    if(shopRecords.country_code == order.country_code) {
+                        if (reviewRequestTimingSettings.domestic_order_timing == 'purchase') {
+                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone)}</span>;
+    
+                        } else if (reviewRequestTimingSettings.domestic_order_timing == 'fulfillment') {
+                            return <span>Scheduled for {addDaysToDate(products.filfillment_date, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone)}</span>;
+
+                        }
+                    } else {
+
+                        if (reviewRequestTimingSettings.intenational_order_timing == 'purchase') {
+                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.intenational_day_timing, shopRecords.timezone)}</span>;
+    
+                        } else if (reviewRequestTimingSettings.intenational_order_timing == 'fulfillment') {
+                            return <span>Scheduled for {addDaysToDate(products.filfillment_date, reviewRequestTimingSettings.intenational_day_timing, shopRecords.timezone)}</span>;
+
+                        }
+                    }
+                }
+
+            default:
+                return <span>{`Status: ${products.status}`}</span>;
+        }
+    }
+    const crumbs = [
         { "title": "Settings", "link": "./../branding" },
         { "title": "Orders", "link": "" }
-    ]);
+    ];
     return (
         <>
             <Breadcrumb crumbs={crumbs} />
@@ -374,7 +454,7 @@ export default function Orders() {
                                             }
                                             <span className="revbtn lightbtn">
                                                 <i className="twenty-timericon"></i>
-                                                {formatTimeAgo(result.createdAt)}
+                                                {formatTimeAgo(result.createdAt, shopRecords.timezone)}
                                             </span>
                                         </div>
                                     </div>
@@ -387,7 +467,10 @@ export default function Orders() {
                                                         ? productDetails[products.product_id].title
                                                         : ""}</div>
                                                     <div className="orderstatus flxfix">
-                                                        {products.status === "sent" && (
+                                                        {renderOrderStatus(result, products)}
+
+
+                                                        {/* {products.status === "sent" && (
                                                             <span>Sent : {formatTimeAgo(products.updatedAt)}</span>
                                                         )}
                                                         {products.status === "fulfilled" && (
@@ -401,7 +484,7 @@ export default function Orders() {
 
                                                         {products.status === "received" && (
                                                             <span>Review received</span>
-                                                        )}
+                                                        )} */}
 
                                                     </div>
                                                 </div>

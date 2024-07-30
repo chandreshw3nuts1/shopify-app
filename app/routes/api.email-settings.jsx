@@ -109,7 +109,7 @@ export async function action({ params, request }) {
 
         default:
 
-            return json({ "message": "hello", "method": "POST" });
+            return json({ "message": "", "method": "POST" });
 
     }
 }

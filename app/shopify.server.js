@@ -45,7 +45,12 @@ const shopify = shopifyApp({
     SHOP_UPDATE: {
       deliveryMethod: DeliveryMethod.Http,
       callbackUrl: "/api/webhooks",
+    },
+    LOCATIONS_UPDATE: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/api/webhooks",
     }
+    
     
     
   },

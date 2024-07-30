@@ -618,7 +618,7 @@ export async function action({ request} ) {
 			
 		default:
 
-		return json({"message" : "hello", "method" : "POST"});
+		return json({"message" : "", "method" : "POST"});
 
 	}
 

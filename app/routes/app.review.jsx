@@ -1,15 +1,17 @@
 import { useState, useCallback } from 'react';
 import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import { mongoConnection } from './../utils/mongoConnection';
 import { getShopDetails } from './../utils/getShopDetails';
-import { findOneRecord, getCustomQuestions } from './../utils/common';
+import { getCustomQuestions } from './../utils/common';
 import { useNavigate } from 'react-router-dom';
 
 import Breadcrumb from './components/Breadcrumb';
 import ReviewPageSidebar from './components/headerMenu/ReviewPageSidebar';
 import CustomQuestions from "./components/collectReview/CustomQuestions";
 import ManageNewReview from "./components/collectReview/ManageNewReview";
+import ReviewRequestTiming from "./components/collectReview/ReviewRequestTiming";
+import settings from './models/settings';
+import reviewRequestTimingSettings from './models/reviewRequestTimingSettings';
 
 import {
 	Page,
@@ -25,18 +27,19 @@ export async function loader({ request }) {
 	try {
 		const shopRecords = await getShopDetails(request);
 
-		const db = await mongoConnection();
-		const settings = await findOneRecord(collectionName, {
-			shop_id: shopRecords._id,
+		const settingsModel = await settings.findOne({
+			shop_id: shopRecords._id
 		});
-
+		const reviewRequestTimingSettingsModel = await reviewRequestTimingSettings.findOne({
+			shop_id: shopRecords._id
+		});
 
 		const customQuestionsData = await getCustomQuestions({
 			shop_id: shopRecords._id,
 		});
 
 
-		return json({ "settings": settings, "shopRecords": shopRecords, "customQuestionsData": customQuestionsData });
+		return json({ settings: settingsModel, shopRecords: shopRecords, customQuestionsData: customQuestionsData, reviewRequestTimingSettings: reviewRequestTimingSettingsModel });
 	} catch (error) {
 		console.error('Error fetching records from MongoDB:', error);
 		return json(
@@ -53,15 +56,20 @@ const ReviewPage = () => {
 	const settings = loaderData.settings;
 	const customQuestionsData = loaderData.customQuestionsData;
 	const shopRecords = loaderData.shopRecords;
-
+	const reviewRequestTimingSettings = loaderData.reviewRequestTimingSettings;
+	
 	const [crumbs, setCrumbs] = useState([
 		{ title: "Review", "link": "./../review" },
 		{ title: "Collect review", link: "" },
 	]);
 	const [openNewReview, setOpenNewReview] = useState(false);
 	const [openCustomQuestions, setOpenCustomQuestions] = useState(false);
+	const [openReviewRequestTiming, setOpenReviewRequestTiming] = useState(false);
+
 	const handleToggleNewReview = useCallback(() => setOpenNewReview(openNewReview => !openNewReview), []);
 	const handleToggleCustomQuestions = useCallback(() => setOpenCustomQuestions(openCustomQuestions => !openCustomQuestions), []);
+	const handleToggleReviewRequestTiming = useCallback(() => setOpenReviewRequestTiming(openReviewRequestTiming => !openReviewRequestTiming), []);
+
 
 	const [openEmailSettings, setOpenEmailSettings] = useState(false);
 	const handleToggleEmailSettings = useCallback(() => setOpenEmailSettings(openEmailSettings => !openEmailSettings), []);
@@ -124,6 +132,56 @@ const ReviewPage = () => {
 						</LegacyCard>
 					</Layout.Section>
 				</div>
+
+
+
+				<div className='accordian_rowmain'>
+					<Layout.Section>
+						<LegacyCard sectioned>
+							<div
+								onClick={handleToggleReviewRequestTiming}
+								aria-expanded={openReviewRequestTiming}
+								aria-controls="basic-collapsible"
+								className={openReviewRequestTiming ? 'open' : ''}
+							>
+								<div className='flxrow acctitle'>
+									<div className='flxfix iconbox'>
+										<i className='twenty-star'></i>
+									</div>
+									<div className='flxflexi titledetail'>
+										<Text as="h1" variant="headingMd">
+											Review request timing
+										</Text>
+										<Text>
+											Set the timing of the first review request email sent to your customers
+										</Text>
+									</div>
+									<div className='flxfix arrowicon'>
+										<i className='twenty-arrow-down'></i>
+									</div>
+								</div>
+							</div>
+							<LegacyStack vertical>
+								<Collapsible
+									open={openReviewRequestTiming}
+									id="basic-collapsible"
+									transition={{
+										duration: '300ms',
+										timingFunction: 'ease-in-out',
+									}}
+									expandOnPrint
+								>
+									<ReviewRequestTiming reviewRequestTimingSettings={reviewRequestTimingSettings} shopRecords={shopRecords} />
+								</Collapsible>
+							</LegacyStack>
+						</LegacyCard>
+					</Layout.Section>
+				</div>
+
+
+
+
+
 				<div className='accordian_rowmain'>
 					<Layout.Section>
 						<LegacyCard sectioned>

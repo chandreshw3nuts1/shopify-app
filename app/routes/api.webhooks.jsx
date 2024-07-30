@@ -25,9 +25,9 @@ export async function action({ request }) {
 	}
 	const bodyObj = JSON.parse(rawBody);
 	console.log(bodyObj);
-	if (topic == 'orders/create') {
-		const shopRecords = await getShopDetailsByShop(shopDomain);
+	const shopRecords = await getShopDetailsByShop(shopDomain);
 
+	if (topic == 'orders/create') {
 		var language = "";
 		if (bodyObj.customer_locale == 'zh-CN') {
 			language = 'cn1';
@@ -42,7 +42,7 @@ export async function action({ request }) {
 			first_name: bodyObj.customer.first_name,
 			last_name: bodyObj.customer.last_name,
 			customer_locale: language,
-			country_code : bodyObj.shipping_address.country_code,
+			country_code: bodyObj.shipping_address.country_code,
 			order_id: bodyObj.id,
 			order_number: bodyObj.order_number,
 			request_status: "pending"
@@ -66,7 +66,7 @@ export async function action({ request }) {
 			console.log(productIds);
 			await manualReviewRequests.updateOne(
 				{ _id: lastInsertedId },
-				{ $set: { product_ids : productIds } }
+				{ $set: { product_ids: productIds } }
 			);
 
 		}
@@ -77,7 +77,7 @@ export async function action({ request }) {
 			await manualRequestProducts.updateOne(
 				{ line_item_id: lineItem.id },
 				{
-					$set: { status: "fulfilled" }
+					$set: { status: "fulfilled", filfillment_date : new Date() }
 				}
 			);
 		}));
@@ -105,14 +105,29 @@ export async function action({ request }) {
 		console.log(`---App uninstalled from shop: ${shop}`);
 	} else if (topic == 'shop/update') {
 		try {
-			const shopRecords = await getShopDetailsByShop(shopDomain);
 			if (shopRecords) {
 				const currency_symbol = bodyObj.money_format.replace(/{{.*?}}/g, '').trim();
 
 				const updateResult = await shopDetails.updateOne(
 					{ _id: shopRecords._id },
-					{ $set: { currency: bodyObj.currency, currency_symbol: currency_symbol, timezone : bodyObj.iana_timezone } }
+					{ $set: { primary_location_id: bodyObj.primary_location_id, currency: bodyObj.currency, currency_symbol: currency_symbol, timezone: bodyObj.iana_timezone } }
 				);
+
+			} else {
+				console.log('No shop records found for the given shop domain.');
+			}
+		} catch (error) {
+			console.error('Error updating currency symbol:', error);
+		}
+
+	} else if (topic == 'locations/update') {
+		try {
+			if (shopRecords) {
+				await shopDetails.updateOne(
+					{ _id: shopRecords._id },
+					{ $set: { country_code: bodyObj.country_code} }
+				);
+
 			} else {
 				console.log('No shop records found for the given shop domain.');
 			}

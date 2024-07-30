@@ -115,16 +115,11 @@ export async function getShopifyLatestProducts(shop) {
 export async function createShopifyDiscountCode(shopRecords, hasPhoto = false, hasVideo = false, isReviewRequest = false) {
 	try {
 
-		console.log('----------createShopifyDiscountCode-------------');
-		console.log(hasPhoto);
-		console.log(hasVideo);
-		console.log(isReviewRequest);
 		let response = {};
 		const reviewDiscountSettingsModel = await reviewDiscountSettings.findOne({
 			shop_id: shopRecords._id
 		});
 		if (reviewDiscountSettingsModel.isDiscountEnabled && (reviewDiscountSettingsModel.reviewType == 'both' || isReviewRequest)) {
-			console.log('--------inside-------');
 
 			let valueType = "";
 			let discountValue = 0;
@@ -234,7 +229,6 @@ export async function createShopifyDiscountCode(shopRecords, hasPhoto = false, h
 				}
 
 			}
-			// expireOnDate = getCustomFormattedEndDateTime(reviewDiscountSettingsModel.expiredAfter, shopRecords.timezone);
 
 			response.discount_code.discount_value = discountValue;
 			response.discount_code.value_type = valueType;

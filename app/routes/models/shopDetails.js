@@ -9,10 +9,12 @@ const shopDetailsSchema = new mongoose.Schema({
     shop_id: {type: String, required: true },
     shop: {type: String, required: true },
     country_name: { type: String, required: true },
+    country_code: { type: String},
     email: { type: String, required: true },
     currency: { type: String, required: true },
     currency_symbol: { type: String, required: true },
     timezone: { type: String , required: true },
+    primary_location_id: { type: Number },
     shop_owner: { type: String,required: true  },
     name: { type: String, required: true },
 },{

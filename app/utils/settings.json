@@ -1,5 +1,5 @@
 {
-	"host_url": "https://assumed-easy-ou-preview.trycloudflare.com",
+	"host_url": "https://sunday-kid-movie-stay.trycloudflare.com",
 	"page_limit": 20,
 	"manage_new_review_options": [
 		{
@@ -150,6 +150,169 @@
 		"rating-tshirt",
 		"rating-wine"
 	],
+	"dayTimings": [
+		{
+			"label": "1 Day",
+			"value": "1"
+		},
+		{
+			"label": "2 Days",
+			"value": "2"
+		},
+		{
+			"label": "3 Days",
+			"value": "3"
+		},
+		{
+			"label": "4 Days",
+			"value": "4"
+		},
+		{
+			"label": "5 Days",
+			"value": "5"
+		},
+		{
+			"label": "6 Days",
+			"value": "6"
+		},
+		{
+			"label": "7 Days",
+			"value": "7"
+		},
+		{
+			"label": "8 Days",
+			"value": "8"
+		},
+		{
+			"label": "9 Days",
+			"value": "9"
+		},
+		{
+			"label": "10 Days",
+			"value": "10"
+		},
+		{
+			"label": "11 Days",
+			"value": "11"
+		},
+		{
+			"label": "12 Days",
+			"value": "12"
+		},
+		{
+			"label": "13 Days",
+			"value": "13"
+		},
+		{
+			"label": "14 Days",
+			"value": "14"
+		},
+		{
+			"label": "15 Days",
+			"value": "15"
+		},
+		{
+			"label": "16 Days",
+			"value": "16"
+		},
+		{
+			"label": "17 Days",
+			"value": "17"
+		},
+		{
+			"label": "18 Days",
+			"value": "18"
+		},
+		{
+			"label": "19 Days",
+			"value": "19"
+		},
+		{
+			"label": "20 Days",
+			"value": "20"
+		},
+		{
+			"label": "21 Days",
+			"value": "21"
+		},
+		{
+			"label": "28 Days",
+			"value": "28"
+		},
+		{
+			"label": "35 Days",
+			"value": "35"
+		},
+		{
+			"label": "42 Days",
+			"value": "42"
+		},
+		{
+			"label": "49 Days",
+			"value": "49"
+		},
+		{
+			"label": "56 Days",
+			"value": "56"
+		},
+		{
+			"label": "63 Days",
+			"value": "63"
+		},
+		{
+			"label": "70 Days",
+			"value": "70"
+		},
+		{
+			"label": "Never",
+			"value": "never"
+		}
+	],
+	"defaultOrderTiming": [
+		{
+			"label": "Purchase",
+			"value": "purchase"
+		},
+		{
+			"label": "Fulfillment",
+			"value": "fulfillment"
+		},
+		{
+			"label": "Delivery",
+			"value": "delivery"
+		}
+	],
+	"differentOrderTiming": [
+		{
+			"label": "Purchase",
+			"value": "purchase"
+		},
+		{
+			"label": "Fulfillment",
+			"value": "fulfillment"
+		}
+	],
+	"fallbackTiming": [
+		{
+			"label": "No fallback",
+			"value": ""
+		},
+		{
+			"label": "30 days after fulfillment",
+			"value": "30"
+		},
+		{
+			"label": "45 days after fulfillment",
+			"value": "45"
+		},
+		{
+			"label": "60 days after fulfillment",
+			"value": "60"
+		}
+	],
+
+
+	
 	"defaultColors": {
 		"defaultBanner": "default-banner.png",
 		"starIcon": "rating-star-rounded",
@@ -201,10 +364,10 @@
 		}
 	},
 	"shopifyDiscount": {
-		"reviewDiscountTitle" : "W3 Photo/Video Reviews :",
-		"reviewDiscountPrefix" : "W3-",
-		"reviewDiscountCodeDigit" : "10"
+		"reviewDiscountTitle": "W3 Photo/Video Reviews :",
+		"reviewDiscountPrefix": "W3-",
+		"reviewDiscountCodeDigit": "10"
 	},
-	"addReviewSameDiscountText" : "Your [discount] off discount is wait for you!",
-	"addReviewDifferentDiscountText" : "Upload a photo to get [photo_discount] off or a video to get [video_discount] off your next purchase!"
+	"addReviewSameDiscountText": "Your [discount] off discount is wait for you!",
+	"addReviewDifferentDiscountText": "Upload a photo to get [photo_discount] off or a video to get [video_discount] off your next purchase!"
 }
