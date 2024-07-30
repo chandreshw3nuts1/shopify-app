@@ -146,7 +146,7 @@ const ReviewPage = () => {
 							>
 								<div className='flxrow acctitle'>
 									<div className='flxfix iconbox'>
-										<i className='twenty-star'></i>
+										<i className='twenty-review-timing'></i>
 									</div>
 									<div className='flxflexi titledetail'>
 										<Text as="h1" variant="headingMd">
@@ -177,7 +177,6 @@ const ReviewPage = () => {
 						</LegacyCard>
 					</Layout.Section>
 				</div>
-
 
 
 

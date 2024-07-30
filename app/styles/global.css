@@ -634,3 +634,10 @@ body .dropdown-toggle::after { content: "\e902"; font-family: 'icon24' !importan
 .dashdatawrap .revenuebox p { display: block; margin: 0; padding: 0; font-size: 14px; color: var(--darkColor); line-height: normal;}
 .dashdatawrap .revenuebox p strong { font-weight: 700;}
 .dashdatawrap .revenuebox .infolink { margin: 0 0 0 auto; display: flex; align-items: center; justify-content: center; padding: 0; color: var(--blueColor);}
+
+body select:disabled { opacity: 0;}
+
+.reviewtiming_wrap { margin: 0; display: flex; flex-direction: column; row-gap: 24px;}
+.beforeafterwrap { display: flex; align-items: flex-start;}
+.beforeafterwrap .aftertextlabel { padding: 10px 24px 0; font-size: 14px; color: var(--darkColor);}
+
