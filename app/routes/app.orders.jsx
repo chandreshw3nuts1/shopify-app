@@ -303,10 +303,10 @@ export default function Orders() {
                         }
                     } else {
 
-                        if (reviewRequestTimingSettings.intenational_order_timing == 'purchase') {
-                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.intenational_day_timing, shopRecords.timezone)}</span>;
+                        if (reviewRequestTimingSettings.international_order_timing == 'purchase') {
+                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone)}</span>;
     
-                        } else if (reviewRequestTimingSettings.intenational_order_timing == 'fulfillment') {
+                        } else if (reviewRequestTimingSettings.international_order_timing == 'fulfillment') {
                             return 'Awaiting fulfillment';
                         }
                     }
@@ -335,11 +335,11 @@ export default function Orders() {
                         }
                     } else {
 
-                        if (reviewRequestTimingSettings.intenational_order_timing == 'purchase') {
-                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.intenational_day_timing, shopRecords.timezone)}</span>;
+                        if (reviewRequestTimingSettings.international_order_timing == 'purchase') {
+                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone)}</span>;
     
-                        } else if (reviewRequestTimingSettings.intenational_order_timing == 'fulfillment') {
-                            return <span>Scheduled for {addDaysToDate(products.filfillment_date, reviewRequestTimingSettings.intenational_day_timing, shopRecords.timezone)}</span>;
+                        } else if (reviewRequestTimingSettings.international_order_timing == 'fulfillment') {
+                            return <span>Scheduled for {addDaysToDate(products.filfillment_date, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone)}</span>;
 
                         }
                     }

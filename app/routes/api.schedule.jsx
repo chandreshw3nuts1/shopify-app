@@ -6,8 +6,13 @@ import shopDetails from "./models/shopDetails";
 import reviewRequestTimingSettings from "./models/reviewRequestTimingSettings";
 import manualReviewRequests from "./models/manualReviewRequests";
 import manualRequestProducts from "./models/manualRequestProducts";
-import settingJson from './../utils/settings.json';
+
+import generalAppearances from "./models/generalAppearances";
+import settingsJson from './../utils/settings.json';
 import { addDaysToDate } from './../utils/dateFormat';
+import { getUploadDocument } from './../utils/documentPath';
+import { getShopifyProducts, getLanguageWiseContents } from "./../utils/common";
+import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTemplate';
 
 export async function loader() {
     return json({});
@@ -31,6 +36,11 @@ export async function action({ request }) {
                     var currentDate = new Date();
 
                     for (const shop of shopDetailsModel) {
+
+                        var generalAppearancesObj = await generalAppearances.findOne({ shop_id: shop._id });
+                        var logo = getUploadDocument(generalAppearancesObj.logo, 'logo');
+
+
                         const timingSettings = reviewRequestTimingSettingsModel.find(setting => setting.shop_id.toString() === shop._id.toString());
 
                         if (timingSettings) {
@@ -66,6 +76,7 @@ export async function action({ request }) {
                                         order_id: { $first: "$order_id" },
                                         request_status: { $first: "$request_status" },
                                         country_code: { $first: "$country_code" },
+                                        order_number: { $first: "$order_number" },
                                         manualRequestProducts: {
                                             $push: {
                                                 _id: "$manualRequestProducts._id",
@@ -92,29 +103,82 @@ export async function action({ request }) {
                                         customer_locale: 1,
                                         request_status: 1,
                                         country_code: 1,
+                                        order_number: 1,
                                         manualRequestProducts: 1
                                     }
                                 }
                             ]);
-
                             if (ordersItems.length > 0) {
                                 for (const singleOrder of ordersItems) {
+
+                                    let productIdList = [];
                                     for (const product of singleOrder.manualRequestProducts) {
                                         var scheduleDate = getScheduleDate(product, singleOrder, timingSettings, shop);
+                                        if (scheduleDate != null) {
+                                            scheduleDate = new Date(scheduleDate);
+                                            if (scheduleDate <= currentDate) {
+                                                productIdList.push(product.product_id);
+                                            }
+                                        }
+                                    }
+                                    if (productIdList.length > 0) {
 
-                                        scheduleDate = new Date(scheduleDate);
-                                        return scheduleDate;
-                                        if (givenDate > currentDate) {
-                                        } else {
+                                        const productIds = productIdList.map((item) => `"gid://shopify/Product/${item}"`);
+                                        var mapProductDetails = await getShopifyProducts(shop.shop, productIds, 200);
+                                        const customer_locale = singleOrder.customer_locale;
+
+                                        const footer = "";
+
+                                        const replaceVars = {
+                                            "order_number": singleOrder.order_number,
+                                            "name": singleOrder.first_name,
+                                            "last_name": singleOrder.last_name,
+                                        }
+                                        const emailContents = await getLanguageWiseContents("review_request", replaceVars, shop._id, customer_locale);
+                                        emailContents.banner = getUploadDocument(emailContents.banner, 'banners');
+
+                                        emailContents.logo = logo;
+
+                                        var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
+                                            <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} footer={footer} />
+                                        );
+
+                                        await Promise.all(singleOrder.manualRequestProducts.map(async (product, index) => {
+
+                                            const reviewLink = `${settingsJson.host_url}/review-request/${product._id}/review-form`;
+                                            emailHtmlContent = emailHtmlContent.replace(`{{review_link_${product.product_id}}}`, reviewLink);
+                                        }));
+
+                                        // Send request email
+                                        const subject = emailContents.subject;
+                                        const response = await sendEmail({
+                                            to: singleOrder.email,
+                                            subject,
+                                            html: emailHtmlContent,
+                                        });
+
+                                        if (singleOrder.manualRequestProducts.length == productIdList.length) {
+                                            await manualReviewRequests.updateOne(
+                                                { _id: singleOrder._id },
+                                                {
+                                                    $set: { request_status: "sent" }
+                                                }
+                                            );
                                         }
 
 
-                                        return scheduleDate;
+                                        await manualRequestProducts.updateMany(
+                                            { product_id: { $in: productIdList } },
+                                            {
+                                                $set: { status: "sent" }
+                                            }
+                                        );
+
 
 
                                     }
-                                }
 
+                                }
 
                             }
 

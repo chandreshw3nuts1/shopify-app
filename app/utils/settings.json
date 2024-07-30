@@ -310,9 +310,6 @@
 			"value": "60"
 		}
 	],
-
-
-	
 	"defaultColors": {
 		"defaultBanner": "default-banner.png",
 		"starIcon": "rating-star-rounded",
@@ -368,6 +365,14 @@
 		"reviewDiscountPrefix": "W3-",
 		"reviewDiscountCodeDigit": "10"
 	},
-	"addReviewSameDiscountText": "Your [discount] off discount is wait for you!",
-	"addReviewDifferentDiscountText": "Upload a photo to get [photo_discount] off or a video to get [video_discount] off your next purchase!"
+	"defaultReviewRequestTiming": {
+		"isDifferentTiming": false,
+		"defaultDayTiming": "7",
+		"defaultOrderTiming": "purchase",
+		"domesticDayTiming": "7",
+		"domesticOrderTiming": "purchase",
+		"internationalDayTiming": "21",
+		"internationalOrderTiming": "purchase",
+		"fallbackTiming": "30"
+	}
 }

@@ -26,10 +26,10 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
         reviewRequestTimingSettings?.domestic_order_timing || null
     );
     const [selectedInternationalDayTiming, setSelectedInternationalDayTiming] = useState(
-        reviewRequestTimingSettings?.intenational_day_timing || null
+        reviewRequestTimingSettings?.international_day_timing || null
     );
     const [selectedInternationalOrderTiming, setSelectedInternationalOrderTiming] = useState(
-        reviewRequestTimingSettings?.intenational_order_timing || null
+        reviewRequestTimingSettings?.international_order_timing || null
     );
     const [selectedFallbackTiming, setSelectedFallbackTiming] = useState(
         reviewRequestTimingSettings?.fallback_timing || null
@@ -72,9 +72,9 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
             setSelectedDomesticDayTiming(value);
         } else if (name == 'domestic_order_timing') {
             setSelectedDomesticOrderTiming(value);
-        } else if (name == 'intenational_day_timing') {
+        } else if (name == 'international_day_timing') {
             setSelectedInternationalDayTiming(value);
-        } else if (name == 'intenational_order_timing') {
+        } else if (name == 'international_order_timing') {
             setSelectedInternationalOrderTiming(value);
         } else if (name == 'fallback_timing') {
             setSelectedFallbackTiming(value);
@@ -235,8 +235,8 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
 
                                         <div className="formcontent" >
                                             <Select
-                                                name="intenational_day_timing"
-                                                id="intenational_day_timing"
+                                                name="international_day_timing"
+                                                id="international_day_timing"
                                                 label={`International orders (shipping outside ${shopRecords.country_code})`}
                                                 options={dayTimings.slice(0, -1)}
                                                 onChange={
@@ -250,8 +250,8 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
                                     <div class="form-group">
                                         <div className="formcontent" >
                                             <Select
-                                                name="intenational_order_timing"
-                                                id="intenational_order_timing"
+                                                name="international_order_timing"
+                                                id="international_order_timing"
                                                 options={differentOrderTiming}
                                                 onChange={
                                                     handleSelectChange

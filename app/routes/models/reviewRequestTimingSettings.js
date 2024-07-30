@@ -11,8 +11,8 @@ const reviewRequestTimingSettingsSchema = new mongoose.Schema({
     default_order_timing: {type: String},
     domestic_day_timing: {type: String },
     domestic_order_timing: {type: String },
-    intenational_day_timing: {type: String },
-    intenational_order_timing: {type: String },
+    international_day_timing: {type: String },
+    international_order_timing: {type: String },
     fallback_timing: {type: String }
     
 },{

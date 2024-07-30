@@ -3,6 +3,8 @@ import settings from './../routes/models/settings';
 import generalAppearances from './../routes/models/generalAppearances';
 import generalSettings from './../routes/models/generalSettings';
 import appInstallLogs from './../routes/models/appInstallLogs';
+import reviewRequestTimingSettings from './../routes/models/reviewRequestTimingSettings';
+
 import settingsJson from './../utils/settings.json';
 
 export async function storeShopDetails(session) {
@@ -106,6 +108,26 @@ export async function storeShopDetails(session) {
 				},
 				{ upsert: true }
 			);
+
+
+			await reviewRequestTimingSettings.updateOne(
+				{ shop_id: shopRecords._id },
+				{
+					$setOnInsert: {
+						shop_id: shopRecords._id,
+						is_different_timing: settingsJson.defaultReviewRequestTiming.isDifferentTiming,
+						default_day_timing: settingsJson.defaultReviewRequestTiming.defaultDayTiming,
+						default_order_timing: settingsJson.defaultReviewRequestTiming.defaultOrderTiming,
+						domestic_day_timing: settingsJson.defaultReviewRequestTiming.domesticDayTiming,
+						domestic_order_timing: settingsJson.defaultReviewRequestTiming.domesticOrderTiming,
+						international_day_timing: settingsJson.defaultReviewRequestTiming.internationalDayTiming,
+						international_order_timing: settingsJson.defaultReviewRequestTiming.internationalOrderTiming,
+						fallback_timing: settingsJson.defaultReviewRequestTiming.fallbackTiming
+					}
+				},
+				{ upsert: true }
+			);
+
 
 			/* add install app log */
 			const appInstallLogsModel = new appInstallLogs({
