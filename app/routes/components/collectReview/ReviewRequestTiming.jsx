@@ -119,56 +119,64 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
             <div className='col-md-12'>
                 <div className='collectreviewformbox'>
                     <Card>
-                        <div className="">
-                            <div class="form-group">
-
-                                <div className="formcontent" >
-                                    <Select
-                                        name="default_day_timing"
-                                        id="default_day_timing"
-                                        options={dayTimings}
-                                        disabled={isDifferentTimingChecked}
-                                        onChange={
-                                            handleSelectChange
-                                        }
-                                        value={selectedDefaultDayTiming}
-                                    />
+                        <div className="reviewtiming_wrap">
+                            
+                            <div class="form-group m-0 flxflexi">
+                                <label htmlFor="">Email timing</label>
+                                <div className='beforeafterwrap flxrow'>
+                                    <div className='inputwrap flxflexi'>
+                                        <div className="formcontent" >
+                                            <Select
+                                                name="default_day_timing"
+                                                id="default_day_timing"
+                                                options={dayTimings}
+                                                disabled={isDifferentTimingChecked}
+                                                onChange={
+                                                    handleSelectChange
+                                                }
+                                                value={selectedDefaultDayTiming}
+                                            />
+                                        </div>
+                                    </div>
+                                    <span class="flxfix aftertextlabel">After</span>
+                                    <div className='inputwrap flxflexi'>
+                                        <div className="formcontent" >
+                                            <Select
+                                                name="default_order_timing"
+                                                id="default_order_timing"
+                                                options={defaultOrderTiming}
+                                                disabled={isDifferentTimingChecked}
+                                                onChange={
+                                                    handleSelectChange
+                                                }
+                                                value={selectedDefaultOrderTiming}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-
                             </div>
-                            <span class="">After</span>
-                            <div class="form-group">
-                                <div className="formcontent" >
-                                    <Select
-                                        name="default_order_timing"
-                                        id="default_order_timing"
-                                        options={defaultOrderTiming}
-                                        disabled={isDifferentTimingChecked}
-                                        onChange={
-                                            handleSelectChange
-                                        }
-                                        value={selectedDefaultOrderTiming}
-                                    />
-                                </div>
-                            </div>
+                                
+                            
                             {(selectedDefaultOrderTiming == "delivery" && !isDifferentTimingChecked) &&
-                                <div class="form-group">
-                                    <div className="formcontent" >
-                                        <Select
-                                            name="fallback_timing"
-                                            id="fallback_timing"
-                                            label="Fallback timing"
-                                            options={fallbackTiming}
-                                            onChange={
-                                                handleSelectChange
-                                            }
-                                            value={selectedFallbackTiming}
-                                        />
+                                <div class="form-group m-0 horizontal-form alightop">
+                                    <label htmlFor="">Fallback timing</label>
+                                    <div className='sideinput mw300 flxflexi'>
+                                        <div className="formcontent" >
+                                            <Select
+                                                name="fallback_timing"
+                                                id="fallback_timing"
+                                                options={fallbackTiming}
+                                                onChange={
+                                                    handleSelectChange
+                                                }
+                                                value={selectedFallbackTiming}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             }
 
-
+                            
                             <div className="form-check form-switch">
                                 <input
                                     checked={
@@ -190,7 +198,86 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
                                     Set different timing for domestic and international orders
                                 </label>
                             </div>
+                            
+                            {isDifferentTimingChecked &&
+                                <>
 
+                                    <div className="">
+                                        <div class="form-group m-0">
+                                            <label htmlFor="">Domestic orders (shipping within IN)</label>
+                                            <div className='beforeafterwrap flxrow'>
+                                                <div className='inputwrap flxflexi'>
+                                                    <div className="formcontent" >
+                                                        <Select
+                                                            name="domestic_day_timing"
+                                                            id="domestic_day_timing"
+                                                            options={dayTimings.slice(0, -1)}
+                                                            onChange={
+                                                                handleSelectChange
+                                                            }
+                                                            value={selectedDomesticDayTiming}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <span class="flxfix aftertextlabel">After</span>
+                                                <div class="inputwrap flxflexi">
+                                                    <div className="formcontent" >
+                                                        <Select
+                                                            name="domestic_order_timing"
+                                                            id="domestic_order_timing"
+                                                            options={differentOrderTiming}
+                                                            onChange={
+                                                                handleSelectChange
+                                                            }
+                                                            value={selectedDomesticOrderTiming}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div className="">
+                                        <div class="form-group m-0">
+                                            <label htmlFor="">{`International orders (shipping outside ${shopRecords.country_code})`}</label>
+                                            <div className='beforeafterwrap flxrow'>
+                                                <div className='inputwrap flxflexi'>
+                                                    <div className="formcontent" >
+                                                        <Select
+                                                            name="intenational_day_timing"
+                                                            id="intenational_day_timing"
+                                                            options={dayTimings.slice(0, -1)}
+                                                            onChange={
+                                                                handleSelectChange
+                                                            }
+                                                            value={selectedInternationalDayTiming}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <span class="flxfix aftertextlabel">After</span>
+                                                <div class="inputwrap flxflexi">
+                                                    <div className="formcontent" >
+                                                        <Select
+                                                            name="intenational_order_timing"
+                                                            id="intenational_order_timing"
+                                                            options={differentOrderTiming}
+                                                            onChange={
+                                                                handleSelectChange
+                                                            }
+                                                            value={selectedInternationalOrderTiming}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+
+                                    </div>
+
+                                </>
+                            }
 
                         </div>
                         {isDifferentTimingChecked &&
@@ -265,6 +352,7 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
 
                             </>
                         }
+                        
 
                     </Card>
                 </div>
