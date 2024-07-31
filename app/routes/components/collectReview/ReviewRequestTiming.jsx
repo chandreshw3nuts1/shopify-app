@@ -36,8 +36,6 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
     );
 
 
-
-
     const dayTimings = settingsJson.dayTimings;
     const defaultOrderTiming = settingsJson.defaultOrderTiming;
     const differentOrderTiming = settingsJson.differentOrderTiming;
@@ -84,7 +82,6 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
 
     const handleCheckboxChange = async event => {
         try {
-            const eventKey = event.target.name;
 
             const updateData = {
                 field: event.target.name,
@@ -120,7 +117,7 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
                 <div className='collectreviewformbox'>
                     <Card>
                         <div className="reviewtiming_wrap">
-                            
+
                             <div class="form-group m-0 flxflexi">
                                 <label htmlFor="">Email timing</label>
                                 <div className='beforeafterwrap flxrow'>
@@ -138,26 +135,28 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
                                             />
                                         </div>
                                     </div>
-                                    <span class="flxfix aftertextlabel">After</span>
-                                    <div className='inputwrap flxflexi'>
-                                        <div className="formcontent" >
-                                            <Select
-                                                name="default_order_timing"
-                                                id="default_order_timing"
-                                                options={defaultOrderTiming}
-                                                disabled={isDifferentTimingChecked}
-                                                onChange={
-                                                    handleSelectChange
-                                                }
-                                                value={selectedDefaultOrderTiming}
-                                            />
-                                        </div>
-                                    </div>
+                                    {selectedDefaultDayTiming != "never" && (
+                                        <><span class="flxfix aftertextlabel">After</span>
+                                            <div className='inputwrap flxflexi'>
+                                                <div className="formcontent" >
+                                                    <Select
+                                                        name="default_order_timing"
+                                                        id="default_order_timing"
+                                                        options={defaultOrderTiming}
+                                                        disabled={isDifferentTimingChecked}
+                                                        onChange={
+                                                            handleSelectChange
+                                                        }
+                                                        value={selectedDefaultOrderTiming}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             </div>
-                                
-                            
-                            {(selectedDefaultOrderTiming == "delivery" && !isDifferentTimingChecked) &&
+
+                            {(selectedDefaultOrderTiming == "delivery" && !isDifferentTimingChecked && selectedDefaultDayTiming != "never") &&
                                 <div class="form-group m-0 horizontal-form alightop">
                                     <label htmlFor="">Fallback timing</label>
                                     <div className='sideinput mw300 flxflexi'>
@@ -176,29 +175,32 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
                                 </div>
                             }
 
-                            
-                            <div className="form-check form-switch">
-                                <input
-                                    checked={
-                                        isDifferentTimingChecked
-                                    }
-                                    onChange={
-                                        handleCheckboxChange
-                                    }
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    role="switch"
-                                    name="is_different_timing"
-                                    id="is_different_timing"
-                                />
-                                <label
-                                    className="form-check-label"
-                                    htmlFor="is_different_timing"
-                                >
-                                    Set different timing for domestic and international orders
-                                </label>
-                            </div>
-                            
+
+                            {(selectedDefaultDayTiming != "never") &&
+
+                                <div className="form-check form-switch">
+                                    <input
+                                        checked={
+                                            isDifferentTimingChecked
+                                        }
+                                        onChange={
+                                            handleCheckboxChange
+                                        }
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        role="switch"
+                                        name="is_different_timing"
+                                        id="is_different_timing"
+                                    />
+                                    <label
+                                        className="form-check-label"
+                                        htmlFor="is_different_timing"
+                                    >
+                                        Set different timing for domestic and international orders
+                                    </label>
+                                </div>
+                            }
+
                             {isDifferentTimingChecked &&
                                 <>
 
@@ -272,7 +274,7 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
 
                                     </div>
 
@@ -352,7 +354,7 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
 
                             </>
                         }
-                        
+
 
                     </Card>
                 </div>

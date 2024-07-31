@@ -7,31 +7,65 @@ import { useNavigate } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import settingsJson from './../../../utils/settings.json';
 import { getDefaultProductImage, getUploadDocument } from './../../../utils/documentPath';
-import SampleReviewRequestEmail from './../email/SampleReviewRequestEmail';
 import ColorPicker from "./../settings/ColorPicker";
 import GridLayoutIcon from '../icons/GridLayoutIcon';
 import ListLayoutIcon from '../icons/ListLayoutIcon';
 import CompactLayoutIcon from '../icons/CompactLayoutIcon';
+import {
+    Select,
+} from '@shopify/polaris';
 
 const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
     const { t, i18n } = useTranslation();
     const navigate = useNavigate();
+    const [currentLanguage, setCurrentLanguage] = useState('en');
     const [documentObj, setDocumentObj] = useState(customizeObj);
+    const [selectedLayout, setSelectedLayout] = useState(customizeObj?.widgetLayout || "list");
+    const [selectedWidgetColor, setSelectedWidgetColor] = useState(customizeObj?.widgetColor || "black");
+    const [selectedReviewShadow, setSelectedReviewShadow] = useState('dark');
 
-    const [selectedOption, setSelectedOption] = useState('black');
-
-    const handleOptionChange = (event) => {
-        setSelectedOption(event.target.value);
-    };
     const showBrandingPage = (e) => {
         e.preventDefault();
         navigate('/app/branding');
     }
-    const alertContent = (
-        <>
-            You can upload a default banner to all emails in the <a href="#" onClick={showBrandingPage}>Branding Setting</a>
-        </>
-    );
+    useEffect(() => {
+        const language = localStorage.getItem('i18nextLng');
+        setCurrentLanguage(language);
+    });
+    
+
+    const handleSelectChange = async (event) => {
+        const eventKey = event.target.name;
+        const eventVal = event.target.value;
+
+        const updateData = {
+            field: event.target.name,
+            value: eventVal,
+            shop: shopRecords.shop,
+            actionType: "productReviewCustomize"
+        };
+        const response = await fetch('/api/customize-widget', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updateData),
+        });
+        const data = await response.json();
+        if (data.status == 200) {
+            toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+        } else {
+            toast.error(data.message);
+        }
+        if (eventKey == 'widgetLayout') {
+            setSelectedLayout(eventVal);
+        } else if (eventKey == 'widgetColor') {
+            setSelectedWidgetColor(eventVal);
+        } else if (eventKey == 'reviewShadow') {
+            setSelectedReviewShadow(eventVal);
+        }
+    };
+
 
     return (
         <>
@@ -46,21 +80,44 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                 <div className="form-group m-0">
                                     <div className='layoutstr'>
                                         <div className='layoutbox'>
-                                            <input type='radio' value="gridlayout" name='layoutselection' id='gridlayout' />
+                                            <input
+                                                type='radio'
+                                                value="grid"
+                                                name='widgetLayout'
+                                                id='gridlayout'
+                                                onChange={handleSelectChange}
+                                                checked={selectedLayout === 'grid'}
+
+                                            />
                                             <label htmlFor="gridlayout">
                                                 <div className='iconbox'><GridLayoutIcon /></div>
                                                 <span>Grid</span>
                                             </label>
                                         </div>
                                         <div className='layoutbox'>
-                                            <input type='radio' value="listlayout" name='layoutselection' id='listlayout' />
+                                            <input
+                                                type='radio'
+                                                value="list"
+                                                name='widgetLayout'
+                                                id='listlayout'
+                                                onChange={handleSelectChange}
+                                                checked={selectedLayout === 'list'}
+                                            />
                                             <label htmlFor="listlayout">
                                                 <div className='iconbox'><ListLayoutIcon /></div>
                                                 <span>List</span>
                                             </label>
                                         </div>
                                         <div className='layoutbox'>
-                                            <input type='radio' value="compactlayout" name='layoutselection' id='compactlayout' />
+                                            <input
+                                                type='radio'
+                                                value="compact"
+                                                name='widgetLayout'
+                                                id='compactlayout'
+                                                onChange={handleSelectChange}
+                                                checked={selectedLayout === 'compact'}
+
+                                            />
                                             <label htmlFor="compactlayout">
                                                 <div className='iconbox'><CompactLayoutIcon /></div>
                                                 <span>List(compact)</span>
@@ -82,8 +139,9 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                                 <input
                                                     type="radio"
                                                     value="black"
-                                                    checked={selectedOption === 'black'}
-                                                    onChange={handleOptionChange}
+                                                    name='widgetColor'
+                                                    checked={selectedWidgetColor === 'black'}
+                                                    onChange={handleSelectChange}
                                                     id='widcolorblacktext'
                                                 />
                                                 <label htmlFor='widcolorblacktext'>Black text (best over light backgrounds)</label>
@@ -92,8 +150,9 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                                 <input
                                                     type="radio"
                                                     value="white"
-                                                    checked={selectedOption === 'white'}
-                                                    onChange={handleOptionChange}
+                                                    name='widgetColor'
+                                                    checked={selectedWidgetColor === 'white'}
+                                                    onChange={handleSelectChange}
                                                     id='widcolorwhitetext'
                                                 />
                                                 <label htmlFor='widcolorwhitetext'>White text (best over dark backgrounds)</label>
@@ -102,8 +161,9 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                                 <input
                                                     type="radio"
                                                     value="custom"
-                                                    checked={selectedOption === 'custom'}
-                                                    onChange={handleOptionChange}
+                                                    name='widgetColor'
+                                                    checked={selectedWidgetColor === 'custom'}
+                                                    onChange={handleSelectChange}
                                                     id='widcolorcustom'
                                                 />
                                                 <label htmlFor='widcolorcustom'>Custom</label>
@@ -114,131 +174,133 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                 </div>
                             </div>
                         </div>
-                        <div className="whitebox p-0">
-                            <div className='custwidtitle'>
-                                <h3>Custom widget colors</h3>
-                            </div>
-                            <div className='insidewhitecard'>
-                                <div className='widget-theme-options'>  
-                                    <div className="form-group m-0 horizontal-form">
-                                        <label htmlFor="">Header text</label>
-                                        <div className='sideinput mw300 flxflexi'>
-                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj}  pickerContent="productWidgetCustomize"  pickerType="headerTextColor" />
+                        {selectedWidgetColor == "custom" &&
+                            <div className="whitebox p-0">
+                                <div className='custwidtitle'>
+                                    <h3>Custom widget colors</h3>
+                                </div>
+                                <div className='insidewhitecard'>
+                                    <div className='widget-theme-options'>
+                                        <div className="form-group m-0 horizontal-form">
+                                            <label htmlFor="">Header text</label>
+                                            <div className='sideinput mw300 flxflexi'>
+                                                <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="headerTextColor" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="form-group m-0 horizontal-form">
-                                        <label htmlFor="">Button border</label>
-                                        <div className='sideinput mw300 flxflexi'>
-                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj}  pickerContent="productWidgetCustomize"  pickerType="buttonBorderColor" />
+                                        <div className="form-group m-0 horizontal-form">
+                                            <label htmlFor="">Button border</label>
+                                            <div className='sideinput mw300 flxflexi'>
+                                                <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="buttonBorderColor" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="form-group m-0 horizontal-form">
-                                        <label htmlFor="">Button text</label>
-                                        <div className='sideinput mw300 flxflexi'>
-                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj}  pickerContent="productWidgetCustomize"  pickerType="buttonTitleColor" />
+                                        <div className="form-group m-0 horizontal-form">
+                                            <label htmlFor="">Button text</label>
+                                            <div className='sideinput mw300 flxflexi'>
+                                                <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="buttonTitleColor" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="form-group m-0 horizontal-form">
-                                        <label htmlFor="">Button background on hover</label>
-                                        <div className='sideinput mw300 flxflexi'>
-                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj}  pickerContent="productWidgetCustomize"  pickerType="buttonTitleColor" />
+                                        <div className="form-group m-0 horizontal-form">
+                                            <label htmlFor="">Button background on hover</label>
+                                            <div className='sideinput mw300 flxflexi'>
+                                                <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="buttonBackgroundOnHover" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="form-group m-0 horizontal-form">
-                                        <label htmlFor="">Button text on hover</label>
-                                        <div className='sideinput mw300 flxflexi'>
-                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj}  pickerContent="productWidgetCustomize"  pickerType="buttonTitleColor" />
+                                        <div className="form-group m-0 horizontal-form">
+                                            <label htmlFor="">Button text on hover</label>
+                                            <div className='sideinput mw300 flxflexi'>
+                                                <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="buttonTextOnHover" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="form-group m-0 horizontal-form">
-                                        <label htmlFor="">Button background</label>
-                                        <div className='sideinput mw300 flxflexi'>
-                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj}  pickerContent="productWidgetCustomize"  pickerType="buttonTitleColor" />
+                                        <div className="form-group m-0 horizontal-form">
+                                            <label htmlFor="">Button background</label>
+                                            <div className='sideinput mw300 flxflexi'>
+                                                <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="buttonBackground" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="form-group m-0 horizontal-form">
-                                        <label htmlFor="">Reviews text</label>
-                                        <div className='sideinput mw300 flxflexi'>
-                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj}  pickerContent="productWidgetCustomize"  pickerType="buttonTitleColor" />
+                                        <div className="form-group m-0 horizontal-form">
+                                            <label htmlFor="">Reviews text</label>
+                                            <div className='sideinput mw300 flxflexi'>
+                                                <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="reviewsText" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="form-group m-0 horizontal-form">
-                                        <label htmlFor="">Reviews background</label>
-                                        <div className='sideinput mw300 flxflexi'>
-                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj}  pickerContent="productWidgetCustomize"  pickerType="buttonTitleColor" />
+                                        <div className="form-group m-0 horizontal-form">
+                                            <label htmlFor="">Reviews background</label>
+                                            <div className='sideinput mw300 flxflexi'>
+                                                <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="reviewsBackground" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="form-group m-0 horizontal-form">
-                                        <label htmlFor="">Reviews background on hover</label>
-                                        <div className='sideinput mw300 flxflexi'>
-                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj}  pickerContent="productWidgetCustomize"  pickerType="buttonTitleColor" />
+                                        <div className="form-group m-0 horizontal-form">
+                                            <label htmlFor="">Reviews background on hover</label>
+                                            <div className='sideinput mw300 flxflexi'>
+                                                <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="reviewsBackgroundOnHover" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="form-group m-0 horizontal-form">
-                                        <label htmlFor="">Reply text</label>
-                                        <div className='sideinput mw300 flxflexi'>
-                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj}  pickerContent="productWidgetCustomize"  pickerType="buttonTitleColor" />
+                                        <div className="form-group m-0 horizontal-form">
+                                            <label htmlFor="">Reply text</label>
+                                            <div className='sideinput mw300 flxflexi'>
+                                                <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="replyText" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="form-group m-0 horizontal-form">
-                                        <label htmlFor="">Reply background</label>
-                                        <div className='sideinput mw300 flxflexi'>
-                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj}  pickerContent="productWidgetCustomize"  pickerType="buttonTitleColor" />
+                                        <div className="form-group m-0 horizontal-form">
+                                            <label htmlFor="">Reply background</label>
+                                            <div className='sideinput mw300 flxflexi'>
+                                                <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="replyBackground" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="form-group m-0 horizontal-form">
-                                        <label htmlFor="">Reply background on hover</label>
-                                        <div className='sideinput mw300 flxflexi'>
-                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj}  pickerContent="productWidgetCustomize"  pickerType="buttonTitleColor" />
+                                        <div className="form-group m-0 horizontal-form">
+                                            <label htmlFor="">Reply background on hover</label>
+                                            <div className='sideinput mw300 flxflexi'>
+                                                <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="replyBackgroundOnHover" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="form-group m-0 horizontal-form">
-                                        <label htmlFor="">Verified badge background color</label>
-                                        <div className='sideinput mw300 flxflexi'>
-                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj}  pickerContent="productWidgetCustomize"  pickerType="buttonTitleColor" />
+                                        <div className="form-group m-0 horizontal-form">
+                                            <label htmlFor="">Verified badge background color</label>
+                                            <div className='sideinput mw300 flxflexi'>
+                                                <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="verifiedBadgeBackgroundColor" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="form-group m-0 horizontal-form">
-                                        <label htmlFor="">Stars bar fill</label>
-                                        <div className='sideinput mw300 flxflexi'>
-                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj}  pickerContent="productWidgetCustomize"  pickerType="buttonTitleColor" />
+                                        <div className="form-group m-0 horizontal-form">
+                                            <label htmlFor="">Stars bar fill</label>
+                                            <div className='sideinput mw300 flxflexi'>
+                                                <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="starsBarFill" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="form-group m-0 horizontal-form">
-                                        <label htmlFor="">Stars bar background</label>
-                                        <div className='sideinput mw300 flxflexi'>
-                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj}  pickerContent="productWidgetCustomize"  pickerType="buttonTitleColor" />
+                                        <div className="form-group m-0 horizontal-form">
+                                            <label htmlFor="">Stars bar background</label>
+                                            <div className='sideinput mw300 flxflexi'>
+                                                <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="starsBarBackground" />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        }
                         <div className="whitebox p-0">
                             <div className='custwidtitle'>
-                                <h3>Black text (best over light backgrounds)</h3>
+                                <h3>Widget settings</h3>
                             </div>
                             <div className='insidewhitecard'>
                                 <div className='widget-theme-options'>
                                     <div className="form-group m-0 horizontal-form alightop">
                                         <label htmlFor="">Review shadow</label>
                                         <div className='sideinput mw300 flxflexi'>
-                                            <select name="" id="" className='input_text'>
-                                                <option>Basic</option>
-                                                <option>Dark offset</option>
-                                                <option>Light offset</option>
-                                                <option>No shadow</option>
+
+                                            <select name="reviewShadow" onChange={handleSelectChange} value={selectedReviewShadow} className='input_text'>
+                                                <option value="basic">Basic</option>
+                                                <option value="dark_offset">Dark offset</option>
+                                                <option value="light_offset">Light offset</option>
+                                                <option value="no">No shadow</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div className="form-group m-0 horizontal-form alightop">
                                         <label htmlFor="">Corner Radius</label>
                                         <div className='sideinput mw300 flxflexi'>
-                                            <select name="" id="" className='input_text'>
-                                                <option value="">Default (Rounded)</option>
-                                                <option value="">Sharp</option>
-                                                <option value="">Slightly rounded</option>
-                                                <option value="">Rounded</option>
-                                                <option value="">Extra rounded</option>
+                                            <select name="reviewShadow" onChange={handleSelectChange} value={selectedReviewShadow} className='input_text'>
+                                                <option value="sharp">Sharp</option>
+                                                <option value="slightly-rounded">Slightly Rounded</option>
+                                                <option value="rounded">Rounded</option>
+                                                <option value="extra-rounded">Extra Rounded</option>
                                             </select>
                                         </div>
                                     </div>

@@ -1,7 +1,6 @@
 import { mongoConnection } from './mongoConnection'; 
 import { authenticate } from "../shopify.server";
 import { findOneRecord } from "./common";
-import { json } from "@remix-run/node";
 
 export async function getShopDetails(request) {
 	try{

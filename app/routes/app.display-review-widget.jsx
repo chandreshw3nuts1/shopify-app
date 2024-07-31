@@ -35,10 +35,13 @@ export async function loader({ request }) {
         const shopifyProduct = await getShopifyLatestProducts(shopRecords.shop);
         const productName = (shopifyProduct.products) ? encodeURIComponent(`/products/${shopifyProduct.products[0]['handle']}`) : "/products";
         const productWidgetExtenstionId = encodeURIComponent(settingsJson.appThemeExtension.productReviewWidget.addAppBlockId);
+        const rattingWidgetExtenstionId = encodeURIComponent(settingsJson.appThemeExtension.rattingWidget.addAppBlockId);
         
         const productReviewWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?previewPath=${productName}&addAppBlockId=${productWidgetExtenstionId}&target=sectionId`;
+        const rattingReviewWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?previewPath=${productName}&addAppBlockId=${rattingWidgetExtenstionId}&target=sectionId`;
         const extensionUrs = {
-            productReviewWidgetUrl: productReviewWidgetUrl
+            productReviewWidgetUrl,
+            rattingReviewWidgetUrl
         }
         
         return json({ shopRecords, generalAppearances, extensionUrs });

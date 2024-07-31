@@ -18,7 +18,7 @@ import {
 export const loader = async ({ request, params }) => {
     const shopRecords = await getShopDetails(request);
     var JsonData = { params, shopRecords };
-
+    
     switch (params.type) {
 		case 'product-review-widget':
 			JsonData['customizeObj'] = await productReviewWidgetCustomizes.findOne({
@@ -26,19 +26,31 @@ export const loader = async ({ request, params }) => {
 			});
 			break;
 		default:
-			content = <h4>404 - Page Not Found</h4>;
 			break;
 	}
     JsonData['generalSettingsModel'] = await generalSettings.findOne({ shop_id: shopRecords._id });
+
     return json(JsonData);
 };
 
 export default function WidgetCustomize() {
     const { params, shopRecords, generalSettingsModel, customizeObj } = useLoaderData();
     const { i18n } = useTranslation();
+    const navigate = useNavigate();
 
     const type = params.type;
-    const navigate = useNavigate();
+    let content;
+    let customizeTemplateName;
+
+    switch (type) {
+        case 'product-review-widget':
+            content = <ProductReviewWidget shopRecords={shopRecords} customizeObj={customizeObj} />;
+            customizeTemplateName = "Product review widget"
+            break;
+        default:
+            return  <h5>404 - Page Not Found</h5>;
+            break;
+    }
 
     useEffect(() => {
         const defaultLanguage = (generalSettingsModel && generalSettingsModel.defaul_language) ? generalSettingsModel.defaul_language : "en";
@@ -49,30 +61,15 @@ export default function WidgetCustomize() {
 
 
     const backToWidgetPage = (e) => {
-        console.log('dsadsd');
         e.preventDefault();
         navigate('/app/display-review-widget');
     }
 
-    let content;
-    let customizeTemplateName;
-    switch (type) {
-        case 'product-review-widget':
-            content = <ProductReviewWidget shopRecords={shopRecords} customizeObj={customizeObj} />;
-            customizeTemplateName = "Product review widget"
-            break;
-        default:
-            content = <h4>404 - Page Not Found</h4>;
-            break;
-    }
-
-
-    const [crumbs, setCrumbs] = useState([
+    const crumbs = [
         { title: "Review", "link": "./../../review" },
         { title: "Reviews widget", "link": "./../../display-review-widget" },
         { title: customizeTemplateName, "link": "" },
-
-    ]);
+    ];
 
     return (
         <>

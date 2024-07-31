@@ -328,9 +328,33 @@
 		"emailAppearance": "boxed"
 	},
 	"productWidgetCustomize": {
+		"widgetLayout": "list",
+		"widgetColor": "white",
 		"headerTextColor": "282828",
 		"buttonBorderColor": "e8e8e8",
-		"buttonTitleColor": "000000"
+		"buttonTitleColor": "000000",
+		"buttonBackgroundOnHover": "e8e8e8",
+		"buttonTextOnHover": "000000",
+		"buttonBackground": "ffffff",
+		"reviewsText": "333333",
+		"reviewsBackground": "ffffff",
+		"reviewsBackgroundOnHover": "e8e8e8",
+		"replyText": "333333",
+		"replyBackground": "ffffff",
+		"replyBackgroundOnHover": "e8e8e8",
+		"verifiedBadgeBackgroundColor": "282828",
+		"starsBarFill": "7b7b7b",
+		"starsBarBackground": "f5f5f5",
+		"reviewShadow ": "",
+		"cornerRadius ": "",
+		"headerLayout ": "",
+		"productReviewsWidget ": "",
+		"writeReviewButton ": "",
+		"reviewsPerPage ": "",
+		"reviewDates ": "",
+		"defaultSorting ": "",
+		"showSortingOptions ": "",
+		"showRatingsDistribution ": ""
 	},
 	"emailTemplateFontTypes": [
 		"Arial",
@@ -358,6 +382,9 @@
 	"appThemeExtension": {
 		"productReviewWidget": {
 			"addAppBlockId": "8859674d-1d51-4f07-9b2c-4a63d6073b83/product-review-widget"
+		},
+		"rattingWidget": {
+			"addAppBlockId": "8859674d-1d51-4f07-9b2c-4a63d6073b83/ratting-widget"
 		}
 	},
 	"shopifyDiscount": {

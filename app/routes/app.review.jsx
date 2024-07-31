@@ -10,6 +10,9 @@ import ReviewPageSidebar from './components/headerMenu/ReviewPageSidebar';
 import CustomQuestions from "./components/collectReview/CustomQuestions";
 import ManageNewReview from "./components/collectReview/ManageNewReview";
 import ReviewRequestTiming from "./components/collectReview/ReviewRequestTiming";
+import DiscountPhotoVideoReview from "./components/collectReview/DiscountPhotoVideoReview";
+
+
 import settings from './models/settings';
 import reviewRequestTimingSettings from './models/reviewRequestTimingSettings';
 
@@ -57,7 +60,7 @@ const ReviewPage = () => {
 	const customQuestionsData = loaderData.customQuestionsData;
 	const shopRecords = loaderData.shopRecords;
 	const reviewRequestTimingSettings = loaderData.reviewRequestTimingSettings;
-	
+
 	const [crumbs, setCrumbs] = useState([
 		{ title: "Review", "link": "./../review" },
 		{ title: "Collect review", link: "" },
@@ -65,13 +68,14 @@ const ReviewPage = () => {
 	const [openNewReview, setOpenNewReview] = useState(false);
 	const [openCustomQuestions, setOpenCustomQuestions] = useState(false);
 	const [openReviewRequestTiming, setOpenReviewRequestTiming] = useState(false);
-
+	const [openDiscountPhotoVideoReview, setOpenDiscountPhotoVideoReview] = useState(false);
+	const [openEmailSettings, setOpenEmailSettings] = useState(false);
 	const handleToggleNewReview = useCallback(() => setOpenNewReview(openNewReview => !openNewReview), []);
 	const handleToggleCustomQuestions = useCallback(() => setOpenCustomQuestions(openCustomQuestions => !openCustomQuestions), []);
 	const handleToggleReviewRequestTiming = useCallback(() => setOpenReviewRequestTiming(openReviewRequestTiming => !openReviewRequestTiming), []);
+	const handleToggleDiscountPhotoVideoReview = useCallback(() => setOpenDiscountPhotoVideoReview(openDiscountPhotoVideoReview => !openDiscountPhotoVideoReview), []);
 
 
-	const [openEmailSettings, setOpenEmailSettings] = useState(false);
 	const handleToggleEmailSettings = useCallback(() => setOpenEmailSettings(openEmailSettings => !openEmailSettings), []);
 
 	const showManualRequestForm = () => {
@@ -178,7 +182,48 @@ const ReviewPage = () => {
 					</Layout.Section>
 				</div>
 
-
+				<div className='accordian_rowmain'>
+					<Layout.Section>
+						<LegacyCard sectioned>
+							<div
+								onClick={handleToggleDiscountPhotoVideoReview}
+								aria-expanded={openDiscountPhotoVideoReview}
+								aria-controls="basic-collapsible"
+								className={openDiscountPhotoVideoReview ? 'open' : ''}
+							>
+								<div className='flxrow acctitle'>
+									<div className='flxfix iconbox'>
+										<i className='twenty-review-timing'></i>
+									</div>
+									<div className='flxflexi titledetail'>
+										<Text as="h1" variant="headingMd">
+											Discount for photo/video reviews
+										</Text>
+										<Text>
+											Incentivize customers to leave a photo/video review by offering a discount for their next purchase
+										</Text>
+									</div>
+									<div className='flxfix arrowicon'>
+										<i className='twenty-arrow-down'></i>
+									</div>
+								</div>
+							</div>
+							<LegacyStack vertical>
+								<Collapsible
+									open={openDiscountPhotoVideoReview}
+									id="basic-collapsible"
+									transition={{
+										duration: '300ms',
+										timingFunction: 'ease-in-out',
+									}}
+									expandOnPrint
+								>
+									<DiscountPhotoVideoReview reviewRequestTimingSettings={reviewRequestTimingSettings} shopRecords={shopRecords} />
+								</Collapsible>
+							</LegacyStack>
+						</LegacyCard>
+					</Layout.Section>
+				</div>
 
 
 				<div className='accordian_rowmain'>
