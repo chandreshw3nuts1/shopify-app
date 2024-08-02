@@ -15,7 +15,7 @@ export async function action({ request} ) {
     const method = request.method;
     switch(method){
         case "POST":
-            const {shop, actionType } = requestBody;
+            const {shop, actionType, language } = requestBody;
             try {
                 const db = await mongoConnection();
                 const shopRecords = await getShopDetailsByShop(shop);
@@ -30,7 +30,20 @@ export async function action({ request} ) {
                     const options = { upsert: true, returnOriginal: false };
                     await productReviewWidgetCustomizes.findOneAndUpdate(query, update, options);
                     return json({ "status": 200, "message": "Settings saved" });
+                } else if(actionType == 'productReviewCustomizeLanguageContent') {
+                    const query = { shop_id: shopRecords._id };
+                    const update = {
+                        $set: {
+                            [`${language}.${requestBody.field}`]: requestBody.value
+                        }
+                    };
+                    const options = { upsert: true, returnOriginal: false };
+                    await productReviewWidgetCustomizes.findOneAndUpdate(query, update, options);
+
+                    return json({ status: 200, message: "Setting saved" });                        
                 }
+
+                
 
             } catch (error) {
                 console.error('Error updating record:', error);

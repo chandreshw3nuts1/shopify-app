@@ -14,7 +14,8 @@ import FaceStar3 from "../images/FaceStar3";
 import FaceStar4 from "../images/FaceStar4";
 import FaceStar5 from "../images/FaceStar5";
 
-const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, generalAppearancesModel, CommonRatingComponent, translations }) => {
+const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, generalAppearancesModel, CommonRatingComponent, otherProps }) => {
+	const {translations, productReviewWidgetCustomizesModel,languageWiseProductWidgetSettings } = otherProps;
     const proxyUrl = "https://" + shopRecords.shop + "/apps/custom-proxy/product-review-widget";
     const countTotalQuestions = customQuestionsData.length;
     let discountHtml = "";

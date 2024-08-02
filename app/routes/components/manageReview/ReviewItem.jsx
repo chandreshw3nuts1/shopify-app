@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
 import { formatDate, formatTimeAgo } from './../../../utils/dateFormat';
 import Swal from 'sweetalert2';
-import { toast } from 'react-toastify';
 import settingsJson from './../../../utils/settings.json';
 
 import NiceSelect from './../../../NiceSelect/NiceSelect';
@@ -95,9 +94,14 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 		});
 		const data = await response.json();
 		if (data.status == 200) {
-			toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+			shopify.toast.show(data.message, {
+				duration: settingsJson.toasterCloseTime
+			});
 		} else {
-			toast.error(data.message);
+			shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime,
+                isError: true
+            });
 		}
 		setReplyValueError(true);
 		setReplyText('');
@@ -125,7 +129,9 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 		});
 		const data = await response.json();
 		if (data.status == 200) {
-			toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+			shopify.toast.show(data.message, {
+				duration: settingsJson.toasterCloseTime
+			});
 			setFilteredReviews(filteredReviews.map((item, idx) =>
 				idx === changeProductIndex
 					? {
@@ -141,7 +147,10 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 			setChangeProductHandle('');
 			setShowChangeProductModal(false);
 		} else {
-			toast.error(data.message);
+			shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime,
+                isError: true
+            });
 		}
 
 	};
@@ -169,18 +178,25 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 
 					const data = await response.json();
 					if (data.status == 200) {
-						toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+						shopify.toast.show(data.message, {
+							duration: settingsJson.toasterCloseTime
+						});
 						setFilteredReviewsTotal(--filteredReviewsTotal);
 						setFilteredReviews(filteredReviews.filter((item, i) => i !== index));
 
 					} else {
-						toast.error(data.message);
+						shopify.toast.show(data.message, {
+                            duration: settingsJson.toasterCloseTime,
+                            isError: true
+                        });
 					}
 
 				} catch (error) {
 					console.error("Error deleting record:", error);
-					// Handle error, show toast, etc.
-					toast.error("Failed to delete record.");
+					shopify.toast.show("Failed to delete record", {
+						duration: settingsJson.toasterCloseTime,
+						isError: true
+					});
 				}
 			}
 		});
@@ -234,9 +250,14 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 					const data = await response.json();
 
 					if (data.status == 200) {
-						toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+						shopify.toast.show(data.message, {
+							duration: settingsJson.toasterCloseTime
+						});
 					} else {
-						toast.error(data.message);
+						shopify.toast.show(data.message, {
+                            duration: settingsJson.toasterCloseTime,
+                            isError: true
+                        });
 					}
 
 					setSearchFormData((prevData) => ({
@@ -246,8 +267,10 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 					setSubmitHandle(!submitHandle);
 
 				} catch (error) {
-					console.error("Error deleting record:", error);
-					toast.error("Failed to delete record.");
+					shopify.toast.show("Failed to delete record", {
+						duration: settingsJson.toasterCloseTime,
+						isError: true
+					});
 				}
 			}
 		});
@@ -288,9 +311,14 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 					});
 					const data = await response.json();
 					if (data.status == 200) {
-						toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+						shopify.toast.show(data.message, {
+							duration: settingsJson.toasterCloseTime
+						});
 					} else {
-						toast.error(data.message);
+						shopify.toast.show(data.message, {
+                            duration: settingsJson.toasterCloseTime,
+                            isError: true
+                        });
 					}
 					setReplyValueError(true);
 					setReplyText('');
@@ -301,8 +329,10 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 					));
 
 				} catch (error) {
-					console.error("Error deleting record:", error);
-					toast.error("Failed to delete record.");
+					shopify.toast.show("Failed to delete record", {
+						duration: settingsJson.toasterCloseTime,
+						isError: true
+					});
 				}
 			}
 		});
@@ -334,7 +364,9 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 			const data = await response.json();
 
 			if (data.status == 200) {
-				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+				shopify.toast.show(data.message, {
+					duration: settingsJson.toasterCloseTime
+				});
 				if (statusValue == 'feature') {
 					setFilteredReviews(filteredReviews.map((item, idx) =>
 						idx === index ? { ...item, tag_as_feature: true } : item
@@ -363,7 +395,10 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 
 
 			} else {
-				toast.error(data.message);
+				shopify.toast.show(data.message, {
+                            duration: settingsJson.toasterCloseTime,
+                            isError: true
+                        });
 			}
 		}
 

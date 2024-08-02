@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import ImageUploadMultiLang from '../settings/ImageUploadMultiLang';
 import AlertInfo from '../AlertInfo';
@@ -91,7 +90,9 @@ const DiscountPhotoVideoReview = ({ shopRecords, emailTemplateObj, generalAppear
             });
             const data = await response.json();
             if (data.status == 200) {
-                toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+                shopify.toast.show(data.message, {
+                    duration: settingsJson.toasterCloseTime
+                });
 
                 setEmailTemplateObjState(prevState => ({
                     ...(prevState || {}),  // Ensure prevState is an object
@@ -102,7 +103,10 @@ const DiscountPhotoVideoReview = ({ shopRecords, emailTemplateObj, generalAppear
                 }));
 
             } else {
-                toast.error(data.message);
+                shopify.toast.show(data.message, {
+                    duration: settingsJson.toasterCloseTime,
+                    isError: true
+                });
             }
         }
 

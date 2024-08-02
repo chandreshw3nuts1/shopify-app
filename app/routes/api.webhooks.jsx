@@ -15,6 +15,8 @@ export async function action({ request }) {
 		console.log(`${key}: ${value}`);
 	}
 	const rawBody = await request.text();
+	console.log(rawBody);
+
 	const generatedHmac = crypto
 		.createHmac('sha256', process.env.SHOPIFY_API_SECRET)
 		.update(rawBody, 'utf8')
@@ -72,15 +74,22 @@ export async function action({ request }) {
 		}
 
 	} else if (topic == 'orders/partially_fulfilled' || topic == 'orders/fulfilled') {
-		await Promise.all(bodyObj.line_items.map(async (lineItem, index) => {
-
-			await manualRequestProducts.updateOne(
-				{ line_item_id: lineItem.id },
-				{
-					$set: { status: "fulfilled", filfillment_date : new Date() }
-				}
-			);
+		await Promise.all(bodyObj.fulfillments.map(async (fulfillment) => {
+			await Promise.all(fulfillment.line_items.map(async (lineItem) => {
+				
+				await manualRequestProducts.updateOne(
+					{ line_item_id: lineItem.id, tracking_number: { $ne: fulfillment.tracking_number } },
+					{
+						$set: {
+							status: "fulfilled",
+							tracking_number: fulfillment.tracking_number,
+							fulfillment_date: new Date()
+						}
+					}
+				);
+			}));
 		}));
+
 
 	} else if (topic == 'app/uninstalled') {
 		const shop = bodyObj.myshopify_domain;
@@ -125,7 +134,7 @@ export async function action({ request }) {
 			if (shopRecords) {
 				await shopDetails.updateOne(
 					{ _id: shopRecords._id },
-					{ $set: { country_code: bodyObj.country_code} }
+					{ $set: { country_code: bodyObj.country_code } }
 				);
 
 			} else {

@@ -1,27 +1,40 @@
 {
-    "reviewRequestEmail" : {
-        "subject" : "Pedido #[order_number], ¿cómo te fue?",
-        "body" : "Hola [name],\n\nNos encantaría saber cómo te fue con tu compra. Tu opinión nos ayuda a nosotros y a la comunidad que nos apoya, y solo toma unos segundos.",
-        "buttonText" : "Escribe una reseña"
+    "reviewRequestEmail": {
+        "subject": "Pedido #[order_number], ¿cómo te fue?",
+        "body": "Hola [name],\n\nAgradeceríamos que compartieras cómo se ven y se sienten las cosas. Tu reseña nos ayuda a nosotros y a la comunidad que nos apoya, y solo toma unos segundos.",
+        "buttonText": "Escribir una reseña"
     },
-    "reviewReplyEmail" : {
-        "subject" : "En respuesta a tu reseña de [product]",
-        "body" : "Hola [name],\n\nSe ha añadido una respuesta a tu reseña de [product]:\n[reply_content]\nPara responder de forma privada, responde a este correo."
+    "reviewReplyEmail": {
+        "subject": "En respuesta a tu reseña de [product]",
+        "body": "Hola [name],\n\nSe ha añadido una respuesta a tu reseña de [product]:\n[reply_content]\nPara responder de forma privada, responde a este correo."
     },
-    "dicountPhotoVideoReviewEmail" : {
-        "subject" : "Tu código de descuento en [store]",
-        "body" : "Hola [name],\n\n¡Gracias por compartir tu experiencia!\n\nUsa el siguiente código de descuento para obtener [discount] de descuento en tu próxima compra en [store]",
-        "buttonText" : "Comprar ahora"
+    "dicountPhotoVideoReviewEmail": {
+        "subject": "Tu código de descuento en [store]",
+        "body": "Hola [name],\n\n¡Gracias por compartir tu experiencia!\n\nUsa el siguiente código de descuento para obtener [discount] de descuento en tu próxima compra en [store]",
+        "buttonText": "Comprar ahora"
     },
-    "addReviewSameDiscountText" : "¡Tu descuento de [discount] te está esperando!",
-    "addReviewDifferentDiscountText" : "¡Sube una foto para obtener [photo_discount] de descuento o un video para obtener [video_discount] de descuento en tu próxima compra!",
-    "customer_review" : "Reseña de Clientes",
-    "sort_by" : "Ordenar Por",
-    "featured" : "Destacados",
-    "newest" : "Más Recientes",
-    "highest_rating" : "Mayor Calificación",
-    "lowest_rating" : "Menor Calificación",
-    "replied" : "Respondido",
-    "global_ratings" : "calificaciones globales",
-    "out_of" : "de"
+    "addReviewSameDiscountText": "¡Tu descuento de [discount] está esperándote!",
+    "addReviewDifferentDiscountText": "¡Sube una foto para obtener [photo_discount] de descuento o un video para obtener [video_discount] de descuento en tu próxima compra!",
+    "sort_by": "Ordenar por",
+    "featured": "Destacado",
+    "newest": "Más reciente",
+    "highest_rating": "Calificación más alta",
+    "lowest_rating": "Calificación más baja",
+    "replied": "Respondido",
+    "out_of": "de",
+    "next_link": "Siguiente",
+    "back_link": "Atrás",
+    "submit_button": "Enviar",
+    "upload_photo_video_label": "Subir foto o video",
+    "productReviewConstomize": {
+        "reviewHeaderTitle": "Reseña de clientes",
+        "reviewSingular": "Reseña",
+        "reviewPlural": "Reseñas",
+        "writeReviewButtonTitle": "Escribir una reseña",
+        "noReviewsTitleFirstPart": "Sé el primero en",
+        "noReviewsTitleLastPart": "Escribir una reseña",
+        "showMoreReviewsTitle": "Mostrar más reseñas",
+        "productPageLinkTitle": "Ver producto",
+        "itemTypeTitle": "Tipo de artículo"
+    }
 }

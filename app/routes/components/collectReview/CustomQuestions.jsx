@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { formatDate, formatTimeAgo } from './../../../utils/dateFormat';
 import Swal from 'sweetalert2';
-import { toast } from 'react-toastify';
 import { Modal, Button, Dropdown, DropdownButton } from 'react-bootstrap';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -52,9 +51,14 @@ const DraggableQuestion = ({ id, index, questionItem, shopRecords, customQuestio
 
         const data = await response.json();
         if (data.status == 200) {
-            toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+            shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime
+            });
         } else {
-            toast.error(data.message);
+            shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime,
+                isError: true
+            });
         }
 
     };
@@ -280,8 +284,9 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
         });
         const data = await response.json();
         if (data.status == 200) {
-            toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
-
+            shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime
+            });
             if (updatingQuestionId) {
                 setCustomQuestionsAnswer(prevQuestionAnswers => {
                     const updatedAnswers = [...prevQuestionAnswers];
@@ -294,7 +299,10 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
             setInputValueError(true);
 
         } else {
-            toast.error(data.message);
+            shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime,
+                isError: true
+            });
         }
         setShow(false);
     };
@@ -335,17 +343,24 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
 
                     const data = await response.json();
                     if (data.status == 200) {
-                        toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
-
+                        shopify.toast.show(data.message, {
+                            duration: settingsJson.toasterCloseTime
+                        });
                         setCustomQuestionsAnswer(customQuestionsAnswer.filter((item, i) => i !== index));
                     } else {
-                        toast.error(data.message);
+                        shopify.toast.show(data.message, {
+                            duration: settingsJson.toasterCloseTime,
+                            isError: true
+                        });
                     }
                     // Assuming toast is a function to show notifications
                 } catch (error) {
                     console.error("Error deleting record:", error);
                     // Handle error, show toast, etc.
-                    toast.error("Failed to delete record.");
+                    shopify.toast.show("Failed to delete record", {
+                        duration: settingsJson.toasterCloseTime,
+                        isError: true
+                    });
                 }
             }
         });

@@ -6,7 +6,6 @@ import SettingPageSidebar from "./components/headerMenu/SettingPageSidebar";
 import { getShopDetails } from './../utils/getShopDetails';
 import settingsJson from './../utils/settings.json';
 import { formatTimeAgo, formatDate, addDaysToDate } from './../utils/dateFormat';
-import { toast } from 'react-toastify';
 import DatePicker from 'react-date-picker';
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';
@@ -201,7 +200,9 @@ export default function Orders() {
         const data = await response.json();
 
         if (data.status == 200) {
-            toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+            shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime
+            });
             setFilteredOrders(filteredOrders.map((item, idx) => {
                 if (idx === index) {
                     return {
@@ -218,7 +219,10 @@ export default function Orders() {
             }));
 
         } else {
-            toast.error(data.message);
+            shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime,
+                isError: true
+            });
         }
 
     }
@@ -241,8 +245,9 @@ export default function Orders() {
         const data = await response.json();
 
         if (data.status == 200) {
-            toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
-
+            shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime
+            });
             setFilteredOrders(filteredOrders.map((item, idx) => {
                 if (idx === index) {
                     return {
@@ -257,7 +262,10 @@ export default function Orders() {
                 return item;
             }));
         } else {
-            toast.error(data.message);
+            shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime,
+                isError: true
+            });
         }
 
     }
@@ -285,19 +293,21 @@ export default function Orders() {
                 if (!reviewRequestTimingSettings.is_different_timing) {
 
                     if (reviewRequestTimingSettings.default_day_timing == 'never') {
-                        return 'Paused'; 
+                        return 'Paused';
                     }
                     if (reviewRequestTimingSettings.default_order_timing == 'purchase') {
                         return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone)}</span>;
 
                     } else if (reviewRequestTimingSettings.default_order_timing == 'fulfillment') {
                         return 'Awaiting fulfillment';
+                    } else {
+                        return 'Awaiting delivery';
                     }
                 } else {
-                    if(shopRecords.country_code == order.country_code) {
+                    if (shopRecords.country_code == order.country_code) {
                         if (reviewRequestTimingSettings.domestic_order_timing == 'purchase') {
                             return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone)}</span>;
-    
+
                         } else if (reviewRequestTimingSettings.domestic_order_timing == 'fulfillment') {
                             return 'Awaiting fulfillment';
                         }
@@ -305,12 +315,13 @@ export default function Orders() {
 
                         if (reviewRequestTimingSettings.international_order_timing == 'purchase') {
                             return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone)}</span>;
-    
+
                         } else if (reviewRequestTimingSettings.international_order_timing == 'fulfillment') {
                             return 'Awaiting fulfillment';
                         }
                     }
                 }
+                break;
             case "fulfilled":
                 if (!reviewRequestTimingSettings.is_different_timing) {
 
@@ -320,31 +331,69 @@ export default function Orders() {
                     if (reviewRequestTimingSettings.default_order_timing == 'purchase') {
                         return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone)}</span>;
                     } else if (reviewRequestTimingSettings.default_order_timing == 'fulfillment') {
-                        return <span>Scheduled for {addDaysToDate(products.filfillment_date, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone)}</span>;
-                    }else {
+                        return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone)}</span>;
+                    } else if (reviewRequestTimingSettings.default_order_timing == 'delivery' && reviewRequestTimingSettings.fallback_timing != "") {
+                        return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.fallback_timing, shopRecords.timezone)}</span>;
+                    } else {
                         return "Awaiting delivery";
                     }
                 } else {
-                    if(shopRecords.country_code == order.country_code) {
+                    if (shopRecords.country_code == order.country_code) {
                         if (reviewRequestTimingSettings.domestic_order_timing == 'purchase') {
                             return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone)}</span>;
-    
+
                         } else if (reviewRequestTimingSettings.domestic_order_timing == 'fulfillment') {
-                            return <span>Scheduled for {addDaysToDate(products.filfillment_date, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone)}</span>;
+                            return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone)}</span>;
 
                         }
                     } else {
 
                         if (reviewRequestTimingSettings.international_order_timing == 'purchase') {
                             return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone)}</span>;
-    
+
                         } else if (reviewRequestTimingSettings.international_order_timing == 'fulfillment') {
-                            return <span>Scheduled for {addDaysToDate(products.filfillment_date, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone)}</span>;
+                            return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone)}</span>;
 
                         }
                     }
                 }
+                break;
+            case "delivered":
+                if (!reviewRequestTimingSettings.is_different_timing) {
 
+                    if (reviewRequestTimingSettings.default_day_timing == 'never') {
+                        return 'Paused';
+                    }
+                    if (reviewRequestTimingSettings.default_order_timing == 'purchase') {
+                        return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone)}</span>;
+                    } else if (reviewRequestTimingSettings.default_order_timing == 'fulfillment') {
+                        return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone)}</span>;
+                    } else if (reviewRequestTimingSettings.default_order_timing == 'delivery') {
+                        return <span>Scheduled for {addDaysToDate(products.delivered_date, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone)}</span>;
+                    } else {
+                        return "Awaiting delivery";
+                    }
+                } else {
+                    if (shopRecords.country_code == order.country_code) {
+                        if (reviewRequestTimingSettings.domestic_order_timing == 'purchase') {
+                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone)}</span>;
+
+                        } else if (reviewRequestTimingSettings.domestic_order_timing == 'fulfillment') {
+                            return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone)}</span>;
+
+                        }
+                    } else {
+
+                        if (reviewRequestTimingSettings.international_order_timing == 'purchase') {
+                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone)}</span>;
+
+                        } else if (reviewRequestTimingSettings.international_order_timing == 'fulfillment') {
+                            return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone)}</span>;
+
+                        }
+                    }
+                }
+                break;
             default:
                 return <span>{`Status: ${products.status}`}</span>;
         }

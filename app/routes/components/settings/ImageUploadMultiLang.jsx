@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { getUploadDocument } from './../../../utils/documentPath';
-import { toast } from 'react-toastify';
 import settingsJson from './../../../utils/settings.json';
 
 const ImageUploadMultiLang = (props) => {
@@ -20,14 +19,20 @@ const ImageUploadMultiLang = (props) => {
 		if (!selectedFile) return;
 
 		if (!selectedFile.type.match("image/(jpeg|jpg|png|gif)")) {
-			toast.error("You can upload an image in jpg, jpeg, png or gif format only.");
+			shopify.toast.show("Upload an image in jpg, jpeg, png or gif format only.", {
+				duration: settingsJson.toasterCloseTime,
+				isError: true
+			});
 			return;
 		}
 
 		const fileSizeMB = selectedFile.size / (1024 * 1024);
 
 		if (fileSizeMB > 5) {
-			toast.error('The file size should be less than 5 MB.');
+			shopify.toast.show("The file size should be less than 5 MB.", {
+				duration: settingsJson.toasterCloseTime,
+				isError: true
+			});
 			return;
 		}
 
@@ -48,8 +53,9 @@ const ImageUploadMultiLang = (props) => {
 			});
 			const data = await response.json();
 			if (data.status == 200) {
-				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
-
+				shopify.toast.show(data.message, {
+					duration: settingsJson.toasterCloseTime
+				});
 				props.setEmailTemplateObjState(prevState => ({
 					...((prevState || {})[props.currentLanguage] || {}), // Ensure prevState and currentLanguage object are not null
 					[props.currentLanguage]: {
@@ -59,7 +65,10 @@ const ImageUploadMultiLang = (props) => {
 				}));
 
 			} else {
-				toast.error(data.message);
+				shopify.toast.show(data.message, {
+                    duration: settingsJson.toasterCloseTime,
+                    isError: true
+                });
 			}
 
 		} catch (error) {
@@ -81,7 +90,9 @@ const ImageUploadMultiLang = (props) => {
 			});
 			const data = await response.json();
 			if (data.status == 200) {
-				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+				shopify.toast.show(data.message, {
+					duration: settingsJson.toasterCloseTime
+				});
 
 				props.setEmailTemplateObjState({
 					...props.emailTemplateObjState,
@@ -91,7 +102,10 @@ const ImageUploadMultiLang = (props) => {
 					}
 				});
 			} else {
-				toast.error(data.message);
+				shopify.toast.show(data.message, {
+                    duration: settingsJson.toasterCloseTime,
+                    isError: true
+                });
 			}
 
 		} catch (error) {
@@ -119,7 +133,9 @@ const ImageUploadMultiLang = (props) => {
 			});
 			const data = await response.json();
 			if (data.status == 200) {
-				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+				shopify.toast.show(data.message, {
+					duration: settingsJson.toasterCloseTime
+				});
 
 				props.setEmailTemplateObjState(prevState => ({
 					...((prevState || {})[props.currentLanguage] || {}), // Ensure prevState and currentLanguage object are not null
@@ -133,7 +149,10 @@ const ImageUploadMultiLang = (props) => {
 				setFile(bannerImgUrl);
 
 			} else {
-				toast.error(data.message);
+				shopify.toast.show(data.message, {
+                    duration: settingsJson.toasterCloseTime,
+                    isError: true
+                });
 			}
 
 		} catch (error) {

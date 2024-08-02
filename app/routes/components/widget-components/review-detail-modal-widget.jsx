@@ -4,15 +4,15 @@ import LongArrowLeft from "../icons/LongArrowLeft";
 import LongArrowRight from "../icons/LongArrowRight";
 import { getUploadDocument } from './../../../utils/documentPath';
 import StarBigIcon from "../icons/StarBigIcon";
-import moment from 'moment';
+import { formatDate } from './../../../utils/dateFormat';
 import settingsJson from './../../../utils/settings.json';
 import InfoIcon from "../icons/InfoIcon";
 import ArrowRightIcon from "../icons/ArrowRightIcon";
 import PlayIcon from "../icons/PlayIcon";
 import PauseIcon from "../icons/PauseIcon";
 
-const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, formParams, generalAppearancesModel, CommonRatingComponent }) => {
-    const videoIcon = `${settingsJson.host_url}/images/play-circle.png`;
+const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, formParams, generalAppearancesModel, CommonRatingComponent, otherProps }) => {
+	const {translations, productReviewWidgetCustomizesModel,languageWiseProductWidgetSettings } = otherProps;
 
     return (
         <>
@@ -98,9 +98,13 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                                 {CommonRatingComponent ? <CommonRatingComponent color={reviewDetails.rating >= 5 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
 
                                             </div>
-                                            <div className="datebox">
-                                                {moment(reviewDetails.created_at).format('M/D/YYYY')}
-                                            </div>
+
+                                            {productReviewWidgetCustomizesModel.reviewDates == 'show' &&
+                                                <div className="datebox">
+                                                    {formatDate(reviewDetails.created_at, shopRecords.timezone, 'M/D/YYYY')}
+                                                </div>
+                                            }
+                                            
                                         </div>
                                     </div>
                                     <div className="mid_detail flxflexi">
@@ -130,7 +134,7 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                                     <h6>{productsDetails[0].title}</h6>
                                                     <div className="prolink">
                                                         <a href={`https://${shopRecords.shop}/products/${productsDetails[0].handle}`} target="_blank" rel="noopener noreferrer">
-                                                            View Product <ArrowRightIcon />
+                                                            {languageWiseProductWidgetSettings.productPageLinkTitle ? languageWiseProductWidgetSettings.productPageLinkTitle : translations.productReviewConstomize.productPageLinkTitle} <ArrowRightIcon />
                                                         </a>
                                                     </div>
                                                 </div>

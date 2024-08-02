@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import { mongoConnection } from "./../utils/mongoConnection"; 
+import { mongoConnection } from "./../utils/mongoConnection";
 
 import { ReactMultiEmail, isEmail } from 'react-multi-email';
 import 'react-multi-email/dist/style.css';
@@ -9,8 +9,7 @@ import Breadcrumb from './components/Breadcrumb';
 import { Modal, Button } from 'react-bootstrap';
 import { getShopDetails } from './../utils/getShopDetails';
 import { findOneRecord } from './../utils/common';
-import  InformationAlert from './components/common/information-alert';
-import { toast } from 'react-toastify';
+import InformationAlert from './components/common/information-alert';
 import { useNavigate } from 'react-router-dom';
 import settingsJson from './../utils/settings.json';
 
@@ -157,14 +156,19 @@ const ManualReviewRequestsPage = () => {
 			});
 			const data = await response.json();
 			if (data.status == 200) {
-				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+				shopify.toast.show(data.message, {
+					duration: settingsJson.toasterCloseTime
+				});
 				setEmails([]);
 				setSelectedProducts([]);
 				setUpdateMemo(!updateMemo);
 				setUpdateMemo(!updateMemo);
 				setRequestEmailSubject('');
 			} else {
-				toast.error(data.message);
+				shopify.toast.show(data.message, {
+					duration: settingsJson.toasterCloseTime,
+					isError: true
+				});
 			}
 			setSubmittingRequest(false);
 
@@ -187,10 +191,10 @@ const ManualReviewRequestsPage = () => {
 			selectedProducts.includes(product.id)
 		);
 	}, [updateMemo])
-	
-	const backToReviewPage  = (e) =>{
+
+	const backToReviewPage = (e) => {
 		e.preventDefault();
-        navigate('/app/review');
+		navigate('/app/review');
 	}
 
 	return (
@@ -198,7 +202,7 @@ const ManualReviewRequestsPage = () => {
 			<Breadcrumb crumbs={crumbs} />
 			<Page fullWidth>
 				<div className='pagebackbtn'>
-				<a href="#" onClick={backToReviewPage}><i className='twenty-arrow-left'></i>Back</a>
+					<a href="#" onClick={backToReviewPage}><i className='twenty-arrow-left'></i>Back</a>
 				</div>
 				<div className='row justify-content-center'>
 					<div className='col-md-6'>

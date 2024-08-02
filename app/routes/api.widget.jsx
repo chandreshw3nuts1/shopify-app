@@ -11,6 +11,7 @@ import { mongoConnection } from './../utils/mongoConnection';
 import productReviews from "./models/productReviews";
 import generalAppearances from "./models/generalAppearances";
 import generalSettings from "./models/generalSettings";
+import productReviewWidgetCustomizes from "./models/productReviewWidgetCustomizes";
 
 
 import { getShopifyProducts, getDiscounts } from "./../utils/common";
@@ -31,7 +32,7 @@ export async function action({ request }) {
         const actionType = formData.get('actionType');
         const shop = formData.get('shop_domain');
         const shopRecords = await getShopDetailsByShop(shop);
-       
+
         const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
 
 
@@ -42,9 +43,9 @@ export async function action({ request }) {
         });
 
         /* Fetch transation languge*/
-        if(customer_locale == 'zh-CN') {
+        if (customer_locale == 'zh-CN') {
             customer_locale = 'cn1';
-        } else if(customer_locale == 'zh-TW') {
+        } else if (customer_locale == 'zh-TW') {
             customer_locale = 'cn2';
         }
 
@@ -53,11 +54,19 @@ export async function action({ request }) {
 
         const apiUrl = `${settingsJson.host_url}/locales/${customer_locale}/translation.json`;
         const lang = await fetch(apiUrl, {
-			method: 'GET'
-		});
+            method: 'GET'
+        });
         const translations = await lang.json();
-        
+        console.log(translations);
         /* Fetch transation languge End*/
+
+        const productReviewWidgetCustomizesModel = await productReviewWidgetCustomizes.findOne({ shop_id: shopRecords._id });
+        const languageWiseProductWidgetSettings = productReviewWidgetCustomizesModel[customer_locale] ? productReviewWidgetCustomizesModel[customer_locale] : {};
+        const otherProps = {
+            translations,
+            productReviewWidgetCustomizesModel,
+            languageWiseProductWidgetSettings
+        }
 
         const StarIcon = generalAppearancesModel.starIcon.replace(/-/g, '');
         const iconComponents = {
@@ -75,9 +84,9 @@ export async function action({ request }) {
                 cust_first_name: formData.get('cust_first_name'),
                 cust_last_name: formData.get('cust_last_name'),
                 cust_email: formData.get('cust_email'),
-                discountObj : discountObj
+                discountObj: discountObj
             }
-            const dynamicModalComponent = <CreateReviewModalWidget shopRecords={shopRecords} customQuestionsData={customQuestionsData} paramObj={paramObj} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} translations={translations} />;
+            const dynamicModalComponent = <CreateReviewModalWidget shopRecords={shopRecords} customQuestionsData={customQuestionsData} paramObj={paramObj} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} otherProps={otherProps} />;
             const htmlModalContent = ReactDOMServer.renderToString(dynamicModalComponent);
             return json({
                 htmlModalContent: htmlModalContent
@@ -222,7 +231,7 @@ export async function action({ request }) {
                 const formParams = {
                     hideProductThumbnails: hideProductThumbnails,
                 }
-                const dynamicComponent = <ReviewDetailModalWidget shopRecords={shopRecords} reviewDetails={reviewDetails} productsDetails={productsDetails} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent}/>;
+                const dynamicComponent = <ReviewDetailModalWidget shopRecords={shopRecords} reviewDetails={reviewDetails} productsDetails={productsDetails} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} otherProps={otherProps}/>;
                 const htmlContent = ReactDOMServer.renderToString(dynamicComponent);
                 return json({
                     body: htmlContent,
@@ -239,7 +248,7 @@ export async function action({ request }) {
 
             const limit = parseInt(formData.get('no_of_review'));
             const page = parseInt(formData.get('page'));
-            const sortBy = formData.get('sort_by') != null ? formData.get('sort_by') : "featured";
+            const sortBy = formData.get('sort_by') != null ? formData.get('sort_by') : productReviewWidgetCustomizesModel.defaultSorting;
             const filterByRatting = parseInt(formData.get('filter_by_ratting'));
             const productId = formData.get('product_id');
             const showImageReviews = formData.get('show_image_reviews');
@@ -485,8 +494,8 @@ export async function action({ request }) {
                 averageRating: averageRating
 
             }
-
-            const dynamicComponent = <ProductReviewWidget shopRecords={shopRecords} reviewItems={reviewItems} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} translations={translations} />;
+            
+            const dynamicComponent = <ProductReviewWidget shopRecords={shopRecords} reviewItems={reviewItems} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} otherProps={otherProps} />;
             const htmlContent = ReactDOMServer.renderToString(dynamicComponent);
 
 

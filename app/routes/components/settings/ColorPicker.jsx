@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import SketchPicker from 'react-color';
 import settingsJson from './../../../utils/settings.json';
-import { toast } from 'react-toastify';
-
 
 export async function updateColorCode(color, props) {
 	try {
@@ -22,13 +20,18 @@ export async function updateColorCode(color, props) {
 		});
 		const data = await response.json();
 		if (data.status === 200) {
-			toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+			shopify.toast.show(data.message, {
+				duration: settingsJson.toasterCloseTime
+			});
 			props.setDocumentObj({
 				...props.documentObj,
 				[props.pickerType]: color
 			});
 		} else {
-			toast.error(data.message);
+			shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime,
+                isError: true
+            });
 		}
 
 	} catch (error) {
@@ -84,7 +87,10 @@ export default function ColorPicker(props) {
 				setIsColorInputEmpty(false);
 
 			} else {
-				toast.error('Invalid color code');
+				shopify.toast.show("Invalid color code", {
+					duration: settingsJson.toasterCloseTime,
+					isError: true
+				});
 
 			}
 		}

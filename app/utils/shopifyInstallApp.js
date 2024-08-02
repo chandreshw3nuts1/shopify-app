@@ -4,6 +4,7 @@ import generalAppearances from './../routes/models/generalAppearances';
 import generalSettings from './../routes/models/generalSettings';
 import appInstallLogs from './../routes/models/appInstallLogs';
 import reviewRequestTimingSettings from './../routes/models/reviewRequestTimingSettings';
+import productReviewWidgetCustomizes from './../routes/models/productReviewWidgetCustomizes';
 
 import settingsJson from './../utils/settings.json';
 
@@ -127,6 +128,46 @@ export async function storeShopDetails(session) {
 				},
 				{ upsert: true }
 			);
+
+
+			await productReviewWidgetCustomizes.updateOne(
+				{ shop_id: shopRecords._id },
+				{
+					$setOnInsert: {
+						shop_id: shopRecords._id,
+						widgetLayout: settingsJson.productWidgetCustomize.widgetLayout,
+						widgetColor: settingsJson.productWidgetCustomize.widgetColor,
+						headerTextColor: settingsJson.productWidgetCustomize.headerTextColor,
+						buttonBorderColor: settingsJson.productWidgetCustomize.buttonBorderColor,
+						buttonTitleColor: settingsJson.productWidgetCustomize.buttonTitleColor,
+						buttonBackgroundOnHover: settingsJson.productWidgetCustomize.buttonBackgroundOnHover,
+						buttonTextOnHover: settingsJson.productWidgetCustomize.buttonTextOnHover,
+						buttonBackground: settingsJson.productWidgetCustomize.buttonBackground,
+						reviewsText: settingsJson.productWidgetCustomize.reviewsText,
+						reviewsBackground: settingsJson.productWidgetCustomize.reviewsBackground,
+						reviewsBackgroundOnHover: settingsJson.productWidgetCustomize.reviewsBackgroundOnHover,
+						replyText: settingsJson.productWidgetCustomize.replyText,
+						replyBackground: settingsJson.productWidgetCustomize.replyBackground,
+						replyBackgroundOnHover: settingsJson.productWidgetCustomize.replyBackgroundOnHover,
+						verifiedBadgeBackgroundColor: settingsJson.productWidgetCustomize.verifiedBadgeBackgroundColor,
+						starsBarFill: settingsJson.productWidgetCustomize.starsBarFill,
+						starsBarBackground: settingsJson.productWidgetCustomize.starsBarBackground,
+						reviewShadow: settingsJson.productWidgetCustomize.reviewShadow,
+						cornerRadius: settingsJson.productWidgetCustomize.cornerRadius,
+						headerLayout: settingsJson.productWidgetCustomize.headerLayout,
+						productReviewsWidget: settingsJson.productWidgetCustomize.productReviewsWidget,
+						writeReviewButton: settingsJson.productWidgetCustomize.writeReviewButton,
+						itemType: settingsJson.productWidgetCustomize.itemType,
+						reviewDates: settingsJson.productWidgetCustomize.reviewDates,
+						defaultSorting: settingsJson.productWidgetCustomize.defaultSorting,
+						showSortingOptions: settingsJson.productWidgetCustomize.showSortingOptions,
+						showRatingsDistribution: settingsJson.productWidgetCustomize.showRatingsDistribution,
+					}
+				},
+				{ upsert: true }
+			);
+
+			
 
 
 			/* add install app log */

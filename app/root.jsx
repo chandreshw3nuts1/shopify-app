@@ -8,8 +8,6 @@ import {
 import 'bootstrap/dist/css/bootstrap.min.css';
 import settings from './utils/settings.json'; 
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import './i18n';
 export default function App() {
   return (
@@ -37,7 +35,6 @@ export default function App() {
           <Outlet />
           <ScrollRestoration />
           <Scripts />
-          <ToastContainer />
         </div>
       </body>
     </html>

@@ -10,7 +10,9 @@ const manualRequestProductsSchema = new mongoose.Schema({
     product_id: {type: String, required: true },
     line_item_id: {type: String },
     status: {type: String, required: true },
-    filfillment_date: {type: Date }
+    tracking_number: {type: String},
+    fulfillment_date: {type: Date },
+    delivered_date: {type: Date }
 },{
     timestamps: true
 });

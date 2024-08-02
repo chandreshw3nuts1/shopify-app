@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react';
-import { toast } from 'react-toastify';
 
 import {
     Card,

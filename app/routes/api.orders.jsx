@@ -24,7 +24,7 @@ export async function action({ request }) {
 	const method = request.method;
 	switch (method) {
 		case "POST":
-			var { shop, page, limit, filter_status, filter_time, start_date, end_date, search_keyword, filter_options, actionType } = requestBody;
+			var { shop, page, limit, filter_status, filter_time, start_date, end_date, search_keyword, actionType } = requestBody;
 			page = page == 0 ? 1 : page;
 			try {
 				const shopRecords = await findOneRecord("shop_details", { "shop": shop });
@@ -38,7 +38,7 @@ export async function action({ request }) {
 							{ email: { $regex: search_keyword, $options: 'i' } },
 						]
 					};
-					if (filter_time == "custom" && start_date && end_date) {
+					if (filter_time == "custom" && start_date && end_date && start_date != 'Invalid date') {
 						query.createdAt = {
 							$gte: new Date(start_date),
 							$lt: new Date(end_date + " 23:59:59")
@@ -100,6 +100,7 @@ export async function action({ request }) {
 								order_id: { $first: "$order_id" },
 								request_status: { $first: "$request_status" },
 								country_code: { $first: "$country_code" },
+
 								manualRequestProducts: {
 									$push: {
 										_id: "$manualRequestProducts._id",
@@ -107,7 +108,9 @@ export async function action({ request }) {
 										product_id: "$manualRequestProducts.product_id",
 										line_item_id: "$manualRequestProducts.line_item_id",
 										status: "$manualRequestProducts.status",
-										filfillment_date: "$manualRequestProducts.filfillment_date",
+										fulfillment_date: "$manualRequestProducts.fulfillment_date",
+										delivered_date: "$manualRequestProducts.delivered_date",
+										
 										createdAt: "$manualRequestProducts.createdAt",
 										updatedAt: "$manualRequestProducts.updatedAt"
 									}

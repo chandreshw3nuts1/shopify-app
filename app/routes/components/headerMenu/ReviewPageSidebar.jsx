@@ -11,7 +11,7 @@ const ReviewPageSidebar = (props) => {
               <li><NavLink  to="./../review"><i className='twenty-collectreviews'></i>Collect Reviews</NavLink></li>
               <li><NavLink  to="./../display-review-widget"><i className='twenty-collectreviews'></i>Reviews widgets</NavLink></li>
               <li><NavLink  to="./../manage-review"><i className='twenty-managereviews'></i>Manage Reviews</NavLink></li>
-              <li><NavLink  to="./../import-review"><i className='twenty-managereviews'></i>Import reviews</NavLink></li>
+              {/*<li><NavLink  to="./../import-review"><i className='twenty-managereviews'></i>Import reviews</NavLink></li>*/}
           </ul>
       </Layout.Section>
     </div>

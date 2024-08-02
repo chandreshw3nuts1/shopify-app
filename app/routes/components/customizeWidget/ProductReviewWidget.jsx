@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import ImageUploadMultiLang from '../settings/ImageUploadMultiLang';
 import AlertInfo from '../AlertInfo';
@@ -20,24 +19,103 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
     const navigate = useNavigate();
     const [currentLanguage, setCurrentLanguage] = useState('en');
     const [documentObj, setDocumentObj] = useState(customizeObj);
-    const [selectedLayout, setSelectedLayout] = useState(customizeObj?.widgetLayout || "list");
-    const [selectedWidgetColor, setSelectedWidgetColor] = useState(customizeObj?.widgetColor || "black");
-    const [selectedReviewShadow, setSelectedReviewShadow] = useState('dark');
+    const [selectedLayout, setSelectedLayout] = useState(customizeObj?.widgetLayout);
+    const [selectedWidgetColor, setSelectedWidgetColor] = useState(customizeObj?.widgetColor);
+    const [selectedReviewShadow, setSelectedReviewShadow] = useState(customizeObj?.reviewShadow);
+    const [selectedCornerRadius, setSelectedCornerRadius] = useState(customizeObj?.cornerRadius);
+    const [selectedItemType, setSelectedItemType] = useState(customizeObj?.itemType);
 
-    const showBrandingPage = (e) => {
-        e.preventDefault();
-        navigate('/app/branding');
-    }
+
+    const [selectedHeaderLayout, setSelectedHeaderLayout] = useState(customizeObj?.headerLayout);
+    const [selectedProductReviewsWidget, setSelectedProductReviewsWidget] = useState(customizeObj?.productReviewsWidget);
+    const [selectedWriteReviewButton, setSelectedWriteReviewButton] = useState(customizeObj?.writeReviewButton);
+    const [selectedReviewDates, setSelectedReviewDates] = useState(customizeObj?.reviewDates);
+    const [selectedDefaultSorting, setSelectedDefaultSorting] = useState(customizeObj?.defaultSorting);
+    const [selectedShowSortingOptions, setSelectedShowSortingOptions] = useState(customizeObj?.showSortingOptions);
+    const [selectedShowRatingsDistribution, setSelectedShowRatingsDistribution] = useState(customizeObj?.showRatingsDistribution);
+
+    const [initialData, setInitialData] = useState({});
+
+    const [placeHolderLanguageData, setPlaceHolderLanguageData] = useState({});
+    
+    const [reviewHeaderTitle, setReviewHeaderTitle] = useState('');
+    const [reviewSingular, setReviewSingular] = useState('');
+    const [reviewPlural, setReviewPlural] = useState('');
+    const [writeReviewButtonTitle, setWriteReviewButtonTitle] = useState('');
+    const [noReviewsTitleFirstPart, setNoReviewsTitleFirstPart] = useState('');
+    const [noReviewsTitleLastPart, setNoReviewsTitleLastPart] = useState('');
+    const [showMoreReviewsTitle, setShowMoreReviewsTitle] = useState('');
+    const [productPageLinkTitle, setProductPageLinkTitle] = useState('');
+    const [itemTypeTitle, setItemTypeTitle] = useState('');
+
     useEffect(() => {
         const language = localStorage.getItem('i18nextLng');
         setCurrentLanguage(language);
-    });
-    
+
+
+        const documentObjInfo = (documentObj && documentObj[currentLanguage]) ? documentObj[currentLanguage] : {};
+        const {
+            reviewHeaderTitle,
+            reviewSingular,
+            reviewPlural,
+            writeReviewButtonTitle,
+            noReviewsTitleFirstPart,
+            noReviewsTitleLastPart,
+            showMoreReviewsTitle,
+            productPageLinkTitle,
+            itemTypeTitle
+        } = documentObjInfo;
+
+        
+        setReviewHeaderTitle(reviewHeaderTitle || '');
+        setReviewSingular(reviewSingular || '');
+        setReviewPlural(reviewPlural || '');
+        setWriteReviewButtonTitle(writeReviewButtonTitle || '');
+        setNoReviewsTitleFirstPart(noReviewsTitleFirstPart || '');
+        setNoReviewsTitleLastPart(noReviewsTitleLastPart || '');
+        setShowMoreReviewsTitle(showMoreReviewsTitle || '');
+        setProductPageLinkTitle(productPageLinkTitle || '');
+        setItemTypeTitle(itemTypeTitle || '');
+
+
+        setInitialData({
+            reviewHeaderTitle: reviewHeaderTitle || '',
+            reviewSingular: reviewSingular || '',
+            reviewPlural: reviewPlural || '',
+            writeReviewButtonTitle: writeReviewButtonTitle || '',
+            noReviewsTitleFirstPart: noReviewsTitleFirstPart || '',
+            noReviewsTitleLastPart: noReviewsTitleLastPart || '',
+            showMoreReviewsTitle: showMoreReviewsTitle || '',
+            productPageLinkTitle: productPageLinkTitle || '',
+            itemTypeTitle: itemTypeTitle || ''
+        });
+
+        setPlaceHolderLanguageData({
+            reviewHeaderTitle: t('productReviewConstomize.reviewHeaderTitle'),
+            reviewSingular: t('productReviewConstomize.reviewSingular'),
+            reviewPlural: t('productReviewConstomize.reviewPlural'),
+            writeReviewButtonTitle: t('productReviewConstomize.writeReviewButtonTitle'),
+            noReviewsTitleFirstPart: t('productReviewConstomize.noReviewsTitleFirstPart'),
+            noReviewsTitleLastPart: t('productReviewConstomize.noReviewsTitleLastPart'),
+            showMoreReviewsTitle: t('productReviewConstomize.showMoreReviewsTitle'),
+            productPageLinkTitle: t('productReviewConstomize.productPageLinkTitle'),
+            itemTypeTitle: t('productReviewConstomize.itemTypeTitle')
+        });
+
+
+
+
+    }, [i18n, i18n.language, currentLanguage]);
+
 
     const handleSelectChange = async (event) => {
         const eventKey = event.target.name;
-        const eventVal = event.target.value;
-
+        let eventVal = event.target.value;
+        if (eventKey == 'showSortingOptions') {
+            eventVal = !selectedShowSortingOptions;
+        } else if (eventKey == 'showRatingsDistribution') {
+            eventVal = !selectedShowRatingsDistribution;
+        }
         const updateData = {
             field: event.target.name,
             value: eventVal,
@@ -53,9 +131,14 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
         });
         const data = await response.json();
         if (data.status == 200) {
-            toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+            shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime
+            });
         } else {
-            toast.error(data.message);
+            shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime,
+                isError: true
+            });
         }
         if (eventKey == 'widgetLayout') {
             setSelectedLayout(eventVal);
@@ -63,10 +146,94 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
             setSelectedWidgetColor(eventVal);
         } else if (eventKey == 'reviewShadow') {
             setSelectedReviewShadow(eventVal);
+        } else if (eventKey == 'cornerRadius') {
+            setSelectedCornerRadius(eventVal);
+        } else if (eventKey == 'headerLayout') {
+            setSelectedHeaderLayout(eventVal);
+        } else if (eventKey == 'productReviewsWidget') {
+            setSelectedProductReviewsWidget(eventVal);
+        } else if (eventKey == 'writeReviewButton') {
+            setSelectedWriteReviewButton(eventVal);
+        } else if (eventKey == 'reviewDates') {
+            setSelectedReviewDates(eventVal);
+        } else if (eventKey == 'defaultSorting') {
+            setSelectedDefaultSorting(eventVal);
+        } else if (eventKey == 'showSortingOptions') {
+            setSelectedShowSortingOptions(!selectedShowSortingOptions);
+        } else if (eventKey == 'showRatingsDistribution') {
+            setSelectedShowRatingsDistribution(!selectedShowRatingsDistribution);
+        } else if (eventKey == 'itemType') {
+            setSelectedItemType(eventVal);
+        }
+
+
+    };
+
+    const handleInputBlur = async (e) => {
+        const language = localStorage.getItem('i18nextLng');
+        if (initialData[e.target.name] != e.target.value) {
+            const updateData = {
+                field: e.target.name,
+                value: e.target.value,
+                shop: shopRecords.shop,
+                language: language,
+                actionType: "productReviewCustomizeLanguageContent"
+            };
+            const response = await fetch('/api/customize-widget', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updateData),
+            });
+            const data = await response.json();
+            if (data.status == 200) {
+                shopify.toast.show(data.message, {
+                    duration: settingsJson.toasterCloseTime
+                });
+
+                setDocumentObj(prevState => ({
+                    ...(prevState || {}),  // Ensure prevState is an object
+                    [currentLanguage]: {
+                        ...(prevState ? prevState[currentLanguage] : {}),  // Ensure nested object is an object
+                        [e.target.name]: e.target.value
+                    }
+                }));
+
+            } else {
+                shopify.toast.show(data.message, {
+                    duration: settingsJson.toasterCloseTime,
+                    isError: true
+                });
+            }
         }
     };
 
+    const changeLanguageInput = (event) => {
+        const eventKey = event.target.name;
+        const eventVal = event.target.value;
 
+        if (eventKey == 'reviewHeaderTitle') {
+            setReviewHeaderTitle(eventVal);
+        } else if (eventKey == 'reviewSingular') {
+            setReviewSingular(eventVal);
+        } else if (eventKey == 'reviewPlural') {
+            setReviewPlural(eventVal);
+        } else if (eventKey == 'writeReviewButtonTitle') {
+            setWriteReviewButtonTitle(eventVal);
+        } else if (eventKey == 'noReviewsTitleFirstPart') {
+            setNoReviewsTitleFirstPart(eventVal);
+        } else if (eventKey == 'noReviewsTitleLastPart') {
+            setNoReviewsTitleLastPart(eventVal);
+        } else if (eventKey == 'showMoreReviewsTitle') {
+            setShowMoreReviewsTitle(eventVal);
+        } else if (eventKey == 'productPageLinkTitle') {
+            setProductPageLinkTitle(eventVal);
+        } else if (eventKey == 'itemTypeTitle') {
+            setItemTypeTitle(eventVal);
+        }
+
+    };
     return (
         <>
             <div className="row">
@@ -296,32 +463,33 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                     <div className="form-group m-0 horizontal-form alightop">
                                         <label htmlFor="">Corner Radius</label>
                                         <div className='sideinput mw300 flxflexi'>
-                                            <select name="reviewShadow" onChange={handleSelectChange} value={selectedReviewShadow} className='input_text'>
+                                            <select name="cornerRadius" onChange={handleSelectChange} value={selectedCornerRadius} className='input_text'>
                                                 <option value="sharp">Sharp</option>
-                                                <option value="slightly-rounded">Slightly Rounded</option>
+                                                <option value="slightly_rounded">Slightly Rounded</option>
                                                 <option value="rounded">Rounded</option>
-                                                <option value="extra-rounded">Extra Rounded</option>
+                                                <option value="extra_rounded">Extra Rounded</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div className="form-group m-0 horizontal-form alightop">
                                         <label htmlFor="">Header layout</label>
                                         <div className='sideinput mw300 flxflexi'>
-                                            <select name="" id="" className='input_text'>
-                                                <option value="">Minimal</option>
-                                                <option value="">Compact</option>
-                                                <option value="">Expanded</option>
+                                            <select name="headerLayout" onChange={handleSelectChange} value={selectedHeaderLayout} className='input_text'>
+                                                <option value="minimal">Minimal</option>
+                                                <option value="compact">Compact</option>
+                                                <option value="expanded">Expanded</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div className="form-group m-0 horizontal-form alightop">
                                         <label htmlFor="">Product Reviews Widget</label>
                                         <div className='sideinput mw300 flxflexi'>
-                                            <select name="" id="" className='input_text'>
-                                                <option value="">Hidden when empty</option>
-                                                <option value="">Always hidden</option>
-                                                <option value="">All reviews when empty</option>
-                                                <option value="">All reviews always</option>
+                                            <select name="productReviewsWidget" onChange={handleSelectChange} value={selectedProductReviewsWidget} className='input_text'>
+                                                <option value="always_shown">Always shown</option>
+                                                <option value="hidden_when_empty">Hidden when empty</option>
+                                                <option value="always_hidden">Always hidden</option>
+                                                <option value="all_reviews_when_empty">All reviews when empty</option>
+                                                <option value="all_reviews_always">All reviews always</option>
                                             </select>
                                             <div className='inputnote'>Note: Hiding the widget will also hide the "Write a review" button</div>
                                         </div>
@@ -329,48 +497,48 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                     <div className="form-group m-0 horizontal-form alightop">
                                         <label htmlFor="">"Write a review" button</label>
                                         <div className='sideinput mw300 flxflexi'>
-                                            <select name="" id="" className='input_text'>
-                                                <option value="">Always shown</option>
-                                                <option value="">Always hidden</option>
+                                            <select name="writeReviewButton" onChange={handleSelectChange} value={selectedWriteReviewButton} className='input_text'>
+                                                <option value="show">Always shown</option>
+                                                <option value="hide">Always hidden</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div className="form-group m-0 horizontal-form alightop">
+                                    {/* <div className="form-group m-0 horizontal-form alightop">
                                         <label htmlFor="">Reviews per page</label>
                                         <div className='sideinput mw300 flxflexi'>
-                                            <select name="" id="" className='input_text'>
+                                            <select name="cornerRadius" onChange={handleSelectChange} value={selectedCornerRadius} className='input_text'>
                                                 <option value="">1</option>
                                                 <option value="">2</option>
                                             </select>
                                             <div className='inputnote'>Number of reviews displayed before "Show more" on product pages</div>
                                         </div>
-                                    </div>
+                                    </div> */}
                                     <div className="form-group m-0 horizontal-form alightop">
                                         <label htmlFor="">Review dates</label>
                                         <div className='sideinput mw300 flxflexi'>
-                                            <select name="" id="" className='input_text'>
-                                                <option value="">Shown</option>
-                                                <option value="">Hidden</option>
+                                            <select name="reviewDates" onChange={handleSelectChange} value={selectedReviewDates} className='input_text'>
+                                                <option value="show">Shown</option>
+                                                <option value="hide">Hidden</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div className="form-group m-0 horizontal-form alightop">
                                         <label htmlFor="">Item type</label>
                                         <div className='sideinput mw300 flxflexi'>
-                                            <select name="" id="" className='input_text'>
-                                                <option value="">Shown</option>
-                                                <option value="">Hidden</option>
+                                            <select name="cornerRadius" onChange={handleSelectChange} value={selectedItemType} className='input_text'>
+                                                <option value="show">Shown</option>
+                                                <option value="hide">Hidden</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div className="form-group m-0 horizontal-form alightop">
                                         <label htmlFor="">Default sorting</label>
                                         <div className='sideinput mw300 flxflexi'>
-                                            <select name="" id="" className='input_text'>
-                                                <option value="">Featured</option>
-                                                <option value="">Newest</option>
-                                                <option value="">Highest Ratings</option>
-                                                <option value="">Lowest Ratings</option>
+                                            <select name="defaultSorting" onChange={handleSelectChange} value={selectedDefaultSorting} className='input_text'>
+                                                <option value="featured">Featured</option>
+                                                <option value="newest">Newest</option>
+                                                <option value="highest_ratings">Highest Ratings</option>
+                                                <option value="lowest_ratings">Lowest Ratings</option>
                                             </select>
                                         </div>
                                     </div>
@@ -378,7 +546,19 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                         <label htmlFor="" className='p-0'>Show sorting options</label>
                                         <div className='sideinput mw300 flxflexi'>
                                             <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" role="switch" name="enabledEmailBanner" id="enabledEmailBanner" />
+                                                <input
+                                                    checked={
+                                                        selectedShowSortingOptions
+                                                    }
+                                                    onChange={
+                                                        handleSelectChange
+                                                    }
+                                                    className="form-check-input"
+                                                    type="checkbox"
+                                                    role="switch"
+                                                    name="showSortingOptions"
+                                                />
+
                                             </div>
                                         </div>
                                     </div>
@@ -386,7 +566,19 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                         <label htmlFor="" className='p-0'>Show ratings distribution</label>
                                         <div className='sideinput mw300 flxflexi'>
                                             <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" role="switch" name="enabledEmailBanner" id="enabledEmailBanner" />
+                                                <input
+                                                    checked={
+                                                        selectedShowRatingsDistribution
+                                                    }
+                                                    onChange={
+                                                        handleSelectChange
+                                                    }
+                                                    className="form-check-input"
+                                                    type="checkbox"
+                                                    role="switch"
+                                                    name="showRatingsDistribution"
+                                                />
+
                                             </div>
                                         </div>
                                     </div>
@@ -398,52 +590,58 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                 <h3>Content</h3>
                             </div>
                             <div className='insidewhitecard flxcol gapy18'>
+                            <div className="form-group m-0">
+                                    <label htmlFor="">Review Header Title</label>
+                                    <div className='sideinput flxflexi'>
+                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="reviewHeaderTitle" value={reviewHeaderTitle} placeholder={placeHolderLanguageData.reviewHeaderTitle} />
+                                    </div>
+                                </div>
                                 <div className="form-group m-0">
                                     <label htmlFor="">Review (Singular)</label>
                                     <div className='sideinput flxflexi'>
-                                        <input type='text' className='form-control' placeholder='Review' />
+                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="reviewSingular" value={reviewSingular} placeholder={placeHolderLanguageData.reviewSingular} />
                                     </div>
                                 </div>
                                 <div className="form-group m-0">
                                     <label htmlFor="">Reviews (Plural)</label>
                                     <div className='sideinput flxflexi'>
-                                        <input type='text' className='form-control' placeholder='Review' />
+                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="reviewPlural" value={reviewPlural} placeholder={placeHolderLanguageData.reviewPlural} />
                                     </div>
                                 </div>
                                 <div className="form-group m-0">
                                     <label htmlFor="">Write a review button title</label>
                                     <div className='sideinput flxflexi'>
-                                        <input type='text' className='form-control' placeholder='Write a review' />
+                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="writeReviewButtonTitle" value={writeReviewButtonTitle} placeholder={placeHolderLanguageData.writeReviewButtonTitle} />
                                     </div>
                                 </div>
                                 <div className="form-group m-0">
                                     <label htmlFor="">No reviews title - first part</label>
                                     <div className='sideinput flxflexi'>
-                                        <input type='text' className='form-control' placeholder='Be the first to' />
+                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="noReviewsTitleFirstPart" value={noReviewsTitleFirstPart} placeholder={placeHolderLanguageData.noReviewsTitleFirstPart} />
                                     </div>
                                 </div>
                                 <div className="form-group m-0">
                                     <label htmlFor="">No reviews title - last part (underlined)</label>
                                     <div className='sideinput flxflexi'>
-                                        <input type='text' className='form-control' placeholder='Write a review' />
+                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="noReviewsTitleLastPart" value={noReviewsTitleLastPart} placeholder={placeHolderLanguageData.noReviewsTitleLastPart} />
                                     </div>
                                 </div>
                                 <div className="form-group m-0">
                                     <label htmlFor="">Show more reviews title</label>
                                     <div className='sideinput flxflexi'>
-                                        <input type='text' className='form-control' placeholder='Show more reviews' />
+                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="showMoreReviewsTitle" value={showMoreReviewsTitle} placeholder={placeHolderLanguageData.showMoreReviewsTitle} />
                                     </div>
                                 </div>
                                 <div className="form-group m-0">
                                     <label htmlFor="">Link to product page button title</label>
                                     <div className='sideinput flxflexi'>
-                                        <input type='text' className='form-control' placeholder='View product' />
+                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="productPageLinkTitle" value={productPageLinkTitle} placeholder={placeHolderLanguageData.productPageLinkTitle} />
                                     </div>
                                 </div>
                                 <div className="form-group m-0">
                                     <label htmlFor="">Item type title</label>
                                     <div className='sideinput flxflexi'>
-                                        <input type='text' className='form-control' placeholder='my items whats this' />
+                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="itemTypeTitle" value={itemTypeTitle} placeholder={placeHolderLanguageData.itemTypeTitle} />
                                     </div>
                                 </div>
                             </div>

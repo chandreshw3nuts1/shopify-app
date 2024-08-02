@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import styles from './imageSlider.module.css';
 import { Modal, DropdownButton, Dropdown } from 'react-bootstrap';
 import { FaEllipsisV } from 'react-icons/fa';  // Import the three dots icon
-import { toast } from 'react-toastify';
 import settingsJson from './../../../utils/settings.json';
 import { getUploadDocument } from './../../../utils/documentPath';
 import MoreIcon from '../../../images/MoreIcon';
@@ -84,9 +83,14 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 		});
 		const data = await response.json();
 		if (data.status == 200) {
-			toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+			shopify.toast.show(data.message, {
+				duration: settingsJson.toasterCloseTime
+			});
 		} else {
-			toast.error(data.message);
+			shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime,
+                isError: true
+            });
 		}
 
 		setImages(images.map((item, idx) =>
@@ -112,9 +116,14 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 		});
 		const data = await response.json();
 		if (data.status == 200) {
-			toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+			shopify.toast.show(data.message, {
+				duration: settingsJson.toasterCloseTime
+			});
 		} else {
-			toast.error(data.message);
+			shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime,
+                isError: true
+            });
 		}
 
 		setImages(images.map((item, idx) =>
@@ -138,9 +147,14 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 		});
 		const data = await response.json();
 		if (data.status == 200) {
-			toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+			shopify.toast.show(data.message, {
+				duration: settingsJson.toasterCloseTime
+			});
 		} else {
-			toast.error(data.message);
+			shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime,
+                isError: true
+            });
 		}
 
 		setImages(images.map((item, idx) =>
@@ -204,13 +218,13 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 
 								<DropdownButton className={styles.menu_icon} id="dropdown-basic-button" title={<MoreIcon />} align={'end'}>
 									{image.is_cover == false && image.is_approve == true ?
-										<Dropdown.Item onClick={(e) => makeCoverPhoto(e, index)} eventKey="edit" className="custom-dropdown-item" >Make cover {image.type=="image" ? "photo" : "video"} </Dropdown.Item> : ""}
+										<Dropdown.Item onClick={(e) => makeCoverPhoto(e, index)} eventKey="edit" className="custom-dropdown-item" >Make cover {image.type == "image" ? "photo" : "video"} </Dropdown.Item> : ""}
 									{image.is_approve == false ?
-										<Dropdown.Item onClick={(e) => approvePhoto(e, index)} eventKey="delete" className="custom-dropdown-item" >Approve {image.type=="image" ? "photo" : "video"}</Dropdown.Item> : ""}
+										<Dropdown.Item onClick={(e) => approvePhoto(e, index)} eventKey="delete" className="custom-dropdown-item" >Approve {image.type == "image" ? "photo" : "video"}</Dropdown.Item> : ""}
 									{image.is_approve &&
-										<Dropdown.Item onClick={(e) => hidePhoto(e, index)} eventKey="delete" className="custom-dropdown-item" >Hide {image.type=="image" ? "photo" : "video"}</Dropdown.Item>}
-									<Dropdown.Item onClick={(e) => openImageInNewTab(image.url)} eventKey="delete" className="custom-dropdown-item" >View {image.type=="image" ? "photo" : "video"}</Dropdown.Item>
-									<Dropdown.Item onClick={(e) => downloadImage(image.url)} eventKey="delete" className="custom-dropdown-item" >Download {image.type=="image" ? "photo" : "video"}</Dropdown.Item>
+										<Dropdown.Item onClick={(e) => hidePhoto(e, index)} eventKey="delete" className="custom-dropdown-item" >Hide {image.type == "image" ? "photo" : "video"}</Dropdown.Item>}
+									<Dropdown.Item onClick={(e) => openImageInNewTab(image.url)} eventKey="delete" className="custom-dropdown-item" >View {image.type == "image" ? "photo" : "video"}</Dropdown.Item>
+									<Dropdown.Item onClick={(e) => downloadImage(image.url)} eventKey="delete" className="custom-dropdown-item" >Download {image.type == "image" ? "photo" : "video"}</Dropdown.Item>
 
 								</DropdownButton>
 							</div>
@@ -234,7 +248,7 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 							</div> */}
 							{image.is_cover && image.is_approve && (
 								<span className={`${styles.cover_photo_label} ${styles.coverphotolabel}`}>
-									<i className='starsico-single-star'></i> cover {image.type=="image" ? "photo" : "video"}
+									<i className='starsico-single-star'></i> cover {image.type == "image" ? "photo" : "video"}
 								</span>
 							)}
 							{image.is_approve == false &&

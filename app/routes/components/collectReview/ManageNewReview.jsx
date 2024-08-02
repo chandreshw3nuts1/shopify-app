@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react';
-import { toast } from 'react-toastify';
 import {
 	Card,
 	Select,
@@ -48,9 +47,14 @@ export default function ManageNewReview({ settings, shopRecords }) {
 		});
 		const data = await response.json();
 		if (data.status == 200) {
-			toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+			shopify.toast.show(data.message, {
+				duration: settingsJson.toasterCloseTime
+			});
 		} else {
-			toast.error(data.message);
+			shopify.toast.show(data.message, {
+				duration: settingsJson.toasterCloseTime,
+				isError: true
+			});
 		}
 
 		setSelected(value); // Update the state with the selected value
@@ -77,9 +81,14 @@ export default function ManageNewReview({ settings, shopRecords }) {
 			});
 			const data = await response.json();
 			if (data.status == 200) {
-				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+				shopify.toast.show(data.message, {
+					duration: settingsJson.toasterCloseTime
+				});
 			} else {
-				toast.error(data.message);
+				shopify.toast.show(data.message, {
+					duration: settingsJson.toasterCloseTime,
+					isError: true
+				});
 			}
 			if (eventKey == 'autoPublishReview') {
 				setIsChecked(!event.target.checked);
@@ -124,9 +133,14 @@ export default function ManageNewReview({ settings, shopRecords }) {
 
 				const data = await response.json();
 				if (data.status == 200) {
-					toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+					shopify.toast.show(data.message, {
+						duration: settingsJson.toasterCloseTime
+					});
 				} else {
-					toast.error(data.message);
+					shopify.toast.show(data.message, {
+						duration: settingsJson.toasterCloseTime,
+						isError: true
+					});
 				}
 
 				setInitialReviewNotificationEmail(e.target.value);
@@ -153,9 +167,14 @@ export default function ManageNewReview({ settings, shopRecords }) {
 			});
 			const data = await response.json();
 			if (data.status == 200) {
-				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+				shopify.toast.show(data.message, {
+					duration: settingsJson.toasterCloseTime
+				});
 			} else {
-				toast.error(data.message);
+				shopify.toast.show(data.message, {
+					duration: settingsJson.toasterCloseTime,
+					isError: true
+				});
 			}
 		} catch (error) {
 			console.error('Error updating record:', error);

@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react';
-import { toast } from 'react-toastify';
 import UploadLogo from './UploadLogo';
 
 import {getDefaultProductImage, getUploadDocument } from '../../../utils/documentPath';
@@ -48,11 +47,16 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 			});
 			const data = await response.json();
 			if (data.status == 200) {
-				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+				shopify.toast.show(data.message, {
+					duration: settingsJson.toasterCloseTime
+				});
 				setStarIcon(icon);
 
 			} else {
-				toast.error(data.message);
+				shopify.toast.show(data.message, {
+                    duration: settingsJson.toasterCloseTime,
+                    isError: true
+                });
 			}
 
 		} catch (error) {
@@ -83,7 +87,9 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 			const data = await response.json();
 
 			if (data.status == 200) {
-				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+				shopify.toast.show(data.message, {
+					duration: settingsJson.toasterCloseTime
+				});
 				if (eventKey == "cornerRadius") {
 					setCornerRadiusSelection(eventVal);
 				} else if (eventKey == "widgetFont") {
@@ -104,7 +110,10 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 					[eventKey] : eventVal
 				})
 			} else {
-				toast.error(data.message);
+				shopify.toast.show(data.message, {
+                    duration: settingsJson.toasterCloseTime,
+                    isError: true
+                });
 			}
 		} catch (error) {
 			console.error('Error updating record:', error);
@@ -131,9 +140,14 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 			});
 			const data = await response.json();
 			if (data.status == 200) {
-				toast.success(data.message, { autoClose: settingsJson.toasterCloseTime });
+				shopify.toast.show(data.message, {
+					duration: settingsJson.toasterCloseTime
+				});
 			} else {
-				toast.error(data.message);
+				shopify.toast.show(data.message, {
+                    duration: settingsJson.toasterCloseTime,
+                    isError: true
+                });
 			}
 			if (eventKey == 'enabledEmailBanner') {
 				setIsCheckedEmailBanner(!event.target.checked);
