@@ -349,9 +349,9 @@ export default function GeneralSettings() {
 							</div>
 							<div className="formrow">
 								<div className="form-group m-0">
-									<div class="form-check form-switch">
-										<input class="form-check-input" type="checkbox" role="switch" name="ratingongooglesearch" id="ratingongooglesearch" />
-										<label class="form-check-label" for="ratingongooglesearch">Show product ratings in Google search results</label>
+									<div className="form-check form-switch">
+										<input className="form-check-input" type="checkbox" role="switch" name="ratingongooglesearch" id="ratingongooglesearch" />
+										<label className="form-check-label" for="ratingongooglesearch">Show product ratings in Google search results</label>
 									</div>
 								</div>
 							</div>
