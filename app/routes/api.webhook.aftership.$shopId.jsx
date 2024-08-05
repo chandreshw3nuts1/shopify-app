@@ -17,13 +17,11 @@ export async function action({ request, params }) {
                 const manualReviewRequestsModel = await manualReviewRequests.findOne({
                     order_id: bodyObj.msg.order_id, shop_id: params.shopId
                 });
-                console.log(manualReviewRequestsModel);
                 if (manualReviewRequestsModel != null) {
                     const reqData = await manualRequestProducts.updateOne(
                         { manual_request_id: manualReviewRequestsModel.id, tracking_number: bodyObj.msg.tracking_number },
                         { $set: { status: 'delivered', delivered_date: new Date() } }
                     );
-                    console.log(reqData);
                 }
 
             }

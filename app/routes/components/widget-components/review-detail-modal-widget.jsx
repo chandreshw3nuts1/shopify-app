@@ -12,7 +12,7 @@ import PlayIcon from "../icons/PlayIcon";
 import PauseIcon from "../icons/PauseIcon";
 
 const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, formParams, generalAppearancesModel, CommonRatingComponent, otherProps }) => {
-	const {translations, productReviewWidgetCustomizesModel,languageWiseProductWidgetSettings } = otherProps;
+    const { translations, productReviewWidgetCustomizesModel, languageWiseProductWidgetSettings } = otherProps;
 
     return (
         <>
@@ -104,13 +104,33 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                                     {formatDate(reviewDetails.created_at, shopRecords.timezone, 'M/D/YYYY')}
                                                 </div>
                                             }
-                                            
+
                                         </div>
                                     </div>
                                     <div className="mid_detail flxflexi">
                                         <div className="reviewtext">
                                             <p>{reviewDetails.description}</p>
                                         </div>
+
+                                        {productReviewWidgetCustomizesModel.itemType == 'show' && reviewDetails.variant_title && (
+                                            <div className="text_content">
+                                                <p className="reply-text">
+                                                    <b> {languageWiseProductWidgetSettings.itemTypeTitle ? languageWiseProductWidgetSettings.itemTypeTitle : translations.productReviewConstomize.itemTypeTitle} </b>: {reviewDetails.variant_title}
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        {reviewDetails.replyText &&
+                                            <div className="text_content">
+                                                <p className="reply-text">
+                                                    <b>{shopRecords.name}</b> {translations.replied} :
+                                                </p>
+                                                <p>
+                                                    {reviewDetails.replyText}
+                                                </p>
+                                            </div>}
+
+
                                         <div className="qawrap">
                                             {reviewDetails.reviewQuestionsAnswer.map((questionAns, qIndex) => (
                                                 !questionAns.reviewQuestions.isHideAnswers && (

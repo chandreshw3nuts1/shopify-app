@@ -111,6 +111,10 @@ const SampleReviewRequestEmail = ({ emailContents, generalAppearancesObj }) => {
                                                             <tr>
                                                                 <td align="center" style="font-family:'${fontType}', sans-serif, Roboto, arial,tahoma,verdana;font-size:16px;color:${emailTextColor}; font-weight: 600;">Sample Product</td>
                                                             </tr>
+
+                                                            <tr>
+                                                                <td align="center" style="font-family:'${fontType}', sans-serif, Roboto, arial,tahoma,verdana;font-size:16px;color:${emailTextColor}; font-weight: 400;padding-top:5px">L / Blue</td>
+                                                            </tr>
                                                             <tr>
                                                                 <td style="padding-top: 12px;"></td>
                                                             </tr>

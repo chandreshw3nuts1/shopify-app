@@ -86,6 +86,7 @@ export async function action({ request, params }) {
                                                 status: "$manualRequestProducts.status",
                                                 fulfillment_date: "$manualRequestProducts.fulfillment_date",
                                                 delivered_date: "$manualRequestProducts.delivered_date",
+                                                variant_title: "$manualRequestProducts.variant_title",
                                                 createdAt: "$manualRequestProducts.createdAt",
                                                 updatedAt: "$manualRequestProducts.updatedAt"
                                             }
@@ -115,7 +116,6 @@ export async function action({ request, params }) {
                                     let productIdList = [];
                                     for (const product of singleOrder.manualRequestProducts) {
                                         var scheduleDate = getScheduleDate(product, singleOrder, timingSettings, shop);
-                                        console.log(scheduleDate);
                                         if (scheduleDate != null) {
                                             scheduleDate = new Date(scheduleDate);
                                             if (scheduleDate <= currentDate) {
@@ -150,6 +150,9 @@ export async function action({ request, params }) {
 
                                             const reviewLink = `${settingsJson.host_url}/review-request/${product._id}/review-form`;
                                             emailHtmlContent = emailHtmlContent.replace(`{{review_link_${product.product_id}}}`, reviewLink);
+                                            const variantTitle = product.variant_title ? product.variant_title : "";
+                                            emailHtmlContent = emailHtmlContent.replace(`{{variant_title_${product.product_id}}}`, variantTitle);
+                
                                         }));
 
                                         // Send request email
@@ -197,7 +200,6 @@ export async function action({ request, params }) {
 }
 
 function getScheduleDate(products, ordersItems, reviewRequestTimingSettings, shopRecords) {
-    console.log(products);
     var scheduleDate = null;
     switch (products.status) {
         case "pending":

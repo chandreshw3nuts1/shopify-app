@@ -10,7 +10,6 @@ import { Image } from "react-bootstrap";
 import AlertInfo from "./components/AlertInfo";
 
 
-// import ColorPicker from "./components/svgIconPicker";
 import { json } from "@remix-run/node";
 
 import {

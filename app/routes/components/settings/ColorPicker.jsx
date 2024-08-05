@@ -78,7 +78,6 @@ export default function ColorPicker(props) {
 
 		if (inputValue.length == 0) {
 			await updateColorCode(`#${defaultColor}`, props);
-			console.log(selectedColor);
 			setIsColorInputEmpty(true);
 		} else if (inputValue.length == 6) {
 			const hexRegex = /^#[0-9a-fA-F]{6}$/;

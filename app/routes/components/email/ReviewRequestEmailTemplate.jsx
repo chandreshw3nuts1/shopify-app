@@ -1,7 +1,7 @@
 // app/components/EmailTemplate.jsx
 import React from 'react';
 
-const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails ,generalAppearancesObj, footer }) => {
+const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, generalAppearancesObj, footer }) => {
     var emailContentColor = "#ffffff";
     var emailBgColor = `bgcolor=#f8f9fb`;
     var emailTextColor = `#222222`;
@@ -10,10 +10,10 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails ,generalA
     var buttonTitleColor = `#ffffff`;
     var fontSize = `14px`;
     var fontType = `Manrope`;
-    
+
     if (generalAppearancesObj.emailAppearance == "modern") {
         emailBgColor = null;
-    } else if(generalAppearancesObj.emailAppearance == "custom") {
+    } else if (generalAppearancesObj.emailAppearance == "custom") {
         emailContentColor = generalAppearancesObj.contentBackgroundColor
         emailBgColor = `bgcolor=${generalAppearancesObj.emailBackgroundColor}`;
         emailTextColor = generalAppearancesObj.emailTextColor
@@ -44,6 +44,11 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails ,generalA
                     <tr>
                         <td align="center" style="font-family:'${fontType}', sans-serif, Roboto, arial,tahoma,verdana;font-size:16px;color:${emailTextColor}; font-weight: 600;">${product.title}</td>
                     </tr>
+
+                     <tr>
+                        <td align="center" style="font-family:'${fontType}', sans-serif, Roboto, arial,tahoma,verdana;font-size:16px;color:${emailTextColor}; font-weight: 400;padding-top:5px">{{variant_title_${productId}}}</td>
+                    </tr>
+                    
                     <tr>
                         <td style="padding-top: 12px;"></td>
                     </tr>
@@ -75,6 +80,10 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails ,generalA
                     <tr>
                         <td align="center" style="font-family:'${fontType}', sans-serif, Roboto, arial,tahoma,verdana;font-size:16px;color:${emailTextColor}; font-weight: 600;">Sample Product</td>
 
+                    </tr>
+
+                    <tr>
+                        <td align="center" style="font-family:'${fontType}', sans-serif, Roboto, arial,tahoma,verdana;font-size:16px;color:${emailTextColor}; font-weight: 400;padding-top:5px">L / Blue</td>
                     </tr>
                     <tr>
                         <td style="padding-top: 12px;"></td>

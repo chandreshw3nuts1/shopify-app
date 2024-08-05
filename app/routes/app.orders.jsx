@@ -59,7 +59,6 @@ export async function fetchAllOrdersApi(requestParams) {
             body: JSON.stringify(requestParams)
         });
         const data = await response.json();
-        console.log(data);
         return data;
 
     } catch (error) {

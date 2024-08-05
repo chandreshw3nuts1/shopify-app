@@ -65,7 +65,6 @@ export async function action({ request }) {
 			}));
 
 			const productIds = bodyObj.line_items.map(item => item.product_id);
-			console.log(productIds);
 			await manualReviewRequests.updateOne(
 				{ _id: lastInsertedId },
 				{ $set: { product_ids: productIds } }

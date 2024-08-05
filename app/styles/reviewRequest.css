@@ -178,7 +178,7 @@ padding-left: 10px;
 .review-content .modal-body { padding: 0 24px 24px; display: block;}
 .review-content .modal-body form { height: 100%; position: relative;}
 .review-content .ratingformgroup { position: relative; height: 100%; margin: 0;}
-.review-content .modal-footer { padding: 12px 12px; border-top-color: var(--borderColor); margin: 18px 0 0 0; justify-content: space-between;}
+.review-content .modal-footer { padding: 12px 12px; border-top-color: var(--borderColor); justify-content: space-between;}
 .review-content .popupform { display: flex; flex-direction: column; height: 100%;}
 .review-content .reviewsteps { display: flex; flex-direction: column; height: 100%;}
 .review-content .reviewsteps.step-1.activestep .modal-footer { display: flex;}

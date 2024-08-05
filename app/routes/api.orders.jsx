@@ -209,6 +209,8 @@ export async function action({ request }) {
 
 							const reviewLink = `${settingJson.host_url}/review-request/${product._id}/review-form`;
 							emailHtmlContent = emailHtmlContent.replace(`{{review_link_${product.product_id}}}`, reviewLink);
+							const variantTitle = product.variant_title ? product.variant_title : "";
+							emailHtmlContent = emailHtmlContent.replace(`{{variant_title_${product.product_id}}}`, variantTitle);
 						}));
 
 

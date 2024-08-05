@@ -1,6 +1,8 @@
 import React from 'react';
 
-const DiscountPhotoVideoReviewEmail = ({ emailContents, generalAppearancesObj }) => {
+const DiscountPhotoVideoReviewEmail = ({ emailContents, generalAppearancesObj, shopRecords }) => {
+    
+    const shopNowLink  = `https://${shopRecords.shop}`;
     var emailContentColor = "#ffffff";
     var emailBgColor = `bgcolor=#f8f9fb`;
     var emailTextColor = `#222222`;
@@ -131,7 +133,7 @@ const DiscountPhotoVideoReviewEmail = ({ emailContents, generalAppearancesObj })
                                                             </tr>
                                                             <tr>
                                                                 <td align="center">
-                                                                    <a href="#" style="display: inline-block; line-height: 24px; background: ${buttonBackgroundColor}; border-radius: 50px; padding: 8px 24px; color: ${buttonTitleColor}; text-decoration: none; font-size: 14px; font-weight: bold; font-family:'${fontType}', sans-serif, Roboto, arial,tahoma,verdana; vertical-align: top; border:solid ${buttonBorderColor} 1px">${emailContents.buttonText}</a>
+                                                                    <a href="${shopNowLink}" style="display: inline-block; line-height: 24px; background: ${buttonBackgroundColor}; border-radius: 50px; padding: 8px 24px; color: ${buttonTitleColor}; text-decoration: none; font-size: 14px; font-weight: bold; font-family:'${fontType}', sans-serif, Roboto, arial,tahoma,verdana; vertical-align: top; border:solid ${buttonBorderColor} 1px">${emailContents.buttonText}</a>
                                                                 </td>
                                                             </tr>
                                                             <tr>

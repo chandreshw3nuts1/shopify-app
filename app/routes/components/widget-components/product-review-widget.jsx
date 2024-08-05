@@ -62,6 +62,12 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 		//buttonBackgroundOnHover = productReviewWidgetCustomizesModel.buttonBackgroundOnHover;
 		//buttonTextOnHover = productReviewWidgetCustomizesModel.buttonTextOnHover;
 	}
+	let reviewWidgetLayoutWidth = "";
+	if (productReviewWidgetCustomizesModel.widgetLayout == 'grid') {
+		reviewWidgetLayoutWidth  = "24%";
+	} else if (productReviewWidgetCustomizesModel.widgetLayout == 'compact') {
+		reviewWidgetLayoutWidth  = "49%";
+	}
 
 	return (
 		<>
@@ -81,6 +87,14 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 
 								.review_top_actions .stardetaildd .stardetailrow .processbar {
 									background-color: ${starsBarBackground} !important;
+								}
+
+								.w3grid-review-item {
+									width: ${reviewWidgetLayoutWidth};
+									margin : 1px;
+									background: #ddd;
+									padding: 10px;
+									box-sizing: border-box;
 								}
         					`}
 						</style>

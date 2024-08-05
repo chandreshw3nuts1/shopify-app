@@ -57,7 +57,6 @@ export async function action({ request }) {
             method: 'GET'
         });
         const translations = await lang.json();
-        console.log(translations);
         /* Fetch transation languge End*/
 
         const productReviewWidgetCustomizesModel = await productReviewWidgetCustomizes.findOne({ shop_id: shopRecords._id });
@@ -151,6 +150,7 @@ export async function action({ request }) {
                             createdAt: { $first: "$createdAt" },
                             status: { $first: "$status" },
                             replyText: { $first: "$replyText" },
+                            variant_title: { $first: "$variant_title" },
                             product_id: { $first: "$product_id" },
                             tag_as_feature: { $first: "$tag_as_feature" },
                             reviewDocuments: { $first: "$reviewDocuments" }, // Use $first to avoid duplicates
@@ -196,6 +196,7 @@ export async function action({ request }) {
                             status: 1,
                             images: 1,
                             replyText: 1,
+                            variant_title : 1,
                             product_id: 1,
                             is_review_request: 1,
                             tag_as_feature: 1,
@@ -377,6 +378,7 @@ export async function action({ request }) {
                         status: { $first: "$status" },
                         replyText: { $first: "$replyText" },
                         product_id: { $first: "$product_id" },
+                        variant_title: { $first: "$variant_title" },
                         tag_as_feature: { $first: "$tag_as_feature" },
                         reviewDocuments: { $first: "$reviewDocuments" }, // Use $first to avoid duplicates
                         reviewQuestionsAnswer: {
@@ -418,6 +420,7 @@ export async function action({ request }) {
                         images: 1,
                         replyText: 1,
                         product_id: 1,
+                        variant_title : 1,
                         is_review_request: 1,
                         tag_as_feature: 1,
                         reviewDocuments: {
@@ -502,6 +505,7 @@ export async function action({ request }) {
             return json({
                 body: htmlContent,
                 hasMore: hasMore,
+                widgetLayout : productReviewWidgetCustomizesModel.widgetLayout
             });
         }
 

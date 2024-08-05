@@ -163,6 +163,7 @@ export async function action({ request }) {
 						customer_locale: customer_locale,
 						rating: reviewStarRating,
 						product_id: formData.get('product_id'),
+						variant_title: formData.get('variant_title'),
 						product_title: productNodes.title,
 						product_url: productNodes.handle,
 						status: reviewStatus,
@@ -236,7 +237,7 @@ export async function action({ request }) {
 
 
 							var discountEmailHtmlContent = ReactDOMServer.renderToStaticMarkup(
-								<DiscountPhotoVideoReviewEmail emailContents={emailContentsDiscount} generalAppearancesObj={generalAppearancesData} />
+								<DiscountPhotoVideoReviewEmail emailContents={emailContentsDiscount} generalAppearancesObj={generalAppearancesData} shopRecords={shopRecords} />
 							);
 							const emailResponse = await sendEmail({
 								to: formData.get('email'),

@@ -3,8 +3,6 @@ import { formatDate, formatTimeAgo } from './../../../utils/dateFormat';
 import Swal from 'sweetalert2';
 import settingsJson from './../../../utils/settings.json';
 
-import NiceSelect from './../../../NiceSelect/NiceSelect';
-
 import reviewImage from "./../../../images/no-reviews-yet.svg"
 import customerImage from "./../../../images/customer-image.jpg"
 import mailBlueIcon from "./../../../images/blue-mail-icon.svg"

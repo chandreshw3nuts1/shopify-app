@@ -20,6 +20,7 @@ import shopDetails from "./models/shopDetails";
 import manualReviewRequests from './models/manualReviewRequests';
 import manualRequestProducts from './models/manualRequestProducts';
 import generalAppearances from './models/generalAppearances';
+import generalSettings from './models/generalSettings';
 import { ratingbabycloth, ratingbasket, ratingbones, ratingcoffeecup, ratingcrisamascap, ratingdiamondfront, ratingdiamondtop, ratingdogsleg, ratingfireflame, ratingflight, ratingfood, ratinggraduationcap, ratingheartround, ratingheartsq, ratingleafcanada, ratingleafnormal, ratinglikenormal, ratinglikerays, ratingpethouse, ratingplant, ratingshirt, ratingshoppingbag1, ratingshoppingbag2, ratingshoppingbag3, ratingstarrays, ratingstarrounded, ratingstarsq, ratingsunglass, ratingteacup, ratingtrophy1, ratingtrophy2, ratingtrophy3, ratingtshirt, ratingwine } from './../routes/components/icons/CommonIcons';
 import { getDiscounts } from "./../utils/common";
 
@@ -34,13 +35,12 @@ export const loader = async ({ params, request }) => {
 		const { requestId } = params;
 		const url = new URL(request.url);
 		const requestIdQuery = url.searchParams.get("requestId");
-
 		const manualRequestProductsModel = await manualRequestProducts.findById(requestId);
 
 		let manualReviewRequestsModel, shopRecords = null;
 		let customQuestionsData = [];
 		let StarIcon = "";
-		let discountObj = {};
+		let discountObj, translations = {};
 		if (manualRequestProductsModel) {
 			manualReviewRequestsModel = await manualReviewRequests.findById(manualRequestProductsModel.manual_request_id);
 
@@ -55,23 +55,28 @@ export const loader = async ({ params, request }) => {
 			});
 			StarIcon = generalAppearancesModel.starIcon.replace(/-/g, '');
 
-
 			discountObj = await getDiscounts(shopRecords, true);
 
+			const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
+
+			const language = settingsJson.languages.find(language => language.code === manualReviewRequestsModel.customer_locale);
+			
+			const customer_locale = language ? language.code : generalSettingsModel.defaul_language;
+			const apiUrl = `${settingsJson.host_url}/locales/${customer_locale}/translation.json`;
+			const lang = await fetch(apiUrl, {
+				method: 'GET'
+			});
+			translations = await lang.json();
 		}
-
-
-		return { requestId, requestIdQuery, shopRecords, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon, discountObj };
-
+		return { requestId, requestIdQuery, shopRecords, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon, discountObj, translations };
 	} catch (error) {
 		console.log(error);
 	}
 	return {};
-
 };
 
 const ReviewRequestForm = () => {
-	const { requestId, requestIdQuery, shopRecords, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon, discountObj } = useLoaderData();
+	const { requestId, requestIdQuery, shopRecords, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon, discountObj, translations } = useLoaderData();
 	if (!manualRequestProductsModel) {
 		return 'Page Not Found';
 	}
@@ -246,6 +251,7 @@ const ReviewRequestForm = () => {
 			formData.append('email', email);
 			formData.append('shop_domain', shopRecords.shop);
 			formData.append('product_id', manualRequestProductsModel.product_id);
+			formData.append('variant_title', manualRequestProductsModel.variant_title ?? '');
 			formData.append('rating', rating);
 			formData.append('file_objects', uploadedDocuments);
 			formData.append('description', reviewDescription);
@@ -274,9 +280,9 @@ const ReviewRequestForm = () => {
 	let discountHtml = "";
     if (discountObj) {
         if (discountObj.isSameDiscount) {
-            discountHtml = settingsJson.addReviewSameDiscountText.replace(/\[discount\]/g, discountObj.discount);
+            discountHtml = translations.addReviewSameDiscountText.replace(/\[discount\]/g, discountObj.discount);
         } else {
-            discountHtml = settingsJson.addReviewDifferentDiscountText;
+            discountHtml = translations.addReviewDifferentDiscountText;
             discountHtml = discountHtml.replace(/\[photo_discount\]/g, discountObj.photoDiscount);
             discountHtml = discountHtml.replace(/\[video_discount\]/g, discountObj.videoDiscount);
         }

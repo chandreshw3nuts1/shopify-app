@@ -66,10 +66,7 @@ export default function DisplayReviewWidget() {
     }, []);
 
     const redirectToCustomizePage = (e, type = "") => {
-        console.log(type);
-        // /productWidget
         e.preventDefault();
-        
         if(type == 'productWidget') {
             navigate('/app/widget-customize/product-review-widget');
         }

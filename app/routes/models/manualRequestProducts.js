@@ -9,6 +9,7 @@ const manualRequestProductsSchema = new mongoose.Schema({
     manual_request_id: {type: mongoose.Schema.Types.ObjectId, ref: 'manual_review_requests', required: true },
     product_id: {type: String, required: true },
     line_item_id: {type: String },
+    variant_title: {type: String },
     status: {type: String, required: true },
     tracking_number: {type: String},
     fulfillment_date: {type: Date },

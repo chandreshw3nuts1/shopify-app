@@ -31,7 +31,6 @@ const ReviewReply = ({ shopRecords, emailTemplateObj, generalAppearances }) => {
         setCurrentLanguage(language);
 
         const emailTemplateInfo = (emailTemplateObjState && emailTemplateObjState[currentLanguage]) ? emailTemplateObjState[currentLanguage] : {};
-        console.log(emailTemplateInfo);
         const { subject, body } = emailTemplateInfo;
         setLanguageWiseEmailTemplate(emailTemplateInfo);
 

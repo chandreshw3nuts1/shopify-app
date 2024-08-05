@@ -525,7 +525,7 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                     <div className="form-group m-0 horizontal-form alightop">
                                         <label htmlFor="">Item type</label>
                                         <div className='sideinput mw300 flxflexi'>
-                                            <select name="cornerRadius" onChange={handleSelectChange} value={selectedItemType} className='input_text'>
+                                            <select name="itemType" onChange={handleSelectChange} value={selectedItemType} className='input_text'>
                                                 <option value="show">Shown</option>
                                                 <option value="hide">Hidden</option>
                                             </select>

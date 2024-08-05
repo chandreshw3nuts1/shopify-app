@@ -177,7 +177,6 @@ export async function createShopifyDiscountCode(shopRecords, hasPhoto = false, h
 
 				if (priceRuleResponse.ok) {
 					const priceRuleObj = await priceRuleResponse.json();
-					console.log(priceRuleObj);
 					const priceRuleId = priceRuleObj.price_rule.id;
 
 					const discountApiUrl = `https://${shopRecords.shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/price_rules/${priceRuleId}/discount_codes.json`;
@@ -196,7 +195,6 @@ export async function createShopifyDiscountCode(shopRecords, hasPhoto = false, h
 						body: JSON.stringify(discountParams),
 					});
 
-					console.log(discountResponse.ok);
 					if (discountResponse.ok) {
 						response = await discountResponse.json();
 					} else {
