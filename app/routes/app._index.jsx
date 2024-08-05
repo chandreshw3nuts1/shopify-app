@@ -154,8 +154,8 @@ export default function Index() {
 						<h4>Our Software is here to help you jump-start your business!</h4>
 						<p>Enjoy free access to Loox while the store is password protected on your Shopify trial.</p>
 					</div>
-					<div class="closebtn">
-						<a href="#"><i class="twenty-closeicon"></i></a>
+					<div className="closebtn">
+						<a href="#"><i className="twenty-closeicon"></i></a>
 					</div>
 				</div>
 				<div className="dashbbanner">

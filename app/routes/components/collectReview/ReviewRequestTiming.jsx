@@ -118,7 +118,7 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
                     <Card>
                         <div className="reviewtiming_wrap">
 
-                            <div class="form-group m-0 flxflexi">
+                            <div className="form-group m-0 flxflexi">
                                 <label htmlFor="">Email timing</label>
                                 <div className='beforeafterwrap flxrow'>
                                     <div className='inputwrap flxflexi'>
@@ -136,7 +136,7 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
                                         </div>
                                     </div>
                                     {selectedDefaultDayTiming != "never" && (
-                                        <><span class="flxfix aftertextlabel">After</span>
+                                        <><span className="flxfix aftertextlabel">After</span>
                                             <div className='inputwrap flxflexi'>
                                                 <div className="formcontent" >
                                                     <Select
@@ -157,7 +157,7 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
                             </div>
 
                             {(selectedDefaultOrderTiming == "delivery" && !isDifferentTimingChecked && selectedDefaultDayTiming != "never") &&
-                                <div class="form-group m-0 horizontal-form alightop">
+                                <div className="form-group m-0 horizontal-form alightop">
                                     <label htmlFor="">Fallback timing</label>
                                     <div className='sideinput mw300 flxflexi'>
                                         <div className="formcontent" >
@@ -205,7 +205,7 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
                                 <>
 
                                     <div className="">
-                                        <div class="form-group m-0">
+                                        <div className="form-group m-0">
                                             <label htmlFor="">Domestic orders (shipping within IN)</label>
                                             <div className='beforeafterwrap flxrow'>
                                                 <div className='inputwrap flxflexi'>
@@ -221,8 +221,8 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
                                                         />
                                                     </div>
                                                 </div>
-                                                <span class="flxfix aftertextlabel">After</span>
-                                                <div class="inputwrap flxflexi">
+                                                <span className="flxfix aftertextlabel">After</span>
+                                                <div className="inputwrap flxflexi">
                                                     <div className="formcontent" >
                                                         <Select
                                                             name="domestic_order_timing"
@@ -242,7 +242,7 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
 
 
                                     <div className="">
-                                        <div class="form-group m-0">
+                                        <div className="form-group m-0">
                                             <label htmlFor="">{`International orders (shipping outside ${shopRecords.country_code})`}</label>
                                             <div className='beforeafterwrap flxrow'>
                                                 <div className='inputwrap flxflexi'>
@@ -258,8 +258,8 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
                                                         />
                                                     </div>
                                                 </div>
-                                                <span class="flxfix aftertextlabel">After</span>
-                                                <div class="inputwrap flxflexi">
+                                                <span className="flxfix aftertextlabel">After</span>
+                                                <div className="inputwrap flxflexi">
                                                     <div className="formcontent" >
                                                         <Select
                                                             name="intenational_order_timing"
@@ -286,7 +286,7 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
                             <>
 
                                 <div className="">
-                                    <div class="form-group ">
+                                    <div className="form-group ">
 
                                         <div className="formcontent" >
                                             <Select
@@ -301,8 +301,8 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
                                             />
                                         </div>
                                     </div>
-                                    <span class="">After</span>
-                                    <div class="form-group">
+                                    <span className="">After</span>
+                                    <div className="form-group">
                                         <div className="formcontent" >
                                             <Select
                                                 name="domestic_order_timing"
@@ -320,7 +320,7 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
 
 
                                 <div className="">
-                                    <div class="form-group ">
+                                    <div className="form-group ">
 
                                         <div className="formcontent" >
                                             <Select
@@ -335,8 +335,8 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
                                             />
                                         </div>
                                     </div>
-                                    <span class="">After</span>
-                                    <div class="form-group">
+                                    <span className="">After</span>
+                                    <div className="form-group">
                                         <div className="formcontent" >
                                             <Select
                                                 name="international_order_timing"

@@ -90,7 +90,7 @@ export default function DiscountPhotoVideoReview({ reviewRequestTimingSettings, 
                                 <div className='form-group m-0 horizontal-form align-items-center gapx24'>
                                     <label htmlFor="" className='w-auto'>Discount expires after</label>
                                     <div className='col-lg-3'>
-                                        <select id="" class="input_text">
+                                        <select id="" className="input_text">
                                             <option value="">Never</option>
                                             <option value="7">7 Days</option>
                                             <option value="14">14 Days</option>
@@ -106,7 +106,7 @@ export default function DiscountPhotoVideoReview({ reviewRequestTimingSettings, 
                                 <div className='form-group m-0 horizontal-form alightop align-items-start gapx24'>
                                     <label htmlFor="" className='w-auto'>Insert code</label>
                                     <div className='col-lg-3'>
-                                        <input type='text' id="" class="input_text" placeholder='(e.g. PHOTO-REVIEW)' />
+                                        <input type='text' id="" className="input_text" placeholder='(e.g. PHOTO-REVIEW)' />
                                         <div className='inputnote'>First create the discount on Shopify and then add here</div>
                                     </div>
                                     <div className='btnwrap m-0'>
@@ -117,7 +117,7 @@ export default function DiscountPhotoVideoReview({ reviewRequestTimingSettings, 
                             <div className='form-group m-0 horizontal-form align-items-center gapx24'>
                                 <label htmlFor="" className='w-auto'>Offer to reviewers from</label>
                                 <div className='col-lg-3'>
-                                    <select id="" class="input_text">
+                                    <select id="" className="input_text">
                                         <option value="">On-site & review requests</option>
                                         <option value="">Review requests only</option>
                                     </select>
