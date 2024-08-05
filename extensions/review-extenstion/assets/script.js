@@ -285,7 +285,7 @@ function loadReviews(page) {
                 $("#display-widget-component").html(response.body);
                 // Initialize Masonry on first load
 
-                if (response.widgetLayout != "list") {
+                if (response.widgetLayout) {
                     var $initialItems = $('.main_review_block');
                     $initialItems.imagesLoaded(function () {
                         masonryObj = $initialItems.masonry({
@@ -300,7 +300,7 @@ function loadReviews(page) {
                 var $newItems = $(response.body);
                 $(".main_review_block").append($newItems);
 
-                if (response.widgetLayout != "list") {
+                if (response.widgetLayout ) {
                     $newItems.imagesLoaded(function () {
                         $('.main_review_block').masonry('appended', $newItems).masonry('layout');
                     });

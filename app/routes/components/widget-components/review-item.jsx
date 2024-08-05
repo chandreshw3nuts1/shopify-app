@@ -36,7 +36,7 @@ const ReviewItem = (props) => {
                 <>
                     {productReviewWidgetCustomizesModel.widgetLayout == "grid" && (
                         props.reviewItems.map((review, i) => (
-                            <div key={i} className="w3grid-review-item " data-reviewid={review._id} >
+                            <div key={i} className="w3grid-review-item review-list-item frontreviewbox" data-reviewid={review._id} >
                                 <div className='row'>
                                     <div className="col">
                                         <div className="box-style custombg" style={{ backgroundColor: reviewsBackground }}>
@@ -139,7 +139,7 @@ const ReviewItem = (props) => {
 
                     {productReviewWidgetCustomizesModel.widgetLayout == "compact" && (
                         props.reviewItems.map((review, i) => (
-                            <div key={i} className="w3grid-review-item " data-reviewid={review._id} >
+                            <div key={i} className="w3grid-review-item review-list-item frontreviewbox" data-reviewid={review._id} >
                                 <div className='row'>
                                     <div className="col">
                                         <div className="box-style custombg" style={{ backgroundColor: reviewsBackground }}>
@@ -236,7 +236,7 @@ const ReviewItem = (props) => {
 
                     {productReviewWidgetCustomizesModel.widgetLayout == "list" && (
                         props.reviewItems.map((review, i) => (
-                            <div key={i} className="review-list-item frontreviewbox" data-reviewid={review._id} >
+                            <div key={i} className="review-list-item frontreviewbox w3grid-review-item" data-reviewid={review._id} >
                                 <div className='row'>
                                     <div className="col">
                                         <div className="box-style custombg" style={{ backgroundColor: reviewsBackground }}>
