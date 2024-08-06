@@ -1,5 +1,5 @@
 {
-	"host_url": "https://msgid-rent-specialty-virus.trycloudflare.com",
+	"host_url": "https://heard-kill-luxury-mailman.trycloudflare.com",
 	"page_limit": 20,
 	"manage_new_review_options": [
 		{
@@ -313,7 +313,7 @@
 	"defaultColors": {
 		"defaultBanner": "default-banner.png",
 		"starIcon": "rating-star-rounded",
-		"cornerRadius": "sharp",
+		"cornerRadius": "4",
 		"widgetFont": "Roboto",
 		"starIconColor": "000000",
 		"emailBackgroundColor": "ebebeb",
@@ -346,7 +346,7 @@
 		"starsBarFill": "7b7b7b",
 		"starsBarBackground": "f5f5f5",
 		"reviewShadow ": "basic",
-		"cornerRadius ": "sharp",
+		"cornerRadius ": "4",
 		"headerLayout ": "minimal",
 		"productReviewsWidget ": "always_shown",
 		"writeReviewButton ": "show",

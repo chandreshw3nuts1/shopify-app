@@ -249,7 +249,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 					}
 					{formParams.hasMore == 1 ?
 						<div className="load_more_review">
-							<a href="javascript:void(0)" url="javascript:void(0)" id="load_more_review" className="revbtn">{languageWiseProductWidgetSettings.showMoreReviewsTitle ? languageWiseProductWidgetSettings.showMoreReviewsTitle : translations.productReviewConstomize.showMoreReviewsTitle}</a>
+							<a href="#" id="load_more_review" className="revbtn">{languageWiseProductWidgetSettings.showMoreReviewsTitle ? languageWiseProductWidgetSettings.showMoreReviewsTitle : translations.productReviewConstomize.showMoreReviewsTitle}</a>
 						</div> :
 						""
 					}

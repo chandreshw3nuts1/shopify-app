@@ -378,7 +378,8 @@ $(document).on("click", ".review-list-item, .w3grid-review-item", function () {
     });
 
 });
-$(document).on("click", "#load_more_review", function () {
+$(document).on("click", "#load_more_review", function (e) {
+    e.preventDefault();
     page = page + 1;
     loadReviews(page);
 
