@@ -450,18 +450,18 @@ form textarea.input_text { height: 80px; padding-top: 8px; padding-bottom: 8px;}
 .frontreviewbox .box-style .review_topbar { align-items: center; margin: 0 0 12px 0;}
 .frontreviewbox .box-style .review_topbar .profileicon { width: 48px; height: 48px; margin: 0 16px 0 0; border-radius: 50px; overflow: hidden; position: relative; background: var(--borderColor);}
 .frontreviewbox .box-style .review_topbar .profileicon img { width: 100%; height: 100%; position: absolute; left: 0; top: 0; object-fit: cover;}
-.frontreviewbox .box-style .review_topbar h4 { font-size: 16px; color: var(--darkColor); font-weight: 600; margin: 0; padding: 0;}
-.frontreviewbox .box-style .review_topbar .date { padding: 2px 0 0 0; color: var(--lightGreyColor); font-size: 14px; line-height: 1.71; font-weight: 400;}
-.frontreviewbox .box-style .review_topbar .star-rating { display: flex; align-items: center;}
-.frontreviewbox .box-style .review_topbar .star-rating svg { width: 22px; height: 22px; color: var(--borderColor);}
-.frontreviewbox .box-style .review_topbar .star-rating .ratingstars.star-1 svg:nth-child(-n+1) { color: #FFC107;}
-.frontreviewbox .box-style .review_topbar .star-rating .ratingstars.star-2 svg:nth-child(-n+2) { color: #FFC107;}
-.frontreviewbox .box-style .review_topbar .star-rating .ratingstars.star-3 svg:nth-child(-n+3) { color: #FFC107;}
-.frontreviewbox .box-style .review_topbar .star-rating .ratingstars.star-4 svg:nth-child(-n+4) { color: #FFC107;}
-.frontreviewbox .box-style .review_topbar .star-rating .ratingstars.star-5 svg:nth-child(-n+5) { color: #FFC107;}
-.frontreviewbox .box-style .review_topbar .star-rating .ratingcount { margin: 0 10px 0 0; color: var(--darkColor); font-size: 14px; line-height: 1.71; padding: 0; font-weight: 700;}
+.frontreviewbox .box-style h4 { font-size: 16px; color: var(--darkColor); font-weight: 600; margin: 0; padding: 0;}
+.frontreviewbox .box-style .date { padding: 2px 0 0 0; color: var(--lightGreyColor); font-size: 14px; line-height: 1.71; font-weight: 400;}
+.frontreviewbox .box-style .star-rating { display: flex; align-items: center;}
+.frontreviewbox .box-style .star-rating svg { width: 22px; height: 22px; color: var(--borderColor);}
+.frontreviewbox .box-style .star-rating .ratingstars.star-1 svg:nth-child(-n+1) { color: #FFC107;}
+.frontreviewbox .box-style .star-rating .ratingstars.star-2 svg:nth-child(-n+2) { color: #FFC107;}
+.frontreviewbox .box-style .star-rating .ratingstars.star-3 svg:nth-child(-n+3) { color: #FFC107;}
+.frontreviewbox .box-style .star-rating .ratingstars.star-4 svg:nth-child(-n+4) { color: #FFC107;}
+.frontreviewbox .box-style .star-rating .ratingstars.star-5 svg:nth-child(-n+5) { color: #FFC107;}
+.frontreviewbox .box-style .star-rating .ratingcount { margin: 0 10px 0 0; color: var(--darkColor); font-size: 14px; line-height: 1.71; padding: 0; font-weight: 700;}
 .frontreviewbox .box-style .text_content { margin: 0 0 16px 0;}
-.frontreviewbox .box-style .text_content p { margin: 0; padding: 0; font-size: 14px; line-height: 24px; color: var(--darkColor); line-height: 1.71; font-weight: 400;}
+.frontreviewbox .box-style .text_content p { margin: 0; padding: 0; font-size: 14px; color: var(--darkColor); line-height: 1.71; font-weight: 400;}
 .frontreviewbox .box-style .product-thumb-detail { display: flex; align-items: center; margin: 0 auto 0 0;}
 .frontreviewbox .box-style .product-thumb-detail .image { width: 80px; height: 80px; border-radius: 10px; overflow: hidden; position: relative; margin: 0 16px 0 0;}
 .frontreviewbox .box-style .product-thumb-detail .image img { width: 100%; height: 100%; left: 0; top: 0; object-fit: cover; position: absolute;}
@@ -477,3 +477,24 @@ form textarea.input_text { height: 80px; padding-top: 8px; padding-bottom: 8px;}
 .frontreviewbox .box-style .review_imageswrap .videoth .playicon { position: absolute; left: 50%; top: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; z-index: 1; pointer-events: none; margin: -12px 0 0 -12px; background: var(--whiteBg); color: var(--darkColor); border-radius: 50px;}
 
 
+.main_review_block.grid-two-column-wrap,
+.main_review_block.grid-four-column-wrap { margin: 0 -12px;}
+.main_review_block .row { margin: 0;}
+.main_review_block .row > [class*='col'] { padding: 0;}
+
+.frontreviewbox.grid-two-column .box-style .review_topbar .mid_detail { align-items: center; width: 100%;}
+.frontreviewbox.grid-two-column .box-style .review_topbar .mid_detail .date { padding: 0; margin: 0 0 0 auto;}
+.frontreviewbox.grid-two-column .box-style .star-rating .ratingcount { margin: 0 0 0 10px;}
+.frontreviewbox.grid-two-column .box-style .product-thumb-detail .image { width: 54px; height: 54px; margin: 0 12px 0 0;}
+.frontreviewbox.grid-two-column .box-style .review_imageswrap .imagebox { width: 32px; height: 32px; border-radius: 50px; border: solid 1px var(--borderColor);}
+.frontreviewbox.grid-two-column .box-style .review_imageswrap .imagebox + .imagebox { margin: 0 0 0 -4px;}
+.frontreviewbox.grid-two-column .box-style .review_imageswrap .more-count { width: 32px; height: 32px; background: var(--borderColor); border-radius: 50px; display: flex; align-items: center; justify-content: center; margin: 0 0 0 -4px; font-size: 12px; color: var(--darkColor); font-weight: 700; z-index: 1; position: relative;}
+.frontreviewbox.grid-two-column .box-style .review_imageswrap .videoth .playicon { display: none;}
+
+.frontreviewbox.grid-four-column .box-style .star-rating .ratingcount { margin: 0 0 0 10px;}
+.frontreviewbox.grid-four-column .box-style .review_imageswrap { position: relative; margin: 0 0 16px 0;}
+.frontreviewbox.grid-four-column .box-style .review_imageswrap .imagebox { width: 100%; position: relative; overflow: hidden; height: auto;}
+.frontreviewbox.grid-four-column .box-style .review_imageswrap .imagebox::before { content: ''; display: block; padding-top: 73.72%;}
+.frontreviewbox.grid-four-column .box-style .review_imageswrap .imagebox img { width: 100%; height: 100%; position: absolute; left: 0; top: 0;}
+.frontreviewbox.grid-four-column .box-style .more-count { position: absolute; right: 12px; top: 12px; border-radius: 50px; background: var(--lightGreyBGcolor); color: var(--darkColor); font-size: 14px; font-weight: 600; padding: 0 16px; display: flex; align-items: center; height: 36px; z-index: 1;}
+.frontreviewbox.grid-four-column .box-style .product-thumb-detail .image { width: 54px; height: 54px; margin: 0 12px 0 0;}

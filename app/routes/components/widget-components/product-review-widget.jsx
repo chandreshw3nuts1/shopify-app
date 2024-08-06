@@ -62,17 +62,20 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 		//buttonBackgroundOnHover = productReviewWidgetCustomizesModel.buttonBackgroundOnHover;
 		//buttonTextOnHover = productReviewWidgetCustomizesModel.buttonTextOnHover;
 	}
-	let reviewWidgetLayoutWidth = "99%";
+	let reviewWidgetLayoutWidth = "100%";
+	let gridClassName = 'full-grid';
 	if (productReviewWidgetCustomizesModel.widgetLayout == 'grid') {
-		reviewWidgetLayoutWidth  = "25%";
+		reviewWidgetLayoutWidth  = "33.33%";
+		gridClassName = 'grid-four-column';
 	} else if (productReviewWidgetCustomizesModel.widgetLayout == 'compact') {
 		reviewWidgetLayoutWidth  = "50%";
+		gridClassName = 'grid-two-column';
 	}
 
 	return (
 		<>
 			{
-				formParams.page == 1 ? <div className="container">
+				formParams.page == 1 ? <div className="">
 
 					<div className="review_top_actions" style={{ fontFamily: generalAppearancesModel.widgetFont }}>
 						<style>
@@ -91,10 +94,12 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 
 								.w3grid-review-item {
 									width: ${reviewWidgetLayoutWidth};
-									margin-top : 24px;
-									// padding: 10px;
+									margin : 24px 0 0 0;
+									padding: 0;
 									box-sizing: border-box;
 								}
+								.w3grid-review-item.grid-two-column,
+								.w3grid-review-item.grid-four-column { padding: 0 12px;}
         					`}
 						</style>
 						<div className="left_actions flxfix">
@@ -232,9 +237,9 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 					</div>
 
 					{reviewItems.length > 0 ?
-						<div className="main_review_block">
+						<div className={`main_review_block ${gridClassName}-wrap`}>
 
-							<ReviewItem reviewItems={reviewItems} formParams={formParams} shopRecords={shopRecords} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={CommonRatingComponent} otherProps={otherProps} />
+							<ReviewItem reviewItems={reviewItems} formParams={formParams} shopRecords={shopRecords} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={CommonRatingComponent} otherProps={otherProps} gridClassName={gridClassName} />
 
 						</div>
 						:
@@ -255,7 +260,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 					}
 				</div > :
 
-					<ReviewItem reviewItems={reviewItems} formParams={formParams} shopRecords={shopRecords} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={CommonRatingComponent} otherProps={otherProps} />
+					<ReviewItem reviewItems={reviewItems} formParams={formParams} shopRecords={shopRecords} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={CommonRatingComponent} otherProps={otherProps} gridClassName={gridClassName} />
 
 			}
 		</>

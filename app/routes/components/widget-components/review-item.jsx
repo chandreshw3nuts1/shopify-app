@@ -36,9 +36,9 @@ const ReviewItem = (props) => {
                 <>
                     {productReviewWidgetCustomizesModel.widgetLayout == "grid" && (
                         props.reviewItems.map((review, i) => (
-                            <div key={i} className="w3grid-review-item review-list-item frontreviewbox" data-reviewid={review._id} >
-                                <div className='row'>
-                                    <div className="col">
+                            <div key={i} className={`w3grid-review-item review-list-item frontreviewbox ${props.gridClassName}`} data-reviewid={review._id} >
+                                <div className=''>
+                                    <div className="">
                                         <div className="box-style custombg" style={{ backgroundColor: reviewsBackground }}>
                                             <div className="review">
 
@@ -60,7 +60,7 @@ const ReviewItem = (props) => {
                                                         ))}
 
                                                         {review.reviewDocuments.length > 1 && (
-                                                            <div className='additional-media-indicator'>
+                                                            <div className='more-count'>
                                                                 <span>+{review.reviewDocuments.length - 1}</span>
                                                             </div>
                                                         )}
@@ -69,26 +69,16 @@ const ReviewItem = (props) => {
 
 
                                                 <div className='review_topbar'>
-                                                    <div className='mid_detail flxflexi'>
-                                                        <h4 style={{ color: reviewsText }}>
-                                                            {review.display_name}
-                                                        </h4>
-                                                        {productReviewWidgetCustomizesModel.reviewDates == 'show' &&
-                                                            <div className="date" style={{ color: reviewsText }}>{formatDate(review.created_at, props.shopRecords.timezone, 'M/D/YYYY')}</div>
-                                                        }
-                                                    </div>
                                                     <div className='star_reviews flxfix'>
                                                         <div className="star-rating">
                                                             <div className={`ratingstars flxrow star-${review.rating}`}>
-
-
                                                                 {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 1 ? props.generalAppearancesModel.starIconColor : "currentColor"} /> : null}
                                                                 {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 2 ? props.generalAppearancesModel.starIconColor : "currentColor"} /> : null}
                                                                 {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 3 ? props.generalAppearancesModel.starIconColor : "currentColor"} /> : null}
                                                                 {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 4 ? props.generalAppearancesModel.starIconColor : "currentColor"} /> : null}
                                                                 {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 5 ? props.generalAppearancesModel.starIconColor : "currentColor"} /> : null}
-
                                                             </div>
+                                                            <div className='ratingcount'>{review.rating}.0</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -114,6 +104,14 @@ const ReviewItem = (props) => {
                                                         </p>
                                                     </div>
                                                 }
+                                                <div className='mid_detail flxflexi'>
+                                                    <h4 style={{ color: reviewsText }}>
+                                                        {review.display_name}
+                                                    </h4>
+                                                    {productReviewWidgetCustomizesModel.reviewDates == 'show' &&
+                                                        <div className="date" style={{ color: reviewsText }}>{formatDate(review.created_at, props.shopRecords.timezone, 'M/D/YYYY')}</div>
+                                                    }
+                                                </div>
                                                 <div className='review_bottomwrap'>
                                                     {(props.formParams.hideProductThumbnails != 'true') &&
                                                         <div className="product-container product-thumb-detail">
@@ -139,54 +137,20 @@ const ReviewItem = (props) => {
 
                     {productReviewWidgetCustomizesModel.widgetLayout == "compact" && (
                         props.reviewItems.map((review, i) => (
-                            <div key={i} className="w3grid-review-item review-list-item frontreviewbox" data-reviewid={review._id} >
-                                <div className='row'>
-                                    <div className="col">
+                            <div key={i} className={`w3grid-review-item review-list-item frontreviewbox ${props.gridClassName}`} data-reviewid={review._id} >
+                                <div className=''>
+                                    <div className="">
                                         <div className="box-style custombg" style={{ backgroundColor: reviewsBackground }}>
                                             <div className="review">
 
-                                                {review.reviewDocuments && review.reviewDocuments.length > 0 &&
-                                                    <div className='review_imageswrap flxrow'>
-                                                        {review.reviewDocuments.slice(0, 1).map((media, i) => (
-                                                            <div className='imagebox' key={i}>
-                                                                {media.type === 'image' ? (
-                                                                    <img style={{ width: '100%' }} src={getUploadDocument(media.url)} />
-                                                                ) : (
-                                                                    <div className='videoth'>
-                                                                        <div className='playicon'><PlayIcon /></div>
-                                                                        <video>
-                                                                            <source src={getUploadDocument(media.url)} type="video/mp4" />
-                                                                        </video>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                }
-
-
                                                 <div className='review_topbar'>
-                                                    <div className='mid_detail flxflexi'>
+                                                    <div className='mid_detail flxrow'>
                                                         <h4 style={{ color: reviewsText }}>
                                                             {review.display_name}
                                                         </h4>
                                                         {productReviewWidgetCustomizesModel.reviewDates == 'show' &&
                                                             <div className="date" style={{ color: reviewsText }}>{formatDate(review.created_at, props.shopRecords.timezone, 'M/D/YYYY')}</div>
                                                         }
-                                                    </div>
-                                                    <div className='star_reviews flxfix'>
-                                                        <div className="star-rating">
-                                                            <div className={`ratingstars flxrow star-${review.rating}`}>
-
-
-                                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 1 ? props.generalAppearancesModel.starIconColor : "currentColor"} /> : null}
-                                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 2 ? props.generalAppearancesModel.starIconColor : "currentColor"} /> : null}
-                                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 3 ? props.generalAppearancesModel.starIconColor : "currentColor"} /> : null}
-                                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 4 ? props.generalAppearancesModel.starIconColor : "currentColor"} /> : null}
-                                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 5 ? props.generalAppearancesModel.starIconColor : "currentColor"} /> : null}
-
-                                                            </div>
-                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div className="text_content">
@@ -211,6 +175,18 @@ const ReviewItem = (props) => {
                                                         </p>
                                                     </div>
                                                 }
+                                                <div className='star_reviews flxfix'>
+                                                    <div className="star-rating">
+                                                        <div className={`ratingstars flxrow star-${review.rating}`}>
+                                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 1 ? props.generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+                                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 2 ? props.generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+                                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 3 ? props.generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+                                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 4 ? props.generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+                                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 5 ? props.generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+                                                        </div>
+                                                        <div className='ratingcount'>{review.rating}.0</div>
+                                                    </div>
+                                                </div>
                                                 <div className='review_bottomwrap'>
                                                     {(props.formParams.hideProductThumbnails != 'true') &&
                                                         <div className="product-container product-thumb-detail">
@@ -220,6 +196,29 @@ const ReviewItem = (props) => {
                                                             <div className="text flxflexi">
                                                                 <p style={{ color: reviewsText }}>{review.productDetails.title}</p>
                                                             </div>
+                                                        </div>
+                                                    }
+                                                    {review.reviewDocuments && review.reviewDocuments.length > 0 &&
+                                                        <div className='review_imageswrap flxrow'>
+                                                            {review.reviewDocuments.slice(0, 2).map((media, i) => (
+                                                                <div className='imagebox' key={i}>
+                                                                    {media.type === 'image' ? (
+                                                                        <img style={{ width: '100%' }} src={getUploadDocument(media.url)} />
+                                                                    ) : (
+                                                                        <div className='videoth'>
+                                                                            <div className='playicon'><PlayIcon /></div>
+                                                                            <video>
+                                                                                <source src={getUploadDocument(media.url)} type="video/mp4" />
+                                                                            </video>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            ))}
+                                                            {review.reviewDocuments.length > 2 && (
+                                                                <div className='more-count'>
+                                                                    {`+${review.reviewDocuments.length - 2}`}
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     }
                                                 </div>
@@ -236,9 +235,9 @@ const ReviewItem = (props) => {
 
                     {productReviewWidgetCustomizesModel.widgetLayout == "list" && (
                         props.reviewItems.map((review, i) => (
-                            <div key={i} className="review-list-item frontreviewbox w3grid-review-item" data-reviewid={review._id} >
-                                <div className='row'>
-                                    <div className="col">
+                            <div key={i} className={`review-list-item frontreviewbox w3grid-review-item ${props.gridClassName}`} data-reviewid={review._id} >
+                                <div className=''>
+                                    <div className="">
                                         <div className="box-style custombg" style={{ backgroundColor: reviewsBackground }}>
                                             <div className="review">
                                                 <div className='review_topbar flxrow'>
