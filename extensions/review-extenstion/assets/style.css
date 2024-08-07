@@ -242,7 +242,13 @@ padding-left: 10px;
 .modal.reviewdetailpopup .revdetailwrap .carousel-control-prev span { background: none; width: 44px; height: 44px; display: flex; background: var(--whiteBg); border-radius: 50px; align-items: center; justify-content: center; color: var(--darkColor);}
 .modal.reviewdetailpopup .revdetailwrap .rightinfowrap { width: 100%; max-width: 50%; padding: 24px 44px 24px 24px;}
 .modal.reviewdetailpopup .revdetailwrap .rightinfowrap .top_detail .namerow { align-items: center;}
-.modal.reviewdetailpopup .revdetailwrap .rightinfowrap .top_detail .namerow h3 { font-size: 18px; font-weight: 600; line-height: 1.44;}
+.modal.reviewdetailpopup .revdetailwrap .rightinfowrap .top_detail .namerow h3 { font-size: 18px; font-weight: 600; line-height: 1.44; margin: 0;}
+
+.modal.reviewdetailpopup .revdetailwrap .rightinfowrap .top_detail .nametitle { align-items: center;}
+.modal.reviewdetailpopup .revdetailwrap .rightinfowrap .top_detail .nametitle h3 { margin: 0;}
+.modal.reviewdetailpopup .revdetailwrap .rightinfowrap .top_detail .nametitle .verifiedreview { align-items: center; display: flex; font-size: 12px; color: var(--darkColor); font-weight: 500; column-gap: 2px; margin: 0 0 0 8px;}
+.modal.reviewdetailpopup .revdetailwrap .rightinfowrap .top_detail .nametitle .verifiedreview svg { width: 16px; height: 16px;}
+
 .modal.reviewdetailpopup .revdetailwrap .rightinfowrap .infoicon { display: flex; align-items: center; justify-content: center; margin: 0 0 0 auto;}
 .modal.reviewdetailpopup .revdetailwrap .reviewanddates { display: flex; align-items: center; margin: 16px 0 0 0;}
 .modal.reviewdetailpopup .revdetailwrap .reviewanddates .ratingstars { display: flex; align-items: center;}
@@ -303,6 +309,20 @@ padding-left: 10px;
 
 .review_top_actions .right_actions { margin: 0;}
 
+.review_top_actions .left_actions.sidebyside { display: flex;}
+.review_top_actions.otherheaderlayout .leftpart { margin: 0 16px 0 0;}
+.review_top_actions.otherheaderlayout .bigcountavarage { align-items: center;}
+.review_top_actions.otherheaderlayout .bigcountavarage .averagetext { font-size: 34px; color: var(--darkColor); font-weight: 500;}
+.review_top_actions.otherheaderlayout .bigcountavarage svg { width: 60px; height: 60px; margin: 0 10px 0 0;}
+.review_top_actions.otherheaderlayout .left_actions .totalreviewcount { margin: 10px 0 0 0; font-size: 18px;}
+.review_top_actions.otherheaderlayout .stardetaildd{ padding: 0;}
+
+.review_top_actions.compactheader { max-width: 400px; margin-left: auto; margin-right: auto; flex-direction: column;}
+.review_top_actions.compactheader .right_actions { justify-content: center !important; margin: 24px 0 0 0;}
+.review_top_actions.compactheader .left_actions.sidebyside { flex-direction: column;}
+.review_top_actions.compactheader.otherheaderlayout .leftpart { text-align: center; margin: 0 0 16px 0;}
+.review_top_actions.compactheader.otherheaderlayout .bigcountavarage { justify-content: center;}
+.review_top_actions.compactheader.otherheaderlayout .rightpart { display: flex; justify-content: center;}
 
 .modal.reviewdetailpopup .revdetailwrap .bottom_detail { border-top: solid 1px var(--borderColor); padding: 16px 0 0 0;}
 .modal.reviewdetailpopup .revdetailwrap .bottom_detail .productbox { display: flex; align-items: center;}
@@ -481,6 +501,11 @@ form textarea.input_text { height: 80px; padding-top: 8px; padding-bottom: 8px;}
 .main_review_block.grid-four-column-wrap { margin: 0 -12px;}
 .main_review_block .row { margin: 0;}
 .main_review_block .row > [class*='col'] { padding: 0;}
+
+
+.frontreviewbox .box-style .nametitle { align-items: center;}
+.frontreviewbox .box-style .nametitle .verifiedreview { align-items: center; display: flex; font-size: 12px; color: var(--darkColor); font-weight: 500; column-gap: 2px; margin: 0 0 0 8px;}
+.frontreviewbox .box-style .nametitle .verifiedreview svg { width: 16px; height: 16px;}
 
 .frontreviewbox.grid-two-column .box-style .review_topbar .mid_detail { align-items: center; width: 100%;}
 .frontreviewbox.grid-two-column .box-style .review_topbar .mid_detail .date { padding: 0; margin: 0 0 0 auto;}

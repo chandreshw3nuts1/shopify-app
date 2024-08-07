@@ -10,6 +10,7 @@ import InfoIcon from "../icons/InfoIcon";
 import ArrowRightIcon from "../icons/ArrowRightIcon";
 import PlayIcon from "../icons/PlayIcon";
 import PauseIcon from "../icons/PauseIcon";
+import ReviewVerifyIcon from "../icons/ReviewVerifyIcon";
 
 const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, formParams, generalAppearancesModel, CommonRatingComponent, otherProps }) => {
     const { translations, productReviewWidgetCustomizesModel, languageWiseProductWidgetSettings } = otherProps;
@@ -83,7 +84,12 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                 <div className="rightinfowrap flxcol">
                                     <div className="top_detail flxfix">
                                         <div className="namerow flxrow">
-                                            <h3>{reviewDetails.first_name} {reviewDetails.last_name}</h3>
+                                            <div className='nametitle flxrow align-items-center'>
+                                                <h3>{reviewDetails.first_name} {reviewDetails.last_name}</h3>
+                                                <div className='verifiedreview'>
+                                                    <ReviewVerifyIcon /> Verified
+                                                </div>
+                                            </div>
                                             <div className="infoicon">
                                                 <InfoIcon />
                                             </div>

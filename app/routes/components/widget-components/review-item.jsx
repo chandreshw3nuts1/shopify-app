@@ -2,6 +2,7 @@ import Masonry from 'react-masonry-css';
 import { getUploadDocument } from './../../../utils/documentPath';
 import PlayIcon from '../icons/PlayIcon';
 import { formatDate } from './../../../utils/dateFormat';
+import ReviewVerifyIcon from '../icons/ReviewVerifyIcon';
 
 const ReviewItem = (props) => {
     const { translations, productReviewWidgetCustomizesModel, languageWiseProductWidgetSettings } = props.otherProps;
@@ -105,9 +106,14 @@ const ReviewItem = (props) => {
                                                     </div>
                                                 }
                                                 <div className='mid_detail flxflexi'>
-                                                    <h4 style={{ color: reviewsText }}>
-                                                        {review.display_name}
-                                                    </h4>
+                                                    <div className='nametitle flxrow align-items-center'>
+                                                        <h4 style={{ color: reviewsText }}>
+                                                            {review.display_name}
+                                                        </h4>
+                                                        <div className='verifiedreview'>
+                                                            <ReviewVerifyIcon /> Verified
+                                                        </div>
+                                                    </div>
                                                     {productReviewWidgetCustomizesModel.reviewDates == 'show' &&
                                                         <div className="date" style={{ color: reviewsText }}>{formatDate(review.createdAt, props.shopRecords.timezone, 'M/D/YYYY')}</div>
                                                     }
@@ -145,9 +151,14 @@ const ReviewItem = (props) => {
 
                                                 <div className='review_topbar'>
                                                     <div className='mid_detail flxrow'>
-                                                        <h4 style={{ color: reviewsText }}>
-                                                            {review.display_name}
-                                                        </h4>
+                                                        <div className='nametitle flxrow align-items-center'>
+                                                            <h4 style={{ color: reviewsText }}>
+                                                                {review.display_name}
+                                                            </h4>
+                                                            <div className='verifiedreview'>
+                                                                <ReviewVerifyIcon /> Verified
+                                                            </div>
+                                                        </div>
                                                         {productReviewWidgetCustomizesModel.reviewDates == 'show' &&
                                                             <div className="date" style={{ color: reviewsText }}>{formatDate(review.createdAt, props.shopRecords.timezone, 'M/D/YYYY')}</div>
                                                         }
@@ -242,9 +253,14 @@ const ReviewItem = (props) => {
                                             <div className="review">
                                                 <div className='review_topbar flxrow'>
                                                     <div className='mid_detail flxflexi'>
-                                                        <h4 style={{ color: reviewsText }}>
-                                                            {review.display_name}
-                                                        </h4>
+                                                        <div className='nametitle flxrow align-items-center'>
+                                                            <h4 style={{ color: reviewsText }}>
+                                                                {review.display_name}
+                                                            </h4>
+                                                            <div className='verifiedreview'>
+                                                                <ReviewVerifyIcon /> Verified
+                                                            </div>
+                                                        </div>
                                                         {productReviewWidgetCustomizesModel.reviewDates == 'show' &&
                                                             <div className="date" style={{ color: reviewsText }}>{formatDate(review.createdAt, props.shopRecords.timezone, 'M/D/YYYY')}</div>
                                                         }

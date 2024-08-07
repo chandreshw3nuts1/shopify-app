@@ -71,121 +71,193 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 		reviewWidgetLayoutWidth  = "50%";
 		gridClassName = 'grid-two-column';
 	}
+	console.log(productReviewWidgetCustomizesModel.headerLayout);
+	const minimalHeader = productReviewWidgetCustomizesModel.headerLayout === 'minimal';
+	const compactHeader = productReviewWidgetCustomizesModel.headerLayout === 'compact';
+	const expandedHeader = productReviewWidgetCustomizesModel.headerLayout === 'expanded';
 
 	return (
 		<>
+			<style>
+				{`
+					.custombtn:hover {
+						background-color: ${buttonBackgroundOnHover} !important;
+						color : ${buttonTextOnHover} !important;
+					}
+					.review_top_actions .stardetaildd .stardetailrow .processbar .activebar {
+						background-color: ${starsBarFill} !important;
+					}
+
+					.review_top_actions .stardetaildd .stardetailrow .processbar {
+						background-color: ${starsBarBackground} !important;
+					}
+
+					.w3grid-review-item {
+						width: ${reviewWidgetLayoutWidth};
+						margin : 24px 0 0 0;
+						padding: 0;
+						box-sizing: border-box;
+					}
+					.w3grid-review-item.grid-two-column,
+					.w3grid-review-item.grid-four-column { padding: 0 12px;}
+				`}
+			</style>
 			{
 				formParams.page == 1 ? <div className="">
-
-					<div className="review_top_actions" style={{ fontFamily: generalAppearancesModel.widgetFont }}>
-						<style>
-							{`
-								.custombtn:hover {
-									background-color: ${buttonBackgroundOnHover} !important;
-									color : ${buttonTextOnHover} !important;
+					
+					<div className={` review_top_actions ${minimalHeader ? 'minimalheader' : 'otherheaderlayout'} ${compactHeader ? 'compactheader' : ''} ${expandedHeader ? 'expandedheader' : ''}`} style={{ fontFamily: generalAppearancesModel.widgetFont }}>
+						<div className={`left_actions flxfix ${minimalHeader ? '' : 'sidebyside'}`}>
+							<div className="leftpart">
+								<div className="section_title" style={{ color: headerTextColor }}>{languageWiseProductWidgetSettings.reviewHeaderTitle ? languageWiseProductWidgetSettings.reviewHeaderTitle : translations.productReviewConstomize.reviewHeaderTitle}</div>
+								{CommonRatingComponent && !minimalHeader &&
+									<div className="bigcountavarage flxrow">
+										<CommonRatingComponent color={formParams.averageRating >= 1 ? generalAppearancesModel.starIconColor : "currentColor"} />
+										<div className="averagetext">{formParams.averageRating}</div>
+									</div>
 								}
-								.review_top_actions .stardetaildd .stardetailrow .processbar .activebar {
-									background-color: ${starsBarFill} !important;
+								{formParams.totalReviewItems > 0 && !minimalHeader &&
+									<div className="totalreviewcount" style={{ color: headerTextColor }}>
+										<span>{formParams.totalReviewItems}</span> {globalReviewText}
+									</div>
 								}
-
-								.review_top_actions .stardetaildd .stardetailrow .processbar {
-									background-color: ${starsBarBackground} !important;
-								}
-
-								.w3grid-review-item {
-									width: ${reviewWidgetLayoutWidth};
-									margin : 24px 0 0 0;
-									padding: 0;
-									box-sizing: border-box;
-								}
-								.w3grid-review-item.grid-two-column,
-								.w3grid-review-item.grid-four-column { padding: 0 12px;}
-        					`}
-						</style>
-						<div className="left_actions flxfix">
-							<div className="section_title" style={{ color: headerTextColor }}>{languageWiseProductWidgetSettings.reviewHeaderTitle ? languageWiseProductWidgetSettings.reviewHeaderTitle : translations.productReviewConstomize.reviewHeaderTitle}</div>
-							<div className="star-rating">
-								<div className="dropdown">
-									<button className="dropdown-toggle starbtn" style={{ color: headerTextColor }} type="button" data-bs-toggle="dropdown" aria-expanded="false">
-										<div className={`ratingstars flxrow star-${formParams.averageRating}`}>
-											<div>
-												{CommonRatingComponent ? <CommonRatingComponent color={formParams.averageRating >= 1 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
-												{CommonRatingComponent ? <CommonRatingComponent color={formParams.averageRating >= 2 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
-												{CommonRatingComponent ? <CommonRatingComponent color={formParams.averageRating >= 3 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
-												{CommonRatingComponent ? <CommonRatingComponent color={formParams.averageRating >= 4 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
-												{CommonRatingComponent ? <CommonRatingComponent color={formParams.averageRating >= 5 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
-											</div>
-
-										</div>
-										{formParams.totalReviewItems > 0 &&
-											<>
-												<div className='ratingcount' style={{ color: headerTextColor }}  >{formParams.averageRating} {translations.out_of} <span>5</span></div>
-												{productReviewWidgetCustomizesModel.showRatingsDistribution &&
-													<div className="arrowright">
-														<ArrowDownIcon />
-													</div>
-												}
-											</>
-										}
-									</button>
-									{(formParams.totalReviewItems > 0 && productReviewWidgetCustomizesModel.showRatingsDistribution) &&
-										<>
-											<ul className="dropdown-menu">
-												<div className="stardetaildd">
-													<div className="stardetailrow flxrow">
-														<div className="sratnumber d-none" data-review={five_start_count}>5</div>
-														<div className="starsicons flxrow star-5">
-
-															<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="5" />
-
-														</div>
-														<div className="processbar"><div className="activebar" style={{ width: `${five_start_percent}%` }}></div></div>
-														<div className="reviewgiven">({five_start_count})</div>
-													</div>
-													<div className="stardetailrow flxrow">
-														<div className="sratnumber d-none" data-review={four_start_count}>4</div>
-														<div className="starsicons flxrow star-4">
-															<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="4" />
-
-														</div>
-														<div className="processbar"><div className="activebar" style={{ width: `${four_start_percent}%` }}></div></div>
-														<div className="reviewgiven">({four_start_count})</div>
-													</div>
-													<div className="stardetailrow flxrow">
-														<div className="sratnumber d-none" data-review={three_start_count}>3</div>
-														<div className="starsicons flxrow star-3">
-															<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="3" />
-
-														</div>
-														<div className="processbar"><div className="activebar" style={{ width: `${three_start_percent}%` }}></div></div>
-														<div className="reviewgiven">({three_start_count})</div>
-													</div>
-													<div className="stardetailrow flxrow">
-														<div className="sratnumber d-none" data-review={two_start_count}>2</div>
-														<div className="starsicons flxrow star-2">
-															<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="2" />
-
-														</div>
-														<div className="processbar"><div className="activebar" style={{ width: `${two_start_percent}%` }}></div></div>
-														<div className="reviewgiven">({two_start_count})</div>
-													</div>
-													<div className="stardetailrow flxrow">
-														<div className="sratnumber d-none" data-review={one_start_count}>1</div>
-														<div className="starsicons flxrow star-1">
-															<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="1" />
-
-														</div>
-														<div className="processbar"><div className="activebar" style={{ width: `${one_start_percent}%` }}></div></div>
-														<div className="reviewgiven">({one_start_count})</div>
-													</div>
-												</div>
-												<input type="hidden" id="ratting_wise_filter" value={formParams.filterByRatting} />
-											</ul>
-										</>
-									}
-								</div>
 							</div>
-							{formParams.totalReviewItems > 0 &&
+							<div className="rightpart">
+								{(formParams.totalReviewItems > 0 && productReviewWidgetCustomizesModel.showRatingsDistribution) && !minimalHeader &&
+									<div className="stardetaildd">
+										<div className="stardetailrow flxrow">
+											<div className="sratnumber d-none" data-review={five_start_count}>5</div>
+											<div className="starsicons flxrow star-5">
+
+												<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="5" />
+
+											</div>
+											<div className="processbar"><div className="activebar" style={{ width: `${five_start_percent}%` }}></div></div>
+											<div className="reviewgiven">({five_start_count})</div>
+										</div>
+										<div className="stardetailrow flxrow">
+											<div className="sratnumber d-none" data-review={four_start_count}>4</div>
+											<div className="starsicons flxrow star-4">
+												<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="4" />
+
+											</div>
+											<div className="processbar"><div className="activebar" style={{ width: `${four_start_percent}%` }}></div></div>
+											<div className="reviewgiven">({four_start_count})</div>
+										</div>
+										<div className="stardetailrow flxrow">
+											<div className="sratnumber d-none" data-review={three_start_count}>3</div>
+											<div className="starsicons flxrow star-3">
+												<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="3" />
+
+											</div>
+											<div className="processbar"><div className="activebar" style={{ width: `${three_start_percent}%` }}></div></div>
+											<div className="reviewgiven">({three_start_count})</div>
+										</div>
+										<div className="stardetailrow flxrow">
+											<div className="sratnumber d-none" data-review={two_start_count}>2</div>
+											<div className="starsicons flxrow star-2">
+												<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="2" />
+
+											</div>
+											<div className="processbar"><div className="activebar" style={{ width: `${two_start_percent}%` }}></div></div>
+											<div className="reviewgiven">({two_start_count})</div>
+										</div>
+										<div className="stardetailrow flxrow">
+											<div className="sratnumber d-none" data-review={one_start_count}>1</div>
+											<div className="starsicons flxrow star-1">
+												<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="1" />
+
+											</div>
+											<div className="processbar"><div className="activebar" style={{ width: `${one_start_percent}%` }}></div></div>
+											<div className="reviewgiven">({one_start_count})</div>
+										</div>
+									</div>
+								}
+								{minimalHeader && 
+									<div className="star-rating">
+										<div className="dropdown">
+											<button className="dropdown-toggle starbtn" style={{ color: headerTextColor }} type="button" data-bs-toggle="dropdown" aria-expanded="false">
+												<div className={`ratingstars flxrow star-${formParams.averageRating}`}>
+													<div>
+														{CommonRatingComponent ? <CommonRatingComponent color={formParams.averageRating >= 1 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+														{CommonRatingComponent ? <CommonRatingComponent color={formParams.averageRating >= 2 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+														{CommonRatingComponent ? <CommonRatingComponent color={formParams.averageRating >= 3 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+														{CommonRatingComponent ? <CommonRatingComponent color={formParams.averageRating >= 4 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+														{CommonRatingComponent ? <CommonRatingComponent color={formParams.averageRating >= 5 ? generalAppearancesModel.starIconColor : "currentColor"} /> : null}
+													</div>
+
+												</div>
+												{formParams.totalReviewItems > 0 &&
+													<>
+														<div className='ratingcount' style={{ color: headerTextColor }}  >{formParams.averageRating} {translations.out_of} <span>5</span></div>
+														{productReviewWidgetCustomizesModel.showRatingsDistribution &&
+															<div className="arrowright">
+																<ArrowDownIcon />
+															</div>
+														}
+													</>
+												}
+											</button>
+											{(formParams.totalReviewItems > 0 && productReviewWidgetCustomizesModel.showRatingsDistribution) &&
+												<>
+													<ul className="dropdown-menu">
+														<div className="stardetaildd">
+															<div className="stardetailrow flxrow">
+																<div className="sratnumber d-none" data-review={five_start_count}>5</div>
+																<div className="starsicons flxrow star-5">
+
+																	<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="5" />
+
+																</div>
+																<div className="processbar"><div className="activebar" style={{ width: `${five_start_percent}%` }}></div></div>
+																<div className="reviewgiven">({five_start_count})</div>
+															</div>
+															<div className="stardetailrow flxrow">
+																<div className="sratnumber d-none" data-review={four_start_count}>4</div>
+																<div className="starsicons flxrow star-4">
+																	<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="4" />
+
+																</div>
+																<div className="processbar"><div className="activebar" style={{ width: `${four_start_percent}%` }}></div></div>
+																<div className="reviewgiven">({four_start_count})</div>
+															</div>
+															<div className="stardetailrow flxrow">
+																<div className="sratnumber d-none" data-review={three_start_count}>3</div>
+																<div className="starsicons flxrow star-3">
+																	<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="3" />
+
+																</div>
+																<div className="processbar"><div className="activebar" style={{ width: `${three_start_percent}%` }}></div></div>
+																<div className="reviewgiven">({three_start_count})</div>
+															</div>
+															<div className="stardetailrow flxrow">
+																<div className="sratnumber d-none" data-review={two_start_count}>2</div>
+																<div className="starsicons flxrow star-2">
+																	<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="2" />
+
+																</div>
+																<div className="processbar"><div className="activebar" style={{ width: `${two_start_percent}%` }}></div></div>
+																<div className="reviewgiven">({two_start_count})</div>
+															</div>
+															<div className="stardetailrow flxrow">
+																<div className="sratnumber d-none" data-review={one_start_count}>1</div>
+																<div className="starsicons flxrow star-1">
+																	<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="1" />
+
+																</div>
+																<div className="processbar"><div className="activebar" style={{ width: `${one_start_percent}%` }}></div></div>
+																<div className="reviewgiven">({one_start_count})</div>
+															</div>
+														</div>
+														<input type="hidden" id="ratting_wise_filter" value={formParams.filterByRatting} />
+													</ul>
+												</>
+											}
+										</div>
+									</div>
+								}
+							</div>
+							
+							{formParams.totalReviewItems > 0 && minimalHeader &&
 								<div className="totalreviewcount" style={{ color: headerTextColor }}>
 									<span>{formParams.totalReviewItems}</span> {globalReviewText}
 								</div>
@@ -232,9 +304,12 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 								</div>
 							}
 
-							{(formParams.productId != "" && productReviewWidgetCustomizesModel.writeReviewButton == 'show') ? <button className="revbtn wbigbtn custombtn lightbtn" id="show_create_review_modal" style={{ border: buttonBorderColor, color: buttonTitleColor, backgroundColor : buttonBackground }}>{languageWiseProductWidgetSettings.writeReviewButtonTitle ? languageWiseProductWidgetSettings.writeReviewButtonTitle : translations.productReviewConstomize.writeReviewButtonTitle}</button> : ""}
+							{(formParams.productId != "" && productReviewWidgetCustomizesModel.writeReviewButton == 'show') ? <button className="revbtn wbigbtn custombtn" id="show_create_review_modal" style={{ border: buttonBorderColor, color: buttonTitleColor, backgroundColor : buttonBackground }}>{languageWiseProductWidgetSettings.writeReviewButtonTitle ? languageWiseProductWidgetSettings.writeReviewButtonTitle : translations.productReviewConstomize.writeReviewButtonTitle}</button> : ""}
 						</div>
 					</div>
+					
+
+					
 
 					{reviewItems.length > 0 ?
 						<div className={`main_review_block ${gridClassName}-wrap`}>
