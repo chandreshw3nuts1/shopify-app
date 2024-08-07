@@ -280,33 +280,34 @@ function loadReviews(page) {
             customer_locale: customer_locale
         },
         dataType: "json",
+        beforeSend: function() {
+            $('#load_more_review').hide();
+            $('#w3loadingmorerws').show();
+        },
         success: function (response) {
             if (page == 1) {
                 $("#display-widget-component").html(response.body);
                 // Initialize Masonry on first load
 
-                if (response.widgetLayout) {
-                    var $initialItems = $('.main_review_block');
-                    $initialItems.imagesLoaded(function () {
-                        masonryObj = $initialItems.masonry({
-                            itemSelector: '.w3grid-review-item',
-                            columnWidth: '.w3grid-review-item',
-                            percentPosition: true
-                        });
+                var $initialItems = $('.main_review_block');
+                $initialItems.imagesLoaded(function () {
+                    masonryObj = $initialItems.masonry({
+                        itemSelector: '.w3grid-review-item',
+                        columnWidth: '.w3grid-review-item',
+                        percentPosition: true
                     });
-                }
+                });
 
             } else {
                 var $newItems = $(response.body);
                 $(".main_review_block").append($newItems);
 
-                if (response.widgetLayout ) {
-                    $newItems.imagesLoaded(function () {
-                        $('.main_review_block').masonry('appended', $newItems).masonry('layout');
-                    });
-                }
+                $newItems.imagesLoaded(function () {
+                    $('.main_review_block').masonry('appended', $newItems).masonry('layout');
+                });
             }
-
+            $('#load_more_review').show();
+            $('#w3loadingmorerws').hide();
             if (response.hasMore == 0) {
                 $("#load_more_review").hide();
             }
@@ -382,6 +383,7 @@ $(document).on("click", "#load_more_review", function (e) {
     e.preventDefault();
     page = page + 1;
     loadReviews(page);
+
 
 });
 

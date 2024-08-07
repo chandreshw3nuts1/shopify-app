@@ -1,7 +1,41 @@
 {
-    "reviewRequestEmail" : {
-        "subject" : "Order #[order_number], how did it go?",
-        "body" : "Hello [name], \n \n We would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds.",
-        "buttonText" : "Write a review"
+    "reviewRequestEmail": {
+        "subject": "Заказ #[order_number], как прошло?",
+        "body": "Здравствуйте, [name], \n \nМы будем признательны, если вы поделитесь своим мнением. Ваш отзыв помогает нам и сообществу, которое нас поддерживает, и занимает всего несколько секунд.",
+        "buttonText": "Написать отзыв"
+    },
+    "reviewReplyEmail": {
+        "subject": "В ответ на ваш отзыв о [product]",
+        "body": "Здравствуйте, [name],\n \nНа ваш отзыв о [product] был добавлен ответ:\n[reply_content]\nЧтобы ответить приватно, ответьте на это письмо."
+    },
+    "dicountPhotoVideoReviewEmail": {
+        "subject": "Ваш код скидки в [store]",
+        "body": "Здравствуйте, [name],\n\nСпасибо, что поделились своим опытом!\n\nИспользуйте следующий код скидки, чтобы получить [discount] скидку на вашу следующую покупку в [store]",
+        "buttonText": "Купить сейчас"
+    },
+    "addReviewSameDiscountText": "Ваша скидка [discount] ждет вас!",
+    "addReviewDifferentDiscountText": "Загрузите фото, чтобы получить [photo_discount] скидку или видео, чтобы получить [video_discount] скидку на вашу следующую покупку!",
+    "loadingText": "Загрузка...",
+    "sort_by": "Сортировать по",
+    "featured": "Рекомендуемые",
+    "newest": "Новейшие",
+    "highest_rating": "С наивысшей оценкой",
+    "lowest_rating": "С наименьшей оценкой",
+    "replied": "С ответами",
+    "out_of": "из",
+    "next_link": "Далее",
+    "back_link": "Назад",
+    "submit_button": "Отправить",
+    "upload_photo_video_label": "Загрузить фото или видео",
+    "productReviewConstomize": {
+        "reviewHeaderTitle": "Отзыв клиента",
+        "reviewSingular": "Отзыв",
+        "reviewPlural": "Отзывы",
+        "writeReviewButtonTitle": "Написать отзыв",
+        "noReviewsTitleFirstPart": "Будьте первыми, кто",
+        "noReviewsTitleLastPart": "Напишет отзыв",
+        "showMoreReviewsTitle": "Показать больше отзывов",
+        "productPageLinkTitle": "Посмотреть продукт",
+        "itemTypeTitle": "Тип товара"
     }
 }

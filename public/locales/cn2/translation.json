@@ -1,7 +1,41 @@
 {
-    "reviewRequestEmail" : {
-        "subject" : "chinis trad Order #[order_number], how did it go?",
-        "body" : "Hello [name], \n \n We would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds.",
-        "buttonText" : "Write a review"
+    "reviewRequestEmail": {
+        "subject": "訂單 #[order_number]，怎麼樣？",
+        "body": "您好 [name],\n\n我們很感激您分享的看法和感覺。您的評價對我們和支持我們的社區很有幫助，只需要幾秒鐘。",
+        "buttonText": "寫評價"
+    },
+    "reviewReplyEmail": {
+        "subject": "回覆您的 [product] 評價",
+        "body": "您好 [name],\n\n您的 [product] 評價有新回覆：\n[reply_content]\n如需私下回應，請回覆此郵件。"
+    },
+    "dicountPhotoVideoReviewEmail": {
+        "subject": "您在 [store] 的折扣碼",
+        "body": "您好 [name],\n\n感謝您分享的體驗！\n\n使用以下折扣碼在 [store] 享受 [discount] 的折扣優惠",
+        "buttonText": "立即購物"
+    },
+    "addReviewSameDiscountText": "您的 [discount] 折扣等著您！",
+    "addReviewDifferentDiscountText": "上傳照片即可獲得 [photo_discount] 折扣，上傳視頻即可獲得 [video_discount] 折扣，享受下次購買優惠！",
+    "loadingText": "加載中...",
+    "sort_by": "排序方式",
+    "featured": "特色",
+    "newest": "最新",
+    "highest_rating": "最高評分",
+    "lowest_rating": "最低評分",
+    "replied": "已回覆",
+    "out_of": "共",
+    "next_link": "下一頁",
+    "back_link": "上一頁",
+    "submit_button": "提交",
+    "upload_photo_video_label": "上傳照片或視頻",
+    "productReviewConstomize": {
+        "reviewHeaderTitle": "顧客評價",
+        "reviewSingular": "評價",
+        "reviewPlural": "評價",
+        "writeReviewButtonTitle": "寫評價",
+        "noReviewsTitleFirstPart": "成為第一個",
+        "noReviewsTitleLastPart": "寫評價的人",
+        "showMoreReviewsTitle": "顯示更多評價",
+        "productPageLinkTitle": "查看產品",
+        "itemTypeTitle": "商品類型"
     }
 }

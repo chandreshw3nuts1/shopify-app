@@ -1,7 +1,41 @@
 {
-    "reviewRequestEmail" : {
-        "subject" : "Order #[order_number], how did it go?",
-        "body" : "Hello [name], \n \n We would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds.",
-        "buttonText" : "Write a review"
+    "reviewRequestEmail": {
+        "subject": "Bestilling #[order_number], hvordan gikk det?",
+        "body": "Hei [name],\n\nVi ville være takknemlige hvis du delte hvordan ting ser ut og føles. Din anmeldelse hjelper oss og samfunnet som støtter oss, og det tar bare noen sekunder.",
+        "buttonText": "Skriv en anmeldelse"
+    },
+    "reviewReplyEmail": {
+        "subject": "Svar på din anmeldelse av [product]",
+        "body": "Hei [name],\n\nEt svar har blitt lagt til din anmeldelse av [product]:\n[reply_content]\nFor å svare privat, svar på denne e-posten."
+    },
+    "dicountPhotoVideoReviewEmail": {
+        "subject": "Din rabattkode hos [store]",
+        "body": "Hei [name],\n\nTakk for at du delte din opplevelse!\n\nBruk følgende rabattkode for [discount] rabatt på ditt neste kjøp hos [store]",
+        "buttonText": "Handle nå"
+    },
+    "addReviewSameDiscountText": "Din [discount] rabatt venter på deg!",
+    "addReviewDifferentDiscountText": "Last opp et bilde for å få [photo_discount] rabatt eller en video for å få [video_discount] rabatt på ditt neste kjøp!",
+    "loadingText": "Laster...",
+    "sort_by": "Sorter etter",
+    "featured": "Utvalgt",
+    "newest": "Nyeste",
+    "highest_rating": "Høyeste vurdering",
+    "lowest_rating": "Laveste vurdering",
+    "replied": "Besvart",
+    "out_of": "av",
+    "next_link": "Neste",
+    "back_link": "Tilbake",
+    "submit_button": "Send inn",
+    "upload_photo_video_label": "Last opp bilde eller video",
+    "productReviewConstomize": {
+        "reviewHeaderTitle": "Kundeanmeldelse",
+        "reviewSingular": "Anmeldelse",
+        "reviewPlural": "Anmeldelser",
+        "writeReviewButtonTitle": "Skriv en anmeldelse",
+        "noReviewsTitleFirstPart": "Bli den første til å",
+        "noReviewsTitleLastPart": "skrive en anmeldelse",
+        "showMoreReviewsTitle": "Vis flere anmeldelser",
+        "productPageLinkTitle": "Vis produkt",
+        "itemTypeTitle": "Varetype"
     }
 }

@@ -1,7 +1,41 @@
 {
-    "reviewRequestEmail" : {
-        "subject" : "Order #[order_number], how did it go?",
-        "body" : "Hello [name], \n \n We would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds.",
-        "buttonText" : "Write a review"
+    "reviewRequestEmail": {
+        "subject": "הזמנה מספר #[order_number], איך היה?",
+        "body": "שלום [name],\n\nנשמח אם תשתף אותנו בחוויה שלך. הביקורת שלך עוזרת לנו ולקהילה שתומכת בנו, וזה לוקח רק כמה שניות.",
+        "buttonText": "כתוב ביקורת"
+    },
+    "reviewReplyEmail": {
+        "subject": "תגובה לביקורת שלך על [product]",
+        "body": "שלום [name],\n\nתגובה נוספה לביקורת שלך על [product]:\n[reply_content]\nכדי להשיב באופן פרטי, השב למייל זה."
+    },
+    "dicountPhotoVideoReviewEmail": {
+        "subject": "קוד ההנחה שלך ב-[store]",
+        "body": "שלום [name],\n\nתודה ששיתפת אותנו בחוויה שלך!\n\nהשתמש בקוד ההנחה הבא כדי לקבל [discount] הנחה על הרכישה הבאה שלך ב-[store]",
+        "buttonText": "קנה עכשיו"
+    },
+    "addReviewSameDiscountText": "ההנחה שלך של [discount] מחכה לך!",
+    "addReviewDifferentDiscountText": "העלה תמונה כדי לקבל [photo_discount] הנחה או סרטון כדי לקבל [video_discount] הנחה על הרכישה הבאה שלך!",
+    "loadingText": "טוען...",
+    "sort_by": "מיין לפי",
+    "featured": "מומלץ",
+    "newest": "החדש ביותר",
+    "highest_rating": "הדירוג הגבוה ביותר",
+    "lowest_rating": "הדירוג הנמוך ביותר",
+    "replied": "נענה",
+    "out_of": "מתוך",
+    "next_link": "הבא",
+    "back_link": "חזור",
+    "submit_button": "שלח",
+    "upload_photo_video_label": "העלה תמונה או סרטון",
+    "productReviewConstomize": {
+        "reviewHeaderTitle": "ביקורת לקוח",
+        "reviewSingular": "ביקורת",
+        "reviewPlural": "ביקורות",
+        "writeReviewButtonTitle": "כתוב ביקורת",
+        "noReviewsTitleFirstPart": "היה הראשון ש",
+        "noReviewsTitleLastPart": "כותב ביקורת",
+        "showMoreReviewsTitle": "הצג עוד ביקורות",
+        "productPageLinkTitle": "הצג מוצר",
+        "itemTypeTitle": "סוג פריט"
     }
 }

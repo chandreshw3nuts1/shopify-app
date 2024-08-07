@@ -15,6 +15,7 @@
     },
     "addReviewSameDiscountText": "Your [discount] off discount is wait for you!",
     "addReviewDifferentDiscountText": "Upload a photo to get [photo_discount] off or a video to get [video_discount] off your next purchase!",
+    "loadingText": "Loading...",
     "sort_by": "Sort By",
     "featured": "Featured",
     "newest": "Newest",

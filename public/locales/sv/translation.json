@@ -1,7 +1,41 @@
 {
-    "reviewRequestEmail" : {
-        "subject" : "Order #[order_number], how did it go?",
-        "body" : "Hello [name], \n \n We would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds.",
-        "buttonText" : "Write a review"
+    "reviewRequestEmail": {
+        "subject": "Order #[order_number], hur gick det?",
+        "body": "Hej [name],\n\nVi skulle vara tacksamma om du delade med dig av hur allt känns och ser ut. Din recension hjälper oss och vårt community, och det tar bara några sekunder.",
+        "buttonText": "Skriv en recension"
+    },
+    "reviewReplyEmail": {
+        "subject": "Svar på din recension av [product]",
+        "body": "Hej [name],\n\nEtt svar har lagts till din recension av [product]:\n[reply_content]\nFör att svara privat, svara på detta e-postmeddelande."
+    },
+    "dicountPhotoVideoReviewEmail": {
+        "subject": "Din rabattkod hos [store]",
+        "body": "Hej [name],\n\nTack för att du delade med dig av din upplevelse!\n\nAnvänd följande rabattkod för [discount] rabatt på ditt nästa köp hos [store]",
+        "buttonText": "Handla nu"
+    },
+    "addReviewSameDiscountText": "Din [discount] rabatt väntar på dig!",
+    "addReviewDifferentDiscountText": "Ladda upp ett foto för att få [photo_discount] rabatt eller en video för att få [video_discount] rabatt på ditt nästa köp!",
+    "loadingText": "Laddar...",
+    "sort_by": "Sortera efter",
+    "featured": "Utvalt",
+    "newest": "Nyast",
+    "highest_rating": "Högsta betyg",
+    "lowest_rating": "Lägsta betyg",
+    "replied": "Svarat",
+    "out_of": "av",
+    "next_link": "Nästa",
+    "back_link": "Tillbaka",
+    "submit_button": "Skicka",
+    "upload_photo_video_label": "Ladda upp foto eller video",
+    "productReviewConstomize": {
+        "reviewHeaderTitle": "Kundrecension",
+        "reviewSingular": "Recension",
+        "reviewPlural": "Recensioner",
+        "writeReviewButtonTitle": "Skriv en recension",
+        "noReviewsTitleFirstPart": "Bli den första att",
+        "noReviewsTitleLastPart": "Skriva en recension",
+        "showMoreReviewsTitle": "Visa fler recensioner",
+        "productPageLinkTitle": "Visa produkt",
+        "itemTypeTitle": "Produkttyp"
     }
 }

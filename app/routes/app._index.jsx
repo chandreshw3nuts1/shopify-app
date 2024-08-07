@@ -143,9 +143,6 @@ export default function Index() {
 
   	return (
 		<>
-			<Page fullWidth>
-				<Breadcrumb crumbs={crumbs}/>
-			</Page>
 			<div className="dashboardwrap max1048 mx-auto">
 				
 				<div className="dashalertbox">

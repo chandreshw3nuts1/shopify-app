@@ -505,7 +505,6 @@ export async function action({ request }) {
             return json({
                 body: htmlContent,
                 hasMore: hasMore,
-                widgetLayout : productReviewWidgetCustomizesModel.widgetLayout
             });
         }
 

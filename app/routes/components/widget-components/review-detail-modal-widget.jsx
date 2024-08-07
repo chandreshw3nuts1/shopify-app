@@ -101,7 +101,7 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
 
                                             {productReviewWidgetCustomizesModel.reviewDates == 'show' &&
                                                 <div className="datebox">
-                                                    {formatDate(reviewDetails.created_at, shopRecords.timezone, 'M/D/YYYY')}
+                                                    {formatDate(reviewDetails.createdAt, shopRecords.timezone, 'M/D/YYYY')}
                                                 </div>
                                             }
 

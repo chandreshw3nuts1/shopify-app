@@ -1,11 +1,41 @@
 {
-    "reviewRequestEmail" : {
-        "subject" : "chinies simpli Order #[order_number], how did it go?",
-        "body" : "Hello [name], \n \n We would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds.",
-        "buttonText" : "Write a review"
+    "reviewRequestEmail": {
+        "subject": "订单 #[order_number]，怎么样？",
+        "body": "您好 [name],\n\n我们很感激您分享的看法和感觉。您的评价对我们和支持我们的社区很有帮助，只需要几秒钟。",
+        "buttonText": "写评价"
     },
-    "reviewReplyEmail" : {
-        "subject" : "In response to your review of [product]",
-        "body" : "Hello [name],\n \nA reply was added to your review of [product]:\n[reply_content]\nTo respond privately, reply to this email."
+    "reviewReplyEmail": {
+        "subject": "回复您的 [product] 评价",
+        "body": "您好 [name],\n\n您的 [product] 评价有新回复：\n[reply_content]\n如需私下回应，请回复此邮件。"
+    },
+    "dicountPhotoVideoReviewEmail": {
+        "subject": "您在 [store] 的折扣码",
+        "body": "您好 [name],\n\n感谢您分享的体验！\n\n使用以下折扣码在 [store] 享受 [discount] 的折扣优惠",
+        "buttonText": "立即购物"
+    },
+    "addReviewSameDiscountText": "您的 [discount] 折扣等着您！",
+    "addReviewDifferentDiscountText": "上传照片即可获得 [photo_discount] 折扣，上传视频即可获得 [video_discount] 折扣，享受下次购买优惠！",
+    "loadingText": "加载中...",
+    "sort_by": "排序方式",
+    "featured": "特色",
+    "newest": "最新",
+    "highest_rating": "最高评分",
+    "lowest_rating": "最低评分",
+    "replied": "已回复",
+    "out_of": "共",
+    "next_link": "下一页",
+    "back_link": "上一页",
+    "submit_button": "提交",
+    "upload_photo_video_label": "上传照片或视频",
+    "productReviewConstomize": {
+        "reviewHeaderTitle": "客户评价",
+        "reviewSingular": "评价",
+        "reviewPlural": "评价",
+        "writeReviewButtonTitle": "写评价",
+        "noReviewsTitleFirstPart": "成为第一个",
+        "noReviewsTitleLastPart": "写评价的人",
+        "showMoreReviewsTitle": "显示更多评价",
+        "productPageLinkTitle": "查看产品",
+        "itemTypeTitle": "商品类型"
     }
 }

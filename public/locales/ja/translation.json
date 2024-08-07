@@ -1,7 +1,41 @@
 {
-    "reviewRequestEmail" : {
-        "subject" : "Order #[order_number], how did it go?",
-        "body" : "Hello [name], \n \n We would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds.",
-        "buttonText" : "Write a review"
+    "reviewRequestEmail": {
+        "subject": "注文 #[order_number]、いかがでしたか？",
+        "body": "こんにちは [name]、 \n \nご感想を共有していただけると幸いです。お客様のレビューは私たちと私たちを支えてくれるコミュニティにとって役立ちますし、ほんの数秒しかかかりません。",
+        "buttonText": "レビューを書く"
+    },
+    "reviewReplyEmail": {
+        "subject": "[product] のレビューに対する返信",
+        "body": "こんにちは [name]、\n \n[product] のレビューに返信が追加されました：\n[reply_content]\nプライベートに返信するには、このメールに返信してください。"
+    },
+    "dicountPhotoVideoReviewEmail": {
+        "subject": "[store] での割引コード",
+        "body": "こんにちは [name]、\n\nご感想を共有していただきありがとうございます！\n\n次回の [store] でのお買い物で [discount] 割引を受けるには、以下の割引コードをご利用ください。",
+        "buttonText": "今すぐ購入"
+    },
+    "addReviewSameDiscountText": "[discount] 割引があなたを待っています！",
+    "addReviewDifferentDiscountText": "次回のお買い物で [photo_discount] 割引を受けるために写真をアップロードするか、[video_discount] 割引を受けるためにビデオをアップロードしてください！",
+    "loadingText": "読み込み中...",
+    "sort_by": "並び替え",
+    "featured": "注目",
+    "newest": "最新",
+    "highest_rating": "最高評価",
+    "lowest_rating": "最低評価",
+    "replied": "返信あり",
+    "out_of": "のうち",
+    "next_link": "次へ",
+    "back_link": "戻る",
+    "submit_button": "送信",
+    "upload_photo_video_label": "写真またはビデオをアップロード",
+    "productReviewConstomize": {
+        "reviewHeaderTitle": "カスタマーレビュー",
+        "reviewSingular": "レビュー",
+        "reviewPlural": "レビュー",
+        "writeReviewButtonTitle": "レビューを書く",
+        "noReviewsTitleFirstPart": "最初に",
+        "noReviewsTitleLastPart": "レビューを書く",
+        "showMoreReviewsTitle": "もっとレビューを見る",
+        "productPageLinkTitle": "製品を見る",
+        "itemTypeTitle": "アイテムタイプ"
     }
 }

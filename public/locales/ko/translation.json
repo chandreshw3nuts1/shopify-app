@@ -1,7 +1,41 @@
 {
-    "reviewRequestEmail" : {
-        "subject" : "Order #[order_number], how did it go?",
-        "body" : "Hello [name], \n \n We would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds.",
-        "buttonText" : "Write a review"
+    "reviewRequestEmail": {
+        "subject": "주문 #[order_number], 어떻게 되셨나요?",
+        "body": "안녕하세요 [name],\n\n당신의 경험을 공유해 주시면 감사하겠습니다. 당신의 리뷰는 우리와 우리를 지원하는 커뮤니티에 도움이 되며, 몇 초밖에 걸리지 않습니다.",
+        "buttonText": "리뷰 작성하기"
+    },
+    "reviewReplyEmail": {
+        "subject": "[product]에 대한 리뷰에 대한 답변",
+        "body": "안녕하세요 [name],\n\n당신의 [product] 리뷰에 답변이 추가되었습니다:\n[reply_content]\n개인적으로 답변하려면 이 이메일에 회신해 주세요."
+    },
+    "dicountPhotoVideoReviewEmail": {
+        "subject": "[store]에서의 할인 코드",
+        "body": "안녕하세요 [name],\n\n경험을 공유해 주셔서 감사합니다!\n\n다음 구매 시 [store]에서 [discount] 할인 코드 사용하세요.",
+        "buttonText": "지금 쇼핑하기"
+    },
+    "addReviewSameDiscountText": "[discount] 할인 혜택이 기다리고 있습니다!",
+    "addReviewDifferentDiscountText": "사진을 업로드하면 [photo_discount] 할인 혜택을 받을 수 있으며, 비디오를 업로드하면 [video_discount] 할인 혜택을 받을 수 있습니다!",
+    "loadingText": "로딩 중...",
+    "sort_by": "정렬 기준",
+    "featured": "추천",
+    "newest": "최신",
+    "highest_rating": "최고 평점",
+    "lowest_rating": "최저 평점",
+    "replied": "답변됨",
+    "out_of": "중",
+    "next_link": "다음",
+    "back_link": "이전",
+    "submit_button": "제출",
+    "upload_photo_video_label": "사진 또는 비디오 업로드",
+    "productReviewConstomize": {
+        "reviewHeaderTitle": "고객 리뷰",
+        "reviewSingular": "리뷰",
+        "reviewPlural": "리뷰",
+        "writeReviewButtonTitle": "리뷰 작성하기",
+        "noReviewsTitleFirstPart": "첫 번째로",
+        "noReviewsTitleLastPart": "리뷰 작성하기",
+        "showMoreReviewsTitle": "더 많은 리뷰 보기",
+        "productPageLinkTitle": "제품 보기",
+        "itemTypeTitle": "상품 유형"
     }
 }

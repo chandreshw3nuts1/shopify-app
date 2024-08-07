@@ -1,7 +1,41 @@
 {
-    "reviewRequestEmail" : {
-        "subject" : "Order #[order_number], how did it go?",
-        "body" : "Hello [name], \n \n We would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds.",
-        "buttonText" : "Write a review"
+    "reviewRequestEmail": {
+        "subject": "Sipariş #[order_number], nasıl geçti?",
+        "body": "Merhaba [name], \n \nGörüşlerinizi paylaşmanızdan memnuniyet duyarız. Değerlendirmeniz bize ve bizi destekleyen topluluğa yardımcı olur ve sadece birkaç saniyenizi alır.",
+        "buttonText": "Bir inceleme yaz"
+    },
+    "reviewReplyEmail": {
+        "subject": "[product] hakkında yazdığınız incelemeye yanıt",
+        "body": "Merhaba [name],\n \n[product] hakkındaki incelemenize bir yanıt eklendi:\n[reply_content]\nÖzel olarak yanıt vermek için bu e-postayı yanıtlayın."
+    },
+    "dicountPhotoVideoReviewEmail": {
+        "subject": "[store] mağazasındaki indirim kodunuz",
+        "body": "Merhaba [name],\n\nDeneyiminizi paylaştığınız için teşekkür ederiz!\n\n[store] mağazasındaki bir sonraki alışverişinizde [discount] indirim almak için aşağıdaki indirim kodunu kullanın",
+        "buttonText": "Şimdi alışveriş yap"
+    },
+    "addReviewSameDiscountText": "[discount] indiriminiz sizi bekliyor!",
+    "addReviewDifferentDiscountText": "Bir sonraki alışverişinizde [photo_discount] indirim almak için bir fotoğraf veya [video_discount] indirim almak için bir video yükleyin!",
+    "loadingText": "Yükleniyor...",
+    "sort_by": "Sırala",
+    "featured": "Öne çıkan",
+    "newest": "En yeni",
+    "highest_rating": "En yüksek puan",
+    "lowest_rating": "En düşük puan",
+    "replied": "Yanıtlandı",
+    "out_of": "üzerinden",
+    "next_link": "Sonraki",
+    "back_link": "Geri",
+    "submit_button": "Gönder",
+    "upload_photo_video_label": "Fotoğraf veya Video Yükle",
+    "productReviewConstomize": {
+        "reviewHeaderTitle": "Müşteri Değerlendirmesi",
+        "reviewSingular": "İnceleme",
+        "reviewPlural": "İncelemeler",
+        "writeReviewButtonTitle": "Bir inceleme yaz",
+        "noReviewsTitleFirstPart": "İlk siz olun",
+        "noReviewsTitleLastPart": "Bir inceleme yazın",
+        "showMoreReviewsTitle": "Daha fazla inceleme göster",
+        "productPageLinkTitle": "Ürünü görüntüle",
+        "itemTypeTitle": "Ürün tipi"
     }
 }

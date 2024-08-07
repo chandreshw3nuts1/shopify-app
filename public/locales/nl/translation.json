@@ -1,7 +1,41 @@
 {
-    "reviewRequestEmail" : {
-        "subject" : "Order #[order_number], how did it go?",
-        "body" : "Hello [name], \n \n We would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds.",
-        "buttonText" : "Write a review"
+    "reviewRequestEmail": {
+        "subject": "Bestelling #[order_number], hoe ging het?",
+        "body": "Hallo [name], \n \nWe zouden het op prijs stellen als je jouw ervaring met ons deelt. Jouw beoordeling helpt ons en de gemeenschap die ons steunt, en het kost maar een paar seconden.",
+        "buttonText": "Schrijf een recensie"
+    },
+    "reviewReplyEmail": {
+        "subject": "Als reactie op jouw recensie van [product]",
+        "body": "Hallo [name],\n \nEr is een reactie toegevoegd op jouw recensie van [product]:\n[reply_content]\nOm privé te reageren, antwoord je op deze e-mail."
+    },
+    "dicountPhotoVideoReviewEmail": {
+        "subject": "Jouw kortingscode bij [store]",
+        "body": "Hallo [name],\n\nBedankt voor het delen van jouw ervaring!\n\nGebruik de volgende kortingscode voor [discount] korting op jouw volgende aankoop bij [store]",
+        "buttonText": "Nu winkelen"
+    },
+    "addReviewSameDiscountText": "Jouw [discount] korting wacht op je!",
+    "addReviewDifferentDiscountText": "Upload een foto om [photo_discount] korting te krijgen of een video om [video_discount] korting te krijgen op jouw volgende aankoop!",
+    "loadingText": "Laden...",
+    "sort_by": "Sorteer op",
+    "featured": "Uitgelicht",
+    "newest": "Nieuwste",
+    "highest_rating": "Hoogste waardering",
+    "lowest_rating": "Laagste waardering",
+    "replied": "Beantwoord",
+    "out_of": "van",
+    "next_link": "Volgende",
+    "back_link": "Vorige",
+    "submit_button": "Verzenden",
+    "upload_photo_video_label": "Upload foto of video",
+    "productReviewConstomize": {
+        "reviewHeaderTitle": "Klantbeoordeling",
+        "reviewSingular": "Recensie",
+        "reviewPlural": "Recensies",
+        "writeReviewButtonTitle": "Schrijf een recensie",
+        "noReviewsTitleFirstPart": "Wees de eerste om",
+        "noReviewsTitleLastPart": "Een recensie te schrijven",
+        "showMoreReviewsTitle": "Meer recensies weergeven",
+        "productPageLinkTitle": "Bekijk product",
+        "itemTypeTitle": "Artikeltype"
     }
 }

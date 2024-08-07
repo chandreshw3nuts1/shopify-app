@@ -1,7 +1,41 @@
 {
-    "reviewRequestEmail" : {
-        "subject" : "Order #[order_number], how did it go?",
-        "body" : "Hello [name], \n \n We would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds.",
-        "buttonText" : "Write a review"
+    "reviewRequestEmail": {
+        "subject": "الطلب #[order_number]، كيف كانت التجربة؟",
+        "body": "مرحبًا [name],\n\nنحن ممتنون إذا شاركت تجربتك معنا. تقييمك يساعدنا ويساعد المجتمع الذي يدعمنا، ولا يستغرق سوى بضع ثوان.",
+        "buttonText": "اكتب تقييمًا"
+    },
+    "reviewReplyEmail": {
+        "subject": "رد على تقييمك لـ [product]",
+        "body": "مرحبًا [name],\n\nتم إضافة رد على تقييمك لـ [product]:\n[reply_content]\nللرد بشكل خاص، يرجى الرد على هذا البريد الإلكتروني."
+    },
+    "dicountPhotoVideoReviewEmail": {
+        "subject": "رمز الخصم الخاص بك في [store]",
+        "body": "مرحبًا [name],\n\nشكرًا لمشاركة تجربتك!\n\nاستخدم رمز الخصم التالي للحصول على [discount] خصم على عملية الشراء التالية في [store]",
+        "buttonText": "تسوق الآن"
+    },
+    "addReviewSameDiscountText": "خصمك البالغ [discount] في انتظارك!",
+    "addReviewDifferentDiscountText": "قم بتحميل صورة للحصول على خصم [photo_discount] أو فيديو للحصول على خصم [video_discount] على عملية الشراء التالية!",
+    "loadingText": "جارٍ التحميل...",
+    "sort_by": "ترتيب حسب",
+    "featured": "مميز",
+    "newest": "الأحدث",
+    "highest_rating": "أعلى تقييم",
+    "lowest_rating": "أدنى تقييم",
+    "replied": "تم الرد",
+    "out_of": "من",
+    "next_link": "التالي",
+    "back_link": "رجوع",
+    "submit_button": "إرسال",
+    "upload_photo_video_label": "تحميل صورة أو فيديو",
+    "productReviewConstomize": {
+        "reviewHeaderTitle": "تقييم العميل",
+        "reviewSingular": "تقييم",
+        "reviewPlural": "تقييمات",
+        "writeReviewButtonTitle": "اكتب تقييمًا",
+        "noReviewsTitleFirstPart": "كن الأول في",
+        "noReviewsTitleLastPart": "كتابة تقييم",
+        "showMoreReviewsTitle": "عرض المزيد من التقييمات",
+        "productPageLinkTitle": "عرض المنتج",
+        "itemTypeTitle": "نوع السلعة"
     }
 }

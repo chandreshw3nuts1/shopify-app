@@ -204,14 +204,14 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
                                                         <label htmlFor="">First name <span className="text-danger" >*</span> </label>
-                                                        <input type="text" className="form-control" name="first_name" id="first_name" placeholder="Enter first name" value={paramObj.cust_first_name} />
+                                                        <input type="text" className="form-control" name="first_name" id="first_name" placeholder="Enter first name" defaultValue={paramObj.cust_first_name} />
                                                         <div className="error text-danger" id="firstNameError"></div>
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
                                                         <label htmlFor="">Last name <span className="text-danger" >*</span></label>
-                                                        <input type="text" className="form-control" name="last_name" id="last_name" placeholder="Enter last name" value={paramObj.cust_last_name} />
+                                                        <input type="text" className="form-control" name="last_name" id="last_name" placeholder="Enter last name" defaultValue={paramObj.cust_last_name} />
                                                         <div className="error text-danger" id="lastNameError"></div>
 
                                                     </div>
@@ -219,7 +219,7 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                                 <div className="col-lg-12">
                                                     <div className="form-group">
                                                         <label htmlFor="">Email address <span className="text-danger" >*</span></label>
-                                                        <input type="email" className="form-control" name="email" id="emailfield" placeholder="Enter email address" value={paramObj.cust_email} />
+                                                        <input type="email" className="form-control" name="email" id="emailfield" placeholder="Enter email address" defaultValue={paramObj.cust_email} />
                                                         <div className="error text-danger" id="emailError"></div>
 
                                                     </div>

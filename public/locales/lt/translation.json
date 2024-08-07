@@ -1,7 +1,41 @@
 {
-    "reviewRequestEmail" : {
-        "subject" : "Order #[order_number], how did it go?",
-        "body" : "Hello [name], \n \n We would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds.",
-        "buttonText" : "Write a review"
+    "reviewRequestEmail": {
+        "subject": "Užsakymas #[order_number], kaip sekėsi?",
+        "body": "Sveiki [name],\n\nBūtume dėkingi, jei pasidalintumėte, kaip viskas atrodo ir kaip jaučiatės. Jūsų atsiliepimas padeda mums ir bendruomenei, kuri mus palaiko, ir tai užtrunka tik kelias sekundes.",
+        "buttonText": "Parašyti atsiliepimą"
+    },
+    "reviewReplyEmail": {
+        "subject": "Atsakymas į jūsų atsiliepimą apie [product]",
+        "body": "Sveiki [name],\n\nĮ jūsų atsiliepimą apie [product] pridėtas atsakymas:\n[reply_content]\nNorėdami atsakyti privačiai, atsakykite į šį el. laišką."
+    },
+    "dicountPhotoVideoReviewEmail": {
+        "subject": "Jūsų nuolaidos kodas [store]",
+        "body": "Sveiki [name],\n\nDėkojame, kad pasidalinote savo patirtimi!\n\nNaudokite šį nuolaidos kodą, kad gautumėte [discount] nuolaidą kitam pirkiniui [store]",
+        "buttonText": "Pirkti dabar"
+    },
+    "addReviewSameDiscountText": "Jūsų [discount] nuolaida laukia jūsų!",
+    "addReviewDifferentDiscountText": "Įkelkite nuotrauką, kad gautumėte [photo_discount] nuolaidą, arba vaizdo įrašą, kad gautumėte [video_discount] nuolaidą kitam pirkiniui!",
+    "loadingText": "Kraunama...",
+    "sort_by": "Rūšiuoti pagal",
+    "featured": "Rekomenduojama",
+    "newest": "Naujausi",
+    "highest_rating": "Aukščiausias įvertinimas",
+    "lowest_rating": "Žemiausias įvertinimas",
+    "replied": "Atsakyta",
+    "out_of": "iš",
+    "next_link": "Kitas",
+    "back_link": "Atgal",
+    "submit_button": "Pateikti",
+    "upload_photo_video_label": "Įkelti nuotrauką arba vaizdo įrašą",
+    "productReviewConstomize": {
+        "reviewHeaderTitle": "Kliento atsiliepimas",
+        "reviewSingular": "Atsiliepimas",
+        "reviewPlural": "Atsiliepimai",
+        "writeReviewButtonTitle": "Parašyti atsiliepimą",
+        "noReviewsTitleFirstPart": "Būkite pirmas, kuris",
+        "noReviewsTitleLastPart": "parašys atsiliepimą",
+        "showMoreReviewsTitle": "Rodyti daugiau atsiliepimų",
+        "productPageLinkTitle": "Peržiūrėti produktą",
+        "itemTypeTitle": "Prekės tipas"
     }
 }

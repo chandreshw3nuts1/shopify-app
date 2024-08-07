@@ -95,11 +95,11 @@ const ReviewItem = (props) => {
                                                     </div>
                                                 )}
                                                 {review.replyText &&
-                                                    <div className="text_content">
-                                                        <p className="reply-text" style={{ color: replyText, backgroundColor: replyBackground }}>
+                                                    <div className="text_content reply-text" style={{ backgroundColor: replyBackground }}>
+                                                        <p style={{ color: replyText }}>
                                                             <b>{props.shopRecords.name}</b> {translations.replied} :
                                                         </p>
-                                                        <p>
+                                                        <p style={{ color: replyText }}>
                                                             {review.replyText}
                                                         </p>
                                                     </div>
@@ -109,7 +109,7 @@ const ReviewItem = (props) => {
                                                         {review.display_name}
                                                     </h4>
                                                     {productReviewWidgetCustomizesModel.reviewDates == 'show' &&
-                                                        <div className="date" style={{ color: reviewsText }}>{formatDate(review.created_at, props.shopRecords.timezone, 'M/D/YYYY')}</div>
+                                                        <div className="date" style={{ color: reviewsText }}>{formatDate(review.createdAt, props.shopRecords.timezone, 'M/D/YYYY')}</div>
                                                     }
                                                 </div>
                                                 <div className='review_bottomwrap'>
@@ -149,7 +149,7 @@ const ReviewItem = (props) => {
                                                             {review.display_name}
                                                         </h4>
                                                         {productReviewWidgetCustomizesModel.reviewDates == 'show' &&
-                                                            <div className="date" style={{ color: reviewsText }}>{formatDate(review.created_at, props.shopRecords.timezone, 'M/D/YYYY')}</div>
+                                                            <div className="date" style={{ color: reviewsText }}>{formatDate(review.createdAt, props.shopRecords.timezone, 'M/D/YYYY')}</div>
                                                         }
                                                     </div>
                                                 </div>
@@ -166,11 +166,11 @@ const ReviewItem = (props) => {
                                                     </div>
                                                 )}
                                                 {review.replyText &&
-                                                    <div className="text_content">
-                                                        <p className="reply-text" style={{ color: replyText, backgroundColor: replyBackground }}>
+                                                    <div className="text_content reply-text" style={{ backgroundColor: replyBackground }}>
+                                                        <p style={{ color: replyText }}>
                                                             <b>{props.shopRecords.name}</b> {translations.replied} :
                                                         </p>
-                                                        <p>
+                                                        <p style={{ color: replyText }}>
                                                             {review.replyText}
                                                         </p>
                                                     </div>
@@ -246,7 +246,7 @@ const ReviewItem = (props) => {
                                                             {review.display_name}
                                                         </h4>
                                                         {productReviewWidgetCustomizesModel.reviewDates == 'show' &&
-                                                            <div className="date" style={{ color: reviewsText }}>{formatDate(review.created_at, props.shopRecords.timezone, 'M/D/YYYY')}</div>
+                                                            <div className="date" style={{ color: reviewsText }}>{formatDate(review.createdAt, props.shopRecords.timezone, 'M/D/YYYY')}</div>
                                                         }
                                                     </div>
                                                     <div className='star_reviews flxfix'>
@@ -279,14 +279,15 @@ const ReviewItem = (props) => {
                                                     </div>
                                                 )}
                                                 {review.replyText &&
-                                                    <div className="text_content">
-                                                        <p className="reply-text" style={{ color: replyText, backgroundColor: replyBackground }}>
+                                                    <div className="text_content reply-text" style={{ backgroundColor: replyBackground }}>
+                                                        <p style={{ color: replyText }}>
                                                             <b>{props.shopRecords.name}</b> {translations.replied} :
                                                         </p>
-                                                        <p>
+                                                        <p style={{ color: replyText }}>
                                                             {review.replyText}
                                                         </p>
-                                                    </div>}
+                                                    </div>
+                                                }
                                                 {(props.formParams.hideProductThumbnails !== 'true' || review.reviewDocuments.length > 0) &&
 
                                                     <div className='review_bottomwrap'>

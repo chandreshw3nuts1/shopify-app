@@ -1,7 +1,41 @@
 {
-    "reviewRequestEmail" : {
-        "subject" : "fr - Order #[order_number], how did it go?",
-        "body" : "fr - Hello [name] We would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds.",
-        "buttonText" : "fr - Write a review"
+    "reviewRequestEmail": {
+        "subject": "Commande #[order_number], comment ça s'est passé?",
+        "body": "Bonjour [name], \n \nNous serions reconnaissants si vous partagiez votre avis. Votre avis nous aide ainsi que la communauté qui nous soutient, et cela ne prend que quelques secondes.",
+        "buttonText": "Écrire une critique"
+    },
+    "reviewReplyEmail": {
+        "subject": "En réponse à votre critique de [product]",
+        "body": "Bonjour [name],\n \nUne réponse a été ajoutée à votre critique de [product]:\n[reply_content]\nPour répondre en privé, répondez à cet e-mail."
+    },
+    "dicountPhotoVideoReviewEmail": {
+        "subject": "Votre code de réduction chez [store]",
+        "body": "Bonjour [name],\n\nMerci de partager votre expérience!\n\nUtilisez le code de réduction suivant pour obtenir [discount] de réduction sur votre prochain achat chez [store]",
+        "buttonText": "Acheter maintenant"
+    },
+    "addReviewSameDiscountText": "Votre réduction de [discount] vous attend!",
+    "addReviewDifferentDiscountText": "Téléchargez une photo pour obtenir [photo_discount] de réduction ou une vidéo pour obtenir [video_discount] de réduction sur votre prochain achat!",
+    "loadingText": "Chargement...",
+    "sort_by": "Trier par",
+    "featured": "En vedette",
+    "newest": "Le plus récent",
+    "highest_rating": "Note la plus élevée",
+    "lowest_rating": "Note la plus basse",
+    "replied": "Répondu",
+    "out_of": "sur",
+    "next_link": "Suivant",
+    "back_link": "Retour",
+    "submit_button": "Envoyer",
+    "upload_photo_video_label": "Télécharger une photo ou une vidéo",
+    "productReviewConstomize": {
+        "reviewHeaderTitle": "Avis des clients",
+        "reviewSingular": "Critique",
+        "reviewPlural": "Critiques",
+        "writeReviewButtonTitle": "Écrire une critique",
+        "noReviewsTitleFirstPart": "Soyez le premier à",
+        "noReviewsTitleLastPart": "Écrire une critique",
+        "showMoreReviewsTitle": "Voir plus de critiques",
+        "productPageLinkTitle": "Voir le produit",
+        "itemTypeTitle": "Type d'article"
     }
 }

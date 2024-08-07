@@ -253,8 +253,9 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 						</>
 					}
 					{formParams.hasMore == 1 ?
-						<div className="load_more_review">
-							<a href="#" id="load_more_review" className="revbtn">{languageWiseProductWidgetSettings.showMoreReviewsTitle ? languageWiseProductWidgetSettings.showMoreReviewsTitle : translations.productReviewConstomize.showMoreReviewsTitle}</a>
+						<div className="load_more_review ">
+							<a href="#" id="load_more_review" className="revbtn custombtn" style={{ border: buttonBorderColor, color: buttonTitleColor, backgroundColor : buttonBackground }}>{languageWiseProductWidgetSettings.showMoreReviewsTitle ? languageWiseProductWidgetSettings.showMoreReviewsTitle : translations.productReviewConstomize.showMoreReviewsTitle}</a>
+							<a href="#" id="w3loadingmorerws" className="revbtn custombtn" style={{ border: buttonBorderColor, color: buttonTitleColor, backgroundColor : buttonBackground, display:"none" }}>{ translations.loadingText}</a>
 						</div> :
 						""
 					}

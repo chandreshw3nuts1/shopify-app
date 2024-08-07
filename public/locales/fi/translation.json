@@ -1,7 +1,41 @@
 {
-    "reviewRequestEmail" : {
-        "subject" : "Order #[order_number], how did it go?",
-        "body" : "Hello [name], \n \n We would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds.",
-        "buttonText" : "Write a review"
+    "reviewRequestEmail": {
+        "subject": "Tilaus #[order_number], miten meni?",
+        "body": "Hei [name],\n\nOlisimme kiitollisia, jos jakaisit kokemuksesi. Arvostelusi auttaa meitä ja yhteisöämme, ja se vie vain muutaman sekunnin.",
+        "buttonText": "Kirjoita arvostelu"
+    },
+    "reviewReplyEmail": {
+        "subject": "Vastaus arvosteluusi tuotteesta [product]",
+        "body": "Hei [name],\n\nArvosteluusi tuotteesta [product] on lisätty vastaus:\n[reply_content]\nVastataksesi yksityisesti, vastaa tähän sähköpostiin."
+    },
+    "dicountPhotoVideoReviewEmail": {
+        "subject": "Alennuskoodisi kaupassa [store]",
+        "body": "Hei [name],\n\nKiitos, että jaoit kokemuksesi!\n\nKäytä seuraavaa alennuskoodia saadaksesi [discount] alennuksen seuraavasta ostoksestasi kaupassa [store]",
+        "buttonText": "Osta nyt"
+    },
+    "addReviewSameDiscountText": "Alennuksesi [discount] odottaa sinua!",
+    "addReviewDifferentDiscountText": "Lataa kuva saadaksesi [photo_discount] alennuksen tai video saadaksesi [video_discount] alennuksen seuraavasta ostoksestasi!",
+    "loadingText": "Ladataan...",
+    "sort_by": "Järjestä",
+    "featured": "Esittely",
+    "newest": "Uusin",
+    "highest_rating": "Korkein arvostelu",
+    "lowest_rating": "Alhaisin arvostelu",
+    "replied": "Vastattu",
+    "out_of": "yhteensä",
+    "next_link": "Seuraava",
+    "back_link": "Takaisin",
+    "submit_button": "Lähetä",
+    "upload_photo_video_label": "Lataa kuva tai video",
+    "productReviewConstomize": {
+        "reviewHeaderTitle": "Asiakasarvostelu",
+        "reviewSingular": "Arvostelu",
+        "reviewPlural": "Arvostelut",
+        "writeReviewButtonTitle": "Kirjoita arvostelu",
+        "noReviewsTitleFirstPart": "Ole ensimmäinen, joka",
+        "noReviewsTitleLastPart": "kirjoittaa arvostelun",
+        "showMoreReviewsTitle": "Näytä lisää arvosteluja",
+        "productPageLinkTitle": "Näytä tuote",
+        "itemTypeTitle": "Tuotetyyppi"
     }
 }
