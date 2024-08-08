@@ -273,7 +273,7 @@ const ManualReviewRequestsPage = () => {
 												/>
 
 											</div>
-											<InformationAlert />
+											<InformationAlert alertKey="manual_review_request"/>
 											<div className="btnwrap emailbottom align-items-center">
 												<span>By sending this email, I confirm that the recipients have given consent</span>
 												<Button className="revbtn ms-auto" disabled={(displayProductMemo.length == 0 || emails.length == 0 || submittingRequest)} onClick={(e) => sendManualRequest()}>Send email <i className='twenty-longarrow-right'></i></Button>

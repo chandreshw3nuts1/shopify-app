@@ -1,22 +1,25 @@
 import { useEffect, useState } from "react";
 import { json } from "@remix-run/node";
-import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
+import { useNavigate } from 'react-router-dom';
+
+import { getShopDetails } from './../utils/getShopDetails';
+import HomeInformationAlert from './components/common/home-information-alert';
+
 import {
-  Page,
-  Layout,
-  Text,
-  Card,
-  Button,
-  BlockStack,
-  Box,
-  List,
-  Link,
-  InlineStack,
-  Grid,
-  LegacyCard
+	Page,
+	Layout,
+	Text,
+	Card,
+	Button,
+	BlockStack,
+	Box,
+	List,
+	Link,
+	InlineStack,
+	Grid,
+	LegacyCard
 } from "@shopify/polaris";
-import { authenticate } from "../shopify.server";
-import Breadcrumb from "./components/Breadcrumb";
 import bannerImage from "./../images/medium-shot-young-people-with-reviews.jpg"
 import { Dropdown, DropdownButton, Image } from 'react-bootstrap';
 
@@ -29,132 +32,87 @@ import ReviewsCollectedIcon from "./components/icons/ReviewsCollectedIcon";
 import OrdersDashIcon from "./components/icons/OrdersDashIcon";
 import ImpressionsDashIcon from "./components/icons/ImpressionsDashIcon";
 import InfoFillIcon from "./components/icons/InfoFillIcon";
+import settingsJson from './../utils/settings.json';
 
 
 export const loader = async ({ request }) => {
-  await authenticate.admin(request);
-  //const { admin } = await authenticate.admin(request);
-  //const response = admin.rest.get({path: 'shop'});
-  return null;
+	try {
+
+		const shopRecords = await getShopDetails(request);
+
+
+
+		return json({ shopRecords });
+
+	} catch (error) {
+		console.error('Error fetching records:', error);
+		return json({ error: 'Error fetching records' }, { status: 500 });
+	}
 };
 
-export const action = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
-  const color = ["Red", "Orange", "Yellow", "Green"][
-    Math.floor(Math.random() * 4)
-  ];
-  const response = await admin.graphql(
-    `#graphql
-      mutation populateProduct($input: ProductInput!) {
-        productCreate(input: $input) {
-          product {
-            id
-            title
-            handle
-            status
-            variants(first: 10) {
-              edges {
-                node {
-                  id
-                  price
-                  barcode
-                  createdAt
-                }
-              }
-            }
-          }
-        }
-      }`,
-    {
-      variables: {
-        input: {
-          title: `${color} Snowboard`,
-        },
-      },
-    },
-  );
-  const responseJson = await response.json();
-  const variantId =
-    responseJson.data.productCreate.product.variants.edges[0].node.id;
-  const variantResponse = await admin.graphql(
-    `#graphql
-      mutation shopifyRemixTemplateUpdateVariant($input: ProductVariantInput!) {
-        productVariantUpdate(input: $input) {
-          productVariant {
-            id
-            price
-            barcode
-            createdAt
-          }
-        }
-      }`,
-    {
-      variables: {
-        input: {
-          id: variantId,
-          price: Math.random() * 100,
-        },
-      },
-    },
-  );
-  const variantResponseJson = await variantResponse.json();
 
-  return json({
-    product: responseJson.data.productCreate.product,
-    variant: variantResponseJson.data.productVariantUpdate.productVariant,
-  });
-};
+export async function fetchStatisticApi(requestParams) {
+	try {
+		const response = await fetch(`${settingsJson.host_url}/api/index`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(requestParams)
+		});
+		const data = await response.json();
+		return data;
 
+	} catch (error) {
+		console.error('Failed to fetch reviews:', error);
+	}
+}
 export default function Index() {
-  const nav = useNavigation();
-  const actionData = useActionData();
-  const submit = useSubmit();
-  const isLoading =
-    ["loading", "submitting"].includes(nav.state) && nav.formMethod === "POST";
-  const productId = actionData?.product?.id.replace(
-    "gid://shopify/Product/",
-    "",
-  );
+	const { shopRecords } = useLoaderData();
+	const [selectedDays, setSelectedDays] = useState(30);
+	const [daysFilterTitle, setDaysFilterTitle] = useState('30 days');
+	const [statisticResponse, setStatisticResponse] = useState({});
 
-  useEffect(() => {
-    if (productId) {
-      shopify.toast.show("Product created");
-    }
-  }, [productId]);
-  const generateProduct = () => submit({}, { replace: true, method: "POST" });
-  const [crumbs, setCrumbs] = useState([
-    
-  ]);
+	const navigate = useNavigate();
 
-	const [daystitle, setDaystitle] = useState('30 days');
-
-	const titles = {
-		days7: '7 days',
-		days14: '14 days',
-		days30: '30 days',
-		days60: '60 days',
-		days90: '90 days',
-		daysall: 'All time',
+	const daysTitles = {
+		7: '7 days',
+		14: '14 days',
+		30: '30 days',
+		60: '60 days',
+		90: '90 days',
+		all: 'All time',
 	};
 	const handleSelect = (eventKey) => {
-		setDaystitle(titles[eventKey]);
+		setDaysFilterTitle(daysTitles[eventKey]);
+		setSelectedDays(eventKey);
 	};
 
 
-  	return (
+	useEffect(() => {
+		(async () => {
+			const paramData = {
+				"shop": shopRecords.shop,
+				"selectedDays": selectedDays,
+				"actionType": "getStatistic"
+			}
+
+			const response = await fetchStatisticApi(paramData);
+			setStatisticResponse(response.data);
+
+			console.log(statisticResponse);
+		})()
+	}, [selectedDays]);
+
+	const showManageReviewPage = (e) => {
+		e.preventDefault();
+		navigate('/app/manage-review/');
+	}
+	return (
 		<>
 			<div className="dashboardwrap max1048 mx-auto">
-				
-				<div className="dashalertbox">
-					<div className="logobox flxfix">Logo</div>
-					<div className="detailbox flxflexi flxcol">
-						<h4>Our Software is here to help you jump-start your business!</h4>
-						<p>Enjoy free access to Loox while the store is password protected on your Shopify trial.</p>
-					</div>
-					<div className="closebtn">
-						<a href="#"><i className="twenty-closeicon"></i></a>
-					</div>
-				</div>
+				<HomeInformationAlert alertKey="home_header_info"/>
+
 				<div className="dashbbanner">
 					<div className="detailbox flxflexi">
 						<h2>Ensure your best reviews get seen</h2>
@@ -174,15 +132,23 @@ export default function Index() {
 						<div className="rightbox dropdownwrap ms-auto ddverylightbtn">
 							<DropdownButton
 								id="dropdown-basic-button"
-								title={daystitle}
+								title={daysFilterTitle}
 								align={'end'}
 								onSelect={handleSelect}
 							>
-								{Object.entries(titles).map((title, i)=>{
-									return (
-										<Dropdown.Item eventKey={title[0]} className="custom-dropdown-item">{title[1]}</Dropdown.Item>
-									)
-								})}
+
+								{Object.entries(daysTitles).map(([key, value]) => (
+									<Dropdown.Item
+										key={key}
+										eventKey={key}
+										className={`custom-dropdown-item ${key == selectedDays ? 'active' : ''}`}
+									>
+										{value}
+									</Dropdown.Item>
+								))}
+
+
+								
 							</DropdownButton>
 						</div>
 					</div>
@@ -190,7 +156,7 @@ export default function Index() {
 						<div className="titlebox">
 							<h3>Reviews</h3>
 							<div className="btnwrap m-0 ms-auto">
-								<a href="#" className="revbtn plainlink">Manage reviews <i className="twenty-arrow-right"></i></a>
+								<a href="#" className="revbtn plainlink" onClick={showManageReviewPage}>Manage reviews <i className="twenty-arrow-right"></i></a>
 							</div>
 						</div>
 						<div className="numberboxwrap">
@@ -199,7 +165,7 @@ export default function Index() {
 									<ReviewRequestsSentIcon />
 								</div>
 								<div className="detailbox flxflexi">
-									<h3>00</h3>
+									<h3>{statisticResponse.requestSentcount}</h3>
 									<p>Review Requests Sent</p>
 								</div>
 							</div>
@@ -208,8 +174,8 @@ export default function Index() {
 									<ReviewsCollectedIcon />
 								</div>
 								<div className="detailbox flxflexi">
-									<h3>00</h3>
-									<p>Review Requests Sent</p>
+									<h3>{statisticResponse.totalReceivedReview}</h3>
+									<p>Reviews Received</p>
 								</div>
 							</div>
 							<div className="numberbox">
@@ -217,7 +183,7 @@ export default function Index() {
 									<PhotoVideoReviewsIcon />
 								</div>
 								<div className="detailbox flxflexi">
-									<h3>00</h3>
+									<h3>{statisticResponse.totalReviewItemsImage}</h3>
 									<p>Photo/Video Reviews</p>
 								</div>
 							</div>
@@ -311,5 +277,5 @@ export default function Index() {
 
 			</div>
 		</>
-  	);
+	);
 }

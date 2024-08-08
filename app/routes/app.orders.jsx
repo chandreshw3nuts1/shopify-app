@@ -82,6 +82,7 @@ export default function Orders() {
     const [isAllTime, setIsAllTime] = useState(true);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const [sendNowLoading, setSendNowLoading] = useState(null);
 
 
     const orderUrl = "https://admin.shopify.com/store/";
@@ -183,47 +184,56 @@ export default function Orders() {
 
     const sendReviewRequest = async (e, requestId, index) => {
         e.preventDefault();
-
-        const updateData = {
-            actionType: "sendRequest",
-            requestId: requestId,
-            shop: shopRecords.shop,
-        };
-        const response = await fetch('/api/orders', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(updateData),
-        });
-        const data = await response.json();
-
-        if (data.status == 200) {
-            shopify.toast.show(data.message, {
-                duration: settingsJson.toasterCloseTime
-            });
-            setFilteredOrders(filteredOrders.map((item, idx) => {
-                if (idx === index) {
-                    return {
-                        ...item,
-                        request_status: 'sent',
-                        manualRequestProducts: item.manualRequestProducts.map(product => ({
-                            ...product,
-                            status: 'sent',
-                            updatedAt: new Date().toISOString()
-                        }))
-                    };
-                }
-                return item;
-            }));
-
-        } else {
-            shopify.toast.show(data.message, {
-                duration: settingsJson.toasterCloseTime,
-                isError: true
-            });
+        if (sendNowLoading) {
+            return true;
         }
+        setSendNowLoading(index);
 
+        try {
+            const updateData = {
+                actionType: "sendRequest",
+                requestId: requestId,
+                shop: shopRecords.shop,
+            };
+            const response = await fetch('/api/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updateData),
+            });
+            const data = await response.json();
+
+            if (data.status == 200) {
+                shopify.toast.show(data.message, {
+                    duration: settingsJson.toasterCloseTime
+                });
+                setFilteredOrders(filteredOrders.map((item, idx) => {
+                    if (idx === index) {
+                        return {
+                            ...item,
+                            request_status: 'sent',
+                            manualRequestProducts: item.manualRequestProducts.map(product => ({
+                                ...product,
+                                status: 'sent',
+                                updatedAt: new Date().toISOString()
+                            }))
+                        };
+                    }
+                    return item;
+                }));
+
+            } else {
+                shopify.toast.show(data.message, {
+                    duration: settingsJson.toasterCloseTime,
+                    isError: true
+                });
+            }
+        } catch (error) {
+            console.error('Request failed:', error);
+        } finally {
+            setSendNowLoading(null);
+        }
     }
 
     const cancelReviewRequest = async (e, requestId, index) => {
@@ -478,10 +488,10 @@ export default function Orders() {
                                                     </a>
                                                     {(result.request_status == "pending" || result.request_status == "cancel") &&
                                                         <>
-                                                            <a href="#" onClick={(e) => sendReviewRequest(e, result._id, index)} className="revbtn lightbtn">
+                                                            <button href="#" onClick={(e) => sendReviewRequest(e, result._id, index)} disabled={sendNowLoading === index} className="revbtn lightbtn">
                                                                 <i className="twenty-senticon"></i>
                                                                 Send now
-                                                            </a>
+                                                            </button>
                                                         </>
                                                     }
                                                     {(result.request_status == "pending") &&

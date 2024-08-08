@@ -58,6 +58,7 @@ export async function action({ request }) {
 					manual_request_id: lastInsertedId,
 					product_id: lineItem.product_id,
 					line_item_id: lineItem.id,
+					variant_title : lineItem.variant_title,
 					status: "pending"
 				});
 				await requestProductsModel.save();

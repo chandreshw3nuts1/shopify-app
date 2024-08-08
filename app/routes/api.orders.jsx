@@ -9,6 +9,7 @@ import manualReviewRequests from "./models/manualReviewRequests";
 import manualRequestProducts from "./models/manualRequestProducts";
 import generalAppearances from "./models/generalAppearances";
 import reviewRequestTimingSettings from './models/reviewRequestTimingSettings';
+import reviewRequestTracks from './models/reviewRequestTracks';
 
 import { getUploadDocument } from './../utils/documentPath';
 import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTemplate';
@@ -35,7 +36,8 @@ export async function action({ request }) {
 					const query = {
 						"shop_id": shopRecords._id, "manualRequestProducts.status": filter_status,
 						$or: [
-							{ email: { $regex: search_keyword, $options: 'i' } },
+							{ email: { $regex: search_keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: 'i' } },
+
 						]
 					};
 					if (filter_time == "custom" && start_date && end_date && start_date != 'Invalid date') {
@@ -110,7 +112,7 @@ export async function action({ request }) {
 										status: "$manualRequestProducts.status",
 										fulfillment_date: "$manualRequestProducts.fulfillment_date",
 										delivered_date: "$manualRequestProducts.delivered_date",
-										
+
 										createdAt: "$manualRequestProducts.createdAt",
 										updatedAt: "$manualRequestProducts.updatedAt"
 									}
@@ -137,7 +139,7 @@ export async function action({ request }) {
 								order_id: 1,
 								customer_locale: 1,
 								request_status: 1,
-								country_code : 1,
+								country_code: 1,
 								manualRequestProducts: 1
 							}
 						}
@@ -170,7 +172,7 @@ export async function action({ request }) {
 					const reviewRequestTimingSettingsModel = await reviewRequestTimingSettings.findOne({
 						shop_id: shopRecords._id
 					});
-					return json({ ordersItems, mapProductDetails, hasMore, reviewRequestTimingSettings:reviewRequestTimingSettingsModel });
+					return json({ ordersItems, mapProductDetails, hasMore, reviewRequestTimingSettings: reviewRequestTimingSettingsModel });
 				} else if (actionType == 'sendRequest') {
 					const { requestId } = requestBody;
 					const manualRequestModel = await manualReviewRequests.findOne({ _id: requestId });
@@ -196,7 +198,7 @@ export async function action({ request }) {
 							"last_name": manualRequestModel.last_name,
 						}
 						const emailContents = await getLanguageWiseContents("review_request", replaceVars, shopRecords._id, customer_locale);
-						emailContents.banner =  getUploadDocument(emailContents.banner, 'banners');
+						emailContents.banner = getUploadDocument(emailContents.banner, 'banners');
 
 						emailContents.logo = logo;
 
@@ -235,6 +237,14 @@ export async function action({ request }) {
 								$set: { status: "sent" }
 							}
 						);
+
+						/* Add review request sent track  */
+						const reviewRequestTracksModel = new reviewRequestTracks({
+							shop_id: shopRecords._id,
+						});
+						await reviewRequestTracksModel.save();
+						/* Add review request sent track end*/
+
 					}
 
 					return json({ "status": 200, "message": "Request sent" });

@@ -13,6 +13,7 @@ import { addDaysToDate } from './../utils/dateFormat';
 import { getUploadDocument } from './../utils/documentPath';
 import { getShopifyProducts, getLanguageWiseContents } from "./../utils/common";
 import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTemplate';
+import reviewRequestTracks from './models/reviewRequestTracks';
 
 export async function loader() {
     return json({});
@@ -152,7 +153,7 @@ export async function action({ request, params }) {
                                             emailHtmlContent = emailHtmlContent.replace(`{{review_link_${product.product_id}}}`, reviewLink);
                                             const variantTitle = product.variant_title ? product.variant_title : "";
                                             emailHtmlContent = emailHtmlContent.replace(`{{variant_title_${product.product_id}}}`, variantTitle);
-                
+
                                         }));
 
                                         // Send request email
@@ -179,6 +180,14 @@ export async function action({ request, params }) {
                                                 $set: { status: "sent" }
                                             }
                                         );
+
+                                        
+                                        /* Add review request sent track  */
+                                        const reviewRequestTracksModel = new reviewRequestTracks({
+                                            shop_id: shop._id,
+                                        });
+                                        await reviewRequestTracksModel.save();
+                                        /* Add review request sent track end*/
 
                                     }
                                 }
@@ -227,7 +236,7 @@ function getScheduleDate(products, ordersItems, reviewRequestTimingSettings, sho
                     scheduleDate = addDaysToDate(products.createdAt, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone);
                 } else if (reviewRequestTimingSettings.default_order_timing == 'fulfillment') {
                     scheduleDate = addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone);
-                }  else if (reviewRequestTimingSettings.default_order_timing == 'delivery' && reviewRequestTimingSettings.fallback_timing != "") {
+                } else if (reviewRequestTimingSettings.default_order_timing == 'delivery' && reviewRequestTimingSettings.fallback_timing != "") {
                     scheduleDate = addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.fallback_timing, shopRecords.timezone);
                 }
             } else {

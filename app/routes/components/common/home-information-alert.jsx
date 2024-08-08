@@ -1,7 +1,7 @@
 import React, { useState , useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const InformationAlert = ({ alertKey, className }) => {
+const HomeInformationAlert = ({ alertKey, className }) => {
     const [isVisibleInfo, setIsVisibleInfo] = useState(true);
 	const navigate = useNavigate();
 
@@ -28,18 +28,21 @@ const InformationAlert = ({ alertKey, className }) => {
         <>
             {
                 isVisibleInfo &&
-                <div className={`alertbox primarybox ${className}`}>
-                    <div className='iconbox'>
-                        <i className='twenty-customizeicon'></i>
-                    </div>
-                    <div className='flxflexi plaintext'>Your email appearance settings can be customized on the <a href="#" onClick={showBrandingPage} >Branding</a> page.</div>
-                    <div className='closebtn'>
-                        <a href="#" onClick={handleDismiss}><i className='twenty-closeicon'></i></a>
-                    </div>
-                </div>
+
+                <div className="dashalertbox">
+					<div className="logobox flxfix">Logo</div>
+					<div className="detailbox flxflexi flxcol">
+						<h4>Our Software is here to help you jump-start your business!</h4>
+						<p>Enjoy free access to Loox while the store is password protected on your Shopify trial.</p>
+					</div>
+					<div className="closebtn">
+						<a href="#" onClick={handleDismiss}><i className="twenty-closeicon"></i></a>
+					</div>
+				</div>
+                
             }
         </>
     );
 };
 
-export default InformationAlert;
+export default HomeInformationAlert;

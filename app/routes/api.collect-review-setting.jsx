@@ -7,6 +7,7 @@ import manualReviewRequests from './models/manualReviewRequests';
 import generalAppearances from './models/generalAppearances';
 import generalSettings from './models/generalSettings';
 import reviewRequestTimingSettings from './models/reviewRequestTimingSettings';
+import reviewRequestTracks from './models/reviewRequestTracks';
 
 import { getShopDetailsByShop, getShopifyProducts, getLanguageWiseContents } from './../utils/common';
 import { sendEmail } from "./../utils/email.server";
@@ -67,17 +68,24 @@ export async function action({ params, request }) {
                             const manualRequestModel = await manualReviewRequests.findOneAndUpdate(query, update, options);
 
                             await Promise.all(selectedProducts.map(async (product, index) => {
-                                const requestProductsModel = await manualRequestProducts({
-                                    manual_request_id: manualRequestModel._id,
-                                    product_id: product,
-                                    status: "sent"
-                                });
 
-                                const savedRequestProductsModel = await requestProductsModel.save();
-                                const lastInsertedId = savedRequestProductsModel._id;
+                                const query = { manual_request_id: manualRequestModel._id, product_id: product };
+                                const update = {
+                                    $set: {
+                                        manual_request_id: manualRequestModel._id,
+                                        product_id: product,
+                                        status: "sent"
+                                    }
+                                };
+                                const options = { upsert: true, returnOriginal: false };
+                                const requestProductsModel = await manualRequestProducts.findOneAndUpdate(query, update, options);
+                                const lastInsertedId = requestProductsModel._id;
 
                                 const reviewLink = `${settingJson.host_url}/review-request/${lastInsertedId}/review-form`;
                                 emailHtmlContent = emailHtmlContent.replace(`{{review_link_${product}}}`, reviewLink);
+                                const variantTitle = product.variant_title ? product.variant_title : "";
+                                emailHtmlContent = emailHtmlContent.replace(`{{variant_title_${product}}}`, variantTitle);
+
                             }));
 
                             // Send request email
@@ -99,7 +107,12 @@ export async function action({ params, request }) {
                         console.error('An error occurred:', error);
                     });
 
-
+                    /* Add review request sent track  */
+                    const reviewRequestTracksModel = new reviewRequestTracks({
+                        shop_id: shopRecords._id,
+                    });
+                    await reviewRequestTracksModel.save();
+                    /* Add review request sent track end*/
                     return json({ status: 200, message: "Manual review request sent." });
 
                 } else if (actionType == 'reviewRequestTiming') {

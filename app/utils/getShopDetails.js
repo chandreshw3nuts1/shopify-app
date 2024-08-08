@@ -1,4 +1,3 @@
-import { mongoConnection } from './mongoConnection'; 
 import { authenticate } from "../shopify.server";
 import { findOneRecord } from "./common";
 

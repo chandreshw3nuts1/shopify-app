@@ -12,6 +12,7 @@ import ManageNewReview from "./components/collectReview/ManageNewReview";
 import ReviewRequestTiming from "./components/collectReview/ReviewRequestTiming";
 import DiscountPhotoVideoReview from "./components/collectReview/DiscountPhotoVideoReview";
 
+import InformationAlert from './components/common/information-alert';
 
 import settings from './models/settings';
 import reviewRequestTimingSettings from './models/reviewRequestTimingSettings';
@@ -351,19 +352,8 @@ const ReviewPage = () => {
 										</div>
 
 										{/* Above DIV will be repeat */}
-										<div className='alertbox primarybox mt-24'>
-											<div className='iconbox'>
-												<i className="twenty-customizeicon"></i>
-											</div>
-											<div className='plaintext flxflexi '>
-												Your email appearance settings can be customized on the <a href="#">Branding</a> page.
-											</div>
-											<div className='closebtn'>
-												<a href="#">
-													<i className="twenty-menuicon"></i>
-												</a>
-											</div>
-										</div>
+										<InformationAlert alertKey="email_review" className="mt-24"/>
+
 									</div>
 								</Collapsible>
 							</LegacyStack>
