@@ -37,8 +37,8 @@ const ReviewItem = (props) => {
                 <>
                     {productReviewWidgetCustomizesModel.widgetLayout == "grid" && (
                         props.reviewItems.map((review, i) => (
-                            <div key={i} className={`w3grid-review-item review-list-item frontreviewbox ${props.gridClassName}`} data-reviewid={review._id} >
-                                <div className=''>
+                            <div key={i} className={`w3grid-review-item frontreviewbox ${props.gridClassName}`} data-reviewid={review._id} >
+                                <div className='review-list-item'>
                                     <div className="">
                                         <div className="box-style custombg" style={{ backgroundColor: reviewsBackground }}>
                                             <div className="review">
@@ -143,8 +143,8 @@ const ReviewItem = (props) => {
 
                     {productReviewWidgetCustomizesModel.widgetLayout == "compact" && (
                         props.reviewItems.map((review, i) => (
-                            <div key={i} className={`w3grid-review-item review-list-item frontreviewbox ${props.gridClassName}`} data-reviewid={review._id} >
-                                <div className=''>
+                            <div key={i} className={`w3grid-review-item frontreviewbox ${props.gridClassName}`} data-reviewid={review._id} >
+                                <div className='review-list-item'>
                                     <div className="">
                                         <div className="box-style custombg" style={{ backgroundColor: reviewsBackground }}>
                                             <div className="review">

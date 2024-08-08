@@ -326,6 +326,12 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
             return t(`productReviewConstomize.${type}`);
         }
     }
+    // console.log(selectedHeaderLayout);
+
+    const minimalHeader = selectedHeaderLayout === 'minimal';
+	const compactHeader = selectedHeaderLayout === 'compact';
+	const expandedHeader = selectedHeaderLayout === 'expanded';
+
     return (
         <>
             <div className="row">
@@ -772,100 +778,183 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                         </style>
                         <div className='insidewhitecard'>
                             <div className='reviewbox_wrap'>
-                                <div className="review_top_actions">
-                                    <div className="left_actions flxfix">
-                                        <div className="section_title" style={{ color: widgetColorStyles.headerTextColor }} >{getPreviewText('reviewHeaderTitle', currentLanguage)}</div>
-                                        <div className="star-rating">
-                                            <Dropdown>
-                                                <Dropdown.Toggle variant="" className='starbtn' id="dropdown-basic">
-                                                    <div className={`ratingstars flxrow star-4`}>
-                                                        <i className='rating-star-rounded'></i>
-                                                        <i className='rating-star-rounded'></i>
-                                                        <i className='rating-star-rounded'></i>
-                                                        <i className='rating-star-rounded'></i>
-                                                        <i className='rating-star-rounded'></i>
+                                <div className={`review_top_actions ${minimalHeader ? 'minimalheader' : 'otherheaderlayout'} ${compactHeader ? 'compactheader' : ''} ${expandedHeader ? 'expandedheader' : ''}`}>
+                                    <div className={`left_actions flxfix ${minimalHeader ? '' : 'sidebyside'}`}>
+                                        <div className="leftpart">
+                                            <div className="section_title" style={{ color: widgetColorStyles.headerTextColor }} >{getPreviewText('reviewHeaderTitle', currentLanguage)}</div>
+                                            {!minimalHeader &&
+                                                <div className="bigcountavarage flxrow">
+                                                    <i className='rating-star-rounded'></i>
+                                                    <div className="averagetext">4.7</div>
+                                                </div>
+                                            }
+                                            {!minimalHeader && 
+                                                <div className="totalreviewcount" style={{ color: widgetColorStyles.headerTextColor }}>
+                                                    <span>5</span> {getPreviewText('reviewPlural', currentLanguage)}
+                                                </div>
+                                            }
+                                        </div>
+                                        <div className="rightpart">
+                                            {!minimalHeader &&
+                                                <div className="stardetaildd">
+                                                    <div className="stardetailrow flxrow">
+                                                        <div className="sratnumber">5</div>
+                                                        <div className="starsicons flxrow star-5">
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                        </div>
+                                                        <div className="processbar"><div className="activebar" style={{ width: `40%` }}></div></div>
+                                                        <div className="reviewgiven">(2)</div>
                                                     </div>
-                                                    <div className='ratingcount' style={{ color: widgetColorStyles.headerTextColor }}>4 {t('out_of')} <span>5</span></div>
-                                                    {selectedShowRatingsDistribution &&
-                                                        <div className="arrowright" style={{ color: widgetColorStyles.headerTextColor }}>
-                                                            <i className='twenty-arrow-down'></i>
+                                                    <div className="stardetailrow flxrow">
+                                                        <div className="sratnumber">4</div>
+                                                        <div className="starsicons flxrow star-4">
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
                                                         </div>
-                                                    }
-                                                </Dropdown.Toggle>
-                                                {selectedShowRatingsDistribution &&
-                                                    <Dropdown.Menu align={'start'}>
-                                                        <div className="stardetaildd">
-                                                            <div className="stardetailrow flxrow">
-                                                                <div className="sratnumber">5</div>
-                                                                <div className="starsicons flxrow star-5">
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                </div>
-                                                                <div className="processbar"><div className="activebar" style={{ width: `40%` }}></div></div>
-                                                                <div className="reviewgiven">(2)</div>
-                                                            </div>
-                                                            <div className="stardetailrow flxrow">
-                                                                <div className="sratnumber">4</div>
-                                                                <div className="starsicons flxrow star-4">
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                </div>
-                                                                <div className="processbar"><div className="activebar" style={{ width: `20%` }}></div></div>
-                                                                <div className="reviewgiven">(1)</div>
-                                                            </div>
-                                                            <div className="stardetailrow flxrow">
-                                                                <div className="sratnumber">3</div>
-                                                                <div className="starsicons flxrow star-4">
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                </div>
-                                                                <div className="processbar"><div className="activebar" style={{ width: `20%` }}></div></div>
-                                                                <div className="reviewgiven">(2)</div>
-                                                            </div>
-                                                            <div className="stardetailrow flxrow">
-                                                                <div className="sratnumber">2</div>
-                                                                <div className="starsicons flxrow star-4">
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                </div>
-                                                                <div className="processbar"><div className="activebar" style={{ width: `0%` }}></div></div>
-                                                                <div className="reviewgiven">(0)</div>
-                                                            </div>
-                                                            <div className="stardetailrow flxrow">
-                                                                <div className="sratnumber">1</div>
-                                                                <div className="starsicons flxrow star-4">
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                </div>
-                                                                <div className="processbar"><div className="activebar" style={{ width: `0%` }}></div></div>
-                                                                <div className="reviewgiven">(0)</div>
-                                                            </div>
+                                                        <div className="processbar"><div className="activebar" style={{ width: `20%` }}></div></div>
+                                                        <div className="reviewgiven">(1)</div>
+                                                    </div>
+                                                    <div className="stardetailrow flxrow">
+                                                        <div className="sratnumber">3</div>
+                                                        <div className="starsicons flxrow star-4">
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
                                                         </div>
-                                                        <input type="hidden" id="ratting_wise_filter" />
-                                                    </Dropdown.Menu>
-                                                }
-                                            </Dropdown>
+                                                        <div className="processbar"><div className="activebar" style={{ width: `20%` }}></div></div>
+                                                        <div className="reviewgiven">(2)</div>
+                                                    </div>
+                                                    <div className="stardetailrow flxrow">
+                                                        <div className="sratnumber">2</div>
+                                                        <div className="starsicons flxrow star-4">
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                        </div>
+                                                        <div className="processbar"><div className="activebar" style={{ width: `0%` }}></div></div>
+                                                        <div className="reviewgiven">(0)</div>
+                                                    </div>
+                                                    <div className="stardetailrow flxrow">
+                                                        <div className="sratnumber">1</div>
+                                                        <div className="starsicons flxrow star-4">
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                        </div>
+                                                        <div className="processbar"><div className="activebar" style={{ width: `0%` }}></div></div>
+                                                        <div className="reviewgiven">(0)</div>
+                                                    </div>
+                                                </div>
+                                            }
+                                            {minimalHeader &&
+                                                <div className="star-rating">
+                                                    <Dropdown>
+                                                        <Dropdown.Toggle variant="" className='starbtn' id="dropdown-basic">
+                                                            <div className={`ratingstars flxrow star-4`}>
+                                                                <i className='rating-star-rounded'></i>
+                                                                <i className='rating-star-rounded'></i>
+                                                                <i className='rating-star-rounded'></i>
+                                                                <i className='rating-star-rounded'></i>
+                                                                <i className='rating-star-rounded'></i>
+                                                            </div>
+                                                            <div className='ratingcount' style={{ color: widgetColorStyles.headerTextColor }}>4 {t('out_of')} <span>5</span></div>
+                                                            {selectedShowRatingsDistribution &&
+                                                                <div className="arrowright" style={{ color: widgetColorStyles.headerTextColor }}>
+                                                                    <i className='twenty-arrow-down'></i>
+                                                                </div>
+                                                            }
+                                                        </Dropdown.Toggle>
+                                                        {selectedShowRatingsDistribution &&
+                                                            <Dropdown.Menu align={'start'}>
+                                                                <div className="stardetaildd">
+                                                                    <div className="stardetailrow flxrow">
+                                                                        <div className="sratnumber">5</div>
+                                                                        <div className="starsicons flxrow star-5">
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                        </div>
+                                                                        <div className="processbar"><div className="activebar" style={{ width: `40%` }}></div></div>
+                                                                        <div className="reviewgiven">(2)</div>
+                                                                    </div>
+                                                                    <div className="stardetailrow flxrow">
+                                                                        <div className="sratnumber">4</div>
+                                                                        <div className="starsicons flxrow star-4">
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                        </div>
+                                                                        <div className="processbar"><div className="activebar" style={{ width: `20%` }}></div></div>
+                                                                        <div className="reviewgiven">(1)</div>
+                                                                    </div>
+                                                                    <div className="stardetailrow flxrow">
+                                                                        <div className="sratnumber">3</div>
+                                                                        <div className="starsicons flxrow star-4">
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                        </div>
+                                                                        <div className="processbar"><div className="activebar" style={{ width: `20%` }}></div></div>
+                                                                        <div className="reviewgiven">(2)</div>
+                                                                    </div>
+                                                                    <div className="stardetailrow flxrow">
+                                                                        <div className="sratnumber">2</div>
+                                                                        <div className="starsicons flxrow star-4">
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                        </div>
+                                                                        <div className="processbar"><div className="activebar" style={{ width: `0%` }}></div></div>
+                                                                        <div className="reviewgiven">(0)</div>
+                                                                    </div>
+                                                                    <div className="stardetailrow flxrow">
+                                                                        <div className="sratnumber">1</div>
+                                                                        <div className="starsicons flxrow star-4">
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                            <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                        </div>
+                                                                        <div className="processbar"><div className="activebar" style={{ width: `0%` }}></div></div>
+                                                                        <div className="reviewgiven">(0)</div>
+                                                                    </div>
+                                                                </div>
+                                                                <input type="hidden" id="ratting_wise_filter" />
+                                                            </Dropdown.Menu>
+                                                        }
+                                                    </Dropdown>
 
+                                                </div>
+                                            }
                                         </div>
-                                        <div className="totalreviewcount" style={{ color: widgetColorStyles.headerTextColor }}>
-                                            <span>5</span> {getPreviewText('reviewPlural', currentLanguage)}
-                                        </div>
-
+                                        
+                                        {minimalHeader &&
+                                            <div className="totalreviewcount" style={{ color: widgetColorStyles.headerTextColor }}>
+                                                <span>5</span> {getPreviewText('reviewPlural', currentLanguage)}
+                                            </div>
+                                        }
                                     </div>
                                     <div className="right_actions btnwrap flxflexi flxrow justify-content-end">
                                         {selectedShowSortingOptions &&
@@ -888,7 +977,7 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                             </Dropdown>
                                         }
 
-                                        {selectedWriteReviewButton == "show" && <button className="revbtn wbigbtn lightbtn" id="show_create_review_modal" style={{ border: widgetColorStyles.buttonBorderColor, color: widgetColorStyles.buttonTitleColor, backgroundColor: widgetColorStyles.buttonBackground }} >{getPreviewText('writeReviewButtonTitle', currentLanguage)}</button>}
+                                        {selectedWriteReviewButton == "show" && <button className="revbtn wbigbtn" id="show_create_review_modal" style={{ border: widgetColorStyles.buttonBorderColor, color: widgetColorStyles.buttonTitleColor, backgroundColor: widgetColorStyles.buttonBackground }} >{getPreviewText('writeReviewButtonTitle', currentLanguage)}</button>}
                                     </div>
                                 </div>
                                 <div className='review-list-item frontreviewbox'>
