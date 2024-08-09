@@ -760,12 +760,10 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                             <div className='btnbox ms-auto'>
                                 <a href="#" onClick={(e) => handleShowPreviewModal()} className='revbtn tinybtn'>Preview</a>
                             </div>
-
                             <ProductReviewWidgetModal
                                 show={showPreviewModal}
                                 handleClose={handleClosePreviewModal}
                             />
-
                         </div>
                         <style>
                             {`
