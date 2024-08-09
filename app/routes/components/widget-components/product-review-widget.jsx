@@ -71,7 +71,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 		reviewWidgetLayoutWidth  = "50%";
 		gridClassName = 'grid-two-column';
 	}
-	console.log(productReviewWidgetCustomizesModel.headerLayout);
+	// console.log(productReviewWidgetCustomizesModel.headerLayout);
 	const minimalHeader = productReviewWidgetCustomizesModel.headerLayout === 'minimal';
 	const compactHeader = productReviewWidgetCustomizesModel.headerLayout === 'compact';
 	const expandedHeader = productReviewWidgetCustomizesModel.headerLayout === 'expanded';

@@ -712,6 +712,23 @@ body .dollerandpersantage .radiowrapdis .radiocolumn input[type="radio"]:checked
 .review_top_actions .stardetaildd .stardetailrow .processbar { width: 100px; height: 6px; border-radius: 2px; background: var(--borderColor); position: relative; overflow: hidden;}
 .review_top_actions .stardetaildd .stardetailrow .processbar .activebar { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 2px; background: var(--blueColor); display: block;}
 
+
+.review_top_actions .left_actions.sidebyside { display: flex;}
+.review_top_actions.otherheaderlayout .leftpart { margin: 0 16px 0 0;}
+.review_top_actions.otherheaderlayout .bigcountavarage { align-items: center;}
+.review_top_actions.otherheaderlayout .bigcountavarage .averagetext { font-size: 34px; color: var(--darkColor); font-weight: 500;}
+.review_top_actions.otherheaderlayout .bigcountavarage i { width: 60px; height: 60px; margin: 0 10px 0 0; font-size: 50px; display: flex; align-items: center; justify-content: center;}
+.review_top_actions.otherheaderlayout .left_actions .totalreviewcount { margin: 10px 0 0 0; font-size: 18px;}
+.review_top_actions.otherheaderlayout .stardetaildd{ padding: 0;}
+
+.review_top_actions.compactheader { max-width: 400px; margin-left: auto; margin-right: auto; flex-direction: column;}
+.review_top_actions.compactheader .right_actions { justify-content: center !important; margin: 24px 0 0 0;}
+.review_top_actions.compactheader .left_actions.sidebyside { flex-direction: column;}
+.review_top_actions.compactheader.otherheaderlayout .leftpart { text-align: center; margin: 0 0 16px 0;}
+.review_top_actions.compactheader.otherheaderlayout .bigcountavarage { justify-content: center;}
+.review_top_actions.compactheader.otherheaderlayout .rightpart { display: flex; justify-content: center;}
+
+
 body .dropdown .noafter::after,
 body .dropdown .noafter::before { display: none;}
 body .dropdown .arrowright { width: 24px; height: 24px; display: flex; margin: 0;}
