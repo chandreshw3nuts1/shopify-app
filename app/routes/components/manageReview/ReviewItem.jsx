@@ -472,6 +472,11 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 								}
 
 								<div className="rightinfo flxflexi">
+									{result.tag_as_feature == true &&
+										<div className="featured_tag revbedge">Featured 
+											<a href="#" className="bedclosebtn"><i className="twenty-closeicon"></i></a>
+										</div>
+									}
 									<div className="titlebox">
 										<div className="checkmark">
 											<i className="twenty-checkicon"></i>
