@@ -105,7 +105,6 @@ export default function Orders() {
 
     const handleStartDateChange = (date) => {
 
-
         setStartDate(date);
         setSearchFormData({ ...searchFormData, start_date: formatDate(date) });
 
@@ -293,7 +292,7 @@ export default function Orders() {
     const renderOrderStatus = (order, products) => {
         switch (products.status) {
             case "sent":
-                return <span>Sent : {formatDate(products.updatedAt, shopRecords.timezone)}</span>;
+                return <span>Sent : {formatDate(products.updatedAt, shopRecords.timezone, 'MM-DD-YYYY')}</span>;
             case "cancelled":
                 return <span>Cancelled</span>;
             case "received":
@@ -305,7 +304,7 @@ export default function Orders() {
                         return 'Paused';
                     }
                     if (reviewRequestTimingSettings.default_order_timing == 'purchase') {
-                        return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone)}</span>;
+                        return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone, 'MM-DD-YYYY')}</span>;
 
                     } else if (reviewRequestTimingSettings.default_order_timing == 'fulfillment') {
                         return 'Awaiting fulfillment';
@@ -315,7 +314,7 @@ export default function Orders() {
                 } else {
                     if (shopRecords.country_code == order.country_code) {
                         if (reviewRequestTimingSettings.domestic_order_timing == 'purchase') {
-                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone)}</span>;
+                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone, 'MM-DD-YYYY')}</span>;
 
                         } else if (reviewRequestTimingSettings.domestic_order_timing == 'fulfillment') {
                             return 'Awaiting fulfillment';
@@ -323,7 +322,7 @@ export default function Orders() {
                     } else {
 
                         if (reviewRequestTimingSettings.international_order_timing == 'purchase') {
-                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone)}</span>;
+                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone, 'MM-DD-YYYY')}</span>;
 
                         } else if (reviewRequestTimingSettings.international_order_timing == 'fulfillment') {
                             return 'Awaiting fulfillment';
@@ -338,30 +337,30 @@ export default function Orders() {
                         return 'Paused';
                     }
                     if (reviewRequestTimingSettings.default_order_timing == 'purchase') {
-                        return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone)}</span>;
+                        return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone, 'MM-DD-YYYY')}</span>;
                     } else if (reviewRequestTimingSettings.default_order_timing == 'fulfillment') {
-                        return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone)}</span>;
+                        return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone, 'MM-DD-YYYY')}</span>;
                     } else if (reviewRequestTimingSettings.default_order_timing == 'delivery' && reviewRequestTimingSettings.fallback_timing != "") {
-                        return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.fallback_timing, shopRecords.timezone)}</span>;
+                        return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.fallback_timing, shopRecords.timezone, 'MM-DD-YYYY')}</span>;
                     } else {
                         return "Awaiting delivery";
                     }
                 } else {
                     if (shopRecords.country_code == order.country_code) {
                         if (reviewRequestTimingSettings.domestic_order_timing == 'purchase') {
-                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone)}</span>;
+                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone, 'MM-DD-YYYY')}</span>;
 
                         } else if (reviewRequestTimingSettings.domestic_order_timing == 'fulfillment') {
-                            return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone)}</span>;
+                            return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone, 'MM-DD-YYYY')}</span>;
 
                         }
                     } else {
 
                         if (reviewRequestTimingSettings.international_order_timing == 'purchase') {
-                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone)}</span>;
+                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone, 'MM-DD-YYYY')}</span>;
 
                         } else if (reviewRequestTimingSettings.international_order_timing == 'fulfillment') {
-                            return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone)}</span>;
+                            return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone, 'MM-DD-YYYY')}</span>;
 
                         }
                     }
@@ -374,30 +373,30 @@ export default function Orders() {
                         return 'Paused';
                     }
                     if (reviewRequestTimingSettings.default_order_timing == 'purchase') {
-                        return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone)}</span>;
+                        return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone, 'MM-DD-YYYY')}</span>;
                     } else if (reviewRequestTimingSettings.default_order_timing == 'fulfillment') {
-                        return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone)}</span>;
+                        return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone, 'MM-DD-YYYY')}</span>;
                     } else if (reviewRequestTimingSettings.default_order_timing == 'delivery') {
-                        return <span>Scheduled for {addDaysToDate(products.delivered_date, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone)}</span>;
+                        return <span>Scheduled for {addDaysToDate(products.delivered_date, reviewRequestTimingSettings.default_day_timing, shopRecords.timezone, 'MM-DD-YYYY')}</span>;
                     } else {
                         return "Awaiting delivery";
                     }
                 } else {
                     if (shopRecords.country_code == order.country_code) {
                         if (reviewRequestTimingSettings.domestic_order_timing == 'purchase') {
-                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone)}</span>;
+                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone, 'MM-DD-YYYY')}</span>;
 
                         } else if (reviewRequestTimingSettings.domestic_order_timing == 'fulfillment') {
-                            return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone)}</span>;
+                            return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.domestic_day_timing, shopRecords.timezone, 'MM-DD-YYYY')}</span>;
 
                         }
                     } else {
 
                         if (reviewRequestTimingSettings.international_order_timing == 'purchase') {
-                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone)}</span>;
+                            return <span>Scheduled for {addDaysToDate(products.createdAt, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone, 'MM-DD-YYYY')}</span>;
 
                         } else if (reviewRequestTimingSettings.international_order_timing == 'fulfillment') {
-                            return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone)}</span>;
+                            return <span>Scheduled for {addDaysToDate(products.fulfillment_date, reviewRequestTimingSettings.international_day_timing, shopRecords.timezone, 'MM-DD-YYYY')}</span>;
 
                         }
                     }
@@ -512,7 +511,7 @@ export default function Orders() {
                                             }
                                             <span className="revbtn lightbtn">
                                                 <i className="twenty-timericon"></i>
-                                                {formatTimeAgo(result.createdAt, shopRecords.timezone)}
+                                                {formatTimeAgo(result.createdAt, shopRecords.timezone , 'MM-DD-YYYY')}
                                             </span>
                                         </div>
                                     </div>

@@ -110,9 +110,11 @@ const ReviewItem = (props) => {
                                                         <h4 style={{ color: reviewsText }}>
                                                             {review.display_name}
                                                         </h4>
-                                                        <div className='verifiedreview'>
-                                                            <ReviewVerifyIcon /> Verified
-                                                        </div>
+                                                        {review.verify_badge &&
+                                                            <div className='verifiedreview'>
+                                                                <ReviewVerifyIcon /> {translations.verifiedPurchase}
+                                                            </div>
+                                                        }
                                                     </div>
                                                     {productReviewWidgetCustomizesModel.reviewDates == 'show' &&
                                                         <div className="date" style={{ color: reviewsText }}>{formatDate(review.createdAt, props.shopRecords.timezone, 'M/D/YYYY')}</div>
@@ -155,9 +157,11 @@ const ReviewItem = (props) => {
                                                             <h4 style={{ color: reviewsText }}>
                                                                 {review.display_name}
                                                             </h4>
-                                                            <div className='verifiedreview'>
-                                                                <ReviewVerifyIcon /> Verified
-                                                            </div>
+                                                            {review.verify_badge &&
+                                                                <div className='verifiedreview'>
+                                                                    <ReviewVerifyIcon /> {translations.verifiedPurchase}
+                                                                </div>
+                                                            }
                                                         </div>
                                                         {productReviewWidgetCustomizesModel.reviewDates == 'show' &&
                                                             <div className="date" style={{ color: reviewsText }}>{formatDate(review.createdAt, props.shopRecords.timezone, 'M/D/YYYY')}</div>
@@ -257,9 +261,11 @@ const ReviewItem = (props) => {
                                                             <h4 style={{ color: reviewsText }}>
                                                                 {review.display_name}
                                                             </h4>
-                                                            <div className='verifiedreview'>
-                                                                <ReviewVerifyIcon /> Verified
-                                                            </div>
+                                                            {review.verify_badge &&
+                                                                <div className='verifiedreview'>
+                                                                    <ReviewVerifyIcon /> {translations.verifiedPurchase}
+                                                                </div>
+                                                            }
                                                         </div>
                                                         {productReviewWidgetCustomizesModel.reviewDates == 'show' &&
                                                             <div className="date" style={{ color: reviewsText }}>{formatDate(review.createdAt, props.shopRecords.timezone, 'M/D/YYYY')}</div>

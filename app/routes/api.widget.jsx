@@ -153,6 +153,7 @@ export async function action({ request }) {
                             variant_title: { $first: "$variant_title" },
                             product_id: { $first: "$product_id" },
                             tag_as_feature: { $first: "$tag_as_feature" },
+                            verify_badge: { $first: "$verify_badge" },
                             reviewDocuments: { $first: "$reviewDocuments" }, // Use $first to avoid duplicates
                             reviewQuestionsAnswer: {
                                 $push: {
@@ -200,6 +201,7 @@ export async function action({ request }) {
                             product_id: 1,
                             is_review_request: 1,
                             tag_as_feature: 1,
+                            verify_badge : 1,
                             reviewDocuments: {
                                 $filter: {
                                     input: "$reviewDocuments",
@@ -380,6 +382,7 @@ export async function action({ request }) {
                         product_id: { $first: "$product_id" },
                         variant_title: { $first: "$variant_title" },
                         tag_as_feature: { $first: "$tag_as_feature" },
+                        verify_badge: { $first: "$verify_badge" },
                         reviewDocuments: { $first: "$reviewDocuments" }, // Use $first to avoid duplicates
                         reviewQuestionsAnswer: {
                             $push: {
@@ -423,6 +426,7 @@ export async function action({ request }) {
                         variant_title : 1,
                         is_review_request: 1,
                         tag_as_feature: 1,
+                        verify_badge : 1,
                         reviewDocuments: {
                             $filter: {
                                 input: "$reviewDocuments",

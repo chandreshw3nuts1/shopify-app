@@ -86,9 +86,13 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                         <div className="namerow flxrow">
                                             <div className='nametitle flxrow align-items-center'>
                                                 <h3>{reviewDetails.first_name} {reviewDetails.last_name}</h3>
-                                                <div className='verifiedreview'>
-                                                    <ReviewVerifyIcon /> Verified
-                                                </div>
+
+                                                {reviewDetails.verify_badge &&
+                                                    <div className='verifiedreview'>
+                                                        <ReviewVerifyIcon /> {translations.verifiedPurchase}
+                                                    </div>
+                                                }
+
                                             </div>
                                             <div className="infoicon">
                                                 <InfoIcon />

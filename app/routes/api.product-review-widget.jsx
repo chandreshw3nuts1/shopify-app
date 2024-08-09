@@ -11,6 +11,7 @@ import manualRequestProducts from './models/manualRequestProducts';
 import generalAppearances from './models/generalAppearances';
 import reviewDiscountSettings from './models/reviewDiscountSettings';
 import manualReviewRequests from './models/manualReviewRequests';
+import discountCodes from './models/discountCodes';
 import { formatDate } from "./../utils/dateFormat";
 
 
@@ -252,6 +253,13 @@ export async function action({ request }) {
 									$set: { discount_code_id: discountCodeResponse.discount_code.id, discount_price_rule_id: discountCodeResponse.discount_code.price_rule_id }
 								}
 							);
+
+							// insert discount codes
+							const discountCodesModel = new discountCodes({
+								shop_id: shopRecords._id,
+								code: discountCodeResponse.discount_code.code,
+							});
+							await discountCodesModel.save();
 
 						}
 

@@ -6,6 +6,7 @@ import { getShopDetailsByShop } from './../utils/common';
 import manualReviewRequests from './../routes/models/manualReviewRequests';
 import manualRequestProducts from './../routes/models/manualRequestProducts';
 import shopDetails from './../routes/models/shopDetails';
+import discountCodes from './../routes/models/discountCodes';
 
 export async function action({ request }) {
 	const hmacHeader = request.headers.get('X-Shopify-Hmac-Sha256');
@@ -38,6 +39,18 @@ export async function action({ request }) {
 		} else {
 			language = bodyObj.customer_locale.split('-')[0];
 		}
+
+		let discountCode = "";
+		let totalOrderAmount = 0;
+		if (bodyObj.discount_codes && bodyObj.discount_codes.length > 0) {
+			discountCode = bodyObj.discount_codes[0].code;
+			const discountCodesModel = await discountCodes.findOne({ shop_id: shopRecords._id, code: discountCode });
+			if (discountCodesModel) {
+				totalOrderAmount = bodyObj.total_price;
+			}
+		}
+
+		
 		const manualReviewRequestsModel = await manualReviewRequests({
 			shop_id: shopRecords._id,
 			email: bodyObj.customer.email,
@@ -47,7 +60,8 @@ export async function action({ request }) {
 			country_code: bodyObj.shipping_address.country_code,
 			order_id: bodyObj.id,
 			order_number: bodyObj.order_number,
-			request_status: "pending"
+			request_status: "pending",
+			total_order_amount : totalOrderAmount
 		});
 		const savedManualReviewRequestsModel = await manualReviewRequestsModel.save();
 		const lastInsertedId = savedManualReviewRequestsModel._id;
@@ -58,7 +72,7 @@ export async function action({ request }) {
 					manual_request_id: lastInsertedId,
 					product_id: lineItem.product_id,
 					line_item_id: lineItem.id,
-					variant_title : lineItem.variant_title,
+					variant_title: lineItem.variant_title,
 					status: "pending"
 				});
 				await requestProductsModel.save();
@@ -76,7 +90,7 @@ export async function action({ request }) {
 	} else if (topic == 'orders/partially_fulfilled' || topic == 'orders/fulfilled') {
 		await Promise.all(bodyObj.fulfillments.map(async (fulfillment) => {
 			await Promise.all(fulfillment.line_items.map(async (lineItem) => {
-				
+
 				await manualRequestProducts.updateOne(
 					{ line_item_id: lineItem.id, tracking_number: { $ne: fulfillment.tracking_number } },
 					{

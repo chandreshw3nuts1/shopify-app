@@ -3,6 +3,7 @@ import { mongoConnection } from "./../utils/mongoConnection";
 import { ObjectId } from 'mongodb';
 import reviewRequestTracks from "./models/reviewRequestTracks";
 import productReviews from "./models/productReviews";
+import manualReviewRequests from "./models/manualReviewRequests";
 import { getShopDetailsByShop } from './../utils/common';
 
 export async function loader() {
@@ -83,8 +84,23 @@ export async function action({ request }) {
 					const totalReviewItemsImageResult = await productReviews.aggregate(totalReviewItemsPipelineImage);
 					const totalReviewItemsImage = totalReviewItemsImageResult.length > 0 ? totalReviewItemsImageResult[0].total : 0;
 
+                    // review revenue 
 
-                    return json({ status: 200, data: { requestSentcount, totalReceivedReview, totalReviewItemsImage } });
+                    
+                    const sumRevenuePipeline = [
+                        { $match: query }, // Match the documents based on the query
+                        { $group: {
+                            _id: null, // Group all documents into a single group
+                            total: { $sum: "$total_order_amount" } // Sum the `total_order_amount` field
+                        }}
+                    ];
+                    
+                    const countRevenueResult = await manualReviewRequests.aggregate(sumRevenuePipeline);
+                    const reviewRevenue = countRevenueResult.length > 0 ? countRevenueResult[0].total : 0;
+
+
+
+                    return json({ status: 200, data: { requestSentcount, totalReceivedReview, totalReviewItemsImage, reviewRevenue } });
                 }
 
             } catch (error) {

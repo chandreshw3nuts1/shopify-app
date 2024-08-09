@@ -15,7 +15,9 @@ const manualRequestProductsanualReviewRequestsSchema = new mongoose.Schema({
     product_ids: {type: Array },
     order_id: {type: String },
     order_number: {type: String },
-    request_status: {type: String }
+    request_status: {type: String },
+    total_order_amount: {type: Number }
+     
 },{
     timestamps: true
 });

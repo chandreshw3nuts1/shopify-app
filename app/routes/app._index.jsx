@@ -189,7 +189,7 @@ export default function Index() {
 							</div>
 						</div>
 						<div className="revenuebox">
-							<p><strong>$00</strong> Reviews-Generated Revenue</p>
+							<p><strong>{shopRecords.currency_symbol}{statisticResponse.reviewRevenue}</strong> Reviews-Generated Revenue</p>
 							<a href="#" className="infolink">
 								<InfoFillIcon />
 							</a>
