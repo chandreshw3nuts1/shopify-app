@@ -14,6 +14,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import {
     Select,
 } from '@shopify/polaris';
+import ProductReviewWidgetModal from './ProductReviewWidgetModal';
 
 const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
     const { t, i18n } = useTranslation();
@@ -65,7 +66,13 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
         reviewsBackgroundOnHover: '',
     });
     const [selectedReviewShadowValue, setSelectedReviewShadowValue] = useState('');
+    const [showPreviewModal, setShowPreviewModal] = useState(false);
 
+    const handleClosePreviewModal = () => setShowPreviewModal(false);
+
+    const handleShowPreviewModal = () => {
+        setShowPreviewModal(true);
+    }
 
 
     useEffect(() => {
@@ -329,8 +336,8 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
     // console.log(selectedHeaderLayout);
 
     const minimalHeader = selectedHeaderLayout === 'minimal';
-	const compactHeader = selectedHeaderLayout === 'compact';
-	const expandedHeader = selectedHeaderLayout === 'expanded';
+    const compactHeader = selectedHeaderLayout === 'compact';
+    const expandedHeader = selectedHeaderLayout === 'expanded';
 
     return (
         <>
@@ -750,6 +757,15 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                     <div className='whitebox p-0'>
                         <div className="custwidtitle">
                             <h3>Preview</h3>
+                            <div className='btnbox ms-auto'>
+                                <a href="#" onClick={(e) => handleShowPreviewModal()} className='revbtn tinybtn'>Preview</a>
+                            </div>
+
+                            <ProductReviewWidgetModal
+                                show={showPreviewModal}
+                                handleClose={handleClosePreviewModal}
+                            />
+
                         </div>
                         <style>
                             {`
@@ -788,7 +804,7 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                                     <div className="averagetext">4.7</div>
                                                 </div>
                                             }
-                                            {!minimalHeader && 
+                                            {!minimalHeader &&
                                                 <div className="totalreviewcount" style={{ color: widgetColorStyles.headerTextColor }}>
                                                     <span>5</span> {getPreviewText('reviewPlural', currentLanguage)}
                                                 </div>
@@ -949,7 +965,7 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                                 </div>
                                             }
                                         </div>
-                                        
+
                                         {minimalHeader &&
                                             <div className="totalreviewcount" style={{ color: widgetColorStyles.headerTextColor }}>
                                                 <span>5</span> {getPreviewText('reviewPlural', currentLanguage)}
@@ -1029,6 +1045,7 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                                     <div className='imagebox'>
                                                         <img src={`${settingsJson.host_url}/app/images/sample-review-images/2.png`} alt="" />
                                                     </div>
+
                                                     <div className='imagebox'>
                                                         <img src={`${settingsJson.host_url}/app/images/sample-review-images/3.png`} alt="" />
                                                     </div>
