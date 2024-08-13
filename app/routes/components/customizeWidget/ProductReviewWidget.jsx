@@ -348,6 +348,20 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
     const minimalHeader = selectedHeaderLayout === 'minimal';
     const compactHeader = selectedHeaderLayout === 'compact';
     const expandedHeader = selectedHeaderLayout === 'expanded';
+    const gridFormat = selectedLayout === 'grid';
+    const listFormat = selectedLayout === 'list';
+    const compactFormat = selectedLayout === 'compact';
+
+    let reviewWidgetLayoutWidth = "100%";
+	let gridClassName = 'full-grid';
+	if (gridFormat) {
+		reviewWidgetLayoutWidth  = "33.33%";
+		gridClassName = 'grid-four-column';
+	} else if (compactFormat) {
+		reviewWidgetLayoutWidth  = "50%";
+		gridClassName = 'grid-two-column';
+	}
+
 
     return (
         <>
@@ -767,6 +781,9 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                     <div className='whitebox p-0'>
                         <div className="custwidtitle">
                             <h3>Preview</h3>
+                            <div className='lightdarkwrap'>
+                                <a href=''><i>111</i></a>
+                            </div>
                             <div className='btnbox ms-auto'>
                                 <a href="#" onClick={(e) => handleShowPreviewModal()} className='revbtn tinybtn'>Preview</a>
                             </div>
@@ -807,6 +824,7 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                         </style>
                         <div className='insidewhitecard'>
                             <div className='reviewbox_wrap'>
+
                                 <div className={`review_top_actions ${minimalHeader ? 'minimalheader' : 'otherheaderlayout'} ${compactHeader ? 'compactheader' : ''} ${expandedHeader ? 'expandedheader' : ''}`}>
                                     <div className={`left_actions flxfix ${minimalHeader ? '' : 'sidebyside'}`}>
                                         <div className="leftpart">
@@ -1012,26 +1030,53 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                         {selectedWriteReviewButton == "show" && <button className="revbtn wbigbtn custombtn " id="show_create_review_modal" style={{ border: widgetColorStyles.buttonBorderColor, color: widgetColorStyles.buttonTitleColor, backgroundColor: widgetColorStyles.buttonBackground }} >{getPreviewText('writeReviewButtonTitle', currentLanguage)}</button>}
                                     </div>
                                 </div>
-                                <div className='review-list-item frontreviewbox'>
+                                <div className={`review-list-item frontreviewbox ${gridClassName}`}>
                                     <div className='box-style custombg' style={{ backgroundColor: widgetColorStyles.reviewsBackground }}>
                                         <div className='review'>
-                                            <div className='review_topbar flxrow'>
-                                                <div className='mid_detail flxflexi' >
-                                                    <h4 style={{ color: widgetColorStyles.reviewsText }}>John H</h4>
-                                                    {selectedReviewDates == "show" && <div className='date' style={{ color: widgetColorStyles.reviewsText }}>08/03/2024</div>}
-                                                </div>
-                                                <div className='star_reviews flxfix'>
-                                                    <div className='star-rating'>
-                                                        <div className='ratingcount'>4.0</div>
-                                                        <div className='ratingstars flxrow star-4'>
-                                                            <i className="rating-star-rounded"></i>
-                                                            <i className="rating-star-rounded"></i>
-                                                            <i className="rating-star-rounded"></i>
-                                                            <i className="rating-star-rounded"></i>
-                                                            <i className="rating-star-rounded"></i>
-                                                        </div>
+                                            {gridFormat &&
+                                                <div className='review_imageswrap flxrow'>
+                                                    <div className='imagebox'>
+                                                        <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
                                                     </div>
                                                 </div>
+                                            }
+                                            <div className='review_topbar flxrow'>
+                                                {!gridFormat &&
+                                                    <div className={`mid_detail ${compactFormat ? 'flxrow' : 'flxflexi'}`} >
+                                                        <h4 style={{ color: widgetColorStyles.reviewsText }}>John H</h4>
+                                                        {selectedReviewDates == "show" && <div className='date' style={{ color: widgetColorStyles.reviewsText }}>08/03/2024</div>}
+                                                    </div>
+                                                }
+                                                {(listFormat || gridFormat) &&
+                                                    <div className='star_reviews flxfix'>
+                                                        <div className='star-rating'>
+                                                            {listFormat &&
+                                                                <>
+                                                                    <div className='ratingstars flxrow star-4'>
+                                                                    <div className='ratingcount'>4.0</div>
+                                                                        <i className="rating-star-rounded"></i>
+                                                                        <i className="rating-star-rounded"></i>
+                                                                        <i className="rating-star-rounded"></i>
+                                                                        <i className="rating-star-rounded"></i>
+                                                                        <i className="rating-star-rounded"></i>
+                                                                    </div>
+                                                                </>
+                                                            }
+                                                            {gridFormat &&
+                                                                <>
+                                                                    <div className='ratingstars flxrow star-4'>
+                                                                        <i className="rating-star-rounded"></i>
+                                                                        <i className="rating-star-rounded"></i>
+                                                                        <i className="rating-star-rounded"></i>
+                                                                        <i className="rating-star-rounded"></i>
+                                                                        <i className="rating-star-rounded"></i>
+                                                                    </div>
+                                                                    <div className='ratingcount'>4.0</div>
+                                                                </>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                }
                                             </div>
                                             <div className='text_content'>
                                                 <p>I have been using these industry leading headphones by Sony, colour Midnight Blue, and trust me i find them worth every penny spent. Yes, i agree these headphones are highly expensive, some may say you can purchase Apple Airpods, Boss, Sennheiser, and other audio equipment options, but trust me nothing beats these bad boys.</p>
@@ -1045,6 +1090,26 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                                 <p style={{ color: widgetColorStyles.replyText }}><strong>{shopRecords.name}</strong> {t('replied')}:</p>
                                                 <p style={{ color: widgetColorStyles.replyText }}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
                                             </div>
+                                            {gridFormat &&
+                                                <div className='mid_detail flxflexi' >
+                                                    <h4 style={{ color: widgetColorStyles.reviewsText }}>John H</h4>
+                                                    {selectedReviewDates == "show" && <div className='date' style={{ color: widgetColorStyles.reviewsText }}>08/03/2024</div>}
+                                                </div>
+                                            }
+                                            {compactFormat &&
+                                                <div className='star_reviews flxfix'>
+                                                    <div className='star-rating'>
+                                                        <div className='ratingstars flxrow star-4'>
+                                                            <i className="rating-star-rounded"></i>
+                                                            <i className="rating-star-rounded"></i>
+                                                            <i className="rating-star-rounded"></i>
+                                                            <i className="rating-star-rounded"></i>
+                                                            <i className="rating-star-rounded"></i>
+                                                        </div>
+                                                        <div className='ratingcount'>4.0</div>
+                                                    </div>
+                                                </div>
+                                            }
                                             <div className='review_bottomwrap'>
                                                 <div className='product-container product-thumb-detail'>
                                                     <div className='image flxfix'>
@@ -1054,18 +1119,19 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                                         <p>Sample Product</p>
                                                     </div>
                                                 </div>
-                                                <div className='review_imageswrap flxrow'>
-                                                    <div className='imagebox'>
-                                                        <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
+                                                {!gridFormat &&
+                                                    <div className='review_imageswrap flxrow'>
+                                                        <div className='imagebox'>
+                                                            <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
+                                                        </div>
+                                                        <div className='imagebox'>
+                                                            <img src={`${settingsJson.host_url}/app/images/sample-review-images/2.png`} alt="" />
+                                                        </div>
+                                                        <div className='imagebox'>
+                                                            <img src={`${settingsJson.host_url}/app/images/sample-review-images/3.png`} alt="" />
+                                                        </div>
                                                     </div>
-                                                    <div className='imagebox'>
-                                                        <img src={`${settingsJson.host_url}/app/images/sample-review-images/2.png`} alt="" />
-                                                    </div>
-
-                                                    <div className='imagebox'>
-                                                        <img src={`${settingsJson.host_url}/app/images/sample-review-images/3.png`} alt="" />
-                                                    </div>
-                                                </div>
+                                                }
                                             </div>
                                         </div>
                                     </div>

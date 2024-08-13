@@ -51,23 +51,22 @@ export default function MasonryLayout(props) {
                 `}
             </style>
 
-            <div ref={masonryContainerRef} >
+            <div className={`main_review_block ${props.gridClassName}-wrap`} ref={masonryContainerRef} >
 
                 {props.documentObj.widgetLayout == "grid" && (
                     <>
-                        <div className={`w3grid-review-item ${props.gridClassName}`}>
+                        <div className={`w3grid-review-item frontreviewbox ${props.gridClassName}`}>
                             <div className='review-list-item'>
                                 <div className='box-style custombg' style={{ backgroundColor: reviewsBackground }}>
                                     <div className='review'>
-                                        <div className='review_topbar flxrow'>
-                                            <div className='review_imageswrap flxrow'>
-                                                <div className='imagebox' >
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
-                                                </div>
+                                        <div className='review_imageswrap flxrow'>
+                                            <div className='imagebox' >
+                                                <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
                                             </div>
+                                        </div>
+                                        <div className='review_topbar flxrow'>
                                             <div className='star_reviews flxfix'>
                                                 <div className='star-rating'>
-                                                    <div className='ratingcount'>4.0</div>
                                                     <div className='ratingstars flxrow star-4'>
                                                         <i className="rating-star-rounded"></i>
                                                         <i className="rating-star-rounded"></i>
@@ -75,6 +74,7 @@ export default function MasonryLayout(props) {
                                                         <i className="rating-star-rounded"></i>
                                                         <i className="rating-star-rounded"></i>
                                                     </div>
+                                                    <div className='ratingcount'>4.0</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -139,7 +139,7 @@ export default function MasonryLayout(props) {
 
                 {props.documentObj.widgetLayout == "compact" && (
                     <>
-                        <div className={`w3grid-review-item ${props.gridClassName}`}>
+                        <div className={`w3grid-review-item frontreviewbox ${props.gridClassName}`}>
                             <div className='review-list-item'>
                                 <div className='box-style custombg' style={{ backgroundColor: reviewsBackground }}>
                                     <div className='review'>
@@ -186,7 +186,6 @@ export default function MasonryLayout(props) {
                                         </div>
                                         <div className='star_reviews flxfix'>
                                             <div className='star-rating'>
-                                                <div className='ratingcount'>4.0</div>
                                                 <div className='ratingstars flxrow star-4'>
                                                     <i className="rating-star-rounded"></i>
                                                     <i className="rating-star-rounded"></i>
@@ -194,6 +193,7 @@ export default function MasonryLayout(props) {
                                                     <i className="rating-star-rounded"></i>
                                                     <i className="rating-star-rounded"></i>
                                                 </div>
+                                                <div className='ratingcount'>4.0</div>
                                             </div>
                                         </div>
                                         <div className='review_bottomwrap'>
@@ -227,7 +227,7 @@ export default function MasonryLayout(props) {
                 )}
 
                 {props.documentObj.widgetLayout == "list" && (
-                    <div className={`w3grid-review-item ${props.gridClassName}`}>
+                    <div className={`w3grid-review-item frontreviewbox ${props.gridClassName}`}>
                         <div className='review-list-item'>
                             <div className='box-style custombg' style={{ backgroundColor: reviewsBackground }}>
                                 <div className='review'>

@@ -71,9 +71,13 @@ const ProductReviewWidgetModal = ({ show, handleClose, documentObj, shopRecords,
 				`}
             </style>
 
-            <Modal show={show} onHide={handleClose} size="xl" backdrop="static">
+            <Modal show={show} onHide={handleClose} scrollable={true} size="xl" backdrop="static">
                 <Modal.Header closeButton>
-                    <Modal.Title>W3nuts Preview </Modal.Title>
+                    <Modal.Title>W3nuts Preview 
+                        <div className='lightdarkwrap'>
+                            <a href=''><i>111</i></a>
+                        </div>
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div className={` review_top_actions ${minimalHeader ? 'minimalheader' : 'otherheaderlayout'} ${compactHeader ? 'compactheader' : ''} ${expandedHeader ? 'expandedheader' : ''}`} >
@@ -278,14 +282,8 @@ const ProductReviewWidgetModal = ({ show, handleClose, documentObj, shopRecords,
                             {documentObj.writeReviewButton == "show" && <button className="revbtn wbigbtn custombtn" style={{ border: buttonBorderColor, color: buttonTitleColor, backgroundColor: buttonBackground }} id="show_create_review_modal">{getPreviewText('writeReviewButtonTitle', currentLanguage)}</button>}
                         </div>
                     </div>
-                    <div className='main_review_block'>
-                        <div className='frontreviewbox'>
-                            <MasonryLayout documentObj={documentObj} shopRecords={shopRecords} gridClassName={gridClassName} getPreviewText={getPreviewText} currentLanguage={currentLanguage} translator={translator} />
-
-
-
-                        </div>
-                    </div>
+                    
+                    <MasonryLayout documentObj={documentObj} shopRecords={shopRecords} gridClassName={gridClassName} getPreviewText={getPreviewText} currentLanguage={currentLanguage} translator={translator} />
 
                 </Modal.Body>
             </Modal>
