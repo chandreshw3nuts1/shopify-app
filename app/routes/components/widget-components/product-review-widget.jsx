@@ -57,8 +57,10 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 	} else if (productReviewWidgetCustomizesModel.widgetColor == 'white') {
 		headerTextColor = '#ffffff';
 		buttonBorderColor = `1px solid #ffffff`;
-		buttonTitleColor = '#ffffff';
-		buttonBackground = '#000000';
+		// buttonTitleColor = '#ffffff';
+		// buttonBackground = '#000000';
+        buttonTextOnHover = '#000000';
+
 		//buttonBackgroundOnHover = productReviewWidgetCustomizesModel.buttonBackgroundOnHover;
 		//buttonTextOnHover = productReviewWidgetCustomizesModel.buttonTextOnHover;
 	}

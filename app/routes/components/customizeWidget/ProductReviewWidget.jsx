@@ -161,6 +161,14 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
             shopify.toast.show(data.message, {
                 duration: settingsJson.toasterCloseTime
             });
+
+
+            setDocumentObj(prevState => ({
+                ...(prevState || {}),  // Ensure prevState is an object
+                    [eventKey]: eventVal
+            }));
+
+
         } else {
             shopify.toast.show(data.message, {
                 duration: settingsJson.toasterCloseTime,
@@ -293,8 +301,10 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
         } else if (selectedWidgetColor == 'white') {
             headerTextColor = '#ffffff';
             buttonBorderColor = `1px solid #ffffff`;
-            buttonTitleColor = '#ffffff';
-            buttonBackground = '#000000';
+            // buttonTitleColor = '#ffffff';
+            // buttonBackground = '#ffffff';
+            buttonTextOnHover = '#000000';
+
         }
         setWidgetColorStyles({
             headerTextColor,
@@ -763,11 +773,16 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                             <ProductReviewWidgetModal
                                 show={showPreviewModal}
                                 handleClose={handleClosePreviewModal}
+                                documentObj={documentObj}
+                                shopRecords={shopRecords}
+                                getPreviewText = {getPreviewText}
+                                currentLanguage = {currentLanguage}
+                                translator = {t}
                             />
                         </div>
                         <style>
                             {`
-								.lightbtn:hover {
+								.custombtn:hover {
 									background-color: ${widgetColorStyles.buttonBackgroundOnHover} !important;
 									color : ${widgetColorStyles.buttonTextOnHover} !important;
 								}
@@ -799,7 +814,7 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                             {!minimalHeader &&
                                                 <div className="bigcountavarage flxrow">
                                                     <i className='rating-star-rounded'></i>
-                                                    <div className="averagetext">4.7</div>
+                                                    <div className="averagetext" style={{ color: widgetColorStyles.headerTextColor }}>4.7</div>
                                                 </div>
                                             }
                                             {!minimalHeader &&
@@ -809,7 +824,8 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                             }
                                         </div>
                                         <div className="rightpart">
-                                            {!minimalHeader &&
+                                            {!minimalHeader &&(
+                                                selectedShowRatingsDistribution && 
                                                 <div className="stardetaildd">
                                                     <div className="stardetailrow flxrow">
                                                         <div className="sratnumber">5</div>
@@ -871,7 +887,9 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                                         <div className="processbar"><div className="activebar" style={{ width: `0%` }}></div></div>
                                                         <div className="reviewgiven">(0)</div>
                                                     </div>
-                                                </div>
+                                                </div> 
+                                            )
+                                                
                                             }
                                             {minimalHeader &&
                                                 <div className="star-rating">
@@ -973,7 +991,7 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                     <div className="right_actions btnwrap flxflexi flxrow justify-content-end">
                                         {selectedShowSortingOptions &&
                                             <Dropdown>
-                                                <Dropdown.Toggle variant="" className='revbtn lightbtn wbigbtn noafter' id="dropdown-basic" style={{ border: widgetColorStyles.buttonBorderColor, color: widgetColorStyles.buttonTitleColor, backgroundColor: widgetColorStyles.buttonBackground }}>
+                                                <Dropdown.Toggle variant="" className='revbtn lightbtn wbigbtn custombtn noafter' id="dropdown-basic" style={{ border: widgetColorStyles.buttonBorderColor, color: widgetColorStyles.buttonTitleColor, backgroundColor: widgetColorStyles.buttonBackground }}>
                                                     <i className='twenty-filtericon'></i>
                                                     {t('sort_by')}
                                                     <div className="arrowright">
@@ -982,16 +1000,16 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                                 </Dropdown.Toggle>
 
                                                 <Dropdown.Menu align={'end'}>
-                                                    <li><a className="dropdown-item sort_by_filter" data-sort="tag_as_feature" href="#">Featured</a></li>
-                                                    <li><a className="dropdown-item sort_by_filter" data-sort="newest" href="#">Newest</a></li>
-                                                    <li><a className="dropdown-item sort_by_filter" data-sort="highest_ratings" href="#">Highest rating</a></li>
-                                                    <li><a className="dropdown-item sort_by_filter" data-sort="lowest_ratings" href="#">Lowest rating</a></li>
+                                                    <li><a className="dropdown-item sort_by_filter" data-sort="tag_as_feature" href="#">{t('featured')}</a></li>
+                                                    <li><a className="dropdown-item sort_by_filter" data-sort="newest" href="#">{t('newest')}</a></li>
+                                                    <li><a className="dropdown-item sort_by_filter" data-sort="highest_ratings" href="#">{t('highest_rating')}</a></li>
+                                                    <li><a className="dropdown-item sort_by_filter" data-sort="lowest_ratings" href="#">{t('lowest_rating')}</a></li>
                                                     <input type="hidden" id="sort_by_filter" />
                                                 </Dropdown.Menu>
                                             </Dropdown>
                                         }
 
-                                        {selectedWriteReviewButton == "show" && <button className="revbtn wbigbtn" id="show_create_review_modal" style={{ border: widgetColorStyles.buttonBorderColor, color: widgetColorStyles.buttonTitleColor, backgroundColor: widgetColorStyles.buttonBackground }} >{getPreviewText('writeReviewButtonTitle', currentLanguage)}</button>}
+                                        {selectedWriteReviewButton == "show" && <button className="revbtn wbigbtn custombtn " id="show_create_review_modal" style={{ border: widgetColorStyles.buttonBorderColor, color: widgetColorStyles.buttonTitleColor, backgroundColor: widgetColorStyles.buttonBackground }} >{getPreviewText('writeReviewButtonTitle', currentLanguage)}</button>}
                                     </div>
                                 </div>
                                 <div className='review-list-item frontreviewbox'>
