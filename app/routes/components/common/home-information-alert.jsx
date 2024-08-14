@@ -33,7 +33,7 @@ const HomeInformationAlert = ({ alertKey, className }) => {
 					<div className="logobox flxfix">Logo</div>
 					<div className="detailbox flxflexi flxcol">
 						<h4>Our Software is here to help you jump-start your business!</h4>
-						<p>Enjoy free access to Loox while the store is password protected on your Shopify trial.</p>
+						<p>Enjoy free access to w3 while the store is password protected on your Shopify trial.</p>
 					</div>
 					<div className="closebtn">
 						<a href="#" onClick={handleDismiss}><i className="twenty-closeicon"></i></a>

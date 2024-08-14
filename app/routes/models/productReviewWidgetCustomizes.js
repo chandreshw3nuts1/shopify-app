@@ -43,7 +43,7 @@ const productReviewWidgetCustomizesSchema = new mongoose.Schema({
     pt: { "type": "Object" },
     tr: { "type": "Object" },
     ru: { "type": "Object" },
-    js: { "type": "Object" },
+    ja: { "type": "Object" },
     cn1: { "type": "Object" },
     cn2: { "type": "Object" },
     sv: { "type": "Object" },

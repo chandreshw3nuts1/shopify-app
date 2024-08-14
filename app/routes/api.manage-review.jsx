@@ -14,7 +14,7 @@ import emailReviewReplySettings from "./models/emailReviewReplySettings";
 import {getUploadDocument} from "./../utils/documentPath";
 export async function loader() {
 
-	const email = 'chandresh.w3nuts@gmail.com';
+	const email = 'chandresh.w3@gmail.com';
 	const recipientName ="Chands";
 	const content ="okok okoko ko ko ";
 	const footer ="footer footerfooterfooter ";

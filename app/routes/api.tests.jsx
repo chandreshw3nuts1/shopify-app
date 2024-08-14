@@ -118,7 +118,7 @@ export async function loader() {
 			},
 			body: JSON.stringify({
 				section: {
-					name: "loox-dynamic-section",
+					name: "w3-dynamic-section",
 					settings: {
 						heading: "Customer Reviews",
 						text: "Here are some reviews from our customers."

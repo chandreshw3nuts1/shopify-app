@@ -1,38 +1,34 @@
-import { useEffect, useState,  useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useLoaderData } from '@remix-run/react';
 import Breadcrumb from "./components/Breadcrumb";
 import SettingPageSidebar from "./components/headerMenu/SettingPageSidebar";
 import { getShopDetails } from './../utils/getShopDetails';
-import GeneralAppearance from "./components/settings/general-appearance";
-import { findOneRecord } from './../utils/common';
+import generalSettings from './models/generalSettings';
+// import { findOneRecord } from './../utils/common';
 import CrownIcon from '../images/crown-icon.svg'
 import { Image } from "react-bootstrap";
 import AlertInfo from "./components/AlertInfo";
+import settingsJson from './../utils/settings.json';
 
 
 import { json } from "@remix-run/node";
 
 import {
-  Layout,
-  Page,
-  LegacyCard,
-  Spinner,
-  Text,
-  Card,LegacyStack, TextField, Button, FormLayout,Collapsible
+	Page,
+	Select,
 } from "@shopify/polaris";
 
-export async function loader({request}) {
+export async function loader({ request }) {
 	try {
-		
+
 		const shopRecords = await getShopDetails(request);
-		const generalAppearances = await findOneRecord('general_appearances',{
-			shop_id: shopRecords._id,
+		const generalSettingsModel = await generalSettings.findOne({
+			shop_id: shopRecords._id
 		});
 
+		return json({ shopRecords, generalSettingsModel });
 
-		return json({shopRecords : shopRecords,generalAppearances : generalAppearances});
-
-	  } catch (error) {
+	} catch (error) {
 		console.error('Error fetching records:', error);
 		return json({ error: 'Error fetching records' }, { status: 500 });
 	}
@@ -42,39 +38,255 @@ export async function loader({request}) {
 export default function GeneralSettings() {
 	const loaderData = useLoaderData();
 	const shopRecords = loaderData.shopRecords;
-	const generalAppearances = loaderData.generalAppearances;
-	
-	const [crumbs, setCrumbs] = useState([
-		{"title" : "Settings", "link" :"./../branding"},
-		{"title" : "General setting", "link" :""}
-	]);
- 	return (
-	<>
-		<Breadcrumb crumbs={crumbs}/>
-		<Page fullWidth>
-			<SettingPageSidebar />
+	const [generalSettings, setGeneralSettings] = useState(loaderData.generalSettingsModel);
 
-			<div className="pagebox">
-				<div className="graywrapbox gapy24">
-					{/* <div className="subtitlebox">
+	const [initialData, setInitialData] = useState({});
+
+	const [initialReplyEmail, setInitialReplyEmail] = useState(
+		generalSettings?.reply_email || ''
+	);
+	const [isValidReplyEmail, setIsValidReplyEmail] = useState(true);
+
+	const [replyEmail, setReplyEmail] = useState(generalSettings?.reply_email);
+	const [isEnableFooterTextChecked, setIsEnableFooterTextChecked] = useState(
+		generalSettings?.email_footer_enabled || false
+	);
+	const [currentLanguage, setCurrentLanguage] = useState(generalSettings?.defaul_language || '');
+	const [footerText, setFooterText] = useState('');
+
+
+	const formattedLanguages = settingsJson.languages.map(language => ({
+		value: language.code,
+		label: language.lang
+	}));
+
+	useEffect(() => {
+
+
+		const footerEmailTextInfo = (generalSettings && generalSettings[currentLanguage]) ? generalSettings[currentLanguage] : {};
+		const { footerText } = footerEmailTextInfo;
+		setFooterText(footerText || '');
+
+		setInitialData({
+			reply_email: generalSettings.reply_email || '',
+			footerText: footerText || ''
+		});
+
+	}, [generalSettings, currentLanguage]);
+
+	const handleSelectChange = async (value, name) => {
+
+		if (name == "multilingual_support") {
+			value = value == 'true' ? true : false;
+		}
+		const updateData = {
+			field: name,
+			value: value,
+			shop: shopRecords.shop,
+			actionType: "generalSettings"
+		};
+		const response = await fetch('/api/general-settings', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(updateData),
+		});
+		const data = await response.json();
+		if (data.status == 200) {
+			setGeneralSettings(prevState => ({
+				...prevState,
+				[name]: value
+			}));
+
+			if (name == "multilingual_support") {
+				setCurrentLanguage(generalSettings.defaul_language);
+			} else if (name == "defaul_language") {
+				setCurrentLanguage(value);
+			}
+
+			shopify.toast.show(data.message, {
+				duration: settingsJson.toasterCloseTime
+			});
+		} else {
+			shopify.toast.show(data.message, {
+				duration: settingsJson.toasterCloseTime,
+				isError: true
+			});
+		}
+	};
+
+	const handleFooterLanguageChange = async (value, name) => {
+		setCurrentLanguage(value);
+	};
+
+	const changeInput = (event) => {
+		const eventKey = event.target.name;
+		const eventVal = event.target.value;
+
+		if (eventKey == 'reply_email') {
+			setReplyEmail(eventVal);
+		} else if (eventKey == 'footerText') {
+			setFooterText(eventVal);
+		}
+
+	};
+
+	const handleReplyEmailBlur = async (e) => {
+
+		const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+		setIsValidReplyEmail(false);
+
+		if (regex.test(e.target.value) || e.target.value == '') {
+
+			setIsValidReplyEmail(true);
+
+			if (initialReplyEmail != e.target.value) {
+				const updateData = {
+					field: e.target.name,
+					value: replyEmail,
+					shop: shopRecords.shop,
+					actionType: "generalSettings"
+				};
+				const response = await fetch('/api/general-settings', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(updateData),
+				});
+
+				const data = await response.json();
+				if (data.status == 200) {
+					shopify.toast.show(data.message, {
+						duration: settingsJson.toasterCloseTime
+					});
+				} else {
+					shopify.toast.show(data.message, {
+						duration: settingsJson.toasterCloseTime,
+						isError: true
+					});
+				}
+
+				setInitialReplyEmail(e.target.value);
+
+			}
+
+		}
+	};
+
+	const handleCheckboxEnableChange = async event => {
+		try {
+			const eventKey = event.target.name;
+
+			const updateData = {
+				field: event.target.name,
+				value: event.target.checked,
+				actionType: "generalSettings",
+				shop: shopRecords.shop
+			};
+
+			const response = await fetch('/api/general-settings', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(updateData),
+			});
+			const data = await response.json();
+			if (data.status == 200) {
+				shopify.toast.show(data.message, {
+					duration: settingsJson.toasterCloseTime
+				});
+			} else {
+				shopify.toast.show(data.message, {
+					duration: settingsJson.toasterCloseTime,
+					isError: true
+				});
+			}
+			if (eventKey == 'email_footer_enabled') {
+				setIsEnableFooterTextChecked(!event.target.checked);
+			}
+		} catch (error) {
+			console.error('Error updating record:', error);
+		}
+
+	};
+
+	const inputFooterTextBlur = async (e) => {
+		if (initialData[e.target.name] != e.target.value) {
+			const updateData = {
+				field: e.target.name,
+				value: e.target.value,
+				language: currentLanguage,
+				actionType: "generalSettingsFooterText",
+				shop: shopRecords.shop
+			};
+			const response = await fetch('/api/general-settings', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(updateData),
+			});
+			const data = await response.json();
+			if (data.status == 200) {
+
+				setGeneralSettings(prevState => ({
+					...(prevState || {}),  // Ensure prevState is an object
+					[currentLanguage]: {
+						...(prevState ? prevState[currentLanguage] : {}),  // Ensure nested object is an object
+						[e.target.name]: e.target.value
+					}
+				}));
+
+				shopify.toast.show(data.message, {
+					duration: settingsJson.toasterCloseTime
+				});
+
+			} else {
+				shopify.toast.show(data.message, {
+					duration: settingsJson.toasterCloseTime,
+					isError: true
+				});
+			}
+		}
+
+	}
+
+	const crumbs = [
+		{ "title": "Settings", "link": "./../branding" },
+		{ "title": "General setting", "link": "" }
+	];
+
+	return (
+		<>
+			<Breadcrumb crumbs={crumbs} />
+			<Page fullWidth>
+				<SettingPageSidebar />
+
+				<div className="pagebox">
+					<div className="graywrapbox gapy24">
+						{/* <div className="subtitlebox">
 						<h2>General setting</h2>
-						<p>Choose the right Loox plan to grow your business</p>
+						<p>Choose the right W3 plan to grow your business</p>
 					</div> */}
-					<div className="general_row">
-						<a href="#" className="whitebox ourplanbox flxrow">
-							<div className="iconbox flxfix">
-								<Image src={CrownIcon} alt="w3 plans" width={100} height={100} />
-							</div>
-							<div className="detailbox flxflexi">
-								<h6>Our plans</h6>
-								<p>Choose the right W3 Reviews plan to grow your business</p>
-							</div>
-							<div className="linkicon flxfix">
-								<i className="twenty-longarrow-right"></i>
-							</div>
-						</a>
-					</div>
-					<div className="whitebox">
+						<div className="general_row">
+							<a href="#" className="whitebox ourplanbox flxrow">
+								<div className="iconbox flxfix">
+									<Image src={CrownIcon} alt="w3 plans" width={100} height={100} />
+								</div>
+								<div className="detailbox flxflexi">
+									<h6>Our plans</h6>
+									<p>Choose the right W3 Reviews plan to grow your business</p>
+								</div>
+								<div className="linkicon flxfix">
+									<i className="twenty-longarrow-right"></i>
+								</div>
+							</a>
+						</div>
+						{/* <div className="whitebox">
 						<div className="general_row">
 							<div className="row_title">
 								<div className="flxflexi lefttitle">
@@ -98,289 +310,329 @@ export default function GeneralSettings() {
 								</div>
 							</div>
 						</div>
-					</div>
-					<div className="whitebox">
-						<div className="general_row">
-							<div className="row_title">
-								<div className="flxflexi lefttitle">
-									<h4>Localization</h4>
-									<p>Customize the languages used in Loox widgets and emails</p>
+					</div> */}
+						<div className="whitebox">
+							<div className="general_row">
+								<div className="row_title">
+									<div className="flxflexi lefttitle">
+										<h4>Localization</h4>
+										<p>Customize the languages used in W3 widgets and emails</p>
+									</div>
 								</div>
-							</div>
-							<div className="formrow">
-								<div className="row">
-									<div className="col-lg-6">
-										<div className="form-group m-0">
-											<label htmlFor="">Primary language</label>
-											<select className="input_text">
-												<option>English</option>
-												<option>Franch</option>
-												<option>Spanish</option>
-												<option>Gujarati</option>
-											</select>
+								<div className="formrow">
+									<div className="row">
+										<div className="col-lg-6">
+											<div className="form-group m-0">
+												<label htmlFor="">Primary language</label>
+
+												<Select
+													name="defaul_language"
+													id="defaul_language"
+													options={formattedLanguages}
+													onChange={
+														handleSelectChange
+													}
+													value={generalSettings?.defaul_language}
+												/>
+
+											</div>
 										</div>
-									</div>
-									<div className="col-lg-6">
-										<div className="form-group m-0">
-											<label htmlFor="">Multilingual support</label>
-											<select className="input_text">
-												<option>Enabled</option>
-												<option>Disabled</option>
-											</select>
+										<div className="col-lg-6">
+											<div className="form-group m-0">
+												<label htmlFor="">Multilingual support</label>
+												<Select
+													name="multilingual_support"
+													id="multilingual_support"
+													options={[{ "label": "Enabled", "value": "true" }, { "label": "Disabled", "value": "false" }]}
+													onChange={
+														handleSelectChange
+													}
+													value={generalSettings.multilingual_support ? "true" : "false"}
+												/>
+
+											</div>
 										</div>
-									</div>
-									<div className="col-lg-12">
-										<div className="inputnote"><strong>Note:</strong> When you enable multilingual support, we will use each customer's checkout language for the emails and review form.</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div className="whitebox">
-						<div className="general_row">
-							<div className="row_title">
-								<div className="flxflexi lefttitle">
-									<h4>Email replies address</h4>
-									<p>Customer replies to Loox emails will be sent to this email address</p>
-								</div>
-							</div>
-							<div className="formrow">
-								<div className="row">
-									<div className="col-lg-12">
-										<div className="form-group m-0">
-											<label htmlFor="">Send email replies to</label>
-											<input type="text" className="input_text" placeholder="Enter your email address" />
-										</div>
-									</div>
-									<div className="col-lg-12">
-										<div className="inputnote">Leave empty to have email replies sent to: <strong>yash.w3nuts+20@gmail.com</strong></div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div className="whitebox">
-						<div className="general_row">
-							<div className="row_title">
-								<div className="flxflexi lefttitle">
-									<h4>Email footer</h4>
-									<p>Display text in the footer of Loox emails</p>
-								</div>
-								<div className="flxfix rightaction">
-									<div className="form-check form-switch">
-										<input className="form-check-input" type="checkbox" role="switch" name="DisplayFooter" id="DisplayFooter" />
-										<label className="form-check-label" for="DisplayFooter">Display Footer</label>
-									</div>
-								</div>
-							</div>
-							<div className="formrow">
-								<div className="row gapy16">
-									<div className="col-lg-4">
-										<div className="form-group m-0">
-											<label htmlFor="">Primary language</label>
-											<select className="input_text">
-												<option>English</option>
-												<option>Franch</option>
-												<option>Spanish</option>
-												<option>Gujarati</option>
-											</select>
-										</div>
-									</div>
-									<div className="col-lg-12">
-										<div className="form-group m-0">
-											<label htmlFor="">Footer text</label>
-											<input type="text" className="input_text" placeholder="Enter your email address" />
-										</div>
-									</div>
-									<div className="col-lg-12">
-										<div className="btnwrap m-0">
-											<input type="submit" value="View sample" className="revbtn" />
+										<div className="col-lg-12">
+											<div className="inputnote"><strong>Note:</strong> When you enable multilingual support, we will use each customer's checkout language for the emails and review form.</div>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div className="whitebox">
-						<div className="general_row">
-							<div className="row_title">
-								<div className="flxflexi lefttitle">
-									<h4>Email compliance</h4>
-									<p>Choose who receives Loox emails, and how to handle unsubscribes</p>
-								</div>
-							</div>
-							<div className="formrow">
-								<div className="row gapy16">
-									<div className="col-lg-12">
-										<div className="form-group m-0">
-											<label htmlFor="">Send emails</label>
-											<select className="input_text">
-												<option>Everyone</option>
-												<option>Customers who consent to receive marketing emails</option>
-											</select>
-										</div>
+						<div className="whitebox">
+							<div className="general_row">
+								<div className="row_title">
+									<div className="flxflexi lefttitle">
+										<h4>Email replies address</h4>
+										<p>Customer replies to W3 emails will be sent to this email address</p>
 									</div>
-									<div className="col-lg-12">
-										<div className="form-group m-0">
-											<label htmlFor="">Unsubscribing</label>
-											<select className="input_text">
-												<option>Does not unsubscribe the customer from Shopify marketing emails</option>
-												<option>Also unsubscribes the customer from Shopify marketing emails</option>
-											</select>
+								</div>
+								<div className="formrow">
+									<div className="row">
+										<div className="col-lg-12">
+											<div className="form-group m-0">
+												<label htmlFor="">Send email replies to</label>
+
+												<input type="text" onBlur={handleReplyEmailBlur} onChange={changeInput} name="reply_email" value={replyEmail} className="input_text" placeholder="Enter your email address" />
+												{!isValidReplyEmail && <small className="text-danger">Email address is invalid.</small>}
+
+											</div>
+										</div>
+										<div className="col-lg-12">
+											<div className="inputnote">Leave empty to have email replies sent to: <strong>{shopRecords.email}</strong></div>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div className="whitebox">
-						<div className="general_row">
-							<div className="row_title">
-								<div className="flxflexi lefttitle">
-									<h4>Transparency</h4>
-									<p>W3 enables you to automatically display disclosures, in order to comply with any local laws, rules and regulations</p>
+						<div className="whitebox">
+							<div className="general_row">
+								<div className="row_title">
+									<div className="flxflexi lefttitle">
+										<h4>Email footer</h4>
+										<p>Display text in the footer of W3 emails</p>
+									</div>
+									<div className="flxfix rightaction">
+										<div className="form-check form-switch">
+											<input
+												checked={
+													isEnableFooterTextChecked
+												}
+												onChange={
+													handleCheckboxEnableChange
+												}
+												className="form-check-input"
+												type="checkbox"
+												role="switch"
+												name="email_footer_enabled"
+												id="enablefooterText"
+											/>
+											<label
+												className="form-check-label"
+												htmlFor="enablefooterText"
+											>
+												Display Footer
+											</label>
+
+										</div>
+									</div>
 								</div>
-							</div>
-							<div className="formrow">
-								<div className="row gapy16">
-									<div className="col-lg-4">
-										<div className="form-group m-0">
-											<label htmlFor="">Verified review style</label>
-											<select className="input_text">
-												<option>Icon only</option>
-												<option>Icon + Text</option>
-											</select>
-										</div>
-									</div>
-									<div className="col-lg-12">
-										<div className="form-group m-0">
-											<div className="form-check form-switch">
-												<input className="form-check-input" type="checkbox" role="switch" name="Transparency01" id="Transparency01" />
-												<label className="form-check-label" for="Transparency01">Indicate that a review was imported from an external source <span>Display a disclosure in the review detail popup about reviews that were imported from a CSV file or another external source.</span></label>
+								<div className="formrow">
+									<div className="row gapy16">
+										{generalSettings.multilingual_support &&
+											<div className="col-lg-4">
+												<div className="form-group m-0">
+													<label htmlFor="">Editing text in</label>
+
+													<Select
+														name="footer_email_text_language"
+														id="footer_email_text_language"
+														options={formattedLanguages}
+														onChange={
+															handleFooterLanguageChange
+														}
+														value={currentLanguage}
+													/>
+
+												</div>
+											</div>
+										}
+										<div className="col-lg-12">
+											<div className="form-group m-0">
+												<label htmlFor="">Footer text</label>
+
+												<input type="text" disabled={!isEnableFooterTextChecked} onChange={changeInput} onBlur={inputFooterTextBlur} value={footerText} className="input_text" name="footerText" placeholder="Enter your email address" />
 											</div>
 										</div>
-									</div>
-									<div className="col-lg-12">
-										<div className="form-group m-0">
-											<div className="form-check form-switch">
-												<input className="form-check-input" type="checkbox" role="switch" name="Transparency02" id="Transparency02" />
-												<label className="form-check-label" for="Transparency02">Indicate that a review was marked as verified by the store owner<span>Display a disclosure in the review detail popup about site visitor reviews and imported reviews that you marked as verified.</span></label>
-											</div>
-										</div>
-									</div>
-									<div className="col-lg-12">
-										<div className="form-group m-0">
-											<div className="form-check form-switch">
-												<input className="form-check-input" type="checkbox" role="switch" name="Transparency03" id="Transparency03" />
-												<label className="form-check-label" for="Transparency03">Indicate that a review was written by a site visitor<span>Display a disclosure in the review detail popup about reviews that were submitted by a visitor on your store.</span></label>
-											</div>
-										</div>
-									</div>
-									<div className="col-lg-12">
-										<div className="form-group m-0">
-											<div className="form-check form-switch">
-												<input className="form-check-input" type="checkbox" role="switch" name="Transparency04" id="Transparency04" />
-												<label className="form-check-label" for="Transparency04">Indicate that a review is not verified<span>Display a disclosure about reviews from non-verified customers.</span></label>
-											</div>
-										</div>
-									</div>
-									<div className="col-lg-12">
-										<div className="form-group m-0">
-											<div className="form-check form-switch">
-												<input className="form-check-input" type="checkbox" role="switch" name="Transparency05" id="Transparency05" />
-												<label className="form-check-label" for="Transparency05">Indicate that the reviewer received a future purchase discount for adding media to their review<span>Display a disclosure when the reviewer received an incentive for adding a photo or a video to their review.</span></label>
+										<div className="col-lg-12">
+											<div className="btnwrap m-0">
+												<input type="submit" value="View sample" className="revbtn" />
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div className="whitebox">
-						<div className="general_row">
-							<div className="row_title">
-								<div className="flxflexi lefttitle">
-									<h4>Reviewers name format</h4>
-									<p>Customize how the reviewer name is displayed on Loox widgets</p>
+						<div className="whitebox">
+							<div className="general_row">
+								<div className="row_title">
+									<div className="flxflexi lefttitle">
+										<h4>Email compliance</h4>
+										<p>Choose who receives W3 emails, and how to handle unsubscribes</p>
+									</div>
 								</div>
-							</div>
-							<div className="formrow">
-								<div className="row gapy16">
-									<div className="col-lg-12">
-										<div className="form-group m-0">
-											<label htmlFor="">Display name</label>
-											<select className="input_text">
-												<option>First name, Last name (John S.)</option>
-												<option>First name (John)</option>
-												<option>Last name (Smith)</option>
-												<option>First initial, last initial (J. S.)</option>
-											</select>
+								<div className="formrow">
+									<div className="row gapy16">
+										<div className="col-lg-12">
+											<div className="form-group m-0">
+												<label htmlFor="">Send emails</label>
+												<select className="input_text">
+													<option>Everyone</option>
+													<option>Customers who consent to receive marketing emails</option>
+												</select>
+											</div>
+										</div>
+										<div className="col-lg-12">
+											<div className="form-group m-0">
+												<label htmlFor="">Unsubscribing</label>
+												<select className="input_text">
+													<option>Does not unsubscribe the customer from Shopify marketing emails</option>
+													<option>Also unsubscribes the customer from Shopify marketing emails</option>
+												</select>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div className="whitebox">
-						<div className="general_row">
-							<div className="row_title">
-								<div className="flxflexi lefttitle">
-									<h4>External pages</h4>
-									<p>Define allowed domains where you want to display Loox widgets</p>
+						<div className="whitebox">
+							<div className="general_row">
+								<div className="row_title">
+									<div className="flxflexi lefttitle">
+										<h4>Transparency</h4>
+										<p>W3 enables you to automatically display disclosures, in order to comply with any local laws, rules and regulations</p>
+									</div>
 								</div>
-							</div>
-							<div className="formrow">
-								<AlertInfo 
-									alertContent="Upgrade to Scale to display your store in an external page"
-									alertClose
-									// conlink="/"
-									colorTheme="primarybox"
-								 />
-							</div>
-						</div>
-					</div>
-					<div className="whitebox">
-						<div className="general_row">
-							<div className="row_title">
-								<div className="flxflexi lefttitle">
-									<h4>SEO</h4>
-									<p>Display the average rating and number of reviews for each product in Google search results</p>
-								</div>
-							</div>
-							<div className="formrow">
-								<div className="form-group m-0">
-									<div className="form-check form-switch">
-										<input className="form-check-input" type="checkbox" role="switch" name="ratingongooglesearch" id="ratingongooglesearch" />
-										<label className="form-check-label" for="ratingongooglesearch">Show product ratings in Google search results</label>
+								<div className="formrow">
+									<div className="row gapy16">
+										<div className="col-lg-4">
+											<div className="form-group m-0">
+												<label htmlFor="">Verified review style</label>
+												<select className="input_text">
+													<option>Icon only</option>
+													<option>Icon + Text</option>
+												</select>
+											</div>
+										</div>
+										<div className="col-lg-12">
+											<div className="form-group m-0">
+												<div className="form-check form-switch">
+													<input className="form-check-input" type="checkbox" role="switch" name="Transparency01" id="Transparency01" />
+													<label className="form-check-label" for="Transparency01">Indicate that a review was imported from an external source <span>Display a disclosure in the review detail popup about reviews that were imported from a CSV file or another external source.</span></label>
+												</div>
+											</div>
+										</div>
+										<div className="col-lg-12">
+											<div className="form-group m-0">
+												<div className="form-check form-switch">
+													<input className="form-check-input" type="checkbox" role="switch" name="Transparency02" id="Transparency02" />
+													<label className="form-check-label" for="Transparency02">Indicate that a review was marked as verified by the store owner<span>Display a disclosure in the review detail popup about site visitor reviews and imported reviews that you marked as verified.</span></label>
+												</div>
+											</div>
+										</div>
+										<div className="col-lg-12">
+											<div className="form-group m-0">
+												<div className="form-check form-switch">
+													<input className="form-check-input" type="checkbox" role="switch" name="Transparency03" id="Transparency03" />
+													<label className="form-check-label" for="Transparency03">Indicate that a review was written by a site visitor<span>Display a disclosure in the review detail popup about reviews that were submitted by a visitor on your store.</span></label>
+												</div>
+											</div>
+										</div>
+										<div className="col-lg-12">
+											<div className="form-group m-0">
+												<div className="form-check form-switch">
+													<input className="form-check-input" type="checkbox" role="switch" name="Transparency04" id="Transparency04" />
+													<label className="form-check-label" for="Transparency04">Indicate that a review is not verified<span>Display a disclosure about reviews from non-verified customers.</span></label>
+												</div>
+											</div>
+										</div>
+										<div className="col-lg-12">
+											<div className="form-group m-0">
+												<div className="form-check form-switch">
+													<input className="form-check-input" type="checkbox" role="switch" name="Transparency05" id="Transparency05" />
+													<label className="form-check-label" for="Transparency05">Indicate that the reviewer received a future purchase discount for adding media to their review<span>Display a disclosure when the reviewer received an incentive for adding a photo or a video to their review.</span></label>
+												</div>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
-							<div className="formrow">
-								<AlertInfo 
-									alertContent={`To activate the feature, <a href="#">enable</a> the Loox Core Script. <a href="#">Learn more</a>`}
-									alertClose
-									// conlink="/"
-									colorTheme="primarybox"
-								 />
-							</div>
-							<div className="formrow">
-								<AlertInfo 
-									alertContent={`W3 will add the relevant rich snippets code to your store's theme. <a href="#">Click here to test search result</a>`}
-									// alertClose
-									// conlink="/"
-									colorTheme=""
-								 />
+						</div>
+						<div className="whitebox">
+							<div className="general_row">
+								<div className="row_title">
+									<div className="flxflexi lefttitle">
+										<h4>Reviewers name format</h4>
+										<p>Customize how the reviewer name is displayed on W3 widgets</p>
+									</div>
+								</div>
+								<div className="formrow">
+									<div className="row gapy16">
+										<div className="col-lg-12">
+											<div className="form-group m-0">
+												<label htmlFor="">Display name</label>
+												<select className="input_text">
+													<option>First name, Last name (John S.)</option>
+													<option>First name (John)</option>
+													<option>Last name (Smith)</option>
+													<option>First initial, last initial (J. S.)</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
-					</div>
+						<div className="whitebox">
+							<div className="general_row">
+								<div className="row_title">
+									<div className="flxflexi lefttitle">
+										<h4>External pages</h4>
+										<p>Define allowed domains where you want to display W3 widgets</p>
+									</div>
+								</div>
+								<div className="formrow">
+									<AlertInfo
+										alertContent="Upgrade to Scale to display your store in an external page"
+										alertClose
+										// conlink="/"
+										colorTheme="primarybox"
+									/>
+								</div>
+							</div>
+						</div>
+						<div className="whitebox">
+							<div className="general_row">
+								<div className="row_title">
+									<div className="flxflexi lefttitle">
+										<h4>SEO</h4>
+										<p>Display the average rating and number of reviews for each product in Google search results</p>
+									</div>
+								</div>
+								<div className="formrow">
+									<div className="form-group m-0">
+										<div className="form-check form-switch">
+											<input className="form-check-input" type="checkbox" role="switch" name="ratingongooglesearch" id="ratingongooglesearch" />
+											<label className="form-check-label" for="ratingongooglesearch">Show product ratings in Google search results</label>
+										</div>
+									</div>
+								</div>
+								<div className="formrow">
+									<AlertInfo
+										alertContent={`To activate the feature, <a href="#">enable</a> the W3 Core Script. <a href="#">Learn more</a>`}
+										alertClose
+										// conlink="/"
+										colorTheme="primarybox"
+									/>
+								</div>
+								<div className="formrow">
+									<AlertInfo
+										alertContent={`W3 will add the relevant rich snippets code to your store's theme. <a href="#">Click here to test search result</a>`}
+										// alertClose
+										// conlink="/"
+										colorTheme=""
+									/>
+								</div>
+							</div>
+						</div>
 
 
+					</div>
 				</div>
-			</div>
 
-		</Page>
-	</>
-  
-    
-  );
+			</Page>
+		</>
+
+
+	);
 }

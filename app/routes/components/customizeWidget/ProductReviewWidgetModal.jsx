@@ -73,7 +73,7 @@ const ProductReviewWidgetModal = ({ show, handleClose, documentObj, shopRecords,
 
             <Modal show={show} onHide={handleClose} scrollable={true} size="xl" backdrop="static">
                 <Modal.Header closeButton>
-                    <Modal.Title>W3nuts Preview 
+                    <Modal.Title>W3 Preview 
                         <div className='lightdarkwrap'>
                             <a href='#' onClick={changeLightDarkModel}><i>111</i></a>
                         </div>
