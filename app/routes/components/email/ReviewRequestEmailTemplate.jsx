@@ -104,6 +104,7 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, generalA
 
 
     var bannerHtml = "";
+    var logoHtml = "";
     if (emailContents.banner != null && emailContents.banner != "") {
         bannerHtml = ` <tr>
                 <td align="center">
@@ -116,20 +117,9 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, generalA
     `;
     }
 
-    const emailHtml = `<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email template</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
-    </style>
-</head>
-<body>
-    <table bgcolor="${emailContentColor}" cellpadding="0" cellspacing="0" border="0" width="100%">
-        <tbody>
-            <tr>
-                <td style="padding: 15px;">
-                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+
+    if (emailContents.logo != null && emailContents.logo != "") {
+        logoHtml = ` <table cellpadding="0" cellspacing="0" border="0" width="100%">
                         <tr>
                             <td></td>
                             <td width="600">
@@ -147,6 +137,23 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, generalA
                             <td></td>
                         </tr>
                     </table>
+    `;
+    }
+
+    const emailHtml = `<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email template</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+    </style>
+</head>
+<body>
+    <table bgcolor="${emailContentColor}" cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tbody>
+            <tr>
+                <td style="padding: 15px;">
+                    ${logoHtml}
                     <table cellpadding="0" cellspacing="0" border="0" width="100%">
                         <tr>
                             <td></td>

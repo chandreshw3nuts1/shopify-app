@@ -278,7 +278,7 @@ const ReviewRequestForm = () => {
 
 	}
 	let discountHtml = "";
-    if (discountObj) {
+    if (discountObj && Object.keys(discountObj).length > 0) {
         if (discountObj.isSameDiscount) {
             discountHtml = translations.addReviewSameDiscountText.replace(/\[discount\]/g, discountObj.discount);
         } else {

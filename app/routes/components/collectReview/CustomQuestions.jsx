@@ -22,7 +22,7 @@ const DraggableQuestion = ({ id, index, questionItem, shopRecords, customQuestio
     });
 
     const [{ isOver }, drop] = useDrop({
-        accept: ItemType,
+        accept: QuestionItemType,
         drop: () => handleDrop(),
         collect: (monitor) => ({
             isOver: monitor.isOver(),
@@ -64,16 +64,16 @@ const DraggableQuestion = ({ id, index, questionItem, shopRecords, customQuestio
     };
 
     const handleQuestionChange = async (optionType, questionId, index) => {
-        if(optionType == 'edit'){
+        if (optionType == 'edit') {
             editQuestion(index);
-        }else if(optionType == 'delete'){
+        } else if (optionType == 'delete') {
             deleteQuestion(questionId, index);
         }
-	};
+    };
     drag(drop(ref));
 
     return (
-    
+
         <div className='questionrow'>
             <div ref={ref} className='draggableicon flxfix flxrow'>
                 <div className='iconbox'>
@@ -91,67 +91,16 @@ const DraggableQuestion = ({ id, index, questionItem, shopRecords, customQuestio
                 </div>
             </div>
             <div className='questionaction flxfix dropdownwrap ddlightbtn'>
-            
-            <DropdownButton id="dropdown-basic-button" onSelect={(e) => handleQuestionChange(e, questionItem._id, index)}  title={<MoreIcon />} align={'end'}>
-                <Dropdown.Item eventKey="edit" className="custom-dropdown-item" >Edit</Dropdown.Item>
-                <Dropdown.Item eventKey="delete" className="custom-dropdown-item" >Delete</Dropdown.Item>
-            </DropdownButton>
+
+                <DropdownButton id="dropdown-basic-button" onSelect={(e) => handleQuestionChange(e, questionItem._id, index)} title={<MoreIcon />} align={'end'}>
+                    <Dropdown.Item eventKey="edit" className="custom-dropdown-item" >Edit</Dropdown.Item>
+                    <Dropdown.Item eventKey="delete" className="custom-dropdown-item" >Delete</Dropdown.Item>
+                </DropdownButton>
             </div>
         </div>
 
-    
-    
-    );
-};
 
 
-const ItemType = 'icon';
-const DraggableInput = ({ id, index, value, moveInput, handleInputChanges, allowDeleteAns, deleteAnswerInput }) => {
-    const ref = React.useRef(null);
-
-    const [{ isDragging }, drag] = useDrag({
-        type: ItemType,
-        item: { id, index },
-        collect: (monitor) => ({
-            isDragging: monitor.isDragging(),
-        }),
-    });
-
-    const [, drop] = useDrop({
-        accept: ItemType,
-        hover: (draggedItem) => {
-            if (draggedItem.index !== index) {
-                moveInput(draggedItem.index, index);
-                draggedItem.index = index;
-            }
-        },
-    });
-
-    drag(drop(ref));
-
-    return (
-        <div className="draggable">
-
-            {/* <span ref={ref} className="move-icon">☰</span> */}
-            <div className='inputandlatter flxflexi'>
-                <input
-                    type="text"
-                    value={value}
-                    name={id}
-                    id={id}
-                    className='form-control'
-                    onChange={(e) => handleInputChanges(index, e)}
-                />
-                <div className="letterlimite">{value.length}/24</div>
-            </div>
-            {allowDeleteAns && (
-                <div className='deletebtn flxfix'>
-                    <button onClick={(e) => deleteAnswerInput(index, e)}>
-                        <i className='twenty-closeicon'></i>
-                    </button>
-                </div>
-            )}
-        </div>
     );
 };
 
@@ -175,7 +124,7 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
     const handleMakeRequireQuestion = () => setIsMakeRequireQuestion(!isMakeRequireQuestion);;
     const [isHideAnswers, setIsHideAnswers] = useState(false);
     const handleHideAnswers = () => setIsHideAnswers(!isHideAnswers);;
-    
+
 
     const handleCloseModal = () => {
         setShow(false);
@@ -190,7 +139,7 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
         setAllowDeleteAns(false);
         setIsMakeRequireQuestion(false);
         setIsHideAnswers(false);
-        
+
     }
     const handleInputChange = useCallback((event) => {
         if (event && event.target) {
@@ -410,7 +359,7 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
                 ))}
             </DndProvider>
 
-            
+
             <div className='btnwrap'>
                 <Button variant="primary revbtn" onClick={handleShowModal}>
                     <i className='twenty-addicon'></i> New Question
@@ -432,31 +381,41 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
                         <span className="letterlimite">{questionTitle.length}/40</span>
                     </div>
 
-                    <DndProvider backend={HTML5Backend}>
-                        <div className='form-group'>
-                            <label className="">Answers</label>
+                    <div className='form-group'>
+                        <label className="">Answers</label>
 
-                            {customAnswer.map((input, index) => (
-                                <div className='modalAnswerItems' key={index}>
-                                    <DraggableInput
-                                        key={index}
-                                        id={input.name}
-                                        index={index}
-                                        value={input.val}
-                                        moveInput={moveInput}
-                                        handleInputChanges={handleInputChanges}
-                                        allowDeleteAns={allowDeleteAns}
-                                        deleteAnswerInput={deleteAnswerInput}
-                                    />
+                        {customAnswer.map((input, index) => (
+                            <div className='modalAnswerItems ' key={index}>
+                                <div className='draggable'>
+                                    <div className='inputandlatter flxflexi'>
+                                        <input
+                                            type="text"
+                                            value={input.val}
+                                            name={input.name}
+                                            id={input.name}
+                                            className='form-control'
+                                            onChange={(e) => handleInputChanges(index, e)}
+                                        />
+                                        <div className="letterlimite">{input.val.length}/24</div>
+                                    </div>
+                                    {allowDeleteAns && (
+                                        <div className='deletebtn flxfix'>
+                                            <button onClick={(e) => deleteAnswerInput(index, e)}>
+                                                <i className='twenty-closeicon'></i>
+                                            </button>
+                                        </div>
+                                    )}
+
                                 </div>
-                            ))}
-                        </div>
-                        {isAddMoreButtonVisible && (
-                            <div className='btnwrap popbtnwrap'>
-                                <button onClick={addAnswerInput} className='revbtn bluelightbtn'><i className='twenty-addicon'></i> Add Option</button>
+
                             </div>
-                        )}
-                    </DndProvider>
+                        ))}
+                    </div>
+                    {isAddMoreButtonVisible && (
+                        <div className='btnwrap popbtnwrap'>
+                            <button onClick={addAnswerInput} className='revbtn bluelightbtn'><i className='twenty-addicon'></i> Add Option</button>
+                        </div>
+                    )}
                     <div className="bottomcheckrow">
                         <div className="form-check form-switch">
                             <input
@@ -505,7 +464,7 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
                         </div>
                     </div>
 
-                    
+
 
                 </Modal.Body>
                 <Modal.Footer className='blabla'>

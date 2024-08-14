@@ -4,7 +4,7 @@ import { Modal, Button } from 'react-bootstrap';
 import Dropdown from 'react-bootstrap/Dropdown';
 import MasonryLayout from './ResponsiveMasonry';
 
-const ProductReviewWidgetModal = ({ show, handleClose, documentObj, shopRecords, getPreviewText, currentLanguage, translator }) => {
+const ProductReviewWidgetModal = ({ show, handleClose, documentObj, shopRecords, getPreviewText, currentLanguage, translator, lightDarkModel, changeLightDarkModel }) => {
 
     let headerTextColor, buttonBorderColor, buttonTitleColor, buttonBackgroundOnHover, buttonTextOnHover, buttonBackground, starsBarBackground, starsBarFill = "";
 
@@ -75,11 +75,11 @@ const ProductReviewWidgetModal = ({ show, handleClose, documentObj, shopRecords,
                 <Modal.Header closeButton>
                     <Modal.Title>W3nuts Preview 
                         <div className='lightdarkwrap'>
-                            <a href=''><i>111</i></a>
+                            <a href='#' onClick={changeLightDarkModel}><i>111</i></a>
                         </div>
                     </Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body style={{ background: lightDarkModel ? '#000000' : '' }}>
                     <div className={` review_top_actions ${minimalHeader ? 'minimalheader' : 'otherheaderlayout'} ${compactHeader ? 'compactheader' : ''} ${expandedHeader ? 'expandedheader' : ''}`} >
                         <div className={`left_actions flxfix ${minimalHeader ? '' : 'sidebyside'}`}>
                             <div className="leftpart">

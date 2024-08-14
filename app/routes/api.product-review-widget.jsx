@@ -169,7 +169,7 @@ export async function action({ request }) {
 						product_url: productNodes.handle,
 						status: reviewStatus,
 						is_review_request: is_review_request,
-						verify_badge : orderExists
+						verify_badge: orderExists
 					});
 					const result = await productReviewModel.save();
 
@@ -221,8 +221,8 @@ export async function action({ request }) {
 						/* Create discount code and send email to reviewer when new photo/video reivew receive*/
 
 						const discountCodeResponse = await createShopifyDiscountCode(shopRecords, hasPhoto, hasVideo, is_review_request);
-						if (discountCodeResponse?.discount_code) {
-							const discountText = discountCodeResponse.discount_code.value_type == 'percentage' ? `${discountCodeResponse.discount_code.discount_value}%` : `${shopRecords.currency_symbol}${discountCodeResponse.discount_code.discount_value}`;
+						if (discountCodeResponse) {
+							const discountText = discountCodeResponse.value_type == 'percentage' ? `${discountCodeResponse.discount_value}%` : `${shopRecords.currency_symbol}${discountCodeResponse.discount_value}`;
 							const replaceVars = {
 								"discount": discountText,
 								"store": shopRecords.name,
@@ -232,9 +232,8 @@ export async function action({ request }) {
 							const emailContentsDiscount = await getLanguageWiseContents("discount_photo_video_review", replaceVars, shopRecords._id, customer_locale);
 							emailContentsDiscount.banner = getUploadDocument(emailContentsDiscount.banner, 'banners');
 							emailContentsDiscount.logo = logo;
-							emailContentsDiscount.discountCode = discountCodeResponse.discount_code.code;
-
-							emailContentsDiscount.expire_on_date = discountCodeResponse.discount_code.expire_on_date != "" ? formatDate(discountCodeResponse.discount_code.expire_on_date, "yyyy-MM-dd") : "";
+							emailContentsDiscount.discountCode = discountCodeResponse.code;
+							emailContentsDiscount.expire_on_date = discountCodeResponse.expire_on_date != "" ? formatDate(discountCodeResponse.expire_on_date, shopRecords.timezone,"MM-DD-YYYY") : "";
 
 
 							var discountEmailHtmlContent = ReactDOMServer.renderToStaticMarkup(
@@ -246,20 +245,25 @@ export async function action({ request }) {
 								html: discountEmailHtmlContent,
 							});
 
-							// update product review 
-							await productReviews.updateOne(
-								{ _id: insertedId },
-								{
-									$set: { discount_code_id: discountCodeResponse.discount_code.id, discount_price_rule_id: discountCodeResponse.discount_code.price_rule_id }
-								}
-							);
+							if (discountCodeResponse?.id) {
+								// update product review 
+								await productReviews.updateOne(
+									{ _id: insertedId },
+									{
+										$set: { discount_code_id: discountCodeResponse.id, discount_price_rule_id: discountCodeResponse.price_rule_id }
+									}
+								);
+							}
 
-							// insert discount codes
-							const discountCodesModel = new discountCodes({
-								shop_id: shopRecords._id,
-								code: discountCodeResponse.discount_code.code,
-							});
-							await discountCodesModel.save();
+							if (!discountCodeResponse.is_custom_discount_code) {
+								// insert discount codes
+								const discountCodesModel = new discountCodes({
+									shop_id: shopRecords._id,
+									code: discountCodeResponse.code,
+								});
+								await discountCodesModel.save();
+							}
+
 
 						}
 

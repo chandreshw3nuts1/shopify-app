@@ -26,6 +26,7 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
     const [selectedReviewShadow, setSelectedReviewShadow] = useState(customizeObj?.reviewShadow);
     const [selectedCornerRadius, setSelectedCornerRadius] = useState(customizeObj?.cornerRadius);
     const [selectedItemType, setSelectedItemType] = useState(customizeObj?.itemType);
+    const [lightDarkModel, setLightDarkModel] = useState(false);
 
 
     const [selectedHeaderLayout, setSelectedHeaderLayout] = useState(customizeObj?.headerLayout);
@@ -335,6 +336,12 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
 
     }, [selectedWidgetColor, selectedReviewShadow, documentObj]);
 
+
+    const changeLightDarkModel = (e) => {
+        e.preventDefault();
+        setLightDarkModel(!lightDarkModel);
+
+    }
 
     const getPreviewText = (type, lang) => {
         if (lang && type && documentObj[lang] && documentObj[lang][type] !== undefined && documentObj[lang][type] !== '') {
@@ -782,8 +789,9 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                         <div className="custwidtitle">
                             <h3>Preview</h3>
                             <div className='lightdarkwrap'>
-                                <a href=''><i>111</i></a>
+                                <a href='#' onClick={changeLightDarkModel}><i>111</i></a>
                             </div>
+                            
                             <div className='btnbox ms-auto'>
                                 <a href="#" onClick={(e) => handleShowPreviewModal()} className='revbtn tinybtn'>Preview</a>
                             </div>
@@ -795,6 +803,9 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                 getPreviewText = {getPreviewText}
                                 currentLanguage = {currentLanguage}
                                 translator = {t}
+                                lightDarkModel = {lightDarkModel}
+                                changeLightDarkModel = {changeLightDarkModel}
+
                             />
                         </div>
                         <style>
@@ -822,7 +833,7 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                 }
         					`}
                         </style>
-                        <div className='insidewhitecard'>
+                        <div className='insidewhitecard' style={{ background: lightDarkModel ? '#000000' : '' }} >
                             <div className='reviewbox_wrap'>
 
                                 <div className={`review_top_actions ${minimalHeader ? 'minimalheader' : 'otherheaderlayout'} ${compactHeader ? 'compactheader' : ''} ${expandedHeader ? 'expandedheader' : ''}`}>

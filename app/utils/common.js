@@ -196,7 +196,10 @@ export async function createShopifyDiscountCode(shopRecords, hasPhoto = false, h
 					});
 
 					if (discountResponse.ok) {
-						response = await discountResponse.json();
+						const lookUpResponse = await discountResponse.json();
+						response.id = lookUpResponse.discount_code.id;
+						response.price_rule_id = lookUpResponse.discount_code.price_rule_id;
+						response.code = lookUpResponse.discount_code.code;
 					} else {
 						const errorResponse = await discountResponse.json();
 						console.error('Error creating discount code:', errorResponse);
@@ -208,9 +211,9 @@ export async function createShopifyDiscountCode(shopRecords, hasPhoto = false, h
 					console.error('Error creating price rule:', errorResponse);
 					return [];
 				}
-			} else if (reviewDiscountSettingsModel.discountCode != "") {
+			} else if (reviewDiscountSettingsModel.discountCode != "" ) {
 
-				const discountLookupApiUrl = `https://${shopRecords.shop}/admin/api/${process.env.SHOPIFY_API_VERSION}//discount_codes/lookup.json?code=${reviewDiscountSettingsModel.discountCode}`;
+				const discountLookupApiUrl = `https://${shopRecords.shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/discount_codes/lookup.json?code=${reviewDiscountSettingsModel.discountCode}`;
 				const discountLookupResponse = await fetch(discountLookupApiUrl, {
 					method: 'GET',
 					headers: {
@@ -219,18 +222,21 @@ export async function createShopifyDiscountCode(shopRecords, hasPhoto = false, h
 				});
 				// return await discountLookupResponse.json();
 				if (discountLookupResponse.ok) {
-					response = await discountLookupResponse.json();
+					const lookUpResponse = await discountLookupResponse.json();
+					response.id = lookUpResponse.discount_code.id;
+					response.price_rule_id = lookUpResponse.discount_code.price_rule_id;
+
 				} else {
 					const errorResponse = await discountLookupResponse.json();
-					console.error('Error creating discount code:', errorResponse);
-					return [];
 				}
-
+				response.is_custom_discount_code = true;
+				response.code = reviewDiscountSettingsModel.discountCode;
 			}
-
-			response.discount_code.discount_value = discountValue;
-			response.discount_code.value_type = valueType;
-			response.discount_code.expire_on_date = expireOnDate;
+			if (response) {
+				response.discount_value = discountValue;
+				response.value_type = valueType;
+				response.expire_on_date = expireOnDate;
+			}
 
 			return response;
 
@@ -446,6 +452,8 @@ export async function getDiscounts(shopRecords, isReviewRequest = false) {
 			response.isSameDiscount = reviewDiscountSettingsModel.isSameDiscount;
 			return response;
 		}
+		return response;
+
 	} catch (error) {
 		console.log(error);
 

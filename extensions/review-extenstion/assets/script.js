@@ -266,7 +266,7 @@ function loadReviews(page) {
     var sort_by = $("#sort_by_filter").val();
     $.ajax({
         type: 'POST',
-        url: `/apps/custom-proxy/widget`,
+        url: `/apps/w3-proxy/widget`,
         data: {
             no_of_review: settings_vars.no_of_review_per_page,
             show_image_reviews: settings_vars.show_image_reviews,
@@ -321,7 +321,7 @@ $(document).on("click", "#show_create_review_modal", function (e) {
     e.preventDefault();
     $.ajax({
         type: 'POST',
-        url: `/apps/custom-proxy/widget`,
+        url: `/apps/w3-proxy/widget`,
         data: {
             product_id: product_id,
             shop_domain: shop_domain,
@@ -355,7 +355,7 @@ $(document).on("click", ".review-list-item, .w3grid-review-item", function () {
     reviewId = $(this).data('reviewid');
     $.ajax({
         type: 'POST',
-        url: `/apps/custom-proxy/widget`,
+        url: `/apps/w3-proxy/widget`,
         data: {
             reviewId: reviewId,
             actionType: 'openReviewDetailModal',

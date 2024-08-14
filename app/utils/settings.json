@@ -150,6 +150,54 @@
 		"rating-tshirt",
 		"rating-wine"
 	],
+	"discountExpireDays": [
+		{
+			"label": "Never",
+			"value": ""
+		},
+		{
+			"label": "7 Days",
+			"value": "7"
+		},
+		{
+			"label": "14 Days",
+			"value": "14"
+		},
+		{
+			"label": "21 Days",
+			"value": "21"
+		},
+		{
+			"label": "30 Days",
+			"value": "30"
+		},
+		{
+			"label": "60 Days",
+			"value": "60"
+		},
+		{
+			"label": "90 Days",
+			"value": "90"
+		},
+		{
+			"label": "180 Days",
+			"value": "180"
+		},
+		{
+			"label": "365 Days",
+			"value": "365"
+		}
+	],
+	"discountOfferReviewer": [
+		{
+			"label": "On-site & review requests",
+			"value": "both"
+		},
+		{
+			"label": "Review requests only",
+			"value": "request"
+		}
+	],
 	"dayTimings": [
 		{
 			"label": "1 Day",
@@ -350,7 +398,7 @@
 		"headerLayout ": "minimal",
 		"productReviewsWidget ": "always_shown",
 		"writeReviewButton ": "show",
-		"itemType" : "show",
+		"itemType": "show",
 		"reviewDates ": "show",
 		"defaultSorting ": "featured",
 		"showSortingOptions ": "true",

@@ -7,6 +7,7 @@ import manualReviewRequests from './../routes/models/manualReviewRequests';
 import manualRequestProducts from './../routes/models/manualRequestProducts';
 import shopDetails from './../routes/models/shopDetails';
 import discountCodes from './../routes/models/discountCodes';
+import reviewDiscountSettings from './../routes/models/reviewDiscountSettings';
 
 export async function action({ request }) {
 	const hmacHeader = request.headers.get('X-Shopify-Hmac-Sha256');
@@ -47,6 +48,11 @@ export async function action({ request }) {
 			const discountCodesModel = await discountCodes.findOne({ shop_id: shopRecords._id, code: discountCode });
 			if (discountCodesModel) {
 				totalOrderAmount = bodyObj.total_price;
+			} else {
+				const reviewDiscountSettingsModel = await reviewDiscountSettings.findOne({ shop_id: shopRecords._id, discountCode : discountCode });
+				if (reviewDiscountSettingsModel) {
+					totalOrderAmount = bodyObj.total_price;
+				}
 			}
 		}
 

@@ -114,7 +114,7 @@ const SampleDiscountPhotoVideoReviewEmail = ({ emailContents, generalAppearances
                                                             <tr>
                                                                 <td style="text-align: center; margin-top: 12px;">
                                                                 <div style="font-size: 14px; color: #000000; text-align: center;">
-                                                                    <span>Discount expires: DD/MM/YYYY</span>
+                                                                    <span>Discount expires: MM/DD/YYYY</span>
                                                                 </div>
                                                                 </td>
                                                             </tr>

@@ -5,6 +5,7 @@ import generalSettings from './../routes/models/generalSettings';
 import appInstallLogs from './../routes/models/appInstallLogs';
 import reviewRequestTimingSettings from './../routes/models/reviewRequestTimingSettings';
 import productReviewWidgetCustomizes from './../routes/models/productReviewWidgetCustomizes';
+import reviewDiscountSettings from './../routes/models/reviewDiscountSettings';
 
 import settingsJson from './../utils/settings.json';
 
@@ -167,8 +168,15 @@ export async function storeShopDetails(session) {
 				{ upsert: true }
 			);
 
-			
-
+			await reviewDiscountSettings.updateOne(
+				{ shop_id: shopRecords._id },
+				{
+					$setOnInsert: {
+						shop_id: shopRecords._id,
+					}
+				},
+				{ upsert: true }
+			);
 
 			/* add install app log */
 			const appInstallLogsModel = new appInstallLogs({

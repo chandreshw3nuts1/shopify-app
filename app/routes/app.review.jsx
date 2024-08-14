@@ -16,6 +16,7 @@ import InformationAlert from './components/common/information-alert';
 
 import settings from './models/settings';
 import reviewRequestTimingSettings from './models/reviewRequestTimingSettings';
+import reviewDiscountSettings from './models/reviewDiscountSettings';
 
 import {
 	Page,
@@ -38,12 +39,17 @@ export async function loader({ request }) {
 			shop_id: shopRecords._id
 		});
 
+
+		const reviewDiscountSettingsModel = await reviewDiscountSettings.findOne({
+			shop_id: shopRecords._id
+		});
+
 		const customQuestionsData = await getCustomQuestions({
 			shop_id: shopRecords._id,
 		});
 
 
-		return json({ settings: settingsModel, shopRecords: shopRecords, customQuestionsData: customQuestionsData, reviewRequestTimingSettings: reviewRequestTimingSettingsModel });
+		return json({ settings: settingsModel, shopRecords: shopRecords, customQuestionsData: customQuestionsData, reviewRequestTimingSettings: reviewRequestTimingSettingsModel, reviewDiscountSettings: reviewDiscountSettingsModel });
 	} catch (error) {
 		console.error('Error fetching records from MongoDB:', error);
 		return json(
@@ -61,7 +67,8 @@ const ReviewPage = () => {
 	const customQuestionsData = loaderData.customQuestionsData;
 	const shopRecords = loaderData.shopRecords;
 	const reviewRequestTimingSettings = loaderData.reviewRequestTimingSettings;
-
+	const reviewDiscountSettings = loaderData.reviewDiscountSettings;
+	
 	const [crumbs, setCrumbs] = useState([
 		{ title: "Review", "link": "./../review" },
 		{ title: "Collect review", link: "" },
@@ -219,7 +226,7 @@ const ReviewPage = () => {
 									}}
 									expandOnPrint
 								>
-									<DiscountPhotoVideoReview reviewRequestTimingSettings={reviewRequestTimingSettings} shopRecords={shopRecords} />
+									<DiscountPhotoVideoReview reviewDiscountSettings={reviewDiscountSettings} shopRecords={shopRecords} />
 								</Collapsible>
 							</LegacyStack>
 						</LegacyCard>

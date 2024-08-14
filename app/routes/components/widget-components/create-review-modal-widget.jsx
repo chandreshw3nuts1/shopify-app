@@ -16,10 +16,10 @@ import FaceStar5 from "../images/FaceStar5";
 
 const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, generalAppearancesModel, CommonRatingComponent, otherProps }) => {
 	const {translations, productReviewWidgetCustomizesModel,languageWiseProductWidgetSettings } = otherProps;
-    const proxyUrl = "https://" + shopRecords.shop + "/apps/custom-proxy/product-review-widget";
+    const proxyUrl = "https://" + shopRecords.shop + "/apps/w3-proxy/product-review-widget";
     const countTotalQuestions = customQuestionsData.length;
     let discountHtml = "";
-    if (paramObj?.discountObj) {
+    if (paramObj?.discountObj && Object.keys(paramObj.discountObj).length > 0) {
         if (paramObj.discountObj.isSameDiscount) {
             discountHtml = translations.addReviewSameDiscountText.replace(/\[discount\]/g, paramObj.discountObj.discount);
         } else {
