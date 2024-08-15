@@ -785,7 +785,7 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                         <div className="custwidtitle">
                             <h3>Preview</h3>
                             <div className='lightdarkwrap'>
-                                <a href='#' onClick={changeLightDarkModel}><i>111</i></a>
+                                <a href='#' onClick={changeLightDarkModel} className={`${lightDarkModel ? 'darkbg' : ''}`}><i></i></a>
                             </div>
                             
                             <div className='btnbox ms-auto'>
@@ -829,7 +829,7 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                 }
         					`}
                         </style>
-                        <div className='insidewhitecard' style={{ background: lightDarkModel ? '#000000' : '' }} >
+                        <div className={`insidewhitecard ${lightDarkModel ? 'darkpreview' : ''}`}>
                             <div className='reviewbox_wrap'>
 
                                 <div className={`review_top_actions ${minimalHeader ? 'minimalheader' : 'otherheaderlayout'} ${compactHeader ? 'compactheader' : ''} ${expandedHeader ? 'expandedheader' : ''}`}>

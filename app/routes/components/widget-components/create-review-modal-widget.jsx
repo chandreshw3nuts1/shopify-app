@@ -7,6 +7,8 @@ import LongArrowLeft from "../icons/LongArrowLeft";
 import AddImageIcon from "../icons/AddImageIcon";
 import ImageFilledIcon from "../icons/ImageFilledIcon";
 import CheckArrowIcon from "../icons/CheckArrowIcon";
+import ShareIcon from "../icons/ShareIcon";
+import CopyIcon from "../icons/CopyIcon";
 
 import FaceStar1 from "../images/FaceStar1";
 import FaceStar2 from "../images/FaceStar2";
@@ -240,20 +242,31 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                     <div className="modal-header">
                                         <div className="flxflexi">
                                             <h1 className="modal-title">Thank you!</h1>
-                                            <div className="subtextbox">Can we collect your information for improve our product.</div>
+                                            <div className="subtextbox">Your review was submitted.</div>
                                         </div>
                                     </div>
                                     <div className="modal-body">
-                                        <div className="tellmeaboutyou_wrap">
-                                            <div className="row">
-                                                <div className="col-lg-12">
-                                                    <div className="formnote">Thank you</div>
+                                        <div className="thankyoubody">
+                                            <div className="sharewithfriends">
+                                                <a href="#">
+                                                    <span className="flxfix"><ShareIcon /></span>
+                                                    <strong className="flxflexi">Share with friends and groups, they'll get <b>14%</b> of their first purchase</strong>
+                                                </a>
+                                            </div>
+                                            <div className="copycodewrap">
+                                                <div className="textline">Use this following discount code for $8 off your next purchase!</div>
+                                                <div className="discountcodebox">
+                                                    <div className="codebox">LX-72CNLL</div>
+                                                    <div className="copybtn">
+                                                        <a href="#"><CopyIcon /></a>
+                                                    </div>
                                                 </div>
+                                                <div className="textline">We'll also send it by email</div>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="modal-footer">
-                                        <a href="#" className="revbtn lightbtn nextbtn continueBtn"><LongArrowRight /> Continue</a>
+                                        <a href="#" className="revbtn lightbtn nextbtn continueBtn">Continue <LongArrowRight /></a>
                                     </div>
                                 </div>
                             </form>
