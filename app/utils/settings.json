@@ -404,6 +404,10 @@
 		"showSortingOptions ": "true",
 		"showRatingsDistribution ": "true"
 	},
+
+	"reviewFormSettings": {
+		"themeColor": "282828"
+	},
 	"emailTemplateFontTypes": [
 		"Arial",
 		"Comic Sans MS",

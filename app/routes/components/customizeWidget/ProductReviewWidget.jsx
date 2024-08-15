@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import ImageUploadMultiLang from '../settings/ImageUploadMultiLang';
-import AlertInfo from '../AlertInfo';
 import { useNavigate } from 'react-router-dom';
-import { Modal } from 'react-bootstrap';
 import settingsJson from './../../../utils/settings.json';
-import { getDefaultProductImage, getUploadDocument } from './../../../utils/documentPath';
 import ColorPicker from "./../settings/ColorPicker";
 import GridLayoutIcon from '../icons/GridLayoutIcon';
 import ListLayoutIcon from '../icons/ListLayoutIcon';

@@ -68,7 +68,7 @@ const ReviewPage = () => {
 	const shopRecords = loaderData.shopRecords;
 	const reviewRequestTimingSettings = loaderData.reviewRequestTimingSettings;
 	const reviewDiscountSettings = loaderData.reviewDiscountSettings;
-	
+
 	const [crumbs, setCrumbs] = useState([
 		{ title: "Review", "link": "./../review" },
 		{ title: "Collect review", link: "" },
@@ -88,6 +88,10 @@ const ReviewPage = () => {
 
 	const showManualRequestForm = () => {
 		navigate('/app/manual-review-requests/');
+	}
+	
+	const showReviewFormSettings = () => {
+		navigate('/app/review-form-settings/');
 	}
 
 	const showEmailSettingsForm = (emailType = "") => {
@@ -359,7 +363,7 @@ const ReviewPage = () => {
 										</div>
 
 										{/* Above DIV will be repeat */}
-										<InformationAlert alertKey="email_review" className="mt-24"/>
+										<InformationAlert alertKey="email_review" className="mt-24" />
 
 									</div>
 								</Collapsible>
@@ -385,6 +389,38 @@ const ReviewPage = () => {
 										</Text>
 										<Text>
 											Send one-time emails to collect reviews of your products
+										</Text>
+									</div>
+									<div className='flxfix btnwrap m-0'>
+										<a href="#" className='revbtn'>Learn More</a>
+									</div>
+									<div className='flxfix arrowicon'>
+										<i className='twenty-longarrow-right'></i>
+									</div>
+								</div>
+							</div>
+						</LegacyCard>
+					</Layout.Section>
+				</div>
+
+
+
+				<div className='accordian_rowmain' onClick={showReviewFormSettings}>
+					<Layout.Section>
+						<LegacyCard sectioned>
+							<div
+								aria-controls="basic-collapsible"
+							>
+								<div className='flxrow acctitle'>
+									<div className='flxfix iconbox'>
+										<i className='twenty-manualreview'></i>
+									</div>
+									<div className='flxflexi titledetail'>
+										<Text as="h1" variant="headingMd">
+											Review Form
+										</Text>
+										<Text>
+											Customize the form your customers use when writing a review
 										</Text>
 									</div>
 									<div className='flxfix btnwrap m-0'>

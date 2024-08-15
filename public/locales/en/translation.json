@@ -38,5 +38,29 @@
         "showMoreReviewsTitle": "Show more reviews",
         "productPageLinkTitle": "View product",
         "itemTypeTitle": "Item type"
+    },
+    "reviewFormSettings": {
+        "ratingPageTitle": "Customer Review",
+        "ratingPageSubTitle": "Please provide star rating",
+        "fiveStarsRatingText": "Awesome Product!",
+        "fourStarsRatingText": "Good Product!",
+        "threeStarsRatingText": "Okay!",
+        "twoStarsRatingText": "Bad!",
+        "oneStarsRatingText": "Terrible!",
+
+        "photoVideoPageTitle": "Show it off",
+        "photoVideoPageSubTitle": "We'd love to see it in action!",
+        "dragDropPhotoVideoText": "Drag & Drop photos or video Files",
+        "addPhotoVideoButtonText": "Add Photos or Videos",
+        "addReviewSameDiscountText": "Your [discount] off discount is wait for you!",
+        "addReviewDifferentDiscountText": "Upload a photo to get [photo_discount] off or a video to get [video_discount] off your next purchase!",
+        
+        "reviewTextPageTitle": "Tell us more!",
+        "reviewTextPageSubTitle": "We'd love to see your thoughts about our product.",
+        "reviewTextPagePlaceholder": "Share your experience...",
+        "submitButtonTitle": "Submit",
+        "continueButtonTitle": "Continue"
+
+
     }
 }
