@@ -74,12 +74,12 @@ const ProductReviewWidgetModal = ({ show, handleClose, documentObj, shopRecords,
             <Modal show={show} onHide={handleClose} scrollable={true} size="xl" backdrop="static">
                 <Modal.Header closeButton>
                     <Modal.Title>W3 Preview 
-                        <div className='lightdarkwrap'>
-                            <a href='#' onClick={changeLightDarkModel}><i>111</i></a>
-                        </div>
                     </Modal.Title>
+                    <div className='lightdarkwrap'>
+                        <a href='#' className={`${lightDarkModel ? 'darkbg' : ''}`} onClick={changeLightDarkModel}><i></i></a>
+                    </div>
                 </Modal.Header>
-                <Modal.Body style={{ background: lightDarkModel ? '#000000' : '' }}>
+                <Modal.Body style={{ background: lightDarkModel ? '#222222' : '' }}>
                     <div className={` review_top_actions ${minimalHeader ? 'minimalheader' : 'otherheaderlayout'} ${compactHeader ? 'compactheader' : ''} ${expandedHeader ? 'expandedheader' : ''}`} >
                         <div className={`left_actions flxfix ${minimalHeader ? '' : 'sidebyside'}`}>
                             <div className="leftpart">
