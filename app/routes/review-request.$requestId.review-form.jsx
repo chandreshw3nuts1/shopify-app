@@ -21,6 +21,9 @@ import manualReviewRequests from './models/manualReviewRequests';
 import manualRequestProducts from './models/manualRequestProducts';
 import generalAppearances from './models/generalAppearances';
 import generalSettings from './models/generalSettings';
+import reviewFormSettings from './models/reviewFormSettings';
+
+
 import { ratingbabycloth, ratingbasket, ratingbones, ratingcoffeecup, ratingcrisamascap, ratingdiamondfront, ratingdiamondtop, ratingdogsleg, ratingfireflame, ratingflight, ratingfood, ratinggraduationcap, ratingheartround, ratingheartsq, ratingleafcanada, ratingleafnormal, ratinglikenormal, ratinglikerays, ratingpethouse, ratingplant, ratingshirt, ratingshoppingbag1, ratingshoppingbag2, ratingshoppingbag3, ratingstarrays, ratingstarrounded, ratingstarsq, ratingsunglass, ratingteacup, ratingtrophy1, ratingtrophy2, ratingtrophy3, ratingtshirt, ratingwine } from './../routes/components/icons/CommonIcons';
 import { getDiscounts } from "./../utils/common";
 
@@ -40,7 +43,7 @@ export const loader = async ({ params, request }) => {
 		let manualReviewRequestsModel, shopRecords = null;
 		let customQuestionsData = [];
 		let StarIcon = "";
-		let discountObj, translations = {};
+		let discountObj, translations, reviewFormSettingsModel, languageWiseReviewFormSettings, generalAppearancesModel = {};
 		if (manualRequestProductsModel) {
 			manualReviewRequestsModel = await manualReviewRequests.findById(manualRequestProductsModel.manual_request_id);
 
@@ -50,7 +53,7 @@ export const loader = async ({ params, request }) => {
 				shop_id: shopRecords._id,
 			});
 
-			const generalAppearancesModel = await generalAppearances.findOne({
+			generalAppearancesModel = await generalAppearances.findOne({
 				shop_id: shopRecords._id
 			});
 			StarIcon = generalAppearancesModel.starIcon.replace(/-/g, '');
@@ -60,15 +63,17 @@ export const loader = async ({ params, request }) => {
 			const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
 
 			const language = settingsJson.languages.find(language => language.code === manualReviewRequestsModel.customer_locale);
-			
+
 			const customer_locale = language ? language.code : generalSettingsModel.defaul_language;
 			const apiUrl = `${settingsJson.host_url}/locales/${customer_locale}/translation.json`;
 			const lang = await fetch(apiUrl, {
 				method: 'GET'
 			});
 			translations = await lang.json();
+			reviewFormSettingsModel = await reviewFormSettings.findOne({ shop_id: shopRecords._id });
+			languageWiseReviewFormSettings = reviewFormSettingsModel[customer_locale] ? reviewFormSettingsModel[customer_locale] : {};
 		}
-		return { requestId, requestIdQuery, shopRecords, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon, discountObj, translations };
+		return { requestId, requestIdQuery, shopRecords, generalAppearancesModel,customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon, discountObj, translations, reviewFormSettingsModel, languageWiseReviewFormSettings };
 	} catch (error) {
 		console.log(error);
 	}
@@ -76,13 +81,12 @@ export const loader = async ({ params, request }) => {
 };
 
 const ReviewRequestForm = () => {
-	const { requestId, requestIdQuery, shopRecords, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon, discountObj, translations } = useLoaderData();
+	const { requestId, requestIdQuery, shopRecords,generalAppearancesModel, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon, discountObj, translations, reviewFormSettingsModel, languageWiseReviewFormSettings } = useLoaderData();
 	if (!manualRequestProductsModel) {
 		return 'Page Not Found';
 	}
 
 	const [faceStartValue, setFaceStartValue] = useState("");
-	const [faceStarLable, setFaceStarLable] = useState("Please provide star rating");
 	const [rating, setRating] = useState(0);
 	const [currentStep, setCurrentStep] = useState(0);
 	const [reviewDescription, setReviewDescription] = useState('');
@@ -99,6 +103,9 @@ const ReviewRequestForm = () => {
 	const [previews, setPreviews] = useState([]);
 	const [noOFfileUploadErr, setNoOFfileUploadErr] = useState(false);
 	const [uploadedDocuments, setUploadedDocuments] = useState([]);
+
+	const [thankyouHtmlContent, setThankyouHtmlContent] = useState('');
+
 	const shopUrl = "https://" + shopRecords.shop;
 	const countTotalQuestions = customQuestionsData.length;
 
@@ -110,6 +117,51 @@ const ReviewRequestForm = () => {
 		}
 	}, []);
 
+	useEffect(() => {
+		const copyButton = document.getElementById('copy-button');
+		const discountCode = document.getElementById('discount-code');
+		const copyMessage = document.getElementById('copy-message');
+
+		const handleCopy = (event) => {
+			event.preventDefault();
+
+			const code = discountCode.textContent;
+
+			// Copy the discount code to the clipboard
+			navigator.clipboard.writeText(code).then(() => {
+				// Show the "Copied!" message
+				copyMessage.style.display = 'inline';
+
+				// Hide the message after 2 seconds
+				setTimeout(() => {
+					copyMessage.style.display = 'none';
+				}, 2000);
+			}).catch((err) => {
+				console.error('Failed to copy: ', err);
+			});
+		};
+
+		// Attach the event listener
+		if (thankyouHtmlContent) {
+			copyButton.addEventListener('click', handleCopy);
+
+			// Cleanup the event listener when the component is unmounted
+			return () => {
+				copyButton.removeEventListener('click', handleCopy);
+			};
+		}
+
+	}, [thankyouHtmlContent]);
+
+	const languageContent = (type) => {
+		if (type && languageWiseReviewFormSettings[type] !== undefined && languageWiseReviewFormSettings[type] !== '') {
+			return languageWiseReviewFormSettings[type];
+		} else {
+			return translations.reviewFormSettings[type];
+		}
+	}
+	const [faceStarLable, setFaceStarLable] = useState(languageContent('ratingPageSubTitle'));
+
 	const iconComponents = {
 		ratingbabycloth, ratingbasket, ratingbones, ratingcoffeecup, ratingcrisamascap, ratingdiamondfront, ratingdiamondtop, ratingdogsleg, ratingfireflame, ratingflight, ratingfood, ratinggraduationcap, ratingheartround, ratingheartsq, ratingleafcanada, ratingleafnormal, ratinglikenormal, ratinglikerays, ratingpethouse, ratingplant, ratingshirt, ratingshoppingbag1, ratingshoppingbag2, ratingshoppingbag3, ratingstarrays, ratingstarrounded, ratingstarsq, ratingsunglass, ratingteacup, ratingtrophy1, ratingtrophy2, ratingtrophy3, ratingtshirt, ratingwine
 	};
@@ -117,11 +169,11 @@ const ReviewRequestForm = () => {
 	const IconComponent = iconComponents[StarIcon] || ratingstarrounded;
 
 	const starRatingObj = [
-		{ "star": 1, "title": "Terrible!" },
-		{ "star": 2, "title": "Bad!" },
-		{ "star": 3, "title": "Okay!" },
-		{ "star": 4, "title": "Good Product!" },
-		{ "star": 5, "title": "Awesome Product!" },
+		{ "star": 1, "title": languageContent('oneStarsRatingText') },
+		{ "star": 2, "title": languageContent('twoStarsRatingText') },
+		{ "star": 3, "title": languageContent('threeStarsRatingText') },
+		{ "star": 4, "title": languageContent('fourStarsRatingText') },
+		{ "star": 5, "title": languageContent('fiveStarsRatingText') },
 	];
 
 	const starClicks = async (index, star) => {
@@ -267,10 +319,14 @@ const ReviewRequestForm = () => {
 				}
 			});
 			setDisableSubmitBtn(true);
-			await fetch('/api/product-review-widget', {
+			const response = await fetch('/api/product-review-widget', {
 				method: 'POST',
 				body: formData,
 			});
+			const submitResponse = await response.json();
+			if (submitResponse.success) {
+				setThankyouHtmlContent(submitResponse.content);
+			}
 			setCurrentStep(countTotalQuestions + 5);
 		} else {
 			setErrors(validationErrors);
@@ -278,17 +334,37 @@ const ReviewRequestForm = () => {
 
 	}
 	let discountHtml = "";
-    if (discountObj && Object.keys(discountObj).length > 0) {
-        if (discountObj.isSameDiscount) {
-            discountHtml = translations.addReviewSameDiscountText.replace(/\[discount\]/g, discountObj.discount);
-        } else {
-            discountHtml = translations.addReviewDifferentDiscountText;
-            discountHtml = discountHtml.replace(/\[photo_discount\]/g, discountObj.photoDiscount);
-            discountHtml = discountHtml.replace(/\[video_discount\]/g, discountObj.videoDiscount);
-        }
-    }
+	if (discountObj && Object.keys(discountObj).length > 0) {
+		if (discountObj.isSameDiscount) {
+			discountHtml = languageContent('addReviewSameDiscountText').replace(/\[discount\]/g, discountObj.discount);
+		} else {
+			discountHtml = languageContent('addReviewDifferentDiscountText');
+			discountHtml = discountHtml.replace(/\[photo_discount\]/g, discountObj.photoDiscount);
+			discountHtml = discountHtml.replace(/\[video_discount\]/g, discountObj.videoDiscount);
+		}
+	}
+
+	let termsServiceLink = "#";
+	let privacyPolicyLink = "#";
+	let termsAndConditionHtml = translations.termsAndConditions;
+	termsAndConditionHtml = termsAndConditionHtml.replace(/\[terms_service\]/g, termsServiceLink);
+	termsAndConditionHtml = termsAndConditionHtml.replace(/\[privacy_policy\]/g, privacyPolicyLink);
+	const themeColor = reviewFormSettingsModel.themeColor;
+    const cornerRadius = reviewFormSettingsModel.cornerRadius ? reviewFormSettingsModel.cornerRadius : generalAppearancesModel.cornerRadius ;
+
 	return (
 		<>
+			<style>
+				{`
+					.theme-color-class {
+						background-color: ${themeColor} !important;
+					}
+					.review-content {
+						border-radius : ${cornerRadius}px !important;
+					}
+					
+				`}
+			</style>
 			<div className="review-content">
 				<div className="modal_step_wrap">
 					<form method="post" className="popupform" id="review_submit_btn_form">
@@ -296,7 +372,7 @@ const ReviewRequestForm = () => {
 							<div className="reviewsteps step-1">
 								<div className="modal-header">
 									<div className="flxflexi">
-										<h1 className="modal-title">Create Review</h1>
+										<h1 className="modal-title">{languageContent('ratingPageTitle')}</h1>
 										<div className="subtextbox">
 											<div className="success-box-wrap">
 												<div className={`success-box ${faceStartValue}`}>
@@ -337,7 +413,7 @@ const ReviewRequestForm = () => {
 								</div>
 								<div className="modal-footer">
 
-									<button onClick={(e) => nextStep(2)} disabled={rating == 0 ? true : false} type="button" className="revbtn outline lightbtn nextbtn">Next <LongArrowRight /></button>
+									<button onClick={(e) => nextStep(2)} disabled={rating == 0 ? true : false} type="button" className="revbtn outline lightbtn nextbtn">{translations.next_link} <LongArrowRight /></button>
 
 								</div>
 							</div>
@@ -348,8 +424,8 @@ const ReviewRequestForm = () => {
 							<div className="reviewsteps step-2 ">
 								<div className="modal-header">
 									<div className="flxflexi">
-										<h1 className="modal-title">Show it off</h1>
-										<div className="subtextbox">We'd love to see it in action.</div>
+										<h1 className="modal-title">{languageContent('photoVideoPageTitle')}</h1>
+										<div className="subtextbox">{languageContent('photoVideoPageSubTitle')}</div>
 									</div>
 								</div>
 								<div className="modal-body">
@@ -360,7 +436,7 @@ const ReviewRequestForm = () => {
 													<div className="iconimage">
 														<AddImageIcon />
 													</div>
-													<div className="simpletext">Drag &amp; Drop image or video Files</div>
+													<div className="simpletext">{languageContent('dragDropPhotoVideoText')}</div>
 													<div className="orbox flxrow">
 														<span>OR</span>
 													</div>
@@ -369,7 +445,7 @@ const ReviewRequestForm = () => {
 											<div className="btnwrap">
 												<span className="revbtn">
 													<ImageFilledIcon />
-													Add Photos or Videos
+													{languageContent('addPhotoVideoButtonText')}
 												</span>
 											</div>
 											<input onChange={handleFileChange} className="form__file" name="image_and_videos[]" id="upload-files" type="file" accept="image/*,video/mp4,video/x-m4v,video/*" multiple="multiple" />
@@ -380,9 +456,9 @@ const ReviewRequestForm = () => {
 											<div className="discountbox"><strong>You can select up to 5 photos</strong></div>
 										</div>}
 										{discountHtml &&
-										<div className="discountrow">
-											<div className="discountbox">{discountHtml}</div>
-										</div>}
+											<div className="discountrow">
+												<div className="discountbox">{discountHtml}</div>
+											</div>}
 										<div className="form__files-container" id="files-list-container">
 
 											{previews.map((preview, index) => (
@@ -411,8 +487,8 @@ const ReviewRequestForm = () => {
 									</div>
 								</div>
 								<div className="modal-footer">
-									<a onClick={(e) => prevStep(1)} className="revbtn outline lightbtn backbtn"><LongArrowLeft /> Back</a>
-									<a onClick={(e) => nextStep(3)} className="revbtn outline lightbtn nextbtn">Next <LongArrowRight /></a>
+									<a onClick={(e) => prevStep(1)} className="revbtn outline lightbtn backbtn"><LongArrowLeft /> {translations.back_link}</a>
+									<a onClick={(e) => nextStep(3)} className="revbtn outline lightbtn nextbtn">{translations.next_link} <LongArrowRight /></a>
 								</div>
 							</div>
 						}
@@ -424,8 +500,8 @@ const ReviewRequestForm = () => {
 								<div className={`reviewsteps step-${qIndex + 3} `} key={qIndex}>
 									<div className="modal-header">
 										<div className="flxflexi">
-											<h1 className="modal-title">Question</h1>
-											<div className="subtextbox">Please give us answer about your product.</div>
+											<h1 className="modal-title">{languageContent('questionTitle')}</h1>
+											<div className="subtextbox">{languageContent('questionSubTitle')}</div>
 										</div>
 									</div>
 									<div className="modal-body">
@@ -448,9 +524,9 @@ const ReviewRequestForm = () => {
 										</div>
 									</div>
 									<div className="modal-footer">
-										<a onClick={(e) => prevStep(2 + qIndex)} className="revbtn outline lightbtn backbtn"><LongArrowLeft /> Back</a>
+										<a onClick={(e) => prevStep(2 + qIndex)} className="revbtn outline lightbtn backbtn"><LongArrowLeft /> {translations.back_link}</a>
 										{(customQuestionItem.isMakeRequireQuestion == false || customQuestionItem.answer) &&
-											<a onClick={(e) => nextStep(qIndex + 4)} className={`revbtn outline lightbtn nextbtn ${customQuestionItem.isMakeRequireQuestion ? '' : ''}`} >Next <LongArrowRight /></a>
+											<a onClick={(e) => nextStep(qIndex + 4)} className={`revbtn outline lightbtn nextbtn ${customQuestionItem.isMakeRequireQuestion ? '' : ''}`} >{translations.next_link} <LongArrowRight /></a>
 										}
 									</div>
 								</div>
@@ -461,8 +537,8 @@ const ReviewRequestForm = () => {
 							<div className={`reviewsteps step-${countTotalQuestions + 3} `}>
 								<div className="modal-header">
 									<div className="flxflexi">
-										<h1 className="modal-title">Tell us more!</h1>
-										<div className="subtextbox">We'd love to see your thoughts about our product.</div>
+										<h1 className="modal-title">{languageContent('reviewTextPageTitle')}</h1>
+										<div className="subtextbox">{languageContent('reviewTextPageSubTitle')}</div>
 									</div>
 								</div>
 								<div className="modal-body">
@@ -472,7 +548,7 @@ const ReviewRequestForm = () => {
 												onChange={changeReviewDescription}
 												className="form-control review-description"
 												name="description"
-												placeholder="Share your experience..."
+												placeholder={languageContent('reviewTextPagePlaceholder')}
 												value={reviewDescription}
 											></textarea>
 
@@ -481,9 +557,9 @@ const ReviewRequestForm = () => {
 									</div>
 								</div>
 								<div className="modal-footer">
-									<a onClick={(e) => prevStep(countTotalQuestions + 2)} className="revbtn outline lightbtn backbtn"><LongArrowLeft /> Back</a>
-									
-									<button onClick={(e) => nextStep(countTotalQuestions + 4)} disabled={reviewDescription ? false : true} type="button" className="revbtn outline lightbtn nextbtn">Next <LongArrowRight /></button>
+									<a onClick={(e) => prevStep(countTotalQuestions + 2)} className="revbtn outline lightbtn backbtn"><LongArrowLeft /> {translations.back_link}</a>
+
+									<button onClick={(e) => nextStep(countTotalQuestions + 4)} disabled={reviewDescription ? false : true} type="button" className="revbtn outline lightbtn nextbtn">{translations.next_link} <LongArrowRight /></button>
 
 								</div>
 							</div>
@@ -492,8 +568,8 @@ const ReviewRequestForm = () => {
 							<div className={`reviewsteps step-${countTotalQuestions + 4}`}>
 								<div className="modal-header">
 									<div className="flxflexi">
-										<h1 className="modal-title">About you!</h1>
-										<div className="subtextbox">Can we collect your information for improve our product.</div>
+										<h1 className="modal-title">{languageContent('reviewFormTitle')}</h1>
+										<div className="subtextbox">{languageContent('reviewFormSubTitle')}</div>
 									</div>
 								</div>
 								<div className="modal-body">
@@ -502,8 +578,8 @@ const ReviewRequestForm = () => {
 											<div className="col-lg-6">
 												<div className="form-group">
 
-													<label htmlFor="">First name <span className="text-danger" >*</span> </label>
-													<input type="text" onChange={changeFirstName} className="form-control" name="first_name" id="first_name" placeholder="Enter first name" value={firstName} />
+													<label htmlFor="">{translations.first_name}<span className="text-danger" >*</span> </label>
+													<input type="text" onChange={changeFirstName} className="form-control" name="first_name" id="first_name" placeholder={translations.first_name_placeholder} value={firstName} />
 
 													{errors.firstName && <div className="error text-danger">{errors.firstName}</div>}
 
@@ -511,8 +587,8 @@ const ReviewRequestForm = () => {
 											</div>
 											<div className="col-lg-6">
 												<div className="form-group">
-													<label htmlFor="">Last name <span className="text-danger" >*</span></label>
-													<input type="text" onChange={changeLastName} className="form-control" name="last_name" id="last_name" placeholder="Enter last name" value={lastName} />
+													<label htmlFor="">{translations.last_name} <span className="text-danger" >*</span></label>
+													<input type="text" onChange={changeLastName} className="form-control" name="last_name" id="last_name" placeholder={translations.last_name_placeholder} value={lastName} />
 													{errors.lastName && <div className="error text-danger">{errors.lastName}</div>}
 
 
@@ -520,47 +596,47 @@ const ReviewRequestForm = () => {
 											</div>
 											<div className="col-lg-12">
 												<div className="form-group">
-													<label htmlFor="">Email address <span className="text-danger" >*</span></label>
-													<input type="email" readOnly onChange={changeEmail} className="form-control" name="email" id="emailfield" placeholder="Enter email address" value={email} />
+													<label htmlFor="">{translations.email_address} <span className="text-danger" >*</span></label>
+													<input type="email" readOnly onChange={changeEmail} className="form-control" name="email" id="emailfield" placeholder={translations.email_address_placeholder} value={email} />
 													{errors.email && <div className="error text-danger">{errors.email}</div>}
-
 
 												</div>
 											</div>
 											<div className="col-lg-12">
-												<div className="formnote">By submitting, I acknowledge the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a> and that my review will be publicly posted and shared online</div>
+												<div className="formnote" dangerouslySetInnerHTML={{ __html: termsAndConditionHtml }}>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 								<div className="modal-footer">
-									<a onClick={(e) => prevStep(countTotalQuestions + 3)} className="revbtn lightbtn outline backbtn"><LongArrowLeft /> Back</a>
-									<button onClick={submitReview} disabled={disableSubmitBtn} type="button" className="revbtn submitBtn">Submit <LongArrowRight /></button>
+									<a onClick={(e) => prevStep(countTotalQuestions + 3)} className="revbtn lightbtn outline backbtn"><LongArrowLeft /> {translations.back_link}</a>
+									<button onClick={submitReview} disabled={disableSubmitBtn} type="button" className="revbtn submitBtn">{languageContent('submitButtonTitle')} <LongArrowRight /></button>
 								</div>
 							</div>
 						}
 
 						{(currentStep == (countTotalQuestions + 5)) &&
-							<div className={`reviewsteps step-${countTotalQuestions + 5}  thankyou-page`}>
-								<div className="modal-header">
-									<div className="flxflexi">
-										<h1 className="modal-title">Thank you!</h1>
-										<div className="subtextbox">Can we collect your information for improve our product.</div>
-									</div>
-								</div>
-								<div className="modal-body">
-									<div className="tellmeaboutyou_wrap">
-										<div className="row">
-											<div className="col-lg-12">
-												<div className="formnote">Thank you</div>
+							<>
+								{thankyouHtmlContent ? (
+									<div className="reviewsteps" dangerouslySetInnerHTML={{ __html: thankyouHtmlContent }} />
+								) : (
+									<div className={`reviewsteps step-${countTotalQuestions + 5}  thankyou-page`}>
+										<div className="modal-header">
+											<div className="flxflexi">
+												<h1 className="modal-title">{languageContent('thankyouTitle')}</h1>
+												<div className="subtextbox">{languageContent('thankyouSubTitle')}</div>
 											</div>
 										</div>
+										<div className="modal-body">
+
+										</div>
+										<div className="modal-footer">
+											<a href={shopUrl} className="revbtn nextbtn" > {languageContent('continueButtonTitle')} <LongArrowRight /></a>
+										</div>
 									</div>
-								</div>
-								<div className="modal-footer">
-									<a href={shopUrl} className="revbtn nextbtn" > Continue <LongArrowRight /></a>
-								</div>
-							</div>
+								)}
+							</>
 						}
 					</form>
 				</div>

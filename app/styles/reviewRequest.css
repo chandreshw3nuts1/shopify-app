@@ -369,3 +369,14 @@ form textarea.input_text { height: 80px; padding-top: 8px; padding-bottom: 8px;}
 .frontreviewbox .box-style .review_imageswrap .imagebox + .imagebox { margin-left: 16px;}
 .frontreviewbox .box-style .review_imageswrap .imagebox img { width: 100%; height: 100%; left: 0; top: 0; object-fit: cover; position: absolute;}
 
+.thankyoubody .sharewithfriends { max-width: 340px; margin: 0 auto; width: 100%;}
+.thankyoubody .sharewithfriends a { display: flex; align-items: center; background: var(--lightGreyBGcolor); border: solid 1px var(--borderColor); padding: 20px; border-radius: 8px; line-height: 1.6; text-decoration: none;}
+.thankyoubody .sharewithfriends a span { display: flex; width: 40px; height: 40px; margin: 0 15px 0 0; color: var(--darkColor); align-items: center; justify-content: center;}
+.thankyoubody .sharewithfriends a strong { font-weight: 500; color: var(--darkColor); font-size: 14px; margin: 0; padding: 0; display: block;}
+.thankyoubody .copycodewrap { margin: 24px 0 0 0; text-align: center; flex-direction: column; row-gap: 12px; display: flex;}
+.thankyoubody .copycodewrap .textline { font-size: 16px; color: var(--darkColor); font-weight: 400; line-height: 1.6; margin: 0; padding: 0;}
+.thankyoubody .copycodewrap .discountcodebox { display: flex; justify-content: center; align-items: center;}
+.thankyoubody .copycodewrap .discountcodebox .codebox { text-transform: uppercase; font-size: 28px; font-weight: 800; margin: 0; padding: 0; line-height: 1.4;}
+.thankyoubody .copycodewrap .discountcodebox .copybtn { margin: 0 0 0 10px;}
+.thankyoubody .copycodewrap .discountcodebox .copybtn a { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; color: var(--darkColor);}
+

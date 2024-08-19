@@ -294,7 +294,7 @@ export default function ManageReview() {
 								<p>Let's start collecting reviews. Try manually requesting or importing reviews.</p>
 								<div className="btnwrap centeralign">
 									<a href="#" className="revbtn lightbtn" onClick={showManualRequestForm}>Send manual request</a>
-									{/* <a href="#" className="revbtn">Import reviews</a> */}
+									<a href="#" className="revbtn">Import reviews</a>
 								</div>
 							</div>
 						}

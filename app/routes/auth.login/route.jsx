@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { json } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import {
@@ -14,13 +14,15 @@ import polarisTranslations from "@shopify/polaris/locales/en.json";
 import polarisStyles from "@shopify/polaris/build/esm/styles.css?url";
 import { login } from "../../shopify.server";
 import { loginErrorMessage } from "./error.server";
+import Cookies from 'js-cookie';
 
 export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
 
 export const loader = async ({ request }) => {
   const errors = loginErrorMessage(await login(request));
+  const SHOPIFY_API_KEY = process.env.SHOPIFY_API_KEY;
 
-  return json({ errors, polarisTranslations });
+  return json({ errors, polarisTranslations ,SHOPIFY_API_KEY});
 };
 
 export const action = async ({ request }) => {
@@ -30,16 +32,24 @@ export const action = async ({ request }) => {
     errors,
   });
 };
-
 export default function Auth() {
   const loaderData = useLoaderData();
   const actionData = useActionData();
   const [shop, setShop] = useState("");
-  const { errors } = actionData || loaderData;
+  const { errors, SHOPIFY_API_KEY } = actionData || loaderData;
+
+
+  const storeName = Cookies.get('storeName');
+  useEffect(() => {
+    if (storeName) {
+      window.location.href=`https://admin.shopify.com/store/${storeName}/oauth/install?client_id=${SHOPIFY_API_KEY}`;
+    }
+    
+  }, [storeName]);
 
   return (
     <PolarisAppProvider i18n={loaderData.polarisTranslations}>
-      <Page>
+      {/* <Page>
         <Card>
           <Form method="post">
             <FormLayout>
@@ -60,7 +70,7 @@ export default function Auth() {
             </FormLayout>
           </Form>
         </Card>
-      </Page>
+      </Page> */}
     </PolarisAppProvider>
   );
 }

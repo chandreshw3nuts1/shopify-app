@@ -26,8 +26,16 @@
     "out_of": "out of",
     "next_link": "Next",
     "back_link": "Back",
+    "first_name" : "First name",
+    "last_name" : "Last name",
+    "email_address" : "Email address",
+    "first_name_placeholder" : "Enter first name",
+    "last_name_placeholder" : "Enter last name",
+    "email_address_placeholder" : "Enter email address",
     "submit_button": "Submit",
     "upload_photo_video_label": "Upload Photo Or Video",
+    "termsAndConditions" : "By submitting, I acknowledge the <a href=[terms_service]>Terms of Service</a> and <a href=[privacy_policy] >Privacy Policy</a> and that my review will be publicly posted and shared online.",
+    "thankyouPageEmailText" : "We'll also send it by email",
     "productReviewConstomize": {
         "reviewHeaderTitle": "Customer Review",
         "reviewSingular": "Review",
@@ -40,27 +48,30 @@
         "itemTypeTitle": "Item type"
     },
     "reviewFormSettings": {
-        "ratingPageTitle": "Customer Review",
+        "ratingPageTitle": "Give us review",
         "ratingPageSubTitle": "Please provide star rating",
         "fiveStarsRatingText": "Awesome Product!",
         "fourStarsRatingText": "Good Product!",
         "threeStarsRatingText": "Okay!",
         "twoStarsRatingText": "Bad!",
         "oneStarsRatingText": "Terrible!",
-
         "photoVideoPageTitle": "Show it off",
         "photoVideoPageSubTitle": "We'd love to see it in action!",
         "dragDropPhotoVideoText": "Drag & Drop photos or video Files",
         "addPhotoVideoButtonText": "Add Photos or Videos",
         "addReviewSameDiscountText": "Your [discount] off discount is wait for you!",
         "addReviewDifferentDiscountText": "Upload a photo to get [photo_discount] off or a video to get [video_discount] off your next purchase!",
-        
         "reviewTextPageTitle": "Tell us more!",
         "reviewTextPageSubTitle": "We'd love to see your thoughts about our product.",
         "reviewTextPagePlaceholder": "Share your experience...",
+        "questionTitle": "Question",
+        "questionSubTitle": "Please give us answer related to product.",
+        "reviewFormTitle": "About you!",
+        "reviewFormSubTitle": "Can we collect your information for improve our product.",
+        "thankyouTitle": "Thank you!",
+        "thankyouSubTitle": "Your review was submitted",
+        "thankyouDiscountText": "Use the following discount code for [discount] off your next purchase!",
         "submitButtonTitle": "Submit",
         "continueButtonTitle": "Continue"
-
-
     }
 }

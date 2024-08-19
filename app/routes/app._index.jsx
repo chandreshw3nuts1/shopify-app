@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { getShopDetails } from './../utils/getShopDetails';
 import HomeInformationAlert from './components/common/home-information-alert';
+import Cookies from 'js-cookie';
+import { Tooltip as ReactTooltip } from 'react-tooltip'
 
 import {
 	Page,
@@ -33,6 +35,7 @@ import OrdersDashIcon from "./components/icons/OrdersDashIcon";
 import ImpressionsDashIcon from "./components/icons/ImpressionsDashIcon";
 import InfoFillIcon from "./components/icons/InfoFillIcon";
 import settingsJson from './../utils/settings.json';
+import 'react-tooltip/dist/react-tooltip.css';
 
 
 export const loader = async ({ request }) => {
@@ -100,9 +103,16 @@ export default function Index() {
 			const response = await fetchStatisticApi(paramData);
 			setStatisticResponse(response.data);
 
-			console.log(statisticResponse);
 		})()
 	}, [selectedDays]);
+
+	useEffect(() => {
+		Cookies.set('storeName', shopRecords.name, {
+			expires: 365,
+			secure: true,
+			sameSite: 'None'
+		});
+	}, []);
 
 	const showManageReviewPage = (e) => {
 		e.preventDefault();
@@ -111,7 +121,8 @@ export default function Index() {
 	return (
 		<>
 			<div className="dashboardwrap max1048 mx-auto">
-				<HomeInformationAlert alertKey="home_header_info"/>
+				<HomeInformationAlert alertKey="home_header_info" />
+				
 
 				<div className="dashbbanner">
 					<div className="detailbox flxflexi">
@@ -148,7 +159,7 @@ export default function Index() {
 								))}
 
 
-								
+
 							</DropdownButton>
 						</div>
 					</div>
@@ -190,9 +201,17 @@ export default function Index() {
 						</div>
 						<div className="revenuebox">
 							<p><strong>{shopRecords.currency_symbol}{statisticResponse.reviewRevenue}</strong> Reviews-Generated Revenue</p>
-							<a href="#" className="infolink">
+							<span data-tooltip-id="my-tooltip-1" className="infolink">
 								<InfoFillIcon />
-							</a>
+							</span>
+
+							<ReactTooltip
+								id="my-tooltip-1"
+								place="bottom"
+								className="custom-tooltip"
+								content="Revenue generated from orders that redeemed a discount for submitting a photo/video review"
+							/>
+							
 						</div>
 					</div>
 					<div className="dashstetesticsbox">

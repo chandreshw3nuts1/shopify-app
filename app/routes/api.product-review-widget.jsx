@@ -17,6 +17,9 @@ import { formatDate } from "./../utils/dateFormat";
 
 import { getUploadDocument } from "./../utils/documentPath";
 import DiscountPhotoVideoReviewEmail from './components/email/DiscountPhotoVideoReviewEmail';
+import ThankYouPage from './components/widget-components/thankyou-page';
+import settingsJson from './../utils/settings.json';
+import reviewFormSettings from "./models/reviewFormSettings";
 
 import fs from "fs";
 import path from "path";
@@ -79,6 +82,7 @@ export async function action({ request }) {
 				} else {
 
 
+
 					if (shop == null || formData.get('product_id') == null) {
 						return json({ success: false });
 					}
@@ -116,12 +120,31 @@ export async function action({ request }) {
 							var reviewStatus = 'pending';
 						}
 					}
-					var customer_locale = formData.get('customer_locale') || 'en';
+					var customer_locale = formData.get('customer_locale') || generalSettingsModel.defaul_language;
 					if (customer_locale == 'zh-TW') {
 						customer_locale = 'cn2';
 					} else if (customer_locale == 'zh-CN') {
 						customer_locale = 'cn1';
 					}
+
+
+					/* Fetch transation languge*/
+
+					const language = settingsJson.languages.find(language => language.code === customer_locale);
+					customer_locale = language ? language.code : generalSettingsModel.defaul_language;
+
+					const apiUrl = `${settingsJson.host_url}/locales/${customer_locale}/translation.json`;
+					const lang = await fetch(apiUrl, {
+						method: 'GET'
+					});
+					const translations = await lang.json();
+					const reviewFormSettingsModel = await reviewFormSettings.findOne({ shop_id: shopRecords._id });
+					const languageWiseReviewFormSettings = reviewFormSettingsModel[customer_locale] ? reviewFormSettingsModel[customer_locale] : {};
+					const otherProps = { translations };
+					otherProps['reviewFormSettingsModel'] = reviewFormSettingsModel;
+					otherProps['languageWiseReviewFormSettings'] = languageWiseReviewFormSettings;
+
+					/* Fetch transation languge End*/
 
 
 					/*Check if you have purchase product , if so then mark review as verified*/
@@ -188,7 +211,8 @@ export async function action({ request }) {
 					const file_objects = formData.get("file_objects");
 					let hasPhoto = false;
 					let hasVideo = false;
-
+					let discountText = "";
+					let discountCode = "";
 					if (file_objects != null && file_objects != "") {
 						let files = file_objects.split(',');
 
@@ -221,19 +245,22 @@ export async function action({ request }) {
 						/* Create discount code and send email to reviewer when new photo/video reivew receive*/
 
 						const discountCodeResponse = await createShopifyDiscountCode(shopRecords, hasPhoto, hasVideo, is_review_request);
+
+
 						if (discountCodeResponse) {
-							const discountText = discountCodeResponse.value_type == 'percentage' ? `${discountCodeResponse.discount_value}%` : `${shopRecords.currency_symbol}${discountCodeResponse.discount_value}`;
+							discountText = discountCodeResponse.value_type == 'percentage' ? `${discountCodeResponse.discount_value}%` : `${shopRecords.currency_symbol}${discountCodeResponse.discount_value}`;
 							const replaceVars = {
 								"discount": discountText,
 								"store": shopRecords.name,
 								"name": formData.get('first_name'),
 								"last_name": formData.get('last_name'),
 							}
+							discountCode = discountCodeResponse.code;
 							const emailContentsDiscount = await getLanguageWiseContents("discount_photo_video_review", replaceVars, shopRecords._id, customer_locale);
 							emailContentsDiscount.banner = getUploadDocument(emailContentsDiscount.banner, 'banners');
 							emailContentsDiscount.logo = logo;
-							emailContentsDiscount.discountCode = discountCodeResponse.code;
-							emailContentsDiscount.expire_on_date = discountCodeResponse.expire_on_date != "" ? formatDate(discountCodeResponse.expire_on_date, shopRecords.timezone,"MM-DD-YYYY") : "";
+							emailContentsDiscount.discountCode = discountCode;
+							emailContentsDiscount.expire_on_date = discountCodeResponse.expire_on_date != "" ? formatDate(discountCodeResponse.expire_on_date, shopRecords.timezone, "MM-DD-YYYY") : "";
 
 
 							var discountEmailHtmlContent = ReactDOMServer.renderToStaticMarkup(
@@ -352,7 +379,10 @@ export async function action({ request }) {
 						html: emailHtml,
 					});
 
-					return json({ success: true });
+					const dynamicComponent = <ThankYouPage shopRecords={shopRecords} discountText={discountText} discountCode={discountCode} otherProps={otherProps} />;
+					const htmlContent = ReactDOMServer.renderToString(dynamicComponent);
+
+					return json({ success: true, content: htmlContent });
 				}
 			} catch (error) {
 				console.error('Error updating record:', error);

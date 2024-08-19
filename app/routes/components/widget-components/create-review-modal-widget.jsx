@@ -16,24 +16,57 @@ import FaceStar3 from "../images/FaceStar3";
 import FaceStar4 from "../images/FaceStar4";
 import FaceStar5 from "../images/FaceStar5";
 
+
+
 const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, generalAppearancesModel, CommonRatingComponent, otherProps }) => {
-	const {translations, productReviewWidgetCustomizesModel,languageWiseProductWidgetSettings } = otherProps;
+    const { reviewFormSettingsModel, languageWiseReviewFormSettings, translations, productReviewWidgetCustomizesModel, languageWiseProductWidgetSettings } = otherProps;
     const proxyUrl = "https://" + shopRecords.shop + "/apps/w3-proxy/product-review-widget";
     const countTotalQuestions = customQuestionsData.length;
+
+
+    const languageContent = (type) => {
+        if (type && languageWiseReviewFormSettings[type] !== undefined && languageWiseReviewFormSettings[type] !== '') {
+            return languageWiseReviewFormSettings[type];
+        } else {
+            return translations.reviewFormSettings[type];
+        }
+    }
+
     let discountHtml = "";
+
     if (paramObj?.discountObj && Object.keys(paramObj.discountObj).length > 0) {
         if (paramObj.discountObj.isSameDiscount) {
-            discountHtml = translations.addReviewSameDiscountText.replace(/\[discount\]/g, paramObj.discountObj.discount);
+            discountHtml = languageContent('addReviewSameDiscountText').replace(/\[discount\]/g, paramObj.discountObj.discount);
         } else {
-            discountHtml = translations.addReviewDifferentDiscountText;
+            discountHtml = languageContent('addReviewDifferentDiscountText');
             discountHtml = discountHtml.replace(/\[photo_discount\]/g, paramObj.discountObj.photoDiscount);
             discountHtml = discountHtml.replace(/\[video_discount\]/g, paramObj.discountObj.videoDiscount);
 
         }
     }
 
+    let termsServiceLink = "#";
+    let privacyPolicyLink = "#";
+    let termsAndConditionHtml = translations.termsAndConditions;
+    termsAndConditionHtml = termsAndConditionHtml.replace(/\[terms_service\]/g, termsServiceLink);
+    termsAndConditionHtml = termsAndConditionHtml.replace(/\[privacy_policy\]/g, privacyPolicyLink);
+
+    const themeColor = reviewFormSettingsModel.themeColor;
+    const cornerRadius = reviewFormSettingsModel.cornerRadius ? reviewFormSettingsModel.cornerRadius : generalAppearancesModel.cornerRadius ;
+
     return (
         <>
+            <style>
+                {`
+					.theme-color-class {
+						background-color: ${themeColor} !important;
+					}
+                    .modal .modal-content {
+						border-radius : ${cornerRadius}px !important;
+					}
+					
+				`}
+            </style>
             <div id="createReviewModal" className="modal fade addreviewpopup">
                 <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div className="modal-content">
@@ -45,7 +78,7 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                 <div className="reviewsteps activestep step-1">
                                     <div className="modal-header">
                                         <div className="flxflexi">
-                                            <h1 className="modal-title">Create Review</h1>
+                                            <h1 className="modal-title">{languageContent('ratingPageTitle')}</h1>
                                             <div className="subtextbox">
                                                 <div className="success-box-wrap">
                                                     <div className='success-box'>
@@ -56,7 +89,7 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                                             <div className="facebox facestar4"><FaceStar4 /></div>
                                                             <div className="facebox facestar5"><FaceStar5 /></div>
                                                         </div>
-                                                        <div className='text-message'>Please provide star rating</div>
+                                                        <div className='text-message'>{languageContent('ratingPageSubTitle')}</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -66,19 +99,19 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                         <div className="form-group ratingformgroup">
                                             <div className='rating-stars text-center'>
                                                 <ul id='stars'>
-                                                    <li className='star' title='Poor' data-value='1'>
+                                                    <li className='star' title={languageContent('oneStarsRatingText')} data-value='1'>
                                                         {CommonRatingComponent ? <CommonRatingComponent /> : null}
                                                     </li>
-                                                    <li className='star' title='Fair' data-value='2'>
+                                                    <li className='star' title={languageContent('twoStarsRatingText')} data-value='2'>
                                                         {CommonRatingComponent ? <CommonRatingComponent /> : null}
                                                     </li>
-                                                    <li className='star' title='Good' data-value='3'>
+                                                    <li className='star' title={languageContent('threeStarsRatingText')} data-value='3'>
                                                         {CommonRatingComponent ? <CommonRatingComponent /> : null}
                                                     </li>
-                                                    <li className='star' title='Excellent' data-value='4'>
+                                                    <li className='star' title={languageContent('fourStarsRatingText')} data-value='4'>
                                                         {CommonRatingComponent ? <CommonRatingComponent /> : null}
                                                     </li>
-                                                    <li className='star' title='WOW!!!' data-value='5'>
+                                                    <li className='star' title={languageContent('fiveStarsRatingText')} data-value='5'>
                                                         {CommonRatingComponent ? <CommonRatingComponent /> : null}
                                                     </li>
                                                     <input type="hidden" id="review_rating" name="rating" value="3" />
@@ -86,20 +119,17 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                             </div>
 
                                         </div>
-                                        {/*
-                                    <button type="submit" id="review_submit_btn" className="btn btn-primary">Submit Review</button> */}
+
                                     </div>
                                     <div className="modal-footer">
-                                        {/* <button type="button" className="revbtn lightbtn" data-bs-dismiss="modal">Close</button> */}
-                                        <button type="button" className="revbtn lightbtn nextbtn" disabled="disabled">Next <LongArrowRight /></button>
-                                        {/* <button type="button" id="review_submit_btn" className="revbtn lightbtn">Next <LongArrowRight /></button> */}
+                                        <button type="button" className="revbtn lightbtn nextbtn theme-color-class" disabled="disabled">{translations.next_link}<LongArrowRight /></button>
                                     </div>
                                 </div>
                                 <div className="reviewsteps step-2 d-none">
                                     <div className="modal-header">
                                         <div className="flxflexi">
-                                            <h1 className="modal-title">Show it off</h1>
-                                            <div className="subtextbox">We'd love to see it in action.</div>
+                                            <h1 className="modal-title">{languageContent('photoVideoPageTitle')}</h1>
+                                            <div className="subtextbox">{languageContent('photoVideoPageSubTitle')}</div>
                                         </div>
                                     </div>
                                     <div className="modal-body">
@@ -108,14 +138,14 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                                 <div className="iconimage">
                                                     <AddImageIcon />
                                                 </div>
-                                                <div className="simpletext">Drag &amp; Drop image or video Files</div>
+                                                <div className="simpletext">{languageContent('dragDropPhotoVideoText')}</div>
                                                 <div className="orbox flxrow">
                                                     <span>OR</span>
                                                 </div>
                                                 <div className="btnwrap">
                                                     <span className="revbtn">
                                                         <ImageFilledIcon />
-                                                        Add Photos or Videos
+                                                        {languageContent('addPhotoVideoButtonText')}
                                                     </span>
                                                 </div>
                                                 <input className="form__file" name="image_and_videos[]" id="upload-files" type="file" accept="image/*,video/mp4,video/x-m4v,video/*" multiple="multiple" />
@@ -125,18 +155,18 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                                 <div className="discountbox"><strong>You can select up to 5 photos</strong></div>
                                             </div>
                                             {discountHtml &&
-                                            <div className="discountrow">
-                                                {/* <div className="discountbox">Your <strong>15%</strong> off discount is wait for you!</div> */}
-                                                <div className="discountbox">{discountHtml}</div>
-                                            </div>}
+                                                <div className="discountrow">
+                                                    {/* <div className="discountbox">Your <strong>15%</strong> off discount is wait for you!</div> */}
+                                                    <div className="discountbox">{discountHtml}</div>
+                                                </div>}
 
                                             <div className="form__files-container" id="files-list-container"></div>
                                             <input type="hidden" name="file_objects" id="file_objects" />
                                         </div>
                                     </div>
                                     <div className="modal-footer">
-                                        <a href="#" className="revbtn lightbtn backbtn"><LongArrowLeft /> Back</a>
-                                        <a href="#" className="revbtn lightbtn nextbtn">Next <LongArrowRight /></a>
+                                        <a href="#" className="revbtn lightbtn backbtn"><LongArrowLeft /> {translations.back_link}</a>
+                                        <a href="#" className="revbtn lightbtn nextbtn">{translations.next_link}<LongArrowRight /></a>
                                     </div>
                                 </div>
 
@@ -144,8 +174,8 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                     <div className={`reviewsteps step-${qIndex + 3} d-none`} key={qIndex}>
                                         <div className="modal-header">
                                             <div className="flxflexi">
-                                                <h1 className="modal-title">Question</h1>
-                                                <div className="subtextbox">Please give us answer about your product.</div>
+                                                <h1 className="modal-title">{languageContent('questionTitle')}</h1>
+                                                <div className="subtextbox">{languageContent('questionSubTitle')}</div>
                                             </div>
                                         </div>
                                         <div className="modal-body">
@@ -168,8 +198,8 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                             </div>
                                         </div>
                                         <div className="modal-footer">
-                                            <a href="#" className="revbtn lightbtn backbtn"><LongArrowLeft /> Back</a>
-                                            <a href="#" className={`revbtn lightbtn nextbtn ${customQuestionItem.isMakeRequireQuestion ? 'd-none' : ''}`} >Next <LongArrowRight /></a>
+                                            <a href="#" className="revbtn lightbtn backbtn"><LongArrowLeft /> {translations.back_link}</a>
+                                            <a href="#" className={`revbtn lightbtn nextbtn ${customQuestionItem.isMakeRequireQuestion ? 'd-none' : ''}`} >{translations.next_link}<LongArrowRight /></a>
                                         </div>
                                     </div>
                                 )}
@@ -178,26 +208,27 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                 <div className={`reviewsteps step-${countTotalQuestions + 3} d-none`}>
                                     <div className="modal-header">
                                         <div className="flxflexi">
-                                            <h1 className="modal-title">Tell us more!</h1>
-                                            <div className="subtextbox">We'd love to see your thoughts about our product.</div>
+                                            <h1 className="modal-title">{languageContent('reviewTextPageTitle')}</h1>
+                                            <div className="subtextbox">{languageContent('reviewTextPageSubTitle')}</div>
                                         </div>
                                     </div>
                                     <div className="modal-body">
                                         <div className="tellusmorepopup_wrap">
                                             <div className="form-group">
-                                                <textarea className="form-control review-description" name="description" placeholder="Share your experience..."></textarea>
+                                                <textarea className="form-control review-description" name="description" placeholder={languageContent('reviewTextPagePlaceholder')}></textarea>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="modal-footer">
-                                        <a href="#" className="revbtn lightbtn backbtn"><LongArrowLeft /> Back</a>
-                                        <button type="button" className="revbtn lightbtn nextbtn" disabled="disabled">Next <LongArrowRight /></button>                                    </div>
+                                        <a href="#" className="revbtn lightbtn backbtn"><LongArrowLeft /> {translations.back_link}</a>
+                                        <button type="button" className="revbtn lightbtn nextbtn" disabled="disabled">{translations.next_link}<LongArrowRight /></button>
+                                    </div>
                                 </div>
                                 <div className={`reviewsteps step-${countTotalQuestions + 4} d-none`}>
                                     <div className="modal-header">
                                         <div className="flxflexi">
-                                            <h1 className="modal-title">About you!</h1>
-                                            <div className="subtextbox">Can we collect your information for improve our product.</div>
+                                            <h1 className="modal-title">{languageContent('reviewFormTitle')}</h1>
+                                            <div className="subtextbox">{languageContent('reviewFormSubTitle')}</div>
                                         </div>
                                     </div>
                                     <div className="modal-body">
@@ -205,40 +236,43 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                             <div className="row">
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label htmlFor="">First name <span className="text-danger" >*</span> </label>
-                                                        <input type="text" className="form-control" name="first_name" id="first_name" placeholder="Enter first name" defaultValue={paramObj.cust_first_name} />
+                                                        <label htmlFor="">{translations.first_name} <span className="text-danger" >*</span> </label>
+                                                        <input type="text" className="form-control" name="first_name" id="first_name" placeholder={translations.first_name_placeholder} defaultValue={paramObj.cust_first_name} />
                                                         <div className="error text-danger" id="firstNameError"></div>
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label htmlFor="">Last name <span className="text-danger" >*</span></label>
-                                                        <input type="text" className="form-control" name="last_name" id="last_name" placeholder="Enter last name" defaultValue={paramObj.cust_last_name} />
+                                                        <label htmlFor="">{translations.last_name} <span className="text-danger" >*</span></label>
+                                                        <input type="text" className="form-control" name="last_name" id="last_name" placeholder={translations.last_name_placeholder} defaultValue={paramObj.cust_last_name} />
                                                         <div className="error text-danger" id="lastNameError"></div>
 
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-12">
                                                     <div className="form-group">
-                                                        <label htmlFor="">Email address <span className="text-danger" >*</span></label>
-                                                        <input type="email" className="form-control" name="email" id="emailfield" placeholder="Enter email address" defaultValue={paramObj.cust_email} />
+                                                        <label htmlFor="">{translations.email_address} <span className="text-danger" >*</span></label>
+                                                        <input type="email" className="form-control" name="email" id="emailfield" placeholder={translations.email_address_placeholder} defaultValue={paramObj.cust_email} />
                                                         <div className="error text-danger" id="emailError"></div>
 
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-12">
-                                                    <div className="formnote">By submitting, I acknowledge the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a> and that my review will be publicly posted and shared online</div>
+                                                    <div className="formnote" dangerouslySetInnerHTML={{ __html: termsAndConditionHtml }}>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="modal-footer">
-                                        <a href="#" className="revbtn lightbtn backbtn"><LongArrowLeft /> Back</a>
-                                        <button type="submit" className="revbtn submitBtn">Submit <LongArrowRight /></button>
+                                        <a href="#" className="revbtn lightbtn backbtn"><LongArrowLeft /> {translations.back_link}</a>
+                                        <button type="submit" className="revbtn submitBtn">{languageContent('submitButtonTitle')} <LongArrowRight /></button>
                                     </div>
                                 </div>
+                                <div id="thankyou-page-content" className="reviewsteps d-none">
 
-                                <div className={`reviewsteps step-${countTotalQuestions + 5} d-none thankyou-page`}>
+                                </div>
+                                {/* <div className={`reviewsteps step-${countTotalQuestions + 5} d-none thankyou-page`}>
                                     <div className="modal-header">
                                         <div className="flxflexi">
                                             <h1 className="modal-title">Thank you!</h1>
@@ -266,9 +300,9 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                         </div>
                                     </div>
                                     <div className="modal-footer">
-                                        <a href="#" className="revbtn lightbtn nextbtn continueBtn">Continue <LongArrowRight /></a>
+                                        <a href="#" className="revbtn lightbtn nextbtn continueBtn">{languageContent('continueButtonTitle')} <LongArrowRight /></a>
                                     </div>
-                                </div>
+                                </div> */}
                             </form>
                         </div>
                     </div>

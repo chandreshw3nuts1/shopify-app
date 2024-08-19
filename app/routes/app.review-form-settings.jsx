@@ -28,7 +28,7 @@ export const loader = async ({ request }) => {
     return json(JsonData);
 };
 
-export default function WidgetCustomize() {
+export default function ReviewFormSettings() {
     const { shopRecords, generalSettingsModel, customizeObj } = useLoaderData();
     const { t, i18n } = useTranslation();
     const navigate = useNavigate();
@@ -55,14 +55,25 @@ export default function WidgetCustomize() {
     const [reviewTextPageTitle, setReviewTextPageTitle] = useState('');
     const [reviewTextPageSubTitle, setReviewTextPageSubTitle] = useState('');
     const [reviewTextPagePlaceholder, setReviewTextPagePlaceholder] = useState('');
+    const [questionTitle, setQuestionTitle] = useState('');
+    const [questionSubTitle, setQuestionSubTitle] = useState('');
+
+    const [reviewFormTitle, setReviewFormTitle] = useState('');
+    const [reviewFormSubTitle, setReviewFormSubTitle] = useState('');
+
+
+    const [thankyouTitle, setThankyouTitle] = useState('');
+    const [thankyouSubTitle, setThankyouSubTitle] = useState('');
+    const [thankyouDiscountText, setThankyouDiscountText] = useState('');
+
     const [submitButtonTitle, setSubmitButtonTitle] = useState('');
     const [continueButtonTitle, setContinueButtonTitle] = useState('');
 
     useEffect(() => {
-		const defaultLanguage = (generalSettingsModel && generalSettingsModel.defaul_language) ? generalSettingsModel.defaul_language : "en";
-		i18n.changeLanguage(defaultLanguage);
+        const defaultLanguage = (generalSettingsModel && generalSettingsModel.defaul_language) ? generalSettingsModel.defaul_language : "en";
+        i18n.changeLanguage(defaultLanguage);
 
-	}, []);
+    }, []);
 
     useEffect(() => {
         const language = localStorage.getItem('i18nextLng');
@@ -85,6 +96,14 @@ export default function WidgetCustomize() {
             reviewTextPageTitle,
             reviewTextPageSubTitle,
             reviewTextPagePlaceholder,
+            questionTitle,
+            questionSubTitle,
+            reviewFormTitle,
+            reviewFormSubTitle,
+
+            thankyouTitle,
+            thankyouSubTitle,
+            thankyouDiscountText,
             submitButtonTitle,
             continueButtonTitle,
 
@@ -106,6 +125,15 @@ export default function WidgetCustomize() {
         setReviewTextPageTitle(reviewTextPageTitle || '');
         setReviewTextPageSubTitle(reviewTextPageSubTitle || '');
         setReviewTextPagePlaceholder(reviewTextPagePlaceholder || '');
+        setQuestionTitle(questionTitle || '');
+        setQuestionSubTitle(questionSubTitle || '');
+        setReviewFormTitle(reviewFormTitle || '');
+        setReviewFormSubTitle(reviewFormSubTitle || '');
+
+        setThankyouTitle(thankyouTitle || '');
+        setThankyouSubTitle(thankyouSubTitle || '');
+        setThankyouDiscountText(thankyouDiscountText || '');
+        
         setSubmitButtonTitle(submitButtonTitle || '');
         setContinueButtonTitle(continueButtonTitle || '');
 
@@ -126,6 +154,13 @@ export default function WidgetCustomize() {
             reviewTextPageTitle: reviewTextPageTitle || '',
             reviewTextPageSubTitle: reviewTextPageSubTitle || '',
             reviewTextPagePlaceholder: reviewTextPagePlaceholder || '',
+            questionTitle: questionTitle || '',
+            questionSubTitle: questionSubTitle || '',
+            reviewFormTitle: reviewFormTitle || '',
+            reviewFormSubTitle: reviewFormSubTitle || '',
+            thankyouTitle: thankyouTitle || '',
+            thankyouSubTitle: thankyouSubTitle || '',
+            thankyouDiscountText: thankyouDiscountText || '',
             submitButtonTitle: submitButtonTitle || '',
             continueButtonTitle: continueButtonTitle || '',
         });
@@ -147,6 +182,15 @@ export default function WidgetCustomize() {
             reviewTextPageTitle: t('reviewFormSettings.reviewTextPageTitle'),
             reviewTextPageSubTitle: t('reviewFormSettings.reviewTextPageSubTitle'),
             reviewTextPagePlaceholder: t('reviewFormSettings.reviewTextPagePlaceholder'),
+            questionTitle: t('reviewFormSettings.questionTitle'),
+            questionSubTitle: t('reviewFormSettings.questionSubTitle'),
+            reviewFormTitle: t('reviewFormSettings.reviewFormTitle'),
+            reviewFormSubTitle: t('reviewFormSettings.reviewFormSubTitle'),
+            
+            thankyouTitle: t('reviewFormSettings.thankyouTitle'),
+            thankyouSubTitle: t('reviewFormSettings.thankyouSubTitle'),
+            thankyouDiscountText: t('reviewFormSettings.thankyouDiscountText'),
+
             submitButtonTitle: t('reviewFormSettings.submitButtonTitle'),
             continueButtonTitle: t('reviewFormSettings.continueButtonTitle'),
         });
@@ -273,6 +317,20 @@ export default function WidgetCustomize() {
             setReviewTextPageSubTitle(eventVal);
         } else if (eventKey == 'reviewTextPagePlaceholder') {
             setReviewTextPagePlaceholder(eventVal);
+        } else if (eventKey == 'questionTitle') {
+            setQuestionTitle(eventVal);
+        } else if (eventKey == 'questionSubTitle') {
+            setQuestionSubTitle(eventVal);
+        } else if (eventKey == 'reviewFormTitle') {
+            setReviewFormTitle(eventVal);
+        } else if (eventKey == 'reviewFormSubTitle') {
+            setReviewFormSubTitle(eventVal);
+        } else if (eventKey == 'thankyouTitle') {
+            setThankyouTitle(eventVal);
+        } else if (eventKey == 'thankyouSubTitle') {
+            setThankyouSubTitle(eventVal);
+        } else if (eventKey == 'thankyouDiscountText') {
+            setThankyouDiscountText(eventVal);
         } else if (eventKey == 'submitButtonTitle') {
             setSubmitButtonTitle(eventVal);
         } else if (eventKey == 'continueButtonTitle') {
@@ -463,7 +521,6 @@ export default function WidgetCustomize() {
                                                         <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="addReviewSameDiscountText" value={addReviewSameDiscountText} placeholder={placeHolderLanguageData.addReviewSameDiscountText} />
                                                     </div>
                                                     <div className='inputnote'>Note: Use [discount] for discount amount</div>
-
                                                 </div>
                                             </div>
 
@@ -475,6 +532,24 @@ export default function WidgetCustomize() {
                                                     </div>
                                                     <div className='inputnote'>Note: Use [photo_discount] & [video_discount] for photo and video review discount amount</div>
 
+                                                </div>
+                                            </div>
+
+                                            <div className='insidewhitecard flxcol gapy18'>
+                                                <div className="form-group m-0">
+                                                    <label htmlFor=""> Question page title </label>
+                                                    <div className='sideinput flxflexi'>
+                                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="questionTitle" value={questionTitle} placeholder={placeHolderLanguageData.questionTitle} />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className='insidewhitecard flxcol gapy18'>
+                                                <div className="form-group m-0">
+                                                    <label htmlFor=""> Question page sub title </label>
+                                                    <div className='sideinput flxflexi'>
+                                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="questionSubTitle" value={questionSubTitle} placeholder={placeHolderLanguageData.questionSubTitle} />
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -504,6 +579,56 @@ export default function WidgetCustomize() {
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <div className='insidewhitecard flxcol gapy18'>
+                                                <div className="form-group m-0">
+                                                    <label htmlFor=""> Review form title </label>
+                                                    <div className='sideinput flxflexi'>
+                                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="reviewFormTitle" value={reviewFormTitle} placeholder={placeHolderLanguageData.reviewFormTitle} />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className='insidewhitecard flxcol gapy18'>
+                                                <div className="form-group m-0">
+                                                    <label htmlFor=""> Review form sub title </label>
+                                                    <div className='sideinput flxflexi'>
+                                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="reviewFormSubTitle" value={reviewFormSubTitle} placeholder={placeHolderLanguageData.reviewFormSubTitle} />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div className='insidewhitecard flxcol gapy18'>
+                                                <div className="form-group m-0">
+                                                    <label htmlFor=""> Thank you page title </label>
+                                                    <div className='sideinput flxflexi'>
+                                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="thankyouTitle" value={thankyouTitle} placeholder={placeHolderLanguageData.thankyouTitle} />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className='insidewhitecard flxcol gapy18'>
+                                                <div className="form-group m-0">
+                                                    <label htmlFor=""> Thank you page sub title </label>
+                                                    <div className='sideinput flxflexi'>
+                                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="thankyouSubTitle" value={thankyouSubTitle} placeholder={placeHolderLanguageData.thankyouSubTitle} />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div className='insidewhitecard flxcol gapy18'>
+                                                <div className="form-group m-0">
+                                                    <label htmlFor=""> Thank you page discount text</label>
+                                                    <div className='sideinput flxflexi'>
+                                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="thankyouDiscountText" value={thankyouDiscountText} placeholder={placeHolderLanguageData.thankyouDiscountText} />
+                                                    </div>
+                                                    <div className='inputnote'>Note: Use [discount] for discount amount</div>
+
+                                                </div>
+                                            </div>
+
 
                                             <div className='insidewhitecard flxcol gapy18'>
                                                 <div className="form-group m-0">

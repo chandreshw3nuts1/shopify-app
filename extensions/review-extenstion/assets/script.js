@@ -49,18 +49,7 @@ $(document).ready(function () {
         jQuery('.success-box').addClass(`star-${ratingValue}`);
 
         var msg = "";
-
-        if (ratingValue == 5) {
-            msg = "Awesome Product!";
-        } else if (ratingValue == 4) {
-            msg = "Good Product!";
-        } else if (ratingValue == 3) {
-            msg = "Okay!";
-        } else if (ratingValue == 2) {
-            msg = "Bad!";
-        } else {
-            msg = "Terrible!";
-        }
+        msg = jQuery(this).attr("title");
         responseMessage(msg);
         jQuery('#review_rating').val(ratingValue);
 
@@ -442,7 +431,8 @@ $(document).on("submit", "#review_submit_btn_form", function (e) {
             },
             success: function (response) {
                 $(".reviewsteps").addClass('d-none');
-                $(".thankyou-page").removeClass('d-none');
+                $("#thankyou-page-content").removeClass('d-none');
+                $("#thankyou-page-content").html(response.content);
             },
             error: function (xhr, status, error) {
                 // Handle errors
@@ -502,4 +492,13 @@ $(document).on("click", "#mainVideoPauseButton", function () {
         $('#mainVideoPlayButton').show();
         $('#mainVideoPauseButton').hide();
     }
+});
+
+$(document).on("click", "#copy-button", function () {
+    var discountCode = $('#discount-code').text();
+    navigator.clipboard.writeText(discountCode).then(function() {
+        $('#copy-message').fadeIn().delay(1000).fadeOut();
+    }).catch(function(error) {
+        console.error('Failed to copy text: ', error);
+    });
 });
