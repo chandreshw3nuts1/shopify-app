@@ -64,7 +64,9 @@ export default function ColorPicker(props) {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, []);
-
+	const handleChange = (color) => {
+		setSelectedColor(color.hex);
+	};
 	const handleChangeComplete = async (color) => {
 		setSelectedColor(color.hex);
 		await updateColorCode(color.hex, props);
@@ -121,6 +123,7 @@ export default function ColorPicker(props) {
 				<div style={{ position: 'absolute', zIndex: 1, top: '45px', left: '0' }} ref={pickerRef}>
 					<SketchPicker
 						color={selectedColor}
+						onChange={handleChange}
 						onChangeComplete={handleChangeComplete}
 					/>
 				</div>

@@ -7,6 +7,7 @@ if (mongoose.models['review_form_settings']) {
 const reviewFormSettingsSchema = new mongoose.Schema({
     shop_id: { type: mongoose.Schema.Types.ObjectId, ref: 'shop_details', required: true },
     themeColor: { type: String },
+    themeTextColor: { type: String },
     cornerRadius: { type: String },
     en: { "type": "Object" },
     fr: { "type": "Object" },

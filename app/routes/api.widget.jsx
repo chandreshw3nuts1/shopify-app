@@ -83,10 +83,12 @@ export async function action({ request }) {
             
 
             const reviewFormSettingsModel = await reviewFormSettings.findOne({ shop_id: shopRecords._id });
-            const languageWiseReviewFormSettings = reviewFormSettingsModel[customer_locale] ? reviewFormSettingsModel[customer_locale] : {};
-            otherProps['reviewFormSettingsModel'] = reviewFormSettingsModel;
-            otherProps['languageWiseReviewFormSettings'] = languageWiseReviewFormSettings;
-        
+            if(reviewFormSettingsModel) {
+                const languageWiseReviewFormSettings = reviewFormSettingsModel[customer_locale] ? reviewFormSettingsModel[customer_locale] : {};
+                otherProps['reviewFormSettingsModel'] = reviewFormSettingsModel;
+                otherProps['languageWiseReviewFormSettings'] = languageWiseReviewFormSettings;
+            }
+            
             const discountObj = await getDiscounts(shopRecords);
             const paramObj = {
                 cust_first_name: formData.get('cust_first_name'),
@@ -94,7 +96,6 @@ export async function action({ request }) {
                 cust_email: formData.get('cust_email'),
                 discountObj: discountObj
             }
-            
             const dynamicModalComponent = <CreateReviewModalWidget shopRecords={shopRecords} customQuestionsData={customQuestionsData} paramObj={paramObj} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} otherProps={otherProps} />;
             const htmlModalContent = ReactDOMServer.renderToString(dynamicModalComponent);
             return json({

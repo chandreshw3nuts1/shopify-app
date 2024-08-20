@@ -381,10 +381,17 @@ export default function ReviewFormSettings() {
                                             </div>
                                             <div className='insidewhitecard'>
                                                 <div className='widget-theme-options'>
-                                                    <div className="form-group m-0 horizontal-form">
-                                                        <label htmlFor="">Theme Color</label>
+                                                <div className="form-group m-0 horizontal-form">
+                                                        <label htmlFor="">Theme color</label>
                                                         <div className='sideinput mw300 flxflexi'>
                                                             <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="reviewFormSettings" pickerType="themeColor" />
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="form-group m-0 horizontal-form">
+                                                        <label htmlFor="">Theme text color</label>
+                                                        <div className='sideinput mw300 flxflexi'>
+                                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="reviewFormSettings" pickerType="themeTextColor" />
                                                         </div>
                                                     </div>
 
