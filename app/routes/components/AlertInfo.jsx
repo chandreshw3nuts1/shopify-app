@@ -8,10 +8,14 @@ const AlertInfo = (props) => {
                     <i className={`${props.iconClass}`}></i>
                 </div>
             }
-            <div className="plaintext flxflexi">
-                <a href={props.conlink}>{props.alertContent}</a>
-            </div>
-
+            {props.conlink &&
+                <div className="plaintext flxflexi">
+                    <a href={props.conlink}>{props.alertContent}</a>
+                </div>
+            }
+            {props.alertContent &&
+                <div className="plaintext flxflexi">{props.alertContent}</div>
+            }
             {props.alertClose &&
                 <div className="closebtn">
                     <a href="#">
