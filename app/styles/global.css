@@ -832,3 +832,32 @@ body .dropdown .show .arrowright i { transform: rotate(180deg);}
 .frontreviewbox.grid-four-column .box-style .product-thumb-detail .image { width: 54px; height: 54px; margin: 0 12px 0 0;}
 
 .reviewbox_wrap .frontreviewbox.grid-four-column .box-style { width: 100%; max-width: 350px; margin: 0 auto;}
+
+.aliexpress_wrap { margin: 32px 0 0 0; display: flex; column-gap: 32px; align-items: center; flex-direction: row-reverse;}
+.aliexpress_wrap .imagebox { width: 441px; height: auto; position: relative;}
+.aliexpress_wrap .dragbtnbox { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px 0 0 0;}
+.aliexpress_wrap .dragbtnbox .btndrag { position: relative; height: 40px; padding: 0 24px; background: var(--whiteBg); border: solid 1px var(--borderColor); border-radius: 50px; color: var(--darkColor); font-size: 14px; font-weight: 700; display: flex; align-items: center; cursor: grab;}
+.aliexpress_wrap .dragbtnbox .graglabel { position: absolute; left: -16px; top: -5px; background: var(--blueColor); color: var(--whiteText); border-radius: 50px; display: flex; column-gap: 4px; height: 20px; align-items: center; font-size: 8px; font-weight: 600; text-transform: uppercase; padding: 0 10px;
+    transform: rotate(-30deg);
+}
+.aliexpress_wrap .dragbtnbox .handicon { position: absolute; right: -5px; bottom: -5px; display: flex; align-items: center; justify-content: center;
+    transform: rotate(-45deg);
+}
+.aliexpress_wrap .detailbox { margin: 0;}
+.aliexpress_wrap .detailbox ul { margin: 0; padding: 0; display: flex; flex-direction: column; row-gap: 16px;}
+.aliexpress_wrap .detailbox ul li { margin: 0; padding: 0; display: flex; align-items: flex-start; line-height: 32px; column-gap: 8px; font-size: 14px; color: var(--darkColor);}
+.aliexpress_wrap .detailbox ul li .numberbox { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--iconBGcolor); border-radius: 50px;}
+
+.importappwrap { margin: 32px 0 0 0;}
+.importappwrap .detailbox { margin: 0;}
+.importappwrap .detailbox ul { margin: 0; padding: 0; display: flex; flex-direction: column; row-gap: 16px;}
+.importappwrap .detailbox ul li { margin: 0; padding: 0; display: flex; align-items: flex-start; line-height: 32px; column-gap: 8px; font-size: 14px; color: var(--darkColor);}
+.importappwrap .detailbox ul li .numberbox { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--iconBGcolor); border-radius: 50px;}
+.importappwrap .importappformrow { align-items: flex-start; column-gap: 24px; margin: 24px 0 0 0;}
+
+.importspreadsheed_wrap { margin: 32px 0 0 0;}
+.importspreadsheed_wrap .btnbox { justify-content: center; column-gap: 24px; display: flex;}
+.importspreadsheed_wrap .btnbox .revbtn { height: 52px; padding: 0 16px; column-gap: 10px;}
+.importspreadsheed_wrap .btnbox .revbtn span { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50px; color: var(--whiteText); border: solid 1px var(--whiteBg);}
+.importspreadsheed_wrap .btnbox .lightbtn { border: solid 1px var(--borderColor);}
+.importspreadsheed_wrap .btnbox .lightbtn span { color: var(--darkColor); border: none; background: var(--iconBGcolor);}
