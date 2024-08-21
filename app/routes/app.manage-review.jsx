@@ -212,7 +212,7 @@ export default function ManageReview() {
 					<Layout.Section>
 						{countRating > 0 ?
 							<>
-								<RatingSummary ratingData={manageReviewData.outputRatting} />
+								<RatingSummary shopRecords={shopRecords} ratingData={manageReviewData.outputRatting} />
 								<div className="filterandserchwrap">
 									<form onSubmit={handleSubmit}>
 										<div className="row">

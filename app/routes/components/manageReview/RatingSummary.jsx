@@ -4,7 +4,7 @@ import style from "./RatingSummary.module.css";
 // import StarRating from './StarRating';
 import RatingIcons from './RatingIcons';
 
-const RatingSummary = ({ ratingData}) => {
+const RatingSummary = ({ shopRecords, ratingData}) => {
 	const totalReviews = ratingData.reduce((acc, item) => acc + item.count, 0);
 	const averageRating = (ratingData.reduce((acc, item) => acc + item.stars * item.count, 0) / totalReviews).toFixed(1); 
 	const percentageReview = (100 * averageRating) / 5;
@@ -27,11 +27,37 @@ const RatingSummary = ({ ratingData}) => {
 			one_start_percent = Math.round((item.count /totalReviews) * 100);
 		}
 	});
+
+	const handleExportReviews = async (e) => {
+		e.preventDefault();
+		const params = {
+			shop: shopRecords.shop,
+			actionType: "exportReviews"
+		};
+		const response = await fetch('/api/export-reviews', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(params),
+		});
+		
+		const blob = await response.blob();
+		const url = window.URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `reviews-${shopRecords.name}.csv`;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		window.URL.revokeObjectURL(url);
+	  };
+	
   return (
     <div className="totalreviewdisplay flxrow">
 		<div className="lefttotal flxfix flxcol">
 			<h4>Reviews</h4>
-			<p>Export all reviews to .csv file</p>
+			<a href="#" onClick={handleExportReviews} >Export all reviews to .csv file</a>
 			<div className="bottomdetail mt-auto">
 				<h6>{averageRating}</h6>
 				<div className="reviewcount">{totalReviews} Reviews</div>

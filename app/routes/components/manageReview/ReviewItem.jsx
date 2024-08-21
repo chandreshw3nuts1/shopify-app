@@ -476,7 +476,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 										<div className="topbadges">
 											{result.tag_as_feature == true &&
 												<div className="featured_tag revbedge">Featured 
-													<a href="#" className="bedclosebtn"><i className="twenty-closeicon"></i></a>
+													{/* <a href="#" className="bedclosebtn"><i className="twenty-closeicon"></i></a> */}
 												</div>
 											}
 											{result.verify_badge == true &&

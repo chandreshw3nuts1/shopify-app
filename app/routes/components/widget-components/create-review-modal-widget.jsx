@@ -16,6 +16,7 @@ import FaceStar3 from "../images/FaceStar3";
 import FaceStar4 from "../images/FaceStar4";
 import FaceStar5 from "../images/FaceStar5";
 
+import settingsJson from './../../../utils/settings.json';
 
 
 const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, generalAppearancesModel, CommonRatingComponent, otherProps }) => {
@@ -25,7 +26,7 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
 
 
     const languageContent = (type) => {
-        if (type && languageWiseReviewFormSettings[type] !== undefined && languageWiseReviewFormSettings[type] !== '') {
+        if (type && languageWiseReviewFormSettings && languageWiseReviewFormSettings[type] !== undefined && languageWiseReviewFormSettings[type] !== '') {
             return languageWiseReviewFormSettings[type];
         } else {
             return translations.reviewFormSettings[type];
@@ -50,9 +51,9 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
     let termsAndConditionHtml = translations.termsAndConditions;
     termsAndConditionHtml = termsAndConditionHtml.replace(/\[terms_service\]/g, termsServiceLink);
     termsAndConditionHtml = termsAndConditionHtml.replace(/\[privacy_policy\]/g, privacyPolicyLink);
-
-    const themeColor = reviewFormSettingsModel.themeColor;
-    const cornerRadius = reviewFormSettingsModel.cornerRadius ? reviewFormSettingsModel.cornerRadius : generalAppearancesModel.cornerRadius ;
+    const themeColor = reviewFormSettingsModel?.themeColor ? reviewFormSettingsModel?.themeColor : `#${settingsJson.reviewFormSettings.themeColor}`;
+    const themeTextColor = reviewFormSettingsModel?.themeTextColor ? reviewFormSettingsModel?.themeTextColor : `#${settingsJson.reviewFormSettings.themeTextColor}`;
+    const cornerRadius = reviewFormSettingsModel?.cornerRadius ? reviewFormSettingsModel?.cornerRadius : generalAppearancesModel.cornerRadius ;
 
     return (
         <>
@@ -60,6 +61,7 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                 {`
 					.theme-color-class {
 						background-color: ${themeColor} !important;
+                        color : ${themeTextColor} !important;
 					}
                     .modal .modal-content {
 						border-radius : ${cornerRadius}px !important;
