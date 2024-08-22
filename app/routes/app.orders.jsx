@@ -9,6 +9,8 @@ import { formatTimeAgo, formatDate, addDaysToDate } from './../utils/dateFormat'
 import DatePicker from 'react-date-picker';
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';
+import CalenderIcon from "../images/CalenderIcon";
+import CloseIcon from "../images/CloseIcon";
 
 import { json } from "@remix-run/node";
 
@@ -450,14 +452,13 @@ export default function Orders() {
                                 {!isAllTime &&
                                     <>
                                         <div className="col-lg-3">
-                                            <div className="form-group">
-                                                <DatePicker className="form-control" maxDate={new Date()} format="y-MM-dd" onChange={handleStartDateChange} value={startDate} />
-
+                                            <div className={`form-group ${startDate ? 'has-date-value' : ''}`}>
+                                                <DatePicker className="form-control" maxDate={new Date()} format="y-MM-dd" onChange={handleStartDateChange} value={startDate} clearIcon={<CloseIcon />} calendarIcon={<CalenderIcon />} />
                                             </div>
                                         </div>
                                         <div className="col-lg-3">
-                                            <div className="form-group">
-                                                <DatePicker className="form-control" maxDate={new Date()} format="y-MM-dd" onChange={handleEndDateChange} value={endDate} />
+                                            <div className={`form-group ${endDate ? 'has-date-value' : ''}`}>
+                                                <DatePicker className="form-control" maxDate={new Date()} format="y-MM-dd" onChange={handleEndDateChange} value={endDate} clearIcon={<CloseIcon />} calendarIcon={<CalenderIcon />} />
 
                                             </div>
                                         </div>

@@ -110,6 +110,9 @@ a.simplelink:hover { text-decoration: underline;}
 .revbedge a { display: flex; align-items: center; justify-content: center; text-decoration: none; outline: none;}
 .revbedge a.bedclosebtn { margin: 0 0 0 3px;}
 .revbedge a.bedclosebtn i { font-size: 20px; color: var(--darkColor);}
+.revbedge.onlyicon { width: 30px; padding: 0;}
+.revbedge.onlyicon i { font-size: 20px;}
+.revbedge.darkcolor { background: var(--lightGreyColor); color: var(--whiteText);}
 
 .main_layout {
     padding: 24px;
@@ -221,6 +224,13 @@ body form textarea.form-control,
 body form textarea.input_text { height: 160px; padding-top: 8px; padding-bottom: 8px;}
 .filterandserchwrap { padding: 24px; border-radius: 10px; background: var(--whiteBg); border: solid 1px var(--borderColor); margin: 24px 0 0 0;}
 .letterlimite { position: absolute; right: 0; top: 100%; font-size: 12px; color: var(--lightGreyColor);}
+body .form-control .react-date-picker__wrapper { border: none;}
+body .form-control .react-date-picker__inputGroup { padding: 0;}
+body .form-control .react-date-picker__calendar-button { margin-right: -12px; color: var(--lightGreyColor);}
+body .form-group .react-date-picker__clear-button { color: var(--redColor); margin-right: -12px;}
+body .form-group:not(.has-date-value) .react-date-picker__clear-button { display: none;}
+body .form-group.has-date-value .react-date-picker__calendar-button { display: none;}
+
 
 .reviewlistblocks { margin: 24px 0 0 0;}
 .reviewlistblocks .topactions { align-items: center; margin: 0 0 24px 0;}
@@ -245,9 +255,10 @@ body form textarea.input_text { height: 160px; padding-top: 8px; padding-bottom:
 .reviewbunch .reviewrowbox .imagebox::before { content: ''; display: block; padding-top: 100%; margin: 0 15px 0 0;}
 /* .reviewbunch .reviewrowbox .slider_imagebox img { width: 100%; height: 100%; position: absolute; left: 0; top: 0; object-fit: cover;} */
 .reviewbunch .reviewrowbox .rightinfo { margin: 0; padding: 0 20px 0 0;}
-.reviewbunch .reviewrowbox .rightinfo .featured_tag{ margin: 0 0 14px 0;}
+.reviewbunch .reviewrowbox .rightinfo .topbadges { margin: 0 0 14px 0; display: flex; flex-wrap: wrap; column-gap: 12px;}
 .reviewbunch .reviewrowbox .rightinfo .titlebox { width: 100%; display: flex; align-items: flex-start;}
 .reviewbunch .reviewrowbox .rightinfo .checkmark { margin: 0 10px 0 0; display: flex; width: 24px; height: 24px; color: var(--whiteText); background: var(--blueColor); align-items: center; justify-content: center; font-size: 22px; border-radius: 50px;}
+.reviewbunch .reviewrowbox .rightinfo .checkmark.unpublish { background: var(--lightGreyColor);}
 .reviewbunch .reviewrowbox .rightinfo .titlebox h4 { font-size: 20px; color: var(--darkColor); margin: 0; padding: 0; font-weight: 400;}
 .reviewbunch .reviewrowbox .rightinfo .titlebox h4 strong { font-weight: 700; color: var(--blueColor);}
 .reviewbunch .reviewrowbox .rightinfo .titlebox h4 a { color: var(--blueColor); text-decoration: none;}

@@ -472,18 +472,39 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 								}
 
 								<div className="rightinfo flxflexi">
-									{result.tag_as_feature == true &&
-										<div className="featured_tag revbedge">Featured 
-											{/* <a href="#" className="bedclosebtn"><i className="twenty-closeicon"></i></a> */}
+									{(result.tag_as_feature == true || result.verify_badge == true || result.add_to_carousel == true) &&
+										<div className="topbadges">
+											{result.tag_as_feature == true &&
+												<div className="featured_tag revbedge">Featured 
+													{/* <a href="#" className="bedclosebtn"><i className="twenty-closeicon"></i></a> */}
+												</div>
+											}
+											{result.verify_badge == true &&
+												<div className="revbedge onlyicon darkcolor" title="Verified purchase">
+													<i className="twenty-checkicon"></i>
+												</div>
+											}
+											{result.add_to_carousel == true &&
+												<div className="revbedge onlyicon darkcolor" title="Carousel">
+													<i className="twenty-carousel"></i>
+												</div>
+											}
 										</div>
 									}
 									<div className="titlebox">
-										<div className="checkmark">
-											<i className="twenty-checkicon"></i>
-										</div>
-										<h4 className="fleflexi"><strong>{result.first_name} {result.last_name}</strong> about <strong>
-											{result.productDetails ? <a href={`https://${shopRecords.shop}/products/${result.productDetails.handle}`} target="_blank"> {result.productDetails.title} </a> : ''}
-										</strong>
+										{result.status == "unpublish" &&
+											<div className="checkmark unpublish">
+												<i className="twenty-closeicon"></i>	
+											</div>
+										}
+										{result.status == "publish" &&
+											<div className="checkmark">
+												<i className="twenty-checkicon"></i>
+											</div>
+										}
+										<h4 className="fleflexi">
+											<strong>{result.first_name} {result.last_name}</strong> about <strong>
+											{result.productDetails ? <a href={`https://${shopRecords.shop}/products/${result.productDetails.handle}`} target="_blank"> {result.productDetails.title} </a> : ''}</strong>
 										</h4>
 									</div>
 									<div className="displayname">Display name: {result.display_name}</div>
