@@ -198,6 +198,11 @@ export default function ManageReview() {
 		e.preventDefault();
 		navigate('/app/manual-review-requests/');
 	};
+
+	const showImportReviewForm = (e) => {
+		e.preventDefault();
+		navigate('/app/import-review/');
+	};
 	return (
 		<>
 			<Breadcrumb crumbs={crumbs} />
@@ -259,6 +264,7 @@ export default function ManageReview() {
 														<option value="tag_as_feature">Featured review</option>
 														<option value="verify_badge">Verify badge review</option>
 														<option value="carousel_review">Carousel review</option>
+														<option value="imported_review">Imported reviews</option>
 													</select>
 												</div>
 											</div>
@@ -294,7 +300,7 @@ export default function ManageReview() {
 								<p>Let's start collecting reviews. Try manually requesting or importing reviews.</p>
 								<div className="btnwrap centeralign">
 									<a href="#" className="revbtn lightbtn" onClick={showManualRequestForm}>Send manual request</a>
-									<a href="#" className="revbtn">Import reviews</a>
+									<a href="#" className="revbtn" onClick={showImportReviewForm}>Import reviews</a>
 								</div>
 							</div>
 						}

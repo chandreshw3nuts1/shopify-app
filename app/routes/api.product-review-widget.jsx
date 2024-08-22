@@ -11,6 +11,8 @@ import manualRequestProducts from './models/manualRequestProducts';
 import generalAppearances from './models/generalAppearances';
 import reviewDiscountSettings from './models/reviewDiscountSettings';
 import manualReviewRequests from './models/manualReviewRequests';
+import generalSettings from './models/generalSettings';
+
 import discountCodes from './models/discountCodes';
 import { formatDate } from "./../utils/dateFormat";
 
@@ -36,8 +38,8 @@ export async function action({ request }) {
 
 	const method = request.method;
 	const formData = await request.formData();
-	const validImageExtensions = ['jpg', 'jpeg', 'png'];
-	const validVideoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm'];
+	const validImageExtensions = settingsJson.validImageExtensions;
+	const validVideoExtensions = settingsJson.validVideoExtensions;
 
 	const shop = formData.get('shop_domain');
 	const actionType = formData.get('actionType');
@@ -120,6 +122,8 @@ export async function action({ request }) {
 							var reviewStatus = 'pending';
 						}
 					}
+					const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
+
 					var customer_locale = formData.get('customer_locale') || generalSettingsModel.defaul_language;
 					if (customer_locale == 'zh-TW') {
 						customer_locale = 'cn2';

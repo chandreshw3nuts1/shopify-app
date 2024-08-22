@@ -34,7 +34,7 @@ const RatingSummary = ({ shopRecords, ratingData}) => {
 			shop: shopRecords.shop,
 			actionType: "exportReviews"
 		};
-		const response = await fetch('/api/export-reviews', {
+		const response = await fetch('/api/import-export-reviews', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

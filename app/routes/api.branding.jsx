@@ -9,6 +9,7 @@ import emailReviewReplySettings from './../routes/models/emailReviewReplySetting
 import emailDiscountPhotoVideoReviewSettings from './../routes/models/emailDiscountPhotoVideoReviewSettings';
 import productReviewWidgetCustomizes from './../routes/models/productReviewWidgetCustomizes';
 import reviewFormSettings from './../routes/models/reviewFormSettings';
+import settingsJson from './../utils/settings.json';
 
 export async function loader() {
     return json({
@@ -40,7 +41,7 @@ export async function action({ params, request }) {
     switch (method) {
         case "POST":
             try {
-                const validImageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+                const validImageExtensions = settingsJson.validImageExtensions;
 
                 if (actionType == "uploadLogo") {
                     const logo = formData.get("logo");

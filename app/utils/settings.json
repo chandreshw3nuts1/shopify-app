@@ -1,6 +1,21 @@
 {
 	"host_url": "https://heard-kill-luxury-mailman.trycloudflare.com",
 	"page_limit": 20,
+	"validImageExtensions": [
+		"jpg",
+		"jpeg",
+		"png",
+		"gif"
+	],
+	"validVideoExtensions": [
+		"mp4",
+		"avi",
+		"mov",
+		"wmv",
+		"flv",
+		"mkv",
+		"webm"
+	],
 	"manage_new_review_options": [
 		{
 			"label": "All reviews",
@@ -453,5 +468,30 @@
 		"internationalDayTiming": "21",
 		"internationalOrderTiming": "purchase",
 		"fallbackTiming": "30"
-	}
+	},
+	"importReviewApps": [
+		{
+			"label": "Select App",
+			"value": ""
+		},{
+			"label": "Loox",
+			"value": "loox"
+		},
+		{
+			"label": "Judge.me",
+			"value": "judgeme"
+		},
+		{
+			"label": "Yotpo",
+			"value": "yotpo"
+		},
+		{
+			"label": "Junip",
+			"value": "junip"
+		},
+		{
+			"label": "Okendo",
+			"value": "okendo"
+		}
+	]
 }
