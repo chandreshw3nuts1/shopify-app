@@ -33,7 +33,6 @@
     "last_name_placeholder" : "Enter last name",
     "email_address_placeholder" : "Enter email address",
     "submit_button": "Submit",
-    "upload_photo_video_label": "Upload Photo Or Video",
     "termsAndConditions" : "By submitting, I acknowledge the <a href=[terms_service]>Terms of Service</a> and <a href=[privacy_policy] >Privacy Policy</a> and that my review will be publicly posted and shared online.",
     "thankyouPageEmailText" : "We'll also send it by email",
     "productReviewConstomize": {
@@ -57,8 +56,13 @@
         "oneStarsRatingText": "Terrible!",
         "photoVideoPageTitle": "Show it off",
         "photoVideoPageSubTitle": "We'd love to see it in action!",
-        "dragDropPhotoVideoText": "Drag & Drop photos or video Files",
-        "addPhotoVideoButtonText": "Add Photos or Videos",
+        "dragDropPhotoVideoText": "Drag & Drop photos/videos",
+        "addPhotoVideoButtonText": "Add photos/videos",
+        "addPhotoButtonText": "Add photos",
+        "dragDropPhotoText": "Drag & Drop photos",
+        "maxFivePhotoError": "You can select up to 5 photos",
+        "maxFivePhotoVideoError": "You can select up to 5 photos/video",
+
         "addReviewSameDiscountText": "Your [discount] off discount is wait for you!",
         "addReviewDifferentDiscountText": "Upload a photo to get [photo_discount] off or a video to get [video_discount] off your next purchase!",
         "reviewTextPageTitle": "Tell us more!",
@@ -72,6 +76,8 @@
         "thankyouSubTitle": "Your review was submitted",
         "thankyouDiscountText": "Use the following discount code for [discount] off your next purchase!",
         "submitButtonTitle": "Submit",
-        "continueButtonTitle": "Continue"
+        "continueButtonTitle": "Continue",
+        "uploadingFiles" : "Uploading media...",
+        "uploadMediaSizeError" : "Videos are limited to 250 MB. Please upload a smaller video."
     }
 }

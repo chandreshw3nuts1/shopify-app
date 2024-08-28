@@ -65,7 +65,8 @@ export async function action({ request }) {
         const otherProps = {
             translations,
             productReviewWidgetCustomizesModel,
-            languageWiseProductWidgetSettings
+            languageWiseProductWidgetSettings,
+            generalSettingsModel
         }
 
         const StarIcon = generalAppearancesModel.starIcon.replace(/-/g, '');

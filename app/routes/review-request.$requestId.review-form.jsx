@@ -1,7 +1,8 @@
 import { useLoaderData } from "@remix-run/react";
 // import {mongoConnection} from './../utils/mongoConnection';
 import settingsJson from './../utils/settings.json';
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from 'react';
+
 import { getCustomQuestions } from './../utils/common';
 import StarBigIcon from "./components/icons/StarBigIcon";
 import LongArrowRight from "./components/icons/LongArrowRight";
@@ -26,7 +27,10 @@ import reviewFormSettings from './models/reviewFormSettings';
 
 import { ratingbabycloth, ratingbasket, ratingbones, ratingcoffeecup, ratingcrisamascap, ratingdiamondfront, ratingdiamondtop, ratingdogsleg, ratingfireflame, ratingflight, ratingfood, ratinggraduationcap, ratingheartround, ratingheartsq, ratingleafcanada, ratingleafnormal, ratinglikenormal, ratinglikerays, ratingpethouse, ratingplant, ratingshirt, ratingshoppingbag1, ratingshoppingbag2, ratingshoppingbag3, ratingstarrays, ratingstarrounded, ratingstarsq, ratingsunglass, ratingteacup, ratingtrophy1, ratingtrophy2, ratingtrophy3, ratingtshirt, ratingwine } from './../routes/components/icons/CommonIcons';
 import { getDiscounts } from "./../utils/common";
+import { Modal } from 'react-bootstrap';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 export const links = () => {
 	const stylesUrl = `${settingsJson.host_url}/app/styles/reviewRequest.css`;
@@ -43,7 +47,7 @@ export const loader = async ({ params, request }) => {
 		let manualReviewRequestsModel, shopRecords = null;
 		let customQuestionsData = [];
 		let StarIcon = "";
-		let discountObj, translations, reviewFormSettingsModel, languageWiseReviewFormSettings, generalAppearancesModel = {};
+		let discountObj, translations, reviewFormSettingsModel, languageWiseReviewFormSettings, generalAppearancesModel, generalSettingsModel = {};
 		if (manualRequestProductsModel) {
 			manualReviewRequestsModel = await manualReviewRequests.findById(manualRequestProductsModel.manual_request_id);
 
@@ -60,7 +64,7 @@ export const loader = async ({ params, request }) => {
 
 			discountObj = await getDiscounts(shopRecords, true);
 
-			const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
+			generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
 
 			const language = settingsJson.languages.find(language => language.code === manualReviewRequestsModel.customer_locale);
 
@@ -73,7 +77,7 @@ export const loader = async ({ params, request }) => {
 			reviewFormSettingsModel = await reviewFormSettings.findOne({ shop_id: shopRecords._id });
 			languageWiseReviewFormSettings = reviewFormSettingsModel[customer_locale] ? reviewFormSettingsModel[customer_locale] : {};
 		}
-		return { requestId, requestIdQuery, shopRecords, generalAppearancesModel,customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon, discountObj, translations, reviewFormSettingsModel, languageWiseReviewFormSettings };
+		return { requestId, requestIdQuery, shopRecords, generalAppearancesModel, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon, discountObj, translations, reviewFormSettingsModel, languageWiseReviewFormSettings, generalSettingsModel };
 	} catch (error) {
 		console.log(error);
 	}
@@ -81,7 +85,7 @@ export const loader = async ({ params, request }) => {
 };
 
 const ReviewRequestForm = () => {
-	const { requestId, requestIdQuery, shopRecords,generalAppearancesModel, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon, discountObj, translations, reviewFormSettingsModel, languageWiseReviewFormSettings } = useLoaderData();
+	const { requestId, requestIdQuery, shopRecords, generalAppearancesModel, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon, discountObj, translations, reviewFormSettingsModel, languageWiseReviewFormSettings, generalSettingsModel } = useLoaderData();
 	if (!manualRequestProductsModel) {
 		return 'Page Not Found';
 	}
@@ -103,8 +107,11 @@ const ReviewRequestForm = () => {
 	const [previews, setPreviews] = useState([]);
 	const [noOFfileUploadErr, setNoOFfileUploadErr] = useState(false);
 	const [uploadedDocuments, setUploadedDocuments] = useState([]);
+	const [maxUploadSizeErr, setMaxUploadSizeErr] = useState(false);
 
 	const [thankyouHtmlContent, setThankyouHtmlContent] = useState('');
+	const [isLoadingMedia, setIsLoadingMedia] = useState(false);
+	const fileInputRef = useRef(null); // Create a ref for the file input
 
 	const shopUrl = "https://" + shopRecords.shop;
 	const countTotalQuestions = customQuestionsData.length;
@@ -115,6 +122,8 @@ const ReviewRequestForm = () => {
 		} else {
 			setCurrentStep(countTotalQuestions + 5);
 		}
+
+		//setCurrentStep(2);
 	}, []);
 
 	useEffect(() => {
@@ -244,25 +253,58 @@ const ReviewRequestForm = () => {
 
 		} else {
 
-			setFiles(prevFiles => [...prevFiles, ...selectedFiles]);
-
-			const newPreviews = selectedFiles.map((file) => {
-				const url = URL.createObjectURL(file);
-				return { url, type: file.type };
-
+			const fileSizeLimit = 250 * 1024 * 1024;
+			let checkUploadFilesIsValid = true;
+			selectedFiles.forEach((file) => {
+				if (file.size > fileSizeLimit) {
+					checkUploadFilesIsValid = false;
+				}
 			});
+
+			if (!checkUploadFilesIsValid) {
+				fileInputRef.current.value = '';
+				setMaxUploadSizeErr(true);
+				return true;
+			}
+			setMaxUploadSizeErr(false);
+			setIsLoadingMedia(true);
+			const filteredFiles = selectedFiles.filter((file) => {
+				const isImage = file.type.startsWith('image/');
+				const isVideo = file.type.startsWith('video/');
+
+				if (generalSettingsModel.is_enabled_video_review) {
+					return isImage || isVideo;
+				} else {
+					return isImage;
+				}
+			});
+
+			setFiles((prevFiles) => [...prevFiles, ...filteredFiles]);
+
+
+			const newPreviews = selectedFiles
+				.filter((file) => {
+					// Include images always, and include videos if `shouldIncludeVideos` is true
+					return file.type.startsWith('image/') || (generalSettingsModel.is_enabled_video_review && file.type.startsWith('video/'));
+				})
+				.map((file) => {
+					const url = URL.createObjectURL(file);
+					return { url, type: file.type };
+				});
+
 
 			for (const file of selectedFiles) {
 				const formData = new FormData();
 				formData.append('image_and_videos[]', file);
 				formData.append('actionType', "uploadDocuments");
+				formData.append('shop_domain', shopRecords.shop);
 				try {
 					const response = await fetch('/api/product-review-widget', {
 						method: 'POST',
 						body: formData,
 					});
 					const data = await response.json();
-					setUploadedDocuments(prevUploadedFiles => [...prevUploadedFiles, ...data]);
+					setUploadedDocuments(prevUploadedFiles => [...prevUploadedFiles, ...data.files]);
 
 				} catch (error) {
 					console.error('Error uploading file:', error);
@@ -270,6 +312,9 @@ const ReviewRequestForm = () => {
 			}
 
 			setPreviews(prevPreviews => [...prevPreviews, ...newPreviews]);
+			setIsLoadingMedia(false);
+			fileInputRef.current.value = '';
+
 		}
 	};
 
@@ -278,6 +323,7 @@ const ReviewRequestForm = () => {
 		const formData = new FormData();
 		formData.append('deleteFileName', deletedUrl);
 		formData.append('actionType', "deleteDocuments");
+		formData.append('shop_domain', shopRecords.shop);
 		try {
 			const response = await fetch('/api/product-review-widget', {
 				method: 'POST',
@@ -350,7 +396,105 @@ const ReviewRequestForm = () => {
 	termsAndConditionHtml = termsAndConditionHtml.replace(/\[terms_service\]/g, termsServiceLink);
 	termsAndConditionHtml = termsAndConditionHtml.replace(/\[privacy_policy\]/g, privacyPolicyLink);
 	const themeColor = reviewFormSettingsModel.themeColor;
-    const cornerRadius = reviewFormSettingsModel.cornerRadius ? reviewFormSettingsModel.cornerRadius : generalAppearancesModel.cornerRadius ;
+	const cornerRadius = reviewFormSettingsModel.cornerRadius ? reviewFormSettingsModel.cornerRadius : generalAppearancesModel.cornerRadius;
+
+
+	// record video 
+	const [showRecordVideoModal, setShowRecordVideoModal] = useState(false);
+	const handleCloseRecordVideoModal = () => setShowRecordVideoModal(false);
+	const [mediaRecorder, setMediaRecorder] = useState(null);
+	const [isRecording, setIsRecording] = useState(false);
+	const [videoURL, setVideoURL] = useState(null);
+	const [recordedBlob, setRecordedBlob] = useState(null);
+	const videoRef = useRef(null);
+	const mediaRecorderRef = useRef(null);
+
+	const startRecording = async () => {
+		if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+			const stream = await navigator.mediaDevices.getUserMedia({
+				audio: {
+					echoCancellation: true,
+					noiseSuppression: true,
+				},
+				video: { width: 1920, height: 1080 }
+			});
+			videoRef.current.srcObject = stream;
+			videoRef.current.play();
+
+			mediaRecorderRef.current = new MediaRecorder(stream);
+			const chunks = [];
+			setRecordedBlob(null);
+
+			mediaRecorderRef.current.ondataavailable = (event) => {
+				chunks.push(event.data);
+			};
+
+			mediaRecorderRef.current.onstop = () => {
+				const recordedBlobData = new Blob(chunks, { type: 'video/mp4' });
+				setRecordedBlob(recordedBlobData);
+				const url = URL.createObjectURL(recordedBlobData);
+				setVideoURL(url);
+
+				// Switch the video element to playback mode
+				videoRef.current.srcObject = null;
+				videoRef.current.src = url;
+				videoRef.current.controls = true;
+				videoRef.current.play();
+			};
+
+			mediaRecorderRef.current.start();
+			setIsRecording(true);
+		} else {
+			console.error('MediaRecorder API not supported.');
+		}
+	};
+
+	const stopRecording = () => {
+		if (mediaRecorderRef.current) {
+			mediaRecorderRef.current.stop();
+			videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+			setIsRecording(false);
+		}
+	};
+
+	const submitRecording = async () => {
+		if (!recordedBlob) return;
+
+		const formData = new FormData();
+		formData.append("actionType", "uploadVideoRecording");
+		formData.append("video_record", recordedBlob, 'recording.mp4'); // Correct extension for webm type
+		formData.append('shop_domain', shopRecords.shop);
+
+		try {
+			const response = await fetch('/api/product-review-widget', {
+				method: 'POST',
+				body: formData,
+			});
+			const data = await response.json();
+			setUploadedDocuments(prevUploadedFiles => [...prevUploadedFiles, ...data]);
+
+
+			const fileURL = URL.createObjectURL(recordedBlob);
+			const fileName = recordedBlob.name;
+			const fileType = recordedBlob.type;
+			const uploadedFiles = {
+				name: fileName,
+				url: fileURL,
+				type: fileType,
+			};
+			setFiles((prevFiles) => [...prevFiles, uploadedFiles]);
+			setPreviews(prevPreviews => [...prevPreviews, uploadedFiles]);
+			setShowRecordVideoModal(false);
+		} catch (error) {
+			console.error('Upload failed:', error);
+		}
+	};
+
+	const recordVideoStart = () => {
+		setShowRecordVideoModal(true);
+	};
+
+
 
 	return (
 		<>
@@ -436,25 +580,49 @@ const ReviewRequestForm = () => {
 													<div className="iconimage">
 														<AddImageIcon />
 													</div>
-													<div className="simpletext">{languageContent('dragDropPhotoVideoText')}</div>
+													<div className="simpletext">{generalSettingsModel.is_enabled_video_review ? languageContent('dragDropPhotoVideoText') : languageContent('dragDropPhotoText')}</div>
 													<div className="orbox flxrow">
 														<span>OR</span>
 													</div>
 												</>
 											}
 											<div className="btnwrap">
-												<span className="revbtn">
-													<ImageFilledIcon />
-													{languageContent('addPhotoVideoButtonText')}
-												</span>
+
+												{isLoadingMedia == false ? (
+													<span className="revbtn">
+														<ImageFilledIcon />
+														{generalSettingsModel.is_enabled_video_review ? languageContent('addPhotoVideoButtonText') : languageContent('addPhotoButtonText')}
+													</span>
+												) : (
+													<span className="revbtn">
+														<div className="loading-icon">
+															<FontAwesomeIcon icon={faSpinner} spin /> {translations.reviewFormSettings.uploadingFiles}
+														</div>
+													</span>
+												)}
+
+
+
+
 											</div>
-											<input onChange={handleFileChange} className="form__file" name="image_and_videos[]" id="upload-files" type="file" accept="image/*,video/mp4,video/x-m4v,video/*" multiple="multiple" />
+											<input ref={fileInputRef} onChange={handleFileChange} className="form__file" name="image_and_videos[]" id="upload-files" type="file" accept={generalSettingsModel.is_enabled_video_review ? 'image/*,video/mp4,video/x-m4v,video/*' : 'image/*'} multiple="multiple" />
 										</label>
+										<span className="" onClick={recordVideoStart}>
+											<ImageFilledIcon />
+										</span>
 
 
 										{noOFfileUploadErr && <div className="discountrow uploadDocError ">
-											<div className="discountbox"><strong>You can select up to 5 photos</strong></div>
+											<div className="discountbox"><strong>{generalSettingsModel.is_enabled_video_review ? translations.reviewFormSettings.maxFivePhotoVideoError : translations.reviewFormSettings.maxFivePhotoError}</strong></div>
 										</div>}
+
+										{maxUploadSizeErr &&
+											<div className="discountrow">
+												<div className="discountbox"><strong>{translations.reviewFormSettings.uploadMediaSizeError}</strong></div>
+											</div>
+
+										}
+
 										{discountHtml &&
 											<div className="discountrow">
 												<div className="discountbox">{discountHtml}</div>
@@ -641,6 +809,29 @@ const ReviewRequestForm = () => {
 					</form>
 				</div>
 			</div>
+
+			<Modal show={showRecordVideoModal} className='reviewimagepopup' onHide={handleCloseRecordVideoModal} size="lg" backdrop="static">
+				<Modal.Header closeButton>
+					<Modal.Title>Recording Video</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+
+					<div>
+						{/* Reused video element for both recording and playback */}
+						<video ref={videoRef} autoPlay muted={!videoURL} style={{ width: '100%', maxHeight: '400px' }}></video>
+
+						<div>
+							{!isRecording ? (
+								<button onClick={startRecording}>Start Recording</button>
+							) : (
+								<button onClick={stopRecording}>Stop Recording</button>
+							)}
+
+							{recordedBlob && <button onClick={submitRecording}>Submit Recording</button>}
+						</div>
+					</div>
+				</Modal.Body>
+			</Modal>
 		</>
 	);
 };

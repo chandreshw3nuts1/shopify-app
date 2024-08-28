@@ -50,6 +50,12 @@ export default function ReviewFormSettings() {
     const [photoVideoPageSubTitle, setPhotoVideoPageSubTitle] = useState('');
     const [dragDropPhotoVideoText, setDragDropPhotoVideoText] = useState('');
     const [addPhotoVideoButtonText, setAddPhotoVideoButtonText] = useState('');
+
+
+    const [dragDropPhotoText, setDragDropPhotoText] = useState('');
+    const [addPhotoButtonText, setAddPhotoButtonText] = useState('');
+
+
     const [addReviewSameDiscountText, setAddReviewSameDiscountText] = useState('');
     const [addReviewDifferentDiscountText, setAddReviewDifferentDiscountText] = useState('');
     const [reviewTextPageTitle, setReviewTextPageTitle] = useState('');
@@ -91,6 +97,10 @@ export default function ReviewFormSettings() {
             photoVideoPageSubTitle,
             dragDropPhotoVideoText,
             addPhotoVideoButtonText,
+
+            dragDropPhotoText,
+            addPhotoButtonText,
+
             addReviewSameDiscountText,
             addReviewDifferentDiscountText,
             reviewTextPageTitle,
@@ -120,6 +130,8 @@ export default function ReviewFormSettings() {
         setPhotoVideoPageSubTitle(photoVideoPageSubTitle || '');
         setDragDropPhotoVideoText(dragDropPhotoVideoText || '');
         setAddPhotoVideoButtonText(addPhotoVideoButtonText || '');
+        setDragDropPhotoText(dragDropPhotoText || '');
+        setAddPhotoButtonText(addPhotoButtonText || '');
         setAddReviewSameDiscountText(addReviewSameDiscountText || '');
         setAddReviewDifferentDiscountText(addReviewDifferentDiscountText || '');
         setReviewTextPageTitle(reviewTextPageTitle || '');
@@ -133,7 +145,7 @@ export default function ReviewFormSettings() {
         setThankyouTitle(thankyouTitle || '');
         setThankyouSubTitle(thankyouSubTitle || '');
         setThankyouDiscountText(thankyouDiscountText || '');
-        
+
         setSubmitButtonTitle(submitButtonTitle || '');
         setContinueButtonTitle(continueButtonTitle || '');
 
@@ -149,6 +161,8 @@ export default function ReviewFormSettings() {
             photoVideoPageSubTitle: photoVideoPageSubTitle || '',
             dragDropPhotoVideoText: dragDropPhotoVideoText || '',
             addPhotoVideoButtonText: addPhotoVideoButtonText || '',
+            dragDropPhotoText: dragDropPhotoText || '',
+            addPhotoButtonText: addPhotoButtonText || '',
             addReviewSameDiscountText: addReviewSameDiscountText || '',
             addReviewDifferentDiscountText: addReviewDifferentDiscountText || '',
             reviewTextPageTitle: reviewTextPageTitle || '',
@@ -177,6 +191,8 @@ export default function ReviewFormSettings() {
             photoVideoPageSubTitle: t('reviewFormSettings.photoVideoPageSubTitle'),
             dragDropPhotoVideoText: t('reviewFormSettings.dragDropPhotoVideoText'),
             addPhotoVideoButtonText: t('reviewFormSettings.addPhotoVideoButtonText'),
+            dragDropPhotoText: t('reviewFormSettings.dragDropPhotoText'),
+            addPhotoButtonText: t('reviewFormSettings.addPhotoButtonText'),
             addReviewSameDiscountText: t('reviewFormSettings.addReviewSameDiscountText'),
             addReviewDifferentDiscountText: t('reviewFormSettings.addReviewDifferentDiscountText'),
             reviewTextPageTitle: t('reviewFormSettings.reviewTextPageTitle'),
@@ -186,7 +202,7 @@ export default function ReviewFormSettings() {
             questionSubTitle: t('reviewFormSettings.questionSubTitle'),
             reviewFormTitle: t('reviewFormSettings.reviewFormTitle'),
             reviewFormSubTitle: t('reviewFormSettings.reviewFormSubTitle'),
-            
+
             thankyouTitle: t('reviewFormSettings.thankyouTitle'),
             thankyouSubTitle: t('reviewFormSettings.thankyouSubTitle'),
             thankyouDiscountText: t('reviewFormSettings.thankyouDiscountText'),
@@ -307,6 +323,10 @@ export default function ReviewFormSettings() {
             setDragDropPhotoVideoText(eventVal);
         } else if (eventKey == 'addPhotoVideoButtonText') {
             setAddPhotoVideoButtonText(eventVal);
+        } else if (eventKey == 'dragDropPhotoText') {
+            setDragDropPhotoText(eventVal);
+        } else if (eventKey == 'addPhotoButtonText') {
+            setAddPhotoButtonText(eventVal);
         } else if (eventKey == 'addReviewSameDiscountText') {
             setAddReviewSameDiscountText(eventVal);
         } else if (eventKey == 'addReviewDifferentDiscountText') {
@@ -381,7 +401,7 @@ export default function ReviewFormSettings() {
                                             </div>
                                             <div className='insidewhitecard'>
                                                 <div className='widget-theme-options'>
-                                                <div className="form-group m-0 horizontal-form">
+                                                    <div className="form-group m-0 horizontal-form">
                                                         <label htmlFor="">Theme color</label>
                                                         <div className='sideinput mw300 flxflexi'>
                                                             <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="reviewFormSettings" pickerType="themeColor" />
@@ -500,25 +520,48 @@ export default function ReviewFormSettings() {
                                                 </div>
                                             </div>
 
-
-                                            <div className='insidewhitecard flxcol gapy18'>
-                                                <div className="form-group m-0">
-                                                    <label htmlFor="">Drag & Drop photo/video text</label>
-                                                    <div className='sideinput flxflexi'>
-                                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="dragDropPhotoVideoText" value={dragDropPhotoVideoText} placeholder={placeHolderLanguageData.dragDropPhotoVideoText} />
+                                            {generalSettingsModel.is_enabled_video_review == true ?
+                                                <>
+                                                    <div className='insidewhitecard flxcol gapy18'>
+                                                        <div className="form-group m-0">
+                                                            <label htmlFor="">Drag & Drop photos/videos text (Plural)</label>
+                                                            <div className='sideinput flxflexi'>
+                                                                <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="dragDropPhotoVideoText" value={dragDropPhotoVideoText} placeholder={placeHolderLanguageData.dragDropPhotoVideoText} />
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
 
-
-                                            <div className='insidewhitecard flxcol gapy18'>
-                                                <div className="form-group m-0">
-                                                    <label htmlFor="">Upload photo / video text</label>
-                                                    <div className='sideinput flxflexi'>
-                                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="addPhotoVideoButtonText" value={addPhotoVideoButtonText} placeholder={placeHolderLanguageData.addPhotoVideoButtonText} />
+                                                    <div className='insidewhitecard flxcol gapy18'>
+                                                        <div className="form-group m-0">
+                                                            <label htmlFor="">Add photos/videos button text (Plural) </label>
+                                                            <div className='sideinput flxflexi'>
+                                                                <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="addPhotoVideoButtonText" value={addPhotoVideoButtonText} placeholder={placeHolderLanguageData.addPhotoVideoButtonText} />
+                                                            </div>
+                                                        </div>
+                                                    </div></>
+                                                :
+                                                <>
+                                                    <div className='insidewhitecard flxcol gapy18'>
+                                                        <div className="form-group m-0">
+                                                            <label htmlFor="">Drag & Drop photos (Plural)</label>
+                                                            <div className='sideinput flxflexi'>
+                                                                <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="dragDropPhotoText" value={dragDropPhotoText} placeholder={placeHolderLanguageData.dragDropPhotoText} />
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
+
+
+                                                    <div className='insidewhitecard flxcol gapy18'>
+                                                        <div className="form-group m-0">
+                                                            <label htmlFor="">Add photos button text (Plural)                                                    </label>
+                                                            <div className='sideinput flxflexi'>
+                                                                <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="addPhotoButtonText" value={addPhotoButtonText} placeholder={placeHolderLanguageData.addPhotoButtonText} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </>
+
+                                            }
 
 
                                             <div className='insidewhitecard flxcol gapy18'>
