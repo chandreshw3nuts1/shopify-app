@@ -42,14 +42,20 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 		globalReviewText = languageWiseProductWidgetSettings.reviewSingular ? languageWiseProductWidgetSettings.reviewSingular : translations.productReviewConstomize.reviewSingular
 
 	}
-	let headerTextColor, buttonBorderColor, buttonTitleColor, buttonBackgroundOnHover, buttonTextOnHover, buttonBackground, starsBarBackground, starsBarFill = "";
+	let headerTextColor = "",
+		buttonBorderColor = "",
+		buttonTitleColor = "",
+		buttonBackgroundOnHover = "",
+		buttonTextOnHover = "",
+		buttonBackground = "",
+		starsBarBackground = "",
+		starsBarFill = "";
 
 	if (productReviewWidgetCustomizesModel.widgetColor == 'custom') {
 		headerTextColor = productReviewWidgetCustomizesModel.headerTextColor;
 		buttonBorderColor = `1px solid ${productReviewWidgetCustomizesModel.buttonBorderColor}`;
 		buttonTitleColor = productReviewWidgetCustomizesModel.buttonTitleColor;
 		buttonBackground = productReviewWidgetCustomizesModel.buttonBackground;
-		
 		buttonBackgroundOnHover = productReviewWidgetCustomizesModel.buttonBackgroundOnHover;
 		buttonTextOnHover = productReviewWidgetCustomizesModel.buttonTextOnHover;
 		starsBarBackground = productReviewWidgetCustomizesModel.starsBarBackground;
@@ -57,20 +63,15 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 	} else if (productReviewWidgetCustomizesModel.widgetColor == 'white') {
 		headerTextColor = '#ffffff';
 		buttonBorderColor = `1px solid #ffffff`;
-		// buttonTitleColor = '#ffffff';
-		// buttonBackground = '#000000';
-        buttonTextOnHover = '#000000';
-
-		//buttonBackgroundOnHover = productReviewWidgetCustomizesModel.buttonBackgroundOnHover;
-		//buttonTextOnHover = productReviewWidgetCustomizesModel.buttonTextOnHover;
+		buttonTextOnHover = '#000000';
 	}
 	let reviewWidgetLayoutWidth = "100%";
 	let gridClassName = 'full-grid';
 	if (productReviewWidgetCustomizesModel.widgetLayout == 'grid') {
-		reviewWidgetLayoutWidth  = "33.33%";
+		reviewWidgetLayoutWidth = "33.33%";
 		gridClassName = 'grid-four-column';
 	} else if (productReviewWidgetCustomizesModel.widgetLayout == 'compact') {
-		reviewWidgetLayoutWidth  = "50%";
+		reviewWidgetLayoutWidth = "50%";
 		gridClassName = 'grid-two-column';
 	}
 	// console.log(productReviewWidgetCustomizesModel.headerLayout);
@@ -106,7 +107,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 			</style>
 			{
 				formParams.page == 1 ? <div className="">
-					
+
 					<div className={` review_top_actions ${minimalHeader ? 'minimalheader' : 'otherheaderlayout'} ${compactHeader ? 'compactheader' : ''} ${expandedHeader ? 'expandedheader' : ''}`} style={{ fontFamily: generalAppearancesModel.widgetFont }}>
 						<div className={`left_actions flxfix ${minimalHeader ? '' : 'sidebyside'}`}>
 							<div className="leftpart">
@@ -126,7 +127,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 							<div className="rightpart">
 								{(formParams.totalReviewItems > 0 && productReviewWidgetCustomizesModel.showRatingsDistribution) && !minimalHeader &&
 									<div className="stardetaildd">
-										<div className="stardetailrow flxrow">
+										<div className="stardetailrow flxrow product_widget_stardetailrow">
 											<div className="sratnumber d-none" data-review={five_start_count}>5</div>
 											<div className="starsicons flxrow star-5">
 
@@ -136,7 +137,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 											<div className="processbar"><div className="activebar" style={{ width: `${five_start_percent}%` }}></div></div>
 											<div className="reviewgiven">({five_start_count})</div>
 										</div>
-										<div className="stardetailrow flxrow">
+										<div className="stardetailrow flxrow product_widget_stardetailrow">
 											<div className="sratnumber d-none" data-review={four_start_count}>4</div>
 											<div className="starsicons flxrow star-4">
 												<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="4" />
@@ -145,7 +146,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 											<div className="processbar"><div className="activebar" style={{ width: `${four_start_percent}%` }}></div></div>
 											<div className="reviewgiven">({four_start_count})</div>
 										</div>
-										<div className="stardetailrow flxrow">
+										<div className="stardetailrow flxrow product_widget_stardetailrow">
 											<div className="sratnumber d-none" data-review={three_start_count}>3</div>
 											<div className="starsicons flxrow star-3">
 												<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="3" />
@@ -154,7 +155,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 											<div className="processbar"><div className="activebar" style={{ width: `${three_start_percent}%` }}></div></div>
 											<div className="reviewgiven">({three_start_count})</div>
 										</div>
-										<div className="stardetailrow flxrow">
+										<div className="stardetailrow flxrow product_widget_stardetailrow">
 											<div className="sratnumber d-none" data-review={two_start_count}>2</div>
 											<div className="starsicons flxrow star-2">
 												<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="2" />
@@ -163,7 +164,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 											<div className="processbar"><div className="activebar" style={{ width: `${two_start_percent}%` }}></div></div>
 											<div className="reviewgiven">({two_start_count})</div>
 										</div>
-										<div className="stardetailrow flxrow">
+										<div className="stardetailrow flxrow product_widget_stardetailrow">
 											<div className="sratnumber d-none" data-review={one_start_count}>1</div>
 											<div className="starsicons flxrow star-1">
 												<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="1" />
@@ -172,9 +173,10 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 											<div className="processbar"><div className="activebar" style={{ width: `${one_start_percent}%` }}></div></div>
 											<div className="reviewgiven">({one_start_count})</div>
 										</div>
+										<input type="hidden" id="ratting_wise_filter" value={formParams.filterByRatting} />
 									</div>
 								}
-								{minimalHeader && 
+								{minimalHeader &&
 									<div className="star-rating">
 										<div className="dropdown">
 											<button className="dropdown-toggle starbtn" style={{ color: headerTextColor }} type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -203,7 +205,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 												<>
 													<ul className="dropdown-menu">
 														<div className="stardetaildd">
-															<div className="stardetailrow flxrow">
+															<div className="stardetailrow flxrow product_widget_stardetailrow">
 																<div className="sratnumber d-none" data-review={five_start_count}>5</div>
 																<div className="starsicons flxrow star-5">
 
@@ -213,7 +215,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 																<div className="processbar"><div className="activebar" style={{ width: `${five_start_percent}%` }}></div></div>
 																<div className="reviewgiven">({five_start_count})</div>
 															</div>
-															<div className="stardetailrow flxrow">
+															<div className="stardetailrow flxrow product_widget_stardetailrow">
 																<div className="sratnumber d-none" data-review={four_start_count}>4</div>
 																<div className="starsicons flxrow star-4">
 																	<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="4" />
@@ -222,7 +224,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 																<div className="processbar"><div className="activebar" style={{ width: `${four_start_percent}%` }}></div></div>
 																<div className="reviewgiven">({four_start_count})</div>
 															</div>
-															<div className="stardetailrow flxrow">
+															<div className="stardetailrow flxrow product_widget_stardetailrow">
 																<div className="sratnumber d-none" data-review={three_start_count}>3</div>
 																<div className="starsicons flxrow star-3">
 																	<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="3" />
@@ -231,7 +233,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 																<div className="processbar"><div className="activebar" style={{ width: `${three_start_percent}%` }}></div></div>
 																<div className="reviewgiven">({three_start_count})</div>
 															</div>
-															<div className="stardetailrow flxrow">
+															<div className="stardetailrow flxrow product_widget_stardetailrow">
 																<div className="sratnumber d-none" data-review={two_start_count}>2</div>
 																<div className="starsicons flxrow star-2">
 																	<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="2" />
@@ -240,7 +242,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 																<div className="processbar"><div className="activebar" style={{ width: `${two_start_percent}%` }}></div></div>
 																<div className="reviewgiven">({two_start_count})</div>
 															</div>
-															<div className="stardetailrow flxrow">
+															<div className="stardetailrow flxrow product_widget_stardetailrow">
 																<div className="sratnumber d-none" data-review={one_start_count}>1</div>
 																<div className="starsicons flxrow star-1">
 																	<AllStarBigIcon CommonRatingComponent={CommonRatingComponent} color={generalAppearancesModel.starIconColor} starRate="1" />
@@ -258,7 +260,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 									</div>
 								}
 							</div>
-							
+
 							{formParams.totalReviewItems > 0 && minimalHeader &&
 								<div className="totalreviewcount" style={{ color: headerTextColor }}>
 									<span>{formParams.totalReviewItems}</span> {globalReviewText}
@@ -284,7 +286,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 							</div>
 							{productReviewWidgetCustomizesModel.showSortingOptions &&
 								<div className="dropdown">
-									<button className="dropdown-toggle revbtn lightbtn wbigbtn noafter custombtn" style={{ border: buttonBorderColor, color: buttonTitleColor, backgroundColor : buttonBackground }} type="button" data-bs-toggle="dropdown" aria-expanded="false">
+									<button className="dropdown-toggle revbtn lightbtn wbigbtn noafter custombtn" style={{ border: buttonBorderColor, color: buttonTitleColor, backgroundColor: buttonBackground }} type="button" data-bs-toggle="dropdown" aria-expanded="false">
 										<FilterIcon />
 										{translations.sort_by}
 										{formParams.totalReviewItems > 0 &&
@@ -306,12 +308,12 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 								</div>
 							}
 
-							{(formParams.productId != "" && productReviewWidgetCustomizesModel.writeReviewButton == 'show') ? <button className="revbtn wbigbtn custombtn" id="show_create_review_modal" style={{ border: buttonBorderColor, color: buttonTitleColor, backgroundColor : buttonBackground }}>{languageWiseProductWidgetSettings.writeReviewButtonTitle ? languageWiseProductWidgetSettings.writeReviewButtonTitle : translations.productReviewConstomize.writeReviewButtonTitle}</button> : ""}
+							{(formParams.productId != "" && productReviewWidgetCustomizesModel.writeReviewButton == 'show') ? <button className="revbtn wbigbtn custombtn" id="show_create_review_modal" style={{ border: buttonBorderColor, color: buttonTitleColor, backgroundColor: buttonBackground }}>{languageWiseProductWidgetSettings.writeReviewButtonTitle ? languageWiseProductWidgetSettings.writeReviewButtonTitle : translations.productReviewConstomize.writeReviewButtonTitle}</button> : ""}
 						</div>
 					</div>
-					
 
-					
+
+
 
 					{reviewItems.length > 0 ?
 						<div className={`main_review_block ${gridClassName}-wrap`}>
@@ -331,8 +333,8 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 					}
 					{formParams.hasMore == 1 ?
 						<div className="load_more_review ">
-							<a href="#" id="load_more_review" className="revbtn custombtn" style={{ border: buttonBorderColor, color: buttonTitleColor, backgroundColor : buttonBackground }}>{languageWiseProductWidgetSettings.showMoreReviewsTitle ? languageWiseProductWidgetSettings.showMoreReviewsTitle : translations.productReviewConstomize.showMoreReviewsTitle}</a>
-							<a href="#" id="w3loadingmorerws" className="revbtn custombtn" style={{ border: buttonBorderColor, color: buttonTitleColor, backgroundColor : buttonBackground, display:"none" }}>{ translations.loadingText}</a>
+							<a href="#" id="load_more_review" className="revbtn custombtn" style={{ border: buttonBorderColor, color: buttonTitleColor, backgroundColor: buttonBackground }}>{languageWiseProductWidgetSettings.showMoreReviewsTitle ? languageWiseProductWidgetSettings.showMoreReviewsTitle : translations.productReviewConstomize.showMoreReviewsTitle}</a>
+							<a href="#" id="w3loadingmorerws" className="revbtn custombtn" style={{ border: buttonBorderColor, color: buttonTitleColor, backgroundColor: buttonBackground, display: "none" }}>{translations.loadingText}</a>
 						</div> :
 						""
 					}

@@ -6,7 +6,12 @@ import ReviewVerifyIcon from '../icons/ReviewVerifyIcon';
 
 const ReviewItem = (props) => {
     const { translations, productReviewWidgetCustomizesModel, languageWiseProductWidgetSettings } = props.otherProps;
-    let replyText, replyBackground, replyBackgroundOnHover, reviewsText, reviewsBackground, reviewsBackgroundOnHover = "";
+    let replyText = "",
+        replyBackground = "",
+        replyBackgroundOnHover = "",
+        reviewsText = "",
+        reviewsBackground = "",
+        reviewsBackgroundOnHover = "";
 
     if (productReviewWidgetCustomizesModel.widgetColor == 'custom') {
         replyText = productReviewWidgetCustomizesModel.replyText;
@@ -18,7 +23,7 @@ const ReviewItem = (props) => {
     } else if (productReviewWidgetCustomizesModel.widgetColor == 'white') {
 
     }
-
+    const widgetItemClass = props.formParams.is_modal_reviews == 'true' ? "widget_w3grid-review-item" : "product_widget_w3grid-review-item";
     return (
         <>
             <style>
@@ -37,7 +42,7 @@ const ReviewItem = (props) => {
                 <>
                     {productReviewWidgetCustomizesModel.widgetLayout == "grid" && (
                         props.reviewItems.map((review, i) => (
-                            <div key={i} className={`w3grid-review-item frontreviewbox ${props.gridClassName}`} data-reviewid={review._id} >
+                            <div key={i} className={`w3grid-review-item frontreviewbox ${props.gridClassName} ${widgetItemClass}`} data-reviewid={review._id} >
                                 <div className='review-list-item'>
                                     <div className="">
                                         <div className="box-style custombg" style={{ backgroundColor: reviewsBackground }}>
@@ -145,7 +150,7 @@ const ReviewItem = (props) => {
 
                     {productReviewWidgetCustomizesModel.widgetLayout == "compact" && (
                         props.reviewItems.map((review, i) => (
-                            <div key={i} className={`w3grid-review-item frontreviewbox ${props.gridClassName}`} data-reviewid={review._id} >
+                            <div key={i} className={`w3grid-review-item frontreviewbox ${props.gridClassName} ${widgetItemClass}`} data-reviewid={review._id} >
                                 <div className='review-list-item'>
                                     <div className="">
                                         <div className="box-style custombg" style={{ backgroundColor: reviewsBackground }}>
@@ -250,7 +255,7 @@ const ReviewItem = (props) => {
 
                     {productReviewWidgetCustomizesModel.widgetLayout == "list" && (
                         props.reviewItems.map((review, i) => (
-                            <div key={i} className={`review-list-item frontreviewbox w3grid-review-item ${props.gridClassName}`} data-reviewid={review._id} >
+                            <div key={i} className={`review-list-item frontreviewbox w3grid-review-item ${props.gridClassName} ${widgetItemClass}`} data-reviewid={review._id} >
                                 <div className=''>
                                     <div className="">
                                         <div className="box-style custombg" style={{ backgroundColor: reviewsBackground }}>

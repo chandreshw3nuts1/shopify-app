@@ -1,11 +1,9 @@
 var imageAndVideoFiles = [];
 var FILE_LIST = [];
-
 $(document).ready(function () {
     /* 1. Visualizing things on Hover - See next part for action on click */
     jQuery("#stars li").on("mouseover", function () {
         var onStar = parseInt(jQuery(this).data("value"), 10); // The star currently mouse on
-        console.log(onStar);
         jQuery(this).parent().removeClass("hover-1 hover-2 hover-3 hover-4 hover-5");
         jQuery(this).parent().addClass(`hover-${onStar}`);
         // Now highlight all the stars that's not after the current hovered star
@@ -212,10 +210,8 @@ $(document).ready(function () {
         const deleteFileName = imageAndVideoFiles[fileIndex];
 
         // Assuming FILE_LIST and imageAndVideoFiles are globally accessible arrays
-        console.log(FILE_LIST);
         FILE_LIST.splice(fileIndex, 1);
         imageAndVideoFiles.splice(fileIndex, 1);
-        console.log(FILE_LIST);
 
         // Perform AJAX call using jQuery
         $.ajax({
@@ -249,10 +245,10 @@ $(document).ready(function () {
             // Get access to the user's camera and microphone
             stream = await navigator.mediaDevices.getUserMedia({
                 audio: {
-					echoCancellation: true,
-					noiseSuppression: true,
-				},
-				video: { width: 1920, height: 1080 }
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                },
+                video: { width: 1920, height: 1080 }
             });
             $('#record_video_el').prop('srcObject', stream);
 
@@ -351,7 +347,6 @@ $(document).ready(function () {
     });
 
     $(document).on('hide.bs.modal', '#record_review_video_modal', function () {
-        console.log('Modal is about to be hidden');
         stopRecording();
     });
 
@@ -494,7 +489,8 @@ $(document).on("click", "#show_create_review_modal", function (e) {
 });
 
 
-$(document).on("click", ".review-list-item, .w3grid-review-item", function () {
+$(document).on("click", ".product_widget_w3grid-review-item", function () {
+
     reviewId = $(this).data('reviewid');
     $.ajax({
         type: 'POST',
@@ -603,7 +599,7 @@ function validateEmail(email) {
     return re.test(email);
 }
 
-$(document).on("click", ".dropdown-menu .stardetailrow", function (e) {
+$(document).on("click", ".dropdown-menu .product_widget_stardetailrow,.stardetaildd .product_widget_stardetailrow", function (e) {
 
     var ratingNumber = $(this).find('.sratnumber').text();
     var haveReview = $(this).find('.sratnumber').data('review');

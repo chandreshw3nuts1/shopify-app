@@ -1,10 +1,14 @@
 import { json } from "@remix-run/node";
 import { GraphQLClient } from 'graphql-request';
+import { ObjectId } from 'mongodb';
 import ReactDOMServer from 'react-dom/server';
 import ProductReviewWidget from './components/widget-components/product-review-widget';
+import WidgetModalRviews from './components/widget-components/widget-modal-reviews';
 import CreateReviewModalWidget from './components/widget-components/create-review-modal-widget';
 import ReviewDetailModalWidget from './components/widget-components/review-detail-modal-widget';
-import { ObjectId } from 'mongodb';
+import RatingWidget from './components/widget-components/rating-widget';
+
+
 
 import { getShopDetailsByShop, findOneRecord, getCustomQuestions } from './../utils/common';
 import { mongoConnection } from './../utils/mongoConnection';
@@ -33,6 +37,7 @@ export async function action({ request }) {
         const actionType = formData.get('actionType');
         const shop = formData.get('shop_domain');
         const shopRecords = await getShopDetailsByShop(shop);
+        const blockId = formData.get('block_id') != null ? "-"+formData.get('block_id') : "";
 
         const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
 
@@ -259,9 +264,69 @@ export async function action({ request }) {
                     error
                 });
             }
+        } else if (actionType == "reviewRatingWidget") {
+            try {
+                const product_id  = formData.get('product_id');
+                const font_size  = formData.get('font_size');
+                const widget_text_color  = formData.get('widget_text_color');
+                const widget_icon_color  = formData.get('widget_icon_color');
+                const show_all_reviews  = formData.get('show_all_reviews');
+                const widget_text  = formData.get('widget_text');
+                const widget_alignment  = formData.get('widget_alignment');
+                const widget_layout  = formData.get('widget_layout');
+                const open_float_reviews  = formData.get('open_float_reviews');
+                const show_empty_stars  = formData.get('show_empty_stars');
+                
+                const hide_text  = formData.get('hide_text');
+                
+                const query = {
+                    shop_id: shopRecords._id,
+                };
+                if (show_all_reviews == 'false' && product_id != "") {
+                    query['product_id'] = product_id;
+                }
+                const countRating = await productReviews.aggregate([
+                    { $match: query },
+                    { $group: { _id: "$rating", count: { $sum: 1 } } }
+                ])
+                var mapRatting = countRating.map(item => ({
+                    stars: item._id,
+                    count: item.count
+                }));
+                
+                const totalReviews = mapRatting.reduce((acc, item) => acc + item.count, 0);
+                var averageRating = Math.round((mapRatting.reduce((acc, item) => acc + item.stars * item.count, 0) / totalReviews).toFixed(1));
+                if (isNaN(averageRating)) {
+                    averageRating = 0;
+                }
+                const formParams = {
+                    totalReviews,
+                    averageRating,
+                    font_size,
+                    widget_text_color,
+                    widget_icon_color,
+                    hide_text,
+                    open_float_reviews,
+                    widget_layout,
+                    widget_alignment,
+                    widget_text,
+                    show_empty_stars
+                }
+                const dynamicRatingComponent = <RatingWidget formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} />;
+                const htmlRatingContent = ReactDOMServer.renderToString(dynamicRatingComponent);
+                return json({
+                    htmlRatingContent: htmlRatingContent
+                });
+
+            } catch (error) {
+                console.log(error);
+                return json({
+                    error
+                });
+            }
         } else {
 
-            const limit = parseInt(formData.get('no_of_review'));
+            const limit = formData.get('no_of_review') != null ? parseInt(formData.get('no_of_review')) : parseInt(settingsJson.page_limit);
             const page = parseInt(formData.get('page'));
             const sortBy = formData.get('sort_by') != null ? formData.get('sort_by') : productReviewWidgetCustomizesModel.defaultSorting;
             const filterByRatting = parseInt(formData.get('filter_by_ratting'));
@@ -269,7 +334,7 @@ export async function action({ request }) {
             const showImageReviews = formData.get('show_image_reviews');
             const showAllReviews = formData.get('show_all_reviews');
             const hideProductThumbnails = formData.get('hide_product_thumbnails');
-
+            const is_modal_reviews = formData.get('is_modal_reviews');
 
             let sortByfield = "tag_as_feature";
             let sortByValue = -1;
@@ -326,7 +391,6 @@ export async function action({ request }) {
                 stars: item._id,
                 count: item.count
             }));
-
             const totalReviews = mapRatting.reduce((acc, item) => acc + item.count, 0);
             var averageRating = Math.round((mapRatting.reduce((acc, item) => acc + item.stars * item.count, 0) / totalReviews).toFixed(1));
             if (isNaN(averageRating)) {
@@ -510,13 +574,20 @@ export async function action({ request }) {
                 hideProductThumbnails: hideProductThumbnails,
                 totalReviewItems: totalReviews,
                 mapRatting: mapRatting,
-                averageRating: averageRating
-
+                averageRating: averageRating,
+                blockId: blockId,
+                is_modal_reviews : is_modal_reviews
+            }
+            if(is_modal_reviews == 'true') {
+                var dynamicComponent = <WidgetModalRviews shopRecords={shopRecords} reviewItems={reviewItems} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} otherProps={otherProps} />;
+                var htmlContent = ReactDOMServer.renderToString(dynamicComponent);
+    
+            } else {
+                var dynamicComponent = <ProductReviewWidget shopRecords={shopRecords} reviewItems={reviewItems} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} otherProps={otherProps} />;
+                var htmlContent = ReactDOMServer.renderToString(dynamicComponent);
+    
             }
             
-            const dynamicComponent = <ProductReviewWidget shopRecords={shopRecords} reviewItems={reviewItems} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} otherProps={otherProps} />;
-            const htmlContent = ReactDOMServer.renderToString(dynamicComponent);
-
 
             return json({
                 body: htmlContent,

@@ -67,11 +67,11 @@ export default function ManageVideoSettings({ generalSettings, shopRecords }) {
 									type="checkbox"
 									role="switch"
 									name="is_enabled_video_review"
-									id="addonsiteNotiSwitchCheckChecked"
+									id="enableVideoSwitchCheckChecked"
 								/>
 								<label
 									className="form-check-label"
-									htmlFor="addonsiteNotiSwitchCheckChecked"
+									htmlFor="enableVideoSwitchCheckChecked"
 								>
 									Enable customers to upload a video with their review
 								</label>

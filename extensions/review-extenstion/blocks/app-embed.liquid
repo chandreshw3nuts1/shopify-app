@@ -1,12 +1,32 @@
-<div style="position: fixed; bottom: 0; right: 0">
-    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet" />
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js"></script>
+
+<div id="w3-float-modal-content-widget" class="modal fade addreviewpopup modalwidgetreviews" data-bs-backdrop="static">
+	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.9447 7.04523C17.2484 7.34897 17.2484 7.84143 16.9447 8.14517L13.198 11.8919L17.0528 15.7467C17.3566 16.0505 17.3566 16.5429 17.0528 16.8467C16.7491 17.1504 16.2566 17.1504 15.9529 16.8467L12.098 12.9918L8.14513 16.9447C7.84139 17.2485 7.34893 17.2485 7.04519 16.9447C6.74145 16.641 6.74145 16.1485 7.04519 15.8448L10.9981 11.8919L7.15334 8.04711C6.8496 7.74337 6.8496 7.25091 7.15334 6.94717C7.45708 6.64343 7.94954 6.64343 8.25328 6.94717L12.098 10.7919L15.8447 7.04523C16.1485 6.74148 16.6409 6.74148 16.9447 7.04523Z" fill="currentColor"></path></svg></button>
+			</div>
+			<div class="modal-body">
+			</div>
+		</div>
+	</div>
 </div>
+
 
 {% schema %}
   {
     "name": "App Embed",
     "target": "body",
-    "javascript": "script.js",
+	"stylesheet": "app-embed.css",
+    "javascript": "app-embed.js",
     "settings": []
   }
 {% endschema %}

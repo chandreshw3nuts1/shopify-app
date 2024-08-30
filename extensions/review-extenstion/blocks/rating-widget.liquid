@@ -1,6 +1,5 @@
 
-<div >
-    <h1>Hi from rating -widget</h1>
+<div id="display-rating-widget-component-{{ block.id }}" class="w3-widgets" data-block-id="{{ block.id }}" data-product-id="{{ product.id }}" data-shop-domain="{{ shop.domain }}" data-product-title="{{ product.title }}" data-customer-locale="{{ request.locale.iso_code }}" data-rating-settings='{{ block.settings | json }}' >
 </div>
 
 {% schema %}
@@ -8,38 +7,103 @@
   "name": "Rating Widget",
   "target": "section",
   "stylesheet": "style.css",
-  "javascript":"rating-review-script.js",
-    "settings": [
+  "javascript": "rating-review-script.js",
+  "settings": [
     {
-      "type": "checkbox",
-      "id": "show_image_reviews",
-      "label": "Display only reviews with photos",
-      "default": false
-    },
-    {
-        "type": "checkbox",
-        "id": "show_all_reviews",
-        "label": "Show reviews from all products",
-        "default": true
+      "type": "header",
+      "content": "Widget Settings"
     },
     {
       "type": "range",
-      "id": "no_of_review_per_page",
-      "min": 1,
-      "max": 20,
+      "id": "font_size",
+      "min": 8,
+      "max": 48,
       "step": 1,
-      "label": "Number of reviews to display",
-      "default": 10
+      "unit": "px",
+      "label": "Size",
+      "default": 16
     },
     {
-        "type": "checkbox",
-        "id": "hide_product_thumbnails",
-        "label": "Hide product thumbnails",
-        "default": false
-    }
-
+      "type": "text",
+      "id": "widget_text",
+      "label": "Widget Text",
+      "info": "Use the following placeholders: [count] - Displays the total number of reviews. [rating] - Displays the average rating."
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_text",
+      "label": "Hide Info Text",
+      "default": false
+    },
+    {
+		"type": "select",
+		"id": "widget_alignment",
+		"label": "Widget Alignment",
+		"options": [
+		  {
+			"value": "left",
+			"label": "Left"
+		  },
+		  {
+			"value": "center",
+			"label": "Center"
+		  },
+		  {
+			"value": "right",
+			"label": "Right"
+		  }
+		],
+		"default": "left"
+	  },
+	  {
+		"type": "select",
+		"id": "widget_layout",
+		"label": "Widget Layout",
+		"options": [
+		  {
+			"value": "all",
+			"label": "Default"
+		  },
+		  {
+			"value": "single",
+			"label": "Single icon"
+		  }
+		],
+		"default": "all"
+	  },
+	  {
+		"type": "color",
+		"id": "widget_text_color",
+		"label": "Widget text color",
+		"default": "#000000"
+	  },
+	  {
+		"type": "color",
+		"id": "widget_icon_color",
+		"label": "Widget star color"
+	  },
+	  {
+		"type": "checkbox",
+		"id": "show_all_reviews",
+		"label": "Show all reviews",
+		"default": false,
+		"info" : "When selected, then shows all reviews of store"
+	  },
+	  {
+		"type": "checkbox",
+		"id": "open_float_reviews",
+		"label": "Open Floating Product Reviews Widget on click",
+		"default": false
+	  },
+	  {
+		"type": "checkbox",
+		"id": "show_empty_stars",
+		"label": "Show empty stars when there are no reviews",
+		"default": true
+	  }
 
   ]
 }
 {% endschema %}
+
 

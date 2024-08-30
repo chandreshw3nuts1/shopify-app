@@ -1,0 +1,145 @@
+var widget_page = 1;
+var widget_settings_vars, widget_block_id, widget_product_id, widget_shop_domain, widget_customer_locale = "";
+var widgetElementObj = null;
+var widgetMasonryObj;
+
+$(document).on("click", "#testmodal", function (e) {
+    alert('dsadsad');
+    $("#myModaltest").modal("show");
+});
+$(document).on("click", ".open-w3-float-modal", function (e) {
+    e.preventDefault();
+
+    var $widget = $(this).parents(".w3-widgets");
+    widget_settings_vars = $widget.data('rating-settings');
+    widget_product_id = $widget.data('product-id');
+    widget_shop_domain = $widget.data('shop-domain');
+    widget_customer_locale = $widget.data('customer-locale');
+    widget_block_id = $widget.data('block-id');
+
+    widgetElementObj = $("#w3-float-modal-content-widget");
+    widgetElementObj.find('.modal-body').html('');
+    widgetElementObj.modal("show");
+    widget_page = 1;
+    loadModalReviews(widget_page);
+
+});
+$(document).on("click", "#widget_load_more_review", function (e) {
+    e.preventDefault();
+    widget_page = widget_page + 1;
+    loadModalReviews(widget_page);
+});
+
+$(document).on('hide.bs.modal', '#w3-float-modal-content-widget', function () {
+    widgetElementObj.find('.modal-body').html('');
+});
+$(document).on('hide.bs.modal', '#staticBackdrop', function () {
+    $("#w3-float-modal-content-widget").removeClass("modal-backdrop-grey");
+});
+
+$(document).on("click", ".dropdown-menu .widget_stardetailrow, .stardetaildd .widget_stardetailrow", function (e) {
+    var ratingNumber = $(this).find('.sratnumber').text();
+    var haveReview = $(this).find('.sratnumber').data('review');
+    if (parseInt(haveReview) > 0) {
+        $("#widget_ratting_wise_filter").val(ratingNumber);
+        widget_page = 1;
+        loadModalReviews(widget_page);
+    }
+});
+
+$(document).on("click", ".dropdown-menu .widget_sort_by_filter", function (e) {
+    e.preventDefault();
+    var sortType = $(this).data('sort');
+    $("#widget_sort_by_filter").val(sortType);
+    widget_page = 1;
+    loadModalReviews(widget_page);
+});
+
+
+
+$(document).on("click", ".widget_w3grid-review-item", function () {
+    reviewId = $(this).data('reviewid');
+
+    $.ajax({
+        type: 'POST',
+        url: `/apps/w3-proxy/widget`,
+        data: {
+            reviewId: reviewId,
+            actionType: 'openReviewDetailModal',
+            shop_domain: widget_shop_domain,
+            customer_locale: widget_customer_locale
+        },
+        dataType: "json",
+        success: function (response) {
+            $("#staticBackdrop").remove();
+            var modal_html = response.body;
+            $("body").append(modal_html);
+            $("#staticBackdrop").modal("show");
+
+            widgetElementObj.addClass("modal-backdrop-grey");
+        },
+        error: function (xhr, status, error) {
+            console.error(xhr.responseText);
+        }
+    });
+});
+
+
+function loadModalReviews(page) {
+    var filter_by_ratting = $("#widget_ratting_wise_filter").val();
+    var sort_by = $("#widget_sort_by_filter").val();
+    $.ajax({
+        type: 'POST',
+        url: `/apps/w3-proxy/widget`,
+        data: {
+            show_all_reviews: widget_settings_vars.show_all_reviews,
+            filter_by_ratting: filter_by_ratting,
+            sort_by: sort_by,
+            page: page,
+            product_id: widget_product_id,
+            shop_domain: widget_shop_domain,
+            customer_locale: widget_customer_locale,
+            block_id: widget_block_id,
+            is_modal_reviews: true
+        },
+        dataType: "json",
+        beforeSend: function () {
+            $('#widget_load_more_review').hide();
+            $('#widget_w3loadingmorerws').show();
+        },
+        success: function (response) {
+            if (widget_page == 1) {
+                widgetElementObj.find('.modal-body').html(response.body);
+                // Initialize Masonry on first load
+
+                var $initialWidgetItems = widgetElementObj.find('.widget_main_review_block');
+                $initialWidgetItems.imagesLoaded(function () {
+                    widgetMasonryObj = $initialWidgetItems.masonry({
+                        itemSelector: '.widget_w3grid-review-item',
+                        columnWidth: '.widget_w3grid-review-item',
+                        percentPosition: true
+                    });
+                });
+
+            } else {
+                var $newWidgetItems = $(response.body);
+                widgetElementObj.find(".widget_main_review_block").append($newWidgetItems);
+
+                $newWidgetItems.imagesLoaded(function () {
+                    widgetElementObj.find(".widget_main_review_block").masonry('appended', $newWidgetItems).masonry('layout');
+                });
+            }
+            $('#widget_load_more_review').show();
+            $('#widget_w3loadingmorerws').hide();
+            if (response.hasMore == 0) {
+                $("#widget_load_more_review").hide();
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error(xhr.responseText);
+        }
+    });
+}
+
+
+
