@@ -141,6 +141,7 @@ $(document).ready(function () {
 
             $(".uploadDocError").addClass('d-none');
             $(".w3revbtnblock").addClass('d-none');
+            $('.form__container').addClass('pointnone');
             $(".w3loadingblock").removeClass('d-none');
 
             let formData = new FormData($('#review_submit_btn_form')[0]);
@@ -193,6 +194,7 @@ $(document).ready(function () {
 
                     $(".w3revbtnblock").removeClass('d-none');
                     $(".w3loadingblock").addClass('d-none');
+                    $('.form__container').removeClass('pointnone');
 
                 },
                 error: function (xhr, status, error) {

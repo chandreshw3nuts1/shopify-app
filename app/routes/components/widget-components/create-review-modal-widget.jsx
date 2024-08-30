@@ -9,6 +9,7 @@ import ImageFilledIcon from "../icons/ImageFilledIcon";
 import CheckArrowIcon from "../icons/CheckArrowIcon";
 import ShareIcon from "../icons/ShareIcon";
 import CopyIcon from "../icons/CopyIcon";
+import RecordVideoIcon from "../icons/RecordVideoIcon";
 
 import FaceStar1 from "../images/FaceStar1";
 import FaceStar2 from "../images/FaceStar2";
@@ -136,34 +137,32 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                     </div>
                                     <div className="modal-body">
                                         <div className="filesupload_wrap">
-                                            <label className="form__container" id="upload-container">
-                                                <div className="iconimage">
-                                                    <AddImageIcon />
+                                            <div className="filelabel_wrapbox">
+                                                <label className="form__container" id="upload-container">
+                                                    <div className="iconimage">
+                                                        <AddImageIcon />
+                                                    </div>
+                                                    <div className="simpletext">{generalSettingsModel.is_enabled_video_review ? languageContent('dragDropPhotoVideoText') : languageContent('dragDropPhotoText')}</div>
+                                                    <div className="orbox flxrow">
+                                                        <span>OR</span>
+                                                    </div>
+                                                    <div className="btnwrap">
+                                                        <span className="revbtn w3revbtnblock">
+                                                            <ImageFilledIcon />
+                                                            {generalSettingsModel.is_enabled_video_review ? languageContent('addPhotoVideoButtonText') : languageContent('addPhotoButtonText')}
+                                                        </span>
+                                                        <span className="revbtn w3loadingblock d-none">
+                                                            <div id="loading-icon" class="loading-icon">
+                                                                <i class="fas fa-spinner fa-spin"></i> {translations.reviewFormSettings.uploadingFiles}
+                                                            </div>
+                                                        </span>
+                                                    </div>
+                                                    <input className="form__file" name="image_and_videos[]" id="upload-files" type="file" accept={generalSettingsModel.is_enabled_video_review ? 'image/*,video/mp4,video/x-m4v,video/*' : 'image/*'} multiple="multiple" />
+                                                </label>
+                                                <div className="record_video" id="recordVideoStart">
+                                                    <RecordVideoIcon /> Rec
                                                 </div>
-                                                <div className="simpletext">{generalSettingsModel.is_enabled_video_review ? languageContent('dragDropPhotoVideoText') : languageContent('dragDropPhotoText')}</div>
-                                                <div className="orbox flxrow">
-                                                    <span>OR</span>
-                                                </div>
-                                                <div className="btnwrap">
-                                                    <span className="revbtn w3revbtnblock">
-                                                        <ImageFilledIcon />
-                                                        {generalSettingsModel.is_enabled_video_review ? languageContent('addPhotoVideoButtonText') : languageContent('addPhotoButtonText')}
-                                                    </span>
-
-                                                    <span className="revbtn w3loadingblock d-none">
-                                                        <div id="loading-icon" class="loading-icon">
-                                                            <i class="fas fa-spinner fa-spin"></i> {translations.reviewFormSettings.uploadingFiles}
-                                                        </div>
-                                                    </span>
-
-
-
-                                                </div>
-                                                <input className="form__file" name="image_and_videos[]" id="upload-files" type="file" accept={generalSettingsModel.is_enabled_video_review ? 'image/*,video/mp4,video/x-m4v,video/*' : 'image/*'} multiple="multiple" />
-                                            </label>
-                                            <span className="" id="recordVideoStart">
-                                                <ImageFilledIcon />
-                                            </span>
+                                            </div>
                                             <div className="discountrow uploadDocError d-none">
                                                 <div className="discountbox"><strong>{generalSettingsModel.is_enabled_video_review ? translations.reviewFormSettings.maxFivePhotoVideoError : translations.reviewFormSettings.maxFivePhotoError}</strong></div>
                                             </div>
@@ -348,20 +347,20 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                         <h1 className="modal-title">Record product video</h1>
                                     </div>
                                 </div>
-
                                 <div className="modal-body">
-                                    <div className="tellusmorepopup_wrap">
+                                    <div className="recordvideo_wrap">
                                         <div className="form-group">
-                                            <video id="record_video_el" width="300" height="300" style={{ border: "1px solid" }} controls="true" autoplay="true"></video>
-                                            <button type="button" className="revbtn lightbtn" id="stopVideoRecording" >Stop recording</button>
-                                            <button type="button" className="revbtn lightbtn" id="startVideoRecordingAgain" >Again start recording</button>
-                                            <button type="button" className="revbtn lightbtn" id="submitVideoRecording">Submit</button>
+                                            <div className="recvideobox">
+                                                <video id="record_video_el" controls="true" autoplay="true"></video>
+                                            </div>
+                                            <div className="btnwrap justify-content-center">
+                                                <button type="button" className="revbtn" id="stopVideoRecording" >Stop recording</button>
+                                                <button type="button" className="revbtn lightbtn" id="startVideoRecordingAgain" >Again start recording</button>
+                                                <button type="button" className="revbtn" id="submitVideoRecording">Submit</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-
-
-
                             </div>
                         </div>
                     </div>
