@@ -20,7 +20,7 @@ import settingsJson from './../../../utils/settings.json';
 
 
 const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, generalAppearancesModel, CommonRatingComponent, otherProps }) => {
-    const { reviewFormSettingsModel, languageWiseReviewFormSettings, translations, productReviewWidgetCustomizesModel, languageWiseProductWidgetSettings } = otherProps;
+    const { reviewFormSettingsModel, languageWiseReviewFormSettings, translations, productReviewWidgetCustomizesModel, languageWiseProductWidgetSettings, generalSettingsModel } = otherProps;
     const proxyUrl = "https://" + shopRecords.shop + "/apps/w3-proxy/product-review-widget";
     const countTotalQuestions = customQuestionsData.length;
 
@@ -53,7 +53,7 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
     termsAndConditionHtml = termsAndConditionHtml.replace(/\[privacy_policy\]/g, privacyPolicyLink);
     const themeColor = reviewFormSettingsModel?.themeColor ? reviewFormSettingsModel?.themeColor : `#${settingsJson.reviewFormSettings.themeColor}`;
     const themeTextColor = reviewFormSettingsModel?.themeTextColor ? reviewFormSettingsModel?.themeTextColor : `#${settingsJson.reviewFormSettings.themeTextColor}`;
-    const cornerRadius = reviewFormSettingsModel?.cornerRadius ? reviewFormSettingsModel?.cornerRadius : generalAppearancesModel.cornerRadius ;
+    const cornerRadius = reviewFormSettingsModel?.cornerRadius ? reviewFormSettingsModel?.cornerRadius : generalAppearancesModel.cornerRadius;
 
     return (
         <>
@@ -69,7 +69,7 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
 					
 				`}
             </style>
-            <div id="createReviewModal" className="modal fade addreviewpopup">
+            <div id="createReviewModal" className="modal fade addreviewpopup" data-bs-backdrop="static">
                 <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div className="modal-content">
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">
@@ -124,7 +124,7 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
 
                                     </div>
                                     <div className="modal-footer">
-                                        <button type="button" className="revbtn lightbtn nextbtn theme-color-class" disabled="disabled">{translations.next_link}<LongArrowRight /></button>
+                                        <button type="button" className="revbtn lightbtn nextbtn" disabled="disabled">{translations.next_link}<LongArrowRight /></button>
                                     </div>
                                 </div>
                                 <div className="reviewsteps step-2 d-none">
@@ -140,22 +140,39 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                                 <div className="iconimage">
                                                     <AddImageIcon />
                                                 </div>
-                                                <div className="simpletext">{languageContent('dragDropPhotoVideoText')}</div>
+                                                <div className="simpletext">{generalSettingsModel.is_enabled_video_review ? languageContent('dragDropPhotoVideoText') : languageContent('dragDropPhotoText')}</div>
                                                 <div className="orbox flxrow">
                                                     <span>OR</span>
                                                 </div>
                                                 <div className="btnwrap">
-                                                    <span className="revbtn">
+                                                    <span className="revbtn w3revbtnblock">
                                                         <ImageFilledIcon />
-                                                        {languageContent('addPhotoVideoButtonText')}
+                                                        {generalSettingsModel.is_enabled_video_review ? languageContent('addPhotoVideoButtonText') : languageContent('addPhotoButtonText')}
                                                     </span>
-                                                </div>
-                                                <input className="form__file" name="image_and_videos[]" id="upload-files" type="file" accept="image/*,video/mp4,video/x-m4v,video/*" multiple="multiple" />
-                                            </label>
 
+                                                    <span className="revbtn w3loadingblock d-none">
+                                                        <div id="loading-icon" class="loading-icon">
+                                                            <i class="fas fa-spinner fa-spin"></i> {translations.reviewFormSettings.uploadingFiles}
+                                                        </div>
+                                                    </span>
+
+
+
+                                                </div>
+                                                <input className="form__file" name="image_and_videos[]" id="upload-files" type="file" accept={generalSettingsModel.is_enabled_video_review ? 'image/*,video/mp4,video/x-m4v,video/*' : 'image/*'} multiple="multiple" />
+                                            </label>
+                                            <span className="" id="recordVideoStart">
+                                                <ImageFilledIcon />
+                                            </span>
                                             <div className="discountrow uploadDocError d-none">
-                                                <div className="discountbox"><strong>You can select up to 5 photos</strong></div>
+                                                <div className="discountbox"><strong>{generalSettingsModel.is_enabled_video_review ? translations.reviewFormSettings.maxFivePhotoVideoError : translations.reviewFormSettings.maxFivePhotoError}</strong></div>
                                             </div>
+
+                                            <div className="discountrow uploadDocSizeError d-none">
+                                                <div className="discountbox"><strong>{ translations.reviewFormSettings.uploadMediaSizeError}</strong></div>
+                                            </div>
+
+
                                             {discountHtml &&
                                                 <div className="discountrow">
                                                     {/* <div className="discountbox">Your <strong>15%</strong> off discount is wait for you!</div> */}
@@ -316,6 +333,41 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
             {/* <div id="createReviewModal" className="custom-review-modal" >
             
         </div> */}
+
+
+            <div id="record_review_video_modal" style={{ zIndex: "2147483647" }} className="modal fade addreviewpopup" data-bs-backdrop="static">
+                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div className="modal-content">
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <CloseIcon />
+                        </button>
+                        <div className="modal_step_wrap">
+                            <div className="reviewsteps activestep step-1">
+                                <div className="modal-header">
+                                    <div className="flxflexi">
+                                        <h1 className="modal-title">Record product video</h1>
+                                    </div>
+                                </div>
+
+                                <div className="modal-body">
+                                    <div className="tellusmorepopup_wrap">
+                                        <div className="form-group">
+                                            <video id="record_video_el" width="300" height="300" style={{ border: "1px solid" }} controls="true" autoplay="true"></video>
+                                            <button type="button" className="revbtn lightbtn" id="stopVideoRecording" >Stop recording</button>
+                                            <button type="button" className="revbtn lightbtn" id="startVideoRecordingAgain" >Again start recording</button>
+                                            <button type="button" className="revbtn lightbtn" id="submitVideoRecording">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
         </>
 

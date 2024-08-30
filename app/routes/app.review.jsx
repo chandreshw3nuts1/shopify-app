@@ -11,12 +11,14 @@ import CustomQuestions from "./components/collectReview/CustomQuestions";
 import ManageNewReview from "./components/collectReview/ManageNewReview";
 import ReviewRequestTiming from "./components/collectReview/ReviewRequestTiming";
 import DiscountPhotoVideoReview from "./components/collectReview/DiscountPhotoVideoReview";
+import ManageVideoSettings from "./components/collectReview/ManageVideoSettings";
 
 import InformationAlert from './components/common/information-alert';
 
 import settings from './models/settings';
 import reviewRequestTimingSettings from './models/reviewRequestTimingSettings';
 import reviewDiscountSettings from './models/reviewDiscountSettings';
+import generalSettings from './models/generalSettings';
 
 import {
 	Page,
@@ -48,8 +50,12 @@ export async function loader({ request }) {
 			shop_id: shopRecords._id,
 		});
 
+		const generalSettingsModel = await generalSettings.findOne({
+			shop_id: shopRecords._id
+		});
+		
 
-		return json({ settings: settingsModel, shopRecords: shopRecords, customQuestionsData: customQuestionsData, reviewRequestTimingSettings: reviewRequestTimingSettingsModel, reviewDiscountSettings: reviewDiscountSettingsModel });
+		return json({ settings: settingsModel, shopRecords: shopRecords, customQuestionsData: customQuestionsData, reviewRequestTimingSettings: reviewRequestTimingSettingsModel, reviewDiscountSettings: reviewDiscountSettingsModel, generalSettingsModel: generalSettingsModel });
 	} catch (error) {
 		console.error('Error fetching records from MongoDB:', error);
 		return json(
@@ -68,7 +74,8 @@ const ReviewPage = () => {
 	const shopRecords = loaderData.shopRecords;
 	const reviewRequestTimingSettings = loaderData.reviewRequestTimingSettings;
 	const reviewDiscountSettings = loaderData.reviewDiscountSettings;
-
+	const generalSettings = loaderData.generalSettingsModel;
+	
 	const [crumbs, setCrumbs] = useState([
 		{ title: "Review", "link": "./../review" },
 		{ title: "Collect review", link: "" },
@@ -78,6 +85,8 @@ const ReviewPage = () => {
 	const [openReviewRequestTiming, setOpenReviewRequestTiming] = useState(false);
 	const [openDiscountPhotoVideoReview, setOpenDiscountPhotoVideoReview] = useState(false);
 	const [openEmailSettings, setOpenEmailSettings] = useState(false);
+	const [openVideoSettings, setOpenVideoSettings] = useState(false);
+
 	const handleToggleNewReview = useCallback(() => setOpenNewReview(openNewReview => !openNewReview), []);
 	const handleToggleCustomQuestions = useCallback(() => setOpenCustomQuestions(openCustomQuestions => !openCustomQuestions), []);
 	const handleToggleReviewRequestTiming = useCallback(() => setOpenReviewRequestTiming(openReviewRequestTiming => !openReviewRequestTiming), []);
@@ -85,11 +94,12 @@ const ReviewPage = () => {
 
 
 	const handleToggleEmailSettings = useCallback(() => setOpenEmailSettings(openEmailSettings => !openEmailSettings), []);
+	const handleToggleVideoSettings = useCallback(() => setOpenVideoSettings(openVideoSettings => !openVideoSettings), []);
 
 	const showManualRequestForm = () => {
 		navigate('/app/manual-review-requests/');
 	}
-	
+
 	const showReviewFormSettings = () => {
 		navigate('/app/review-form-settings/');
 	}
@@ -431,6 +441,50 @@ const ReviewPage = () => {
 									</div>
 								</div>
 							</div>
+						</LegacyCard>
+					</Layout.Section>
+				</div>
+
+
+				<div className='accordian_rowmain'>
+					<Layout.Section>
+						<LegacyCard sectioned>
+							<div
+								onClick={handleToggleVideoSettings}
+								aria-expanded={openVideoSettings}
+								aria-controls="basic-collapsible"
+								className={openVideoSettings ? 'open' : ''}
+							>
+								<div className='flxrow acctitle'>
+									<div className='flxfix iconbox'>
+										<i className='twenty-star'></i>
+									</div>
+									<div className='flxflexi titledetail'>
+										<Text as="h1" variant="headingMd">
+											Video reviews
+										</Text>
+										<Text>
+											Collect and display video reviews of your happy customers
+										</Text>
+									</div>
+									<div className='flxfix arrowicon'>
+										<i className='twenty-arrow-down'></i>
+									</div>
+								</div>
+							</div>
+							<LegacyStack vertical>
+								<Collapsible
+									open={openVideoSettings}
+									id="basic-collapsible"
+									transition={{
+										duration: '300ms',
+										timingFunction: 'ease-in-out',
+									}}
+									expandOnPrint
+								>
+									<ManageVideoSettings generalSettings={generalSettings} shopRecords={shopRecords} />
+								</Collapsible>
+							</LegacyStack>
 						</LegacyCard>
 					</Layout.Section>
 				</div>

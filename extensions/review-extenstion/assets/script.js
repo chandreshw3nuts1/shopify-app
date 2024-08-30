@@ -55,7 +55,6 @@ $(document).ready(function () {
 
 
         let parentDiv = jQuery(this).parents('.reviewsteps');
-        console.log(parentDiv);
         jQuery(parentDiv).find(".nextbtn").removeAttr('disabled');
     });
 
@@ -123,14 +122,33 @@ $(document).ready(function () {
     };
 
     $(document).on("change", "#upload-files", function (event) {
+
         if (this.files.length > 5 || parseInt(FILE_LIST.length + this.files.length) > 5) {
             $(".uploadDocError").removeClass('d-none');
 
         } else {
+            const fileSizeLimit = 250 * 1024 * 1024;
+            let checkUploadFilesIsValid = true;
+            $.each(this.files, function (index, file) {
+                if (file.size > fileSizeLimit) {
+                    checkUploadFilesIsValid = false;
+                }
+            });
+            if (!checkUploadFilesIsValid) {
+                $("#upload-files").val("");
+                $(".uploadDocSizeError").removeClass('d-none');
+                return true;
+            }
+            $(".uploadDocSizeError").addClass('d-none');
+
             $(".uploadDocError").addClass('d-none');
+            $(".w3revbtnblock").addClass('d-none');
+            $(".w3loadingblock").removeClass('d-none');
 
             let formData = new FormData($('#review_submit_btn_form')[0]);
             formData.append("actionType", "uploadDocuments");
+            formData.append("shop_domain", shop_domain);
+
             let reviewUrl = $("#review_submit_btn_form").attr('action');
 
             $.ajax({
@@ -140,34 +158,50 @@ $(document).ready(function () {
                 contentType: false,
                 processData: false,
                 success: function (response) {
-                    $.each(response, function (index, item) {
-                        imageAndVideoFiles.push(item);
-                    });
-                    $("#file_objects").val(imageAndVideoFiles);
+                    if (response.files.length > 0) {
+                        $.each(response.files, function (index, item) {
+                            imageAndVideoFiles.push(item);
+                        });
+                        $("#file_objects").val(imageAndVideoFiles);
+
+
+                        var files = event.target.files;
+
+                        $.each(files, function (index, file) {
+                            const fileURL = URL.createObjectURL(file);
+                            const fileName = file.name;
+                            const fileType = file.type;
+                            if (response.content == true) {
+                                const uploadedFiles = {
+                                    name: fileName,
+                                    url: fileURL,
+                                    type: fileType,
+                                };
+                                FILE_LIST.push(uploadedFiles);
+                            } else if (file.type.match("image/")) {
+                                const uploadedFiles = {
+                                    name: fileName,
+                                    url: fileURL,
+                                    type: fileType,
+                                };
+                                FILE_LIST.push(uploadedFiles);
+                            }
+                        });
+                        $("#upload-files").val("");
+                        previewImages();
+
+
+                    }
+
+                    $(".w3revbtnblock").removeClass('d-none');
+                    $(".w3loadingblock").addClass('d-none');
+
                 },
                 error: function (xhr, status, error) {
                     console.error(xhr.responseText);
                 }
             });
-            var files = event.target.files;
 
-            $.each(files, function (index, file) {
-                const fileURL = URL.createObjectURL(file);
-                const fileName = file.name;
-                const fileType = file.type;
-                if (!file.type.match("image/") && !file.type.match("video/")) {
-                    console.log(file.type);
-                } else {
-                    const uploadedFiles = {
-                        name: fileName,
-                        url: fileURL,
-                        type: fileType,
-                    };
-                    FILE_LIST.push(uploadedFiles);
-                }
-            });
-            $("#upload-files").val("");
-            previewImages();
         }
     });
 
@@ -189,7 +223,8 @@ $(document).ready(function () {
             url: $("#review_submit_btn_form").attr('action'),
             data: {
                 actionType: "deleteDocuments",
-                deleteFileName: deleteFileName
+                deleteFileName: deleteFileName,
+                shop_domain: shop_domain
             },
             success: function (response) {
                 $("#file_objects").val(imageAndVideoFiles.join(','));
@@ -202,6 +237,124 @@ $(document).ready(function () {
         });
 
     });
+
+    let mediaRecorder;
+    let recordedChunks = [];
+    let stream;  // Store the stream globally
+    let recordedBlob;
+    // Function to handle start recording
+    async function startRecording() {
+        try {
+
+            // Get access to the user's camera and microphone
+            stream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+					echoCancellation: true,
+					noiseSuppression: true,
+				},
+				video: { width: 1920, height: 1080 }
+            });
+            $('#record_video_el').prop('srcObject', stream);
+
+            // Initialize the MediaRecorder
+            mediaRecorder = new MediaRecorder(stream);
+
+            // Event handler to collect the data as it becomes available
+            mediaRecorder.ondataavailable = event => {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+
+            // Event handler for when recording stops
+            mediaRecorder.onstop = () => {
+                recordedBlob = new Blob(recordedChunks, { type: 'video/mp4' });
+                const url = URL.createObjectURL(recordedBlob);
+                $('#record_video_el').prop('src', url).get(0).play();
+                recordedChunks = [];
+            };
+
+            // Start recording
+            mediaRecorder.start();
+
+        } catch (err) {
+            console.error('Error accessing media devices.', err);
+        }
+    }
+
+    // Function to handle stop recording
+    function stopRecording() {
+        $('#record_video_el').prop('srcObject', null); // Clear the video source to release the video element
+        $("#stopVideoRecording").hide();
+        $("#startVideoRecordingAgain").show();
+
+        mediaRecorder.stop();
+
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+    }
+
+    $(document).on('click', '#recordVideoStart , #startVideoRecordingAgain', function () {
+        startRecording();
+        $('#record_video_el').prop('srcObject', null);
+        $("#record_review_video_modal").modal("show");
+
+        $('#startVideoRecordingAgain').hide();
+        $('#submitVideoRecording').hide();
+        $('#stopVideoRecording').show();
+
+    });
+    $(document).on('click', '#stopVideoRecording', function () {
+        stopRecording();
+        $('#submitVideoRecording').show();
+    });
+
+    $(document).on('click', '#submitVideoRecording', function () {
+
+        let formData = new FormData($('#review_submit_btn_form')[0]);
+        formData.append("actionType", "uploadVideoRecording");
+        formData.append("video_record", recordedBlob, 'recording.mp4');
+        formData.append("shop_domain", shop_domain);
+
+        let reviewUrl = $("#review_submit_btn_form").attr('action');
+
+        $.ajax({
+            type: 'POST',
+            url: reviewUrl,
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                $.each(response, function (index, item) {
+                    imageAndVideoFiles.push(item);
+                });
+                $("#file_objects").val(imageAndVideoFiles);
+                $("#record_review_video_modal").modal("hide");
+
+                const fileURL = URL.createObjectURL(recordedBlob);
+                const fileName = recordedBlob.name;
+                const fileType = recordedBlob.type;
+                const uploadedFiles = {
+                    name: fileName,
+                    url: fileURL,
+                    type: fileType,
+                };
+                FILE_LIST.push(uploadedFiles);
+                previewImages();
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+
+    });
+
+    $(document).on('hide.bs.modal', '#record_review_video_modal', function () {
+        console.log('Modal is about to be hidden');
+        stopRecording();
+    });
+
 
 });
 
@@ -269,7 +422,7 @@ function loadReviews(page) {
             customer_locale: customer_locale
         },
         dataType: "json",
-        beforeSend: function() {
+        beforeSend: function () {
             $('#load_more_review').hide();
             $('#w3loadingmorerws').show();
         },
@@ -339,6 +492,7 @@ $(document).on("click", "#show_create_review_modal", function (e) {
     });
 
 });
+
 
 $(document).on("click", ".review-list-item, .w3grid-review-item", function () {
     reviewId = $(this).data('reviewid');
@@ -496,9 +650,9 @@ $(document).on("click", "#mainVideoPauseButton", function () {
 
 $(document).on("click", "#copy-button", function () {
     var discountCode = $('#discount-code').text();
-    navigator.clipboard.writeText(discountCode).then(function() {
+    navigator.clipboard.writeText(discountCode).then(function () {
         $('#copy-message').fadeIn().delay(1000).fadeOut();
-    }).catch(function(error) {
+    }).catch(function (error) {
         console.error('Failed to copy text: ', error);
     });
 });

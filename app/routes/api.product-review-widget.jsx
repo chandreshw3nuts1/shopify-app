@@ -11,6 +11,8 @@ import manualRequestProducts from './models/manualRequestProducts';
 import generalAppearances from './models/generalAppearances';
 import reviewDiscountSettings from './models/reviewDiscountSettings';
 import manualReviewRequests from './models/manualReviewRequests';
+import generalSettings from './models/generalSettings';
+
 import discountCodes from './models/discountCodes';
 import { formatDate } from "./../utils/dateFormat";
 
@@ -36,8 +38,8 @@ export async function action({ request }) {
 
 	const method = request.method;
 	const formData = await request.formData();
-	const validImageExtensions = ['jpg', 'jpeg', 'png'];
-	const validVideoExtensions = ['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm'];
+	const validImageExtensions = settingsJson.validImageExtensions;
+	const validVideoExtensions = settingsJson.validVideoExtensions;
 
 	const shop = formData.get('shop_domain');
 	const actionType = formData.get('actionType');
@@ -45,6 +47,8 @@ export async function action({ request }) {
 	switch (method) {
 		case "POST":
 			try {
+				const shopRecords = await findOneRecord("shop_details", { "shop": shop });
+				const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
 
 				if (actionType == "uploadDocuments") {
 					const files = formData.getAll("image_and_videos[]");
@@ -55,7 +59,7 @@ export async function action({ request }) {
 						if (files[i].name != "" && files[i].name != null) {
 							const fileName = Date.now() + "-" + files[i].name;
 							const fileExtension = fileName.split('.').pop().toLowerCase();
-							if (validImageExtensions.includes(fileExtension) || validVideoExtensions.includes(fileExtension)) {
+							if ( (generalSettingsModel.is_enabled_video_review && (validImageExtensions.includes(fileExtension) || validVideoExtensions.includes(fileExtension)) ) || (generalSettingsModel.is_enabled_video_review == false && validImageExtensions.includes(fileExtension) ) ) {
 								const filePath = path.join(uploadsDir, fileName);
 								const buffer = Buffer.from(await files[i].arrayBuffer());
 								fs.writeFileSync(filePath, buffer);
@@ -63,7 +67,27 @@ export async function action({ request }) {
 							}
 						}
 					}
+					return json({ files: imageAndVideoFiles, content: generalSettingsModel.is_enabled_video_review|| false });
+
+					return ;
+				} else if (actionType == "uploadVideoRecording") {
+					const video_record = formData.get("video_record");
+
+					const uploadsDir = path.join(process.cwd(), "public/uploads");
+					fs.mkdirSync(uploadsDir, { recursive: true });
+					const imageAndVideoFiles = [];
+
+					const fileName = Date.now() + "-" + video_record.name;
+
+					const fileExtension = fileName.split('.').pop().toLowerCase();
+
+					const filePath = path.join(uploadsDir, fileName);
+
+					const buffer = Buffer.from(await video_record.arrayBuffer());
+					fs.writeFileSync(filePath, buffer);
+					imageAndVideoFiles.push(fileName);
 					return imageAndVideoFiles;
+
 				} else if (actionType == "deleteDocuments") {
 					const deleteFileName = formData.get("deleteFileName");
 					const filePath = path.join(process.cwd(), "public/uploads") + "/" + deleteFileName;
@@ -87,7 +111,6 @@ export async function action({ request }) {
 						return json({ success: false });
 					}
 
-					const shopRecords = await findOneRecord("shop_details", { "shop": shop });
 					const settings = await findOneRecord('settings', {
 						shop_id: shopRecords._id,
 					});
@@ -120,6 +143,7 @@ export async function action({ request }) {
 							var reviewStatus = 'pending';
 						}
 					}
+
 					var customer_locale = formData.get('customer_locale') || generalSettingsModel.defaul_language;
 					if (customer_locale == 'zh-TW') {
 						customer_locale = 'cn2';

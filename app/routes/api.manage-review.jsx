@@ -62,7 +62,7 @@ export async function action({ request} ) {
 					await productReviews.updateOne(
 						{ _id: requestBody.review_id },
 						{
-						  $set: { replyText : requestBody.reply}
+						  $set: { replyText : requestBody.reply, replied_at : new Date()}
 						}
 					);
 
@@ -154,6 +154,8 @@ export async function action({ request} ) {
 
 					} else if (filter_options == 'carousel_review') {
 						query['add_to_carousel'] = true;
+					} else if (filter_options == 'imported_review') {
+						query['is_imported'] = true;
 					}
 
 					const reviewBulkItemsPipeline = [

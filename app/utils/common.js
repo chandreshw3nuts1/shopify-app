@@ -211,7 +211,7 @@ export async function createShopifyDiscountCode(shopRecords, hasPhoto = false, h
 					console.error('Error creating price rule:', errorResponse);
 					return [];
 				}
-			} else if (reviewDiscountSettingsModel.discountCode != "" ) {
+			} else if (reviewDiscountSettingsModel.discountCode != "") {
 
 				const discountLookupApiUrl = `https://${shopRecords.shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/discount_codes/lookup.json?code=${reviewDiscountSettingsModel.discountCode}`;
 				const discountLookupResponse = await fetch(discountLookupApiUrl, {
@@ -459,4 +459,77 @@ export async function getDiscounts(shopRecords, isReviewRequest = false) {
 
 	}
 
+}
+
+
+export async function fetchAllProductsByHandles(csvData,handleName, shop, accessToken) {
+	const productHandles = csvData.map(item => item[handleName]);
+	
+	const batchSize = 250;
+	const handleBatches = [];
+
+	for (let i = 0; i < productHandles.length; i += batchSize) {
+		handleBatches.push(productHandles.slice(i, i + batchSize));
+	}
+
+	const productsDetails = [];
+	for (const batch of handleBatches) {
+
+		const data = await fetchProductsByBatch(batch, shop, accessToken);
+		productsDetails.push(...data);
+	}
+
+	const productsByHandle = productsDetails.reduce((acc, item) => {
+		const { handle, id, ...rest } = item.node;
+		const cleanId = id.replace('gid://shopify/Product/', ''); // Remove the prefix from id
+		acc[handle] = { id: cleanId, handle, ...rest };
+		return acc;
+	  }, {});
+
+	return productsByHandle;
+
+}
+
+async function fetchProductsByBatch(batch, shop, accessToken) {
+
+	try {
+
+		const client = new GraphQLClient(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
+			headers: {
+				'X-Shopify-Access-Token': accessToken,
+			},
+		});
+
+		const query = `
+		query {
+			products(first: 250, query: "${batch.map(handle => `handle:${handle}`).join(' OR ')}") {
+			edges {
+				node {
+				id
+				title
+				handle
+				}
+			}
+			}
+		}
+		`;
+
+		var shopifyProducts = await client.request(query);
+
+		var mapProductDetails = [];
+		if (shopifyProducts.products.edges.length > 0) {
+			shopifyProducts = shopifyProducts.products.edges;
+			shopifyProducts.forEach(node => {
+				if (node) {
+					mapProductDetails.push(node);
+				}
+			});
+		}
+
+		return mapProductDetails;
+
+	} catch (error) {
+		console.error('Error fetching product details:', error);
+		return null;
+	}
 }

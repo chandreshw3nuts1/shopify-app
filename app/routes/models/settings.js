@@ -12,7 +12,7 @@ const settingsSchema = new mongoose.Schema({
     reviewNotification: { type: Boolean, default: true },
     addOnsiteReview: { type: Boolean, default: false},
     reviewNotificationEmail: { type: String }
-    
+
 },{
   timestamps: true
 });

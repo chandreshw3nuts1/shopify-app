@@ -11,6 +11,8 @@ const generalSettingsSchema = new mongoose.Schema({
     multilingual_support: {type: Boolean, default : true },
     reply_email: {type: String, default : "" },
     email_footer_enabled : {type : Boolean , default : false},
+    is_enabled_video_review: { type: Boolean, default: false },
+
     en: { "type": "Object" },
     fr: { "type": "Object" },
     es: { "type": "Object" },

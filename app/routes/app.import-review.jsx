@@ -3,8 +3,9 @@ import { useLoaderData } from '@remix-run/react';
 import Breadcrumb from "./components/Breadcrumb";
 import ReviewPageSidebar from "./components/headerMenu/ReviewPageSidebar";
 import { getShopDetails } from './../utils/getShopDetails';
-import GeneralAppearance from "./components/settings/general-appearance";
 import { findOneRecord } from './../utils/common';
+import settingsJson from './../utils/settings.json';
+
 import { json } from "@remix-run/node";
 import aliExpressImage from './../images/ali-express-bg.png';
 import InformationAlert from "./components/common/information-alert";
@@ -15,15 +16,15 @@ import HandIcon from "./components/icons/HandIcon";
 import {
     Page,
     Layout,
-	Text,
-	LegacyCard,
-	LegacyStack,
-	Collapsible,
+    Text,
+    LegacyCard,
+    LegacyStack,
+    Collapsible,
     Card,
-	Select,
-	TextField
+    Select,
+    Spinner,
+    TextField
 } from "@shopify/polaris";
-
 export async function loader({ request }) {
     try {
 
@@ -45,7 +46,9 @@ export default function DisplayReviewWidget() {
     const loaderData = useLoaderData();
     const shopRecords = loaderData.shopRecords;
     const generalAppearances = loaderData.generalAppearances;
-    const [isClient, setIsClient] = useState(false);
+    const [loadingSpreadsheetUpload, setLoadingSpreadsheetUpload] = useState(false);
+    const [loadingAppImportUpload, setLoadingAppImportUpload] = useState(false);
+    const [selectedImportApp, setSelectedImportApp] = useState('');
 
     const [oneClickImport, setOneClickImport] = useState(false);
     const [importFromApp, setImportFromApp] = useState(false);
@@ -54,14 +57,122 @@ export default function DisplayReviewWidget() {
     const handleToggleImportFromApp = useCallback(() => setImportFromApp(importFromApp => !importFromApp), []);
     const handleToggleImportFromSpreadsheet = useCallback(() => setImportFromSpreadsheet(importFromSpreadsheet => !importFromSpreadsheet), []);
 
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
 
-    const [crumbs, setCrumbs] = useState([
+
+
+    const handleSelectChange = async (value, name) => {
+        setSelectedImportApp(value);
+    };
+    async function handleFileUploadFromSpreadsheet(event) {
+        try {
+            const file = event.target.files[0];
+
+            if (!file) return;
+
+            // Get the file extension
+            const fileName = file.name;
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+
+            // Check if the extension is CSV
+            if (fileExtension !== 'csv') {
+                shopify.toast.show('Only CSV files are allowed.', {
+                    duration: settingsJson.toasterCloseTime,
+                    isError: true
+                });
+                return;
+            }
+            setLoadingSpreadsheetUpload(true);
+
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("actionType", "importReviewsFromSpreadsheet");
+            formData.append("shop", shopRecords.shop);
+            const response = await fetch(`/api/import-export-reviews`, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            if (data.status == 200) {
+                shopify.toast.show(data.message, {
+                    duration: settingsJson.toasterCloseTime
+                });
+
+            } else {
+                shopify.toast.show(data.message, {
+                    duration: 5000,
+                    isError: true
+                });
+            }
+            setLoadingSpreadsheetUpload(false);
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
+    }
+
+    async function handleFileUploadFromApps(event) {
+        try {
+            const file = event.target.files[0];
+
+            if (!file) return;
+
+            // Get the file extension
+            const fileName = file.name;
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+
+            // Check if the extension is CSV
+            if (fileExtension !== 'csv') {
+                shopify.toast.show('Only CSV files are allowed.', {
+                    duration: settingsJson.toasterCloseTime,
+                    isError: true
+                });
+                return;
+            }
+            if(selectedImportApp == "") {
+                shopify.toast.show('Please select App.', {
+                    duration: settingsJson.toasterCloseTime,
+                    isError: true
+                });
+                event.target.value  = '';
+
+                return;
+            }
+            setLoadingAppImportUpload(true);
+
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("actionType", "importReviewsFromApps");
+            formData.append("subActionType", selectedImportApp);
+            formData.append("shop", shopRecords.shop);
+            const response = await fetch(`/api/import-export-reviews`, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            if (data.status == 200) {
+                shopify.toast.show(data.message, {
+                    duration: settingsJson.toasterCloseTime
+                });
+
+            } else {
+                shopify.toast.show(data.message, {
+                    duration: settingsJson.toasterCloseTime,
+                    isError: true
+                });
+            }
+            setSelectedImportApp('');
+            event.target.value  = '';
+            setLoadingAppImportUpload(false);
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
+    }
+
+    
+
+    const crumbs = [
         { title: "Review", "link": "./../review" },
         { title: "Import reviews", "link": "" }
-    ]);
+    ];
     return (
         <>
             <Breadcrumb crumbs={crumbs} />
@@ -69,7 +180,7 @@ export default function DisplayReviewWidget() {
             <Page fullWidth>
                 <ReviewPageSidebar />
                 <div className="pagebox">
-                    <div className='accordian_rowmain'>
+                    {/* <div className='accordian_rowmain'>
                         <Layout.Section>
                             <LegacyCard sectioned>
                                 <div
@@ -141,7 +252,7 @@ export default function DisplayReviewWidget() {
                                 </LegacyStack>
                             </LegacyCard>
                         </Layout.Section>
-                    </div>
+                    </div> */}
                     <div className='accordian_rowmain'>
                         <Layout.Section>
                             <LegacyCard sectioned>
@@ -160,7 +271,7 @@ export default function DisplayReviewWidget() {
                                                 Import from supported apps
                                             </Text>
                                             <Text>
-                                                Import reviews from Shopify Product Reviews, Yotpo, Junip, Okendo or Judge.me
+                                                Import reviews from Loox, Judge.me, Yotpo, Junip or Okendo
                                             </Text>
                                         </div>
                                         <div class="flxfix btnwrap m-0">
@@ -196,18 +307,38 @@ export default function DisplayReviewWidget() {
                                             </div>
                                             <div className="importappformrow flxrow">
                                                 <div className="formcontent flxflexi" >
+
                                                     <Select
-                                                        name="reviewPublishMode"
-                                                        id="reviewPublishMode"
-                                                        // options={options}
-                                                        // onChange={
-                                                        //     handleSelectChange
-                                                        // }
-                                                        // value={selected}
+                                                        name="other_app"
+                                                        id="other_app"
+                                                        options={settingsJson.importReviewApps}
+                                                        onChange={
+                                                            handleSelectChange
+                                                        }
+                                                        value={selectedImportApp}
                                                     />
+
                                                 </div>
                                                 <div className="btnbox m-0 flxfix">
-                                                    <a href="#" className="revbtn regularbtn">Upload CSV file</a>
+
+                                                    {loadingAppImportUpload ?
+                                                    <Spinner size="large" />
+                                                    :
+                                                    <label htmlFor="importReviews" className="revbtn regularbtn" style={{ cursor: "pointer" }}>
+                                                        Upload CSV file
+                                                    </label>
+                                                }
+
+
+                                                    <input
+                                                        type="file"
+                                                        id="importReviews"
+                                                        style={{ display: "none" }}
+                                                        onChange={(e) => handleFileUploadFromApps(e)}
+                                                    />
+
+
+
                                                 </div>
                                             </div>
                                             <AlertInfo colorTheme="primarybox mt-24" iconClass="twenty-Info_icon" alertContent="Need help migrating from other apps? You can always contact support" alertClose />
@@ -258,8 +389,22 @@ export default function DisplayReviewWidget() {
                                     >
                                         <div className="importspreadsheed_wrap">
                                             <div className="btnbox m-0">
-                                                <a href="#" className="revbtn regularbtn lightbtn"><span>1</span>Copy template file</a>
-                                                <a href="#" className="revbtn regularbtn"><span>2</span>Upload template file</a>
+                                                <a className="revbtn regularbtn lightbtn" href={`${settingsJson.host_url}/csv-template-file/import-template.csv`} target="_blank" rel="noreferrer"><span>1</span>Download the CSV template file</a>
+
+                                                {loadingSpreadsheetUpload ?
+                                                    <Spinner size="large" />
+                                                    :
+                                                    <label htmlFor="fileUpload" className="revbtn regularbtn" style={{ cursor: "pointer" }}>
+                                                        <span>2</span>Upload template file
+                                                    </label>
+                                                }
+
+                                                <input
+                                                    type="file"
+                                                    id="fileUpload"
+                                                    style={{ display: "none" }}
+                                                    onChange={(e) => handleFileUploadFromSpreadsheet(e)}
+                                                />
                                             </div>
                                             <AlertInfo colorTheme="primarybox mt-24" iconClass="twenty-Info_icon" alertContent="Carefully review the Import Template Instructions and make sure that your file meets all requirements." alertClose />
                                         </div>
