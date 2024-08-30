@@ -13,8 +13,11 @@ const AlertInfo = (props) => {
                     <a href={props.conlink}>{props.alertContent}</a>
                 </div>
             }
-            {props.alertContent &&
+            {/* {props.alertContent &&
                 <div className="plaintext flxflexi">{props.alertContent}</div>
+            } */}
+            {props.alertContent &&
+                <div className="plaintext flxflexi" dangerouslySetInnerHTML={{ __html: props.alertContent }}></div>
             }
             {props.alertClose &&
                 <div className="closebtn">
