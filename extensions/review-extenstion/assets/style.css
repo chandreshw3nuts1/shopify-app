@@ -540,3 +540,10 @@ form textarea.input_text { height: 80px; padding-top: 8px; padding-bottom: 8px;}
 .frontreviewbox.grid-four-column .box-style .review_imageswrap .imagebox img { width: 100%; height: 100%; position: absolute; left: 0; top: 0;}
 .frontreviewbox.grid-four-column .box-style .more-count { position: absolute; right: 12px; top: 12px; border-radius: 50px; background: var(--lightGreyBGcolor); color: var(--darkColor); font-size: 14px; font-weight: 600; padding: 0 16px; display: flex; align-items: center; height: 36px; z-index: 1;}
 .frontreviewbox.grid-four-column .box-style .product-thumb-detail .image { width: 54px; height: 54px; margin: 0 12px 0 0;}
+
+
+.singleratingpreview { display: flex; align-items: center;}
+.singleratingpreview .iconwrap { display: flex; align-items: center; color: var(--borderColor);}
+.singleratingpreview .iconwrap svg + svg { margin-left: -5px;}
+.singleratingpreview.center { justify-content: center;}
+.singleratingpreview.right { justify-content: flex-end;}

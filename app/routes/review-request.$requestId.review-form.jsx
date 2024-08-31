@@ -11,6 +11,7 @@ import AddImageIcon from "./components/icons/AddImageIcon";
 import ImageFilledIcon from "./components/icons/ImageFilledIcon";
 import CheckArrowIcon from "./components/icons/CheckArrowIcon";
 import DeleteIcon from "./components/icons/DeleteIcon";
+import RecordVideoIcon from "./components/icons/RecordVideoIcon";
 
 import FaceStar1 from "./components/images/FaceStar1";
 import FaceStar2 from "./components/images/FaceStar2";
@@ -574,42 +575,45 @@ const ReviewRequestForm = () => {
 								</div>
 								<div className="modal-body">
 									<div className="filesupload_wrap">
-										<label className="form__container" id="upload-container">
-											{files.length == 0 &&
-												<>
-													<div className="iconimage">
-														<AddImageIcon />
-													</div>
-													<div className="simpletext">{generalSettingsModel.is_enabled_video_review ? languageContent('dragDropPhotoVideoText') : languageContent('dragDropPhotoText')}</div>
-													<div className="orbox flxrow">
-														<span>OR</span>
-													</div>
-												</>
-											}
-											<div className="btnwrap">
-
-												{isLoadingMedia == false ? (
-													<span className="revbtn">
-														<ImageFilledIcon />
-														{generalSettingsModel.is_enabled_video_review ? languageContent('addPhotoVideoButtonText') : languageContent('addPhotoButtonText')}
-													</span>
-												) : (
-													<span className="revbtn">
-														<div className="loading-icon">
-															<FontAwesomeIcon icon={faSpinner} spin /> {translations.reviewFormSettings.uploadingFiles}
+										<div className="filelabel_wrapbox">
+											<label className="form__container" id="upload-container">
+												{files.length == 0 &&
+													<>
+														<div className="iconimage">
+															<AddImageIcon />
 														</div>
-													</span>
-												)}
+														<div className="simpletext">{generalSettingsModel.is_enabled_video_review ? languageContent('dragDropPhotoVideoText') : languageContent('dragDropPhotoText')}</div>
+														<div className="orbox flxrow">
+															<span>OR</span>
+														</div>
+													</>
+												}
+												<div className="btnwrap">
+
+													{isLoadingMedia == false ? (
+														<span className="revbtn">
+															<ImageFilledIcon />
+															{generalSettingsModel.is_enabled_video_review ? languageContent('addPhotoVideoButtonText') : languageContent('addPhotoButtonText')}
+														</span>
+													) : (
+														<span className="revbtn">
+															<div className="loading-icon">
+																<FontAwesomeIcon icon={faSpinner} spin /> {translations.reviewFormSettings.uploadingFiles}
+															</div>
+														</span>
+													)}
 
 
 
 
+												</div>
+												<input ref={fileInputRef} onChange={handleFileChange} className="form__file" name="image_and_videos[]" id="upload-files" type="file" accept={generalSettingsModel.is_enabled_video_review ? 'image/*,video/mp4,video/x-m4v,video/*' : 'image/*'} multiple="multiple" />
+											</label>
+											<div className="record_video" onClick={recordVideoStart}>
+												<RecordVideoIcon /> Rec
 											</div>
-											<input ref={fileInputRef} onChange={handleFileChange} className="form__file" name="image_and_videos[]" id="upload-files" type="file" accept={generalSettingsModel.is_enabled_video_review ? 'image/*,video/mp4,video/x-m4v,video/*' : 'image/*'} multiple="multiple" />
-										</label>
-										<span className="" onClick={recordVideoStart}>
-											<ImageFilledIcon />
-										</span>
+										</div>
+										
 
 
 										{noOFfileUploadErr && <div className="discountrow uploadDocError ">
@@ -816,18 +820,20 @@ const ReviewRequestForm = () => {
 				</Modal.Header>
 				<Modal.Body>
 
-					<div>
+					<div className="recordvideo_wrap">
 						{/* Reused video element for both recording and playback */}
-						<video ref={videoRef} autoPlay muted={!videoURL} style={{ width: '100%', maxHeight: '400px' }}></video>
+						<div className="recvideobox">
+							<video ref={videoRef} autoPlay muted={!videoURL} style={{ width: '100%', maxHeight: '400px' }}></video>
+						</div>
 
-						<div>
+						<div className="btnwrap justify-content-center">
 							{!isRecording ? (
-								<button onClick={startRecording}>Start Recording</button>
+								<button className="revbtn" onClick={startRecording}>Start Recording</button>
 							) : (
-								<button onClick={stopRecording}>Stop Recording</button>
+								<button className="revbtn" onClick={stopRecording}>Stop Recording</button>
 							)}
 
-							{recordedBlob && <button onClick={submitRecording}>Submit Recording</button>}
+							{recordedBlob && <button className="revbtn" onClick={submitRecording}>Submit Recording</button>}
 						</div>
 					</div>
 				</Modal.Body>
