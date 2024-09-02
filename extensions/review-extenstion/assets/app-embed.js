@@ -92,7 +92,7 @@ function loadModalReviews(page) {
         type: 'POST',
         url: `/apps/w3-proxy/widget`,
         data: {
-            show_all_reviews: widget_settings_vars.show_all_reviews,
+            show_all_reviews: widget_settings_vars?.show_all_reviews || true,
             filter_by_ratting: filter_by_ratting,
             sort_by: sort_by,
             page: page,
@@ -140,6 +140,79 @@ function loadModalReviews(page) {
         }
     });
 }
+
+$(document).ready(function() {
+
+    
+    // Function to update button visibility based on video state
+    function updateButtonVisibility(videoElement) {
+        $(videoElement).closest('.videowrap').find('.mainVideoPlayButton').show();
+        $(videoElement).closest('.videowrap').find('.mainVideoPauseButton').hide();
+    }
+
+    // Play video when play button is clicked
+    $(document).on("click", ".mainVideoPlayButton", function () {
+        // Pause all videos before playing a new one
+        $('video').each(function () {
+            this.pause();
+        });
+
+        // Hide all play buttons and show all pause buttons
+        $('.mainVideoPlayButton').show();
+        $('.mainVideoPauseButton').hide();
+
+        // Find the closest video to the play button clicked
+        var video = $(this).closest('.videowrap').find('.mainVideoPlayer')[0];
+
+        if (video) {
+            video.play().then(() => {
+                // Hide the play button and show the pause button only for the related video
+                $(this).hide();
+                $(this).siblings('.mainVideoPauseButton').show();
+            }).catch(error => {
+                console.error('Error playing video:', error);
+            });
+        }
+    });
+
+    // Pause video when pause button is clicked
+    $(document).on("click", ".mainVideoPauseButton", function () {
+        // Find the closest video to the pause button clicked
+        var video = $(this).closest('.videowrap').find('.mainVideoPlayer')[0];
+
+        if (video) {
+            video.pause();
+            // Hide the pause button and show the play button only for the related video
+            $(this).hide();
+            $(this).siblings('.mainVideoPlayButton').show();
+        }
+    });
+
+    // Attach 'ended' event listeners to all video elements
+    $('.mainVideoPlayer').each(function() {
+        this.addEventListener('ended', function() {
+
+            updateButtonVisibility(this);
+        });
+    });
+
+    if($("#sidebar_popup_extension_widget").length > 0) {
+        var shop_domain = $("#sidebar_popup_extension_widget").data('shop-domain');
+        $.ajax({
+            type: 'POST',
+            url: `/apps/w3-proxy/widget`,
+            data: {
+                shop_domain: shop_domain,
+                actionType : "sidebarRatingWidget",
+            },
+            dataType: "json",
+            success: function (response) {
+                $("#sidebar_popup_extension_widget").html(response.content);
+            }
+        });
+    }
+});
+
 
 
 

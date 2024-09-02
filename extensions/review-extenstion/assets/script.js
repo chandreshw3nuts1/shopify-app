@@ -293,30 +293,45 @@ $(document).ready(function () {
         }
     }
 
-    $(document).on('click', '#recordVideoStart , #startVideoRecordingAgain', function () {
-        startRecording();
-        $('#record_video_el').prop('srcObject', null);
+    $(document).on('click', '#showRecordVideoModal', function () {
+        $('#record_video_el').prop('src', null);
         $("#record_review_video_modal").modal("show");
+        $('#startVideoRecording').show();
+        $('#submitVideoRecording').hide();
+        $('#stopVideoRecording').hide();
+        $("#uploadingVideoRecording").hide();
 
-        $('#startVideoRecordingAgain').hide();
+    });
+
+    $(document).on('click', '#startVideoRecording', function () {
+        $(this).hide();
+        $('#record_video_el').prop('src', null);
+        startRecording();
         $('#submitVideoRecording').hide();
         $('#stopVideoRecording').show();
 
     });
+
+    
+    
     $(document).on('click', '#stopVideoRecording', function () {
         stopRecording();
         $('#submitVideoRecording').show();
+        $('#startVideoRecording').show();
     });
 
     $(document).on('click', '#submitVideoRecording', function () {
-
+        let $this = $(this);
         let formData = new FormData($('#review_submit_btn_form')[0]);
         formData.append("actionType", "uploadVideoRecording");
         formData.append("video_record", recordedBlob, 'recording.mp4');
         formData.append("shop_domain", shop_domain);
 
         let reviewUrl = $("#review_submit_btn_form").attr('action');
-
+        $this.hide();
+        $("#startVideoRecording").hide();
+        $("#uploadingVideoRecording").show();
+        
         $.ajax({
             type: 'POST',
             url: reviewUrl,
@@ -340,6 +355,9 @@ $(document).ready(function () {
                 };
                 FILE_LIST.push(uploadedFiles);
                 previewImages();
+                $("#uploadingVideoRecording").hide();
+                $this.show();
+
             },
             error: function (xhr, status, error) {
                 console.error(xhr.responseText);
@@ -349,8 +367,18 @@ $(document).ready(function () {
     });
 
     $(document).on('hide.bs.modal', '#record_review_video_modal', function () {
-        stopRecording();
+    
+        const videoElement = $('#record_video_el').get(0);
+        if (videoElement) {
+            videoElement.pause();
+            videoElement.src = '';
+            videoElement.srcObject = null;
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        }
     });
+    
 
 
 });
@@ -623,28 +651,6 @@ $(document).on("click", ".dropdown-menu .sort_by_filter", function (e) {
 
 
 
-// Play video when play button is clicked
-$(document).on("click", "#mainVideoPlayButton", function () {
-    var video = document.getElementById('mainVideoPlayer');
-    if (video) {
-        video.play().then(function () {
-            $('#mainVideoPlayButton').hide();
-            $('#mainVideoPauseButton').show();
-        }).catch(function (error) {
-            console.error('Error playing video:', error);
-        });
-    }
-});
-
-// Pause video when pause button is clicked
-$(document).on("click", "#mainVideoPauseButton", function () {
-    var video = document.getElementById('mainVideoPlayer');
-    if (video) {
-        video.pause();
-        $('#mainVideoPlayButton').show();
-        $('#mainVideoPauseButton').hide();
-    }
-});
 
 $(document).on("click", "#copy-button", function () {
     var discountCode = $('#discount-code').text();

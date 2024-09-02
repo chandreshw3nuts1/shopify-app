@@ -55,11 +55,11 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                                                 <Image src={getUploadDocument(media.url)} alt="" />
                                                             ) : (
                                                                 <div className="videowrap">
-                                                                    <video id="mainVideoPlayer">
+                                                                    <video className="mainVideoPlayer">
                                                                         <source src={getUploadDocument(media.url)} type="video/mp4" />
                                                                     </video>
-                                                                    <button id="mainVideoPlayButton"><PlayIcon /></button>
-                                                                    <button id="mainVideoPauseButton" style={{ display: 'none' }} ><PauseIcon /></button>
+                                                                    <button className="mainVideoPlayButton"><PlayIcon /></button>
+                                                                    <button className="mainVideoPauseButton" style={{ display: 'none' }} ><PauseIcon /></button>
                                                                 </div>
                                                             )}
 

@@ -9,6 +9,7 @@ import emailReviewReplySettings from './../routes/models/emailReviewReplySetting
 import emailDiscountPhotoVideoReviewSettings from './../routes/models/emailDiscountPhotoVideoReviewSettings';
 import productReviewWidgetCustomizes from './../routes/models/productReviewWidgetCustomizes';
 import reviewFormSettings from './../routes/models/reviewFormSettings';
+import sidebarReviewWidgetCustomizes from './../routes/models/sidebarReviewWidgetCustomizes';
 import settingsJson from './../utils/settings.json';
 
 export async function loader() {
@@ -279,6 +280,8 @@ export async function action({ params, request }) {
                         await productReviewWidgetCustomizes.findOneAndUpdate(query, update, options);
                     } else if (subActionType == "reviewFormSettings") {
                         await reviewFormSettings.findOneAndUpdate(query, update, options);
+                    } else if (subActionType == "sidebarRatingWidgetCustomize") {
+                        await sidebarReviewWidgetCustomizes.findOneAndUpdate(query, update, options);
                     }
 
                     return json({ "status": 200, "message": "Settings saved " });

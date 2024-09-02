@@ -357,12 +357,13 @@ export async function action({ request }) {
 							}
 						};
 						const url = `https://${shopRecords.shop}/admin/api/2024-01/customers.json`;
+						const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shopRecords.shop });
 
 						const custResponse = await fetch(url, {
 							method: 'POST',
 							headers: {
 								'Content-Type': 'application/json',
-								'X-Shopify-Access-Token': "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",
+								'X-Shopify-Access-Token': shopSessionRecords.accessToken,
 							},
 							body: JSON.stringify(customerData),
 						});

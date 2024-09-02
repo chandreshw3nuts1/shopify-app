@@ -6,6 +6,7 @@ import appInstallLogs from './../routes/models/appInstallLogs';
 import reviewRequestTimingSettings from './../routes/models/reviewRequestTimingSettings';
 import productReviewWidgetCustomizes from './../routes/models/productReviewWidgetCustomizes';
 import reviewDiscountSettings from './../routes/models/reviewDiscountSettings';
+import sidebarReviewWidgetCustomizes from './../routes/models/sidebarReviewWidgetCustomizes';
 
 import settingsJson from './../utils/settings.json';
 
@@ -173,6 +174,24 @@ export async function storeShopDetails(session) {
 				{
 					$setOnInsert: {
 						shop_id: shopRecords._id,
+					}
+				},
+				{ upsert: true }
+			);
+
+
+			await sidebarReviewWidgetCustomizes.updateOne(
+				{ shop_id: shopRecords._id },
+				{
+					$setOnInsert: {
+						shop_id: shopRecords._id,
+						isActive: settingsJson.sidebarRatingWidgetCustomize.isActive,
+						widgetPosition: settingsJson.sidebarRatingWidgetCustomize.widgetPosition,
+						widgetOrientation: settingsJson.sidebarRatingWidgetCustomize.widgetOrientation,
+						buttonText: settingsJson.sidebarRatingWidgetCustomize.buttonText,
+						buttonBackgroundColor: settingsJson.sidebarRatingWidgetCustomize.buttonBackgroundColor,
+						buttonTextColor: settingsJson.sidebarRatingWidgetCustomize.buttonTextColor,
+						hideOnMobile: settingsJson.sidebarRatingWidgetCustomize.hideOnMobile,
 					}
 				},
 				{ upsert: true }

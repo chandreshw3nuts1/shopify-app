@@ -7,6 +7,7 @@ import WidgetModalRviews from './components/widget-components/widget-modal-revie
 import CreateReviewModalWidget from './components/widget-components/create-review-modal-widget';
 import ReviewDetailModalWidget from './components/widget-components/review-detail-modal-widget';
 import RatingWidget from './components/widget-components/rating-widget';
+import SidebarRatingWidget from './components/widget-components/sidebar-rating-widget';
 
 
 
@@ -17,6 +18,7 @@ import generalAppearances from "./models/generalAppearances";
 import generalSettings from "./models/generalSettings";
 import productReviewWidgetCustomizes from "./models/productReviewWidgetCustomizes";
 import reviewFormSettings from "./models/reviewFormSettings";
+import sidebarReviewWidgetCustomizes from "./models/sidebarReviewWidgetCustomizes";
 
 
 import { getShopifyProducts, getDiscounts } from "./../utils/common";
@@ -316,6 +318,26 @@ export async function action({ request }) {
                 const htmlRatingContent = ReactDOMServer.renderToString(dynamicRatingComponent);
                 return json({
                     htmlRatingContent: htmlRatingContent
+                });
+
+            } catch (error) {
+                console.log(error);
+                return json({
+                    error
+                });
+            }
+        }  else if (actionType == "sidebarRatingWidget") {
+            try {
+                
+
+                const sidebarReviewWidgetCustomizesModel = await sidebarReviewWidgetCustomizes.findOne({
+                    shop_id: shopRecords._id
+                });
+        
+                const dynamicSidebarRatingComponent = <SidebarRatingWidget sidebarReviewWidgetCustomizesModel={sidebarReviewWidgetCustomizesModel} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} settingsJson={settingsJson} />;
+                const htmlSidebrRatingContent = ReactDOMServer.renderToString(dynamicSidebarRatingComponent);
+                return json({
+                    content: htmlSidebrRatingContent
                 });
 
             } catch (error) {

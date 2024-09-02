@@ -159,7 +159,7 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                                     </div>
                                                     <input className="form__file" name="image_and_videos[]" id="upload-files" type="file" accept={generalSettingsModel.is_enabled_video_review ? 'image/*,video/mp4,video/x-m4v,video/*' : 'image/*'} multiple="multiple" />
                                                 </label>
-                                                <div className="record_video" id="recordVideoStart">
+                                                <div className="record_video" id="showRecordVideoModal">
                                                     <RecordVideoIcon /> Rec
                                                 </div>
                                             </div>
@@ -344,7 +344,7 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                             <div className="reviewsteps activestep step-1">
                                 <div className="modal-header">
                                     <div className="flxflexi">
-                                        <h1 className="modal-title">Record product video</h1>
+                                        <h1 className="modal-title">{translations.recordingVideoTitle}</h1>
                                     </div>
                                 </div>
                                 <div className="modal-body">
@@ -354,9 +354,10 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                                 <video id="record_video_el" controls="true" autoplay="true"></video>
                                             </div>
                                             <div className="btnwrap justify-content-center">
-                                                <button type="button" className="revbtn" id="stopVideoRecording" >Stop recording</button>
-                                                <button type="button" className="revbtn lightbtn" id="startVideoRecordingAgain" >Again start recording</button>
-                                                <button type="button" className="revbtn" id="submitVideoRecording">Submit</button>
+                                                <button type="button" className="revbtn" id="stopVideoRecording" >{translations.stopRecordingBtnText}</button>
+                                                <button type="button" className="revbtn " id="startVideoRecording" >{translations.startRecordingBtnText}</button>
+                                                <button type="button" className="revbtn" id="submitVideoRecording">{translations.submitRecordingBtnText}</button>
+                                                <button type="button" className="revbtn" id="uploadingVideoRecording">{translations.uploadingRecordingBtnText}</button>
                                             </div>
                                         </div>
                                     </div>

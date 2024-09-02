@@ -3,10 +3,12 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from '@remix-run/react';
 import LanguageSelector from "./components/language-selector";
 import ProductReviewWidget from './components/customizeWidget/ProductReviewWidget';
+import SidebarReviewWidget from './components/customizeWidget/SidebarReviewWidget';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from './components/Breadcrumb';
 import { getShopDetails } from './../utils/getShopDetails';
 import productReviewWidgetCustomizes from './models/productReviewWidgetCustomizes';
+import sidebarReviewWidgetCustomizes from './models/sidebarReviewWidgetCustomizes';
 import generalSettings from './models/generalSettings';
 import { useTranslation } from "react-i18next";
 
@@ -18,16 +20,21 @@ import {
 export const loader = async ({ request, params }) => {
     const shopRecords = await getShopDetails(request);
     var JsonData = { params, shopRecords };
-    
+
     switch (params.type) {
-		case 'product-review-widget':
-			JsonData['customizeObj'] = await productReviewWidgetCustomizes.findOne({
-				shop_id: shopRecords._id,
-			});
-			break;
-		default:
-			break;
-	}
+        case 'product-review-widget':
+            JsonData['customizeObj'] = await productReviewWidgetCustomizes.findOne({
+                shop_id: shopRecords._id,
+            });
+            break;
+        case 'sidebar-review-widget':
+            JsonData['customizeObj'] = await sidebarReviewWidgetCustomizes.findOne({
+                shop_id: shopRecords._id,
+            });
+            break;
+        default:
+            break;
+    }
     JsonData['generalSettingsModel'] = await generalSettings.findOne({ shop_id: shopRecords._id });
 
     return json(JsonData);
@@ -41,14 +48,20 @@ export default function WidgetCustomize() {
     const type = params.type;
     let content;
     let customizeTemplateName;
+    let hideLanguageSelector = false;
 
     switch (type) {
         case 'product-review-widget':
             content = <ProductReviewWidget shopRecords={shopRecords} customizeObj={customizeObj} />;
-            customizeTemplateName = "Product review widget"
+            customizeTemplateName = "Product review widget";
+            break;
+        case 'sidebar-review-widget':
+            content = <SidebarReviewWidget shopRecords={shopRecords} customizeObj={customizeObj} />;
+            customizeTemplateName = "Sidebar review widget";
+            hideLanguageSelector = true;
             break;
         default:
-            return  <h5>404 - Page Not Found</h5>;
+            return <h5>404 - Page Not Found</h5>;
             break;
     }
 
@@ -80,7 +93,7 @@ export default function WidgetCustomize() {
                         <a href="#" onClick={backToWidgetPage}><i className='twenty-arrow-left'></i>Collect reviews</a>
                     </div>
                     <div className='flxfix'>
-                        {generalSettingsModel && generalSettingsModel.multilingual_support &&
+                        {!hideLanguageSelector && generalSettingsModel && generalSettingsModel.multilingual_support &&
                             <LanguageSelector className="inlinerow m-0" />
                         }
                     </div>
@@ -88,13 +101,7 @@ export default function WidgetCustomize() {
 
                 <div className="pagebox">
                     <div className="graywrapbox gapy24 mt-24">
-                        <div className="subtitlebox">
-                            <h2>Review Widget</h2>
-                            <p>Collect and display product reviews on your product pages.</p>
-                        </div>
-                        <div className='flxfix'>
-                            {content}
-                        </div>
+                        {content}
                     </div>
 
                 </div>

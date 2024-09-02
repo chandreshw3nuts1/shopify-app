@@ -35,6 +35,11 @@
     "submit_button": "Submit",
     "termsAndConditions" : "By submitting, I acknowledge the <a href=[terms_service]>Terms of Service</a> and <a href=[privacy_policy] >Privacy Policy</a> and that my review will be publicly posted and shared online.",
     "thankyouPageEmailText" : "We'll also send it by email",
+    "recordingVideoTitle" : "Record product video",
+    "startRecordingBtnText" : "Start recording",
+    "stopRecordingBtnText" : "Stop recording",
+    "submitRecordingBtnText" : "Submit video",
+    "uploadingRecordingBtnText" : "Uploading...",
     "productReviewConstomize": {
         "reviewHeaderTitle": "Customer Review",
         "reviewSingular": "Review",

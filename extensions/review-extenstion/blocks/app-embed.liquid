@@ -21,11 +21,60 @@
 </div>
 
 
+
+{% assign sidebar_widget_data = shop.metafields.extension_status.sidebar_widget_data %}
+
+{%- if sidebar_widget_data -%}
+  {%- assign isActive_string = sidebar_widget_data | replace: '}', '' | split: '"isActive":' | last | split: ',' | first -%}
+  {%- assign isActive = isActive_string | replace: 'true', 'true' | replace: 'false', 'false' -%}
+  
+  {%- assign isHomePage_string = sidebar_widget_data | replace: '}', '' | split: '"isHomePage":' | last | split: ',' | first -%}
+  {%- assign isHomePage = isHomePage_string | replace: 'true', 'true' | replace: 'false', 'false' -%}
+  
+  {%- assign isCartPage_string = sidebar_widget_data | replace: '}', '' | split: '"isCartPage":' | last | split: ',' | first -%}
+  {%- assign isCartPage = isCartPage_string | replace: 'true', 'true' | replace: 'false', 'false' -%}
+  
+  {%- assign isProductPage_string = sidebar_widget_data | replace: '}', '' | split: '"isProductPage":' | last | split: ',' | first -%}
+  {%- assign isProductPage = isProductPage_string | replace: 'true', 'true' | replace: 'false', 'false' -%}
+  
+  {%- assign isOtherPages_string = sidebar_widget_data | replace: '}', '' | split: '"isOtherPages":' | last | split: ',' | first -%}
+  {%- assign isOtherPages = isOtherPages_string | replace: 'true', 'true' | replace: 'false', 'false' -%}
+{%- endif -%}
+
+{%- assign current_template = template.name -%}
+
+{% if isActive == "true" %}
+  {% if current_template == 'index' and isHomePage == "true" %}
+    {% assign show_div = true %}
+  {% elsif current_template contains 'cart' and isCartPage == "true" %}
+    {% assign show_div = true %}
+  {% elsif current_template contains 'product' and isProductPage == "true" %}
+    {% assign show_div = true %}
+  {% elsif isOtherPages == "true" and current_template != 'index' and current_template != 'product' and current_template != 'cart'  %}
+    {% assign show_div = true %}
+  {% endif %}
+{% endif %}
+ 
+{% if show_div == true %}
+  	<div id="sidebar_popup_extension_widget" class="w3-widgets"  data-shop-domain="{{ shop.domain }}" >
+		
+	</div>
+{% endif %}
+
+
+
+
+
+
+
+
+
+
 {% schema %}
   {
     "name": "App Embed",
     "target": "body",
-	"stylesheet": "app-embed.css",
+	"stylesheet": "style.css",
     "javascript": "app-embed.js",
     "settings": []
   }
