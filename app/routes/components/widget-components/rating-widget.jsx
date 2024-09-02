@@ -19,8 +19,12 @@ const RatingWidget = (props) => {
             <style>
                 {`
 					.custom-rating-div svg {
-						font-size: 48px !important;
+                        width: ${props.formParams.font_size >= 40 ? 64 : props.formParams.font_size * 1.6}px !important;
+                        height: ${props.formParams.font_size >= 40 ? 64 : props.formParams.font_size * 1.6}px !important;
 					}
+                    .custom-rating-div svg + svg {
+                        margin-left: -${props.formParams.font_size / 4}px !important;
+                    }
                     .custom-rating-div  {
 						text-align: ${props.formParams.widget_alignment} !important;
                         cursor : pointer;
@@ -31,28 +35,30 @@ const RatingWidget = (props) => {
                     }
 				`}
             </style>
-            <div className={`form-group custom-rating-div ${openReviewsModalClass}`}>
+            <div className={`form-group singleratingpreview custom-rating-div ${openReviewsModalClass} ${props.formParams.widget_alignment}`}>
 
                 {props.formParams.totalReviews > 0 ?
                     <>
-                        {props.formParams.widget_layout == "all" ?
-                            (
-                                <>
-                                    {props.CommonRatingComponent ? <props.CommonRatingComponent color={props.formParams.averageRating >= 1 ? iconColor : "currentColor"} /> : null}
-                                    {props.CommonRatingComponent ? <props.CommonRatingComponent color={props.formParams.averageRating >= 2 ? iconColor : "currentColor"} /> : null}
-                                    {props.CommonRatingComponent ? <props.CommonRatingComponent color={props.formParams.averageRating >= 3 ? iconColor : "currentColor"} /> : null}
-                                    {props.CommonRatingComponent ? <props.CommonRatingComponent color={props.formParams.averageRating >= 4 ? iconColor : "currentColor"} /> : null}
-                                    {props.CommonRatingComponent ? <props.CommonRatingComponent color={props.formParams.averageRating >= 5 ? iconColor : "currentColor"} /> : null}
-                                </>
+                        <div className="iconwrap">
+                            {props.formParams.widget_layout == "all" ?
+                                (
+                                    <>
+                                        {props.CommonRatingComponent ? <props.CommonRatingComponent color={props.formParams.averageRating >= 1 ? iconColor : "currentColor"} /> : null}
+                                        {props.CommonRatingComponent ? <props.CommonRatingComponent color={props.formParams.averageRating >= 2 ? iconColor : "currentColor"} /> : null}
+                                        {props.CommonRatingComponent ? <props.CommonRatingComponent color={props.formParams.averageRating >= 3 ? iconColor : "currentColor"} /> : null}
+                                        {props.CommonRatingComponent ? <props.CommonRatingComponent color={props.formParams.averageRating >= 4 ? iconColor : "currentColor"} /> : null}
+                                        {props.CommonRatingComponent ? <props.CommonRatingComponent color={props.formParams.averageRating >= 5 ? iconColor : "currentColor"} /> : null}
+                                    </>
 
-                            ) :
-                            (
-                                <>
-                                    {props.CommonRatingComponent ? <props.CommonRatingComponent color={iconColor} /> : null}
+                                ) :
+                                (
+                                    <>
+                                        {props.CommonRatingComponent ? <props.CommonRatingComponent color={iconColor} /> : null}
 
-                                </>
+                                    </>
 
-                            )}
+                                )}
+                        </div>
                         <div className="custom-rating-text">
                             {widgetText}
                         </div>
@@ -61,21 +67,23 @@ const RatingWidget = (props) => {
                     <>
                         {props.formParams.show_empty_stars == "true" &&
                             <>
-                                {props.formParams.widget_layout == "all" ?
-                                    (
-                                        <>
-                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={"currentColor"} /> : null}
-                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={"currentColor"} /> : null}
-                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={"currentColor"} /> : null}
-                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={"currentColor"} /> : null}
-                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={"currentColor"} /> : null}
-                                        </>
-                                    ) :
-                                    (
-                                        <>
-                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={"currentColor"} /> : null}
-                                        </>
-                                    )}
+                                <div className="iconwrap">
+                                    {props.formParams.widget_layout == "all" ?
+                                        (
+                                            <>
+                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={"currentColor"} /> : null}
+                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={"currentColor"} /> : null}
+                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={"currentColor"} /> : null}
+                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={"currentColor"} /> : null}
+                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={"currentColor"} /> : null}
+                                            </>
+                                        ) :
+                                        (
+                                            <>
+                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={"currentColor"} /> : null}
+                                            </>
+                                        )}
+                                </div>
                                 <div className="custom-rating-text">
                                     {widgetText}
                                 </div>
