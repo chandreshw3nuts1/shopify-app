@@ -163,7 +163,7 @@ export async function action({ request }) {
 					});
 					const translations = await lang.json();
 					const reviewFormSettingsModel = await reviewFormSettings.findOne({ shop_id: shopRecords._id });
-					const languageWiseReviewFormSettings = reviewFormSettingsModel[customer_locale] ? reviewFormSettingsModel[customer_locale] : {};
+					const languageWiseReviewFormSettings = (reviewFormSettingsModel && reviewFormSettingsModel[customer_locale]) ? reviewFormSettingsModel[customer_locale] : {};
 					const otherProps = { translations };
 					otherProps['reviewFormSettingsModel'] = reviewFormSettingsModel;
 					otherProps['languageWiseReviewFormSettings'] = languageWiseReviewFormSettings;

@@ -3,12 +3,12 @@ import { useLoaderData } from '@remix-run/react';
 import Breadcrumb from "./components/Breadcrumb";
 import ReviewPageSidebar from "./components/headerMenu/ReviewPageSidebar";
 import { getShopDetails } from './../utils/getShopDetails';
-import GeneralAppearance from "./components/settings/general-appearance";
-import { findOneRecord, getShopifyLatestProducts } from './../utils/common';
+import { getShopifyLatestProducts } from './../utils/common';
 import { json } from "@remix-run/node";
 import { useNavigate } from 'react-router-dom';
 import settingsJson from './../utils/settings.json';
 
+import sidebarReviewWidgetCustomizes from "./models/sidebarReviewWidgetCustomizes";
 import { Image } from "react-bootstrap";
 import widgetThumb01 from './../images/widget-thumbs/Review-Widget-image.jpg'
 import widgetThumb02 from './../images/widget-thumbs/Star-Rating-Badge-image.jpg'
@@ -28,26 +28,28 @@ export async function loader({ request }) {
     try {
 
         const shopRecords = await getShopDetails(request);
-        const generalAppearances = await findOneRecord('general_appearances', {
-            shop_id: shopRecords._id,
-        });
+
+        const sidebarReviewWidgetCustomizesModel = await sidebarReviewWidgetCustomizes.findOne({ shop_id: shopRecords._id });
 
         const reviewExtensionId = process.env.SHOPIFY_ALL_REVIEW_EXTENSION_ID;
 
         const productWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/product-review-widget`);
         const ratingWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/rating-widget`);
+        const allReviewWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/all-review-counter-widget`);
 
         const shopifyProduct = await getShopifyLatestProducts(shopRecords.shop);
         const productName = (shopifyProduct.products) ? encodeURIComponent(`/products/${shopifyProduct.products[0]['handle']}`) : "/products";
 
         const productReviewWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?previewPath=${productName}&addAppBlockId=${productWidgetExtenstionId}&target=sectionId`;
         const ratingReviewWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?previewPath=${productName}&addAppBlockId=${ratingWidgetExtenstionId}&target=mainSection`;
+        const allReviewWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?previewPath=${productName}&addAppBlockId=${allReviewWidgetExtenstionId}&target=sectionId`;
         const extensionUrs = {
             productReviewWidgetUrl,
-            ratingReviewWidgetUrl
+            ratingReviewWidgetUrl,
+            allReviewWidgetUrl
         }
 
-        return json({ shopRecords, generalAppearances, extensionUrs });
+        return json({ shopRecords, sidebarReviewWidgetCustomizesModel, extensionUrs });
 
     } catch (error) {
         console.error('Error fetching records:', error);
@@ -60,13 +62,56 @@ export default function DisplayReviewWidget() {
     const loaderData = useLoaderData();
     const shopRecords = loaderData.shopRecords;
     const extensionUrs = loaderData.extensionUrs;
-    const generalAppearances = loaderData.generalAppearances;
+    const sidebarReviewWidgetCustomizes = loaderData.sidebarReviewWidgetCustomizesModel;
     const [isClient, setIsClient] = useState(false);
+    const [isSidebarWidgetActivated, setIsSidebarWidgetActivated] = useState(sidebarReviewWidgetCustomizes?.isActive);
+
     const navigate = useNavigate();
 
     useEffect(() => {
         setIsClient(true);
     }, []);
+
+
+
+    const changeWidgetActivationStatus = async (widgetType) => {
+        let value = "", field = "";
+
+        if (widgetType == 'sidebar') {
+            value = !isSidebarWidgetActivated;
+            field = "isActive";
+        }
+
+        const updateData = {
+            field: field,
+            value: value,
+            shop: shopRecords.shop,
+            actionType: "sidebarReviewCustomize"
+        };
+        const response = await fetch('/api/customize-widget', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updateData),
+        });
+        const data = await response.json();
+        if (data.status == 200) {
+            shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime
+            });
+
+        } else {
+            shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime,
+                isError: true
+            });
+        }
+        if (widgetType == 'sidebar') {
+            setIsSidebarWidgetActivated(!isSidebarWidgetActivated);
+        }
+    };
+
 
     const redirectToCustomizePage = (e, type = "") => {
         e.preventDefault();
@@ -175,7 +220,11 @@ export default function DisplayReviewWidget() {
                                         <p>Floating Reviews Tab Access all your reviews and collect store reviews through a floating tab at the side of the page.</p>
                                         <div className="btnwrap">
                                             <a href="#" onClick={(e) => redirectToCustomizePage(e, "sidebarWidget")} className="simplelink">Customize</a>
-                                            <a href="#" className="revbtn smbtn">Activate</a>
+                                            {isSidebarWidgetActivated ? (
+                                                <label className="revbtn smbtn greenlightbtn" >Activated</label>
+                                            ) : (
+                                                <button onClick={() => changeWidgetActivationStatus('sidebar')} className="revbtn smbtn">Activate</button>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -219,8 +268,8 @@ export default function DisplayReviewWidget() {
                                         <h3>All Reviews Counter</h3>
                                         <p>Shows the total number of published reviews you've received and their average rating.</p>
                                         <div className="btnwrap">
-                                            <a href="#" className="simplelink">Customize</a>
-                                            <a href="#" className="revbtn smbtn">Add to theme</a>
+                                            <a href="#" className="simplelink"></a>
+                                            <a href={extensionUrs.allReviewWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
                                         </div>
                                     </div>
                                 </div>

@@ -413,8 +413,9 @@ padding-left: 10px;
 .success-box.star-5 { background: var(--darkGreenLight);}
 .success-box.star-5 .facewrap .facebox.facestar5 { display: flex;}
 
-.recordvideo_wrap .recvideobox { width: 100%; max-width: 350px; margin: 0 auto; border-radius: 10px; overflow: hidden;}
+.recordvideo_wrap .recvideobox { width: 100%; max-width: 350px; margin: 0 auto; border-radius: 10px; overflow: hidden; background: var(--lightGreyBGcolor);}
 .recordvideo_wrap .recvideobox video { width: 100%; height: auto; vertical-align: top;}
+
 
 .filesupload_wrap .filelabel_wrapbox { position: relative; width: 100%; max-width: 600px; margin: 0 auto;}
 .filesupload_wrap .record_video { position: absolute; right: 44px; bottom: 32px; display: flex; align-items: center; column-gap: 4px; color: var(--redColor); background: var(--redLight); border-radius: 50px; font-size: 14px; font-weight: 600; padding: 0 14px; cursor: pointer; height: 44px;}

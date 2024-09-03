@@ -1,0 +1,153 @@
+
+<div id="display-all-review-widget-component-{{ block.id }}" class="w3-widgets" data-block-id="{{ block.id }}" data-product-id="{{ product.id }}" data-shop-domain="{{ shop.domain }}"  data-customer-locale="{{ request.locale.iso_code }}" data-rating-settings='{{ block.settings | json }}' >
+</div>
+
+{% schema %}
+{
+  "name": "Trust Badge Rating Widget",
+  "target": "section",
+  "stylesheet": "style.css",
+  "javascript": "all-review-script.js",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Widget Settings"
+    },
+	{
+      "type": "select",
+      "id": "widget_layout",
+      "label": "Layout",
+      "options": [
+        {
+          "label": "Horizontal",
+          "value": "horizontal"
+        },
+		 {
+          "label": "Horizontal Slim",
+          "value": "horizontal_slim"
+        },
+		 {
+          "label": "Vertical",
+          "value": "vertical"
+        }
+      ],
+      "default": "horizontal"
+    },
+	{
+		"type": "select",
+		"id": "widget_alignment",
+		"label": "Widget Alignment",
+		"options": [
+		  {
+			"value": "left",
+			"label": "Left"
+		  },
+		  {
+			"value": "center",
+			"label": "Center"
+		  },
+		  {
+			"value": "right",
+			"label": "Right"
+		  },
+		  {
+			"value": "fill_container",
+			"label": "Fill Container"
+		  }
+		],
+		"default": "left"
+	},
+	{
+      "type": "header",
+      "content": "Advanced Settings"
+    },
+	
+	{
+      "type": "text",
+      "id": "widget_text",
+      "label": "Widget Text",
+	  "default": "Reviews"
+    },
+	{
+      "type": "checkbox",
+      "id": "show_rating_icon",
+      "label": "Show rating icon ",
+      "default": true
+    },
+	{
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show rating",
+      "default": true
+    },
+	{
+      "type": "checkbox",
+      "id": "show_review",
+      "label": "Show review",
+      "default": true
+    },{
+      "type": "checkbox",
+      "id": "show_branding",
+      "label": "Show branding",
+      "default": true
+    },
+	{
+		"type": "checkbox",
+		"id": "open_float_reviews",
+		"label": "Open Floating Product Reviews Widget on click.",
+		"default": true
+	},
+	{
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 8
+    },
+	{
+      "type": "range",
+      "id": "font_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 16
+    },
+	{
+      "type": "header",
+      "content": "Colors Settings"
+    },
+	{
+		"type": "color",
+		"id": "widget_background_color",
+		"label": "Background color"
+	},
+	{
+		"type": "color",
+		"id": "widget_secondary_background_color",
+		"label": "Secondary Background color"
+	},
+	{
+		"type": "color",
+		"id": "widget_text_color",
+		"label": "Widget text color"
+	},
+    {
+		"type": "color",
+		"id": "widget_icon_color",
+		"label": "Widget star color"
+	},
+	{
+		"type": "color",
+		"id": "widget_border_color",
+		"label": "Widget border color"
+	}
+  ]
+}
+{% endschema %}
+
+

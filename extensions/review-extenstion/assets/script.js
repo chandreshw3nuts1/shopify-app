@@ -268,7 +268,7 @@ $(document).ready(function () {
             mediaRecorder.onstop = () => {
                 recordedBlob = new Blob(recordedChunks, { type: 'video/mp4' });
                 const url = URL.createObjectURL(recordedBlob);
-                $('#record_video_el').prop('src', url).get(0).play();
+                $('#record_video_el').prop('src', url).prop('controls', true).get(0).play();
                 recordedChunks = [];
             };
 
@@ -294,7 +294,7 @@ $(document).ready(function () {
     }
 
     $(document).on('click', '#showRecordVideoModal', function () {
-        $('#record_video_el').prop('src', null);
+        $('#record_video_el').prop('src', null).prop('controls', false);
         $("#record_review_video_modal").modal("show");
         $('#startVideoRecording').show();
         $('#submitVideoRecording').hide();
@@ -305,7 +305,7 @@ $(document).ready(function () {
 
     $(document).on('click', '#startVideoRecording', function () {
         $(this).hide();
-        $('#record_video_el').prop('src', null);
+        $('#record_video_el').prop('src', null).prop('controls', false);
         startRecording();
         $('#submitVideoRecording').hide();
         $('#stopVideoRecording').show();

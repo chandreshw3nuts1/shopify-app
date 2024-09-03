@@ -1,5 +1,4 @@
 import { useLoaderData } from "@remix-run/react";
-// import {mongoConnection} from './../utils/mongoConnection';
 import settingsJson from './../utils/settings.json';
 import React, { useState, useEffect, useRef } from 'react';
 
@@ -112,6 +111,8 @@ const ReviewRequestForm = () => {
 
 	const [thankyouHtmlContent, setThankyouHtmlContent] = useState('');
 	const [isLoadingMedia, setIsLoadingMedia] = useState(false);
+	const [submitRecLoader, setSubmitRecLoader] = useState(false);
+
 	const fileInputRef = useRef(null); // Create a ref for the file input
 
 	const shopUrl = "https://" + shopRecords.shop;
@@ -402,7 +403,6 @@ const ReviewRequestForm = () => {
 
 	// record video 
 	const [showRecordVideoModal, setShowRecordVideoModal] = useState(false);
-	const handleCloseRecordVideoModal = () => setShowRecordVideoModal(false);
 	const [mediaRecorder, setMediaRecorder] = useState(null);
 	const [isRecording, setIsRecording] = useState(false);
 	const [videoURL, setVideoURL] = useState(null);
@@ -460,7 +460,7 @@ const ReviewRequestForm = () => {
 
 	const submitRecording = async () => {
 		if (!recordedBlob) return;
-
+		setSubmitRecLoader(true);
 		const formData = new FormData();
 		formData.append("actionType", "uploadVideoRecording");
 		formData.append("video_record", recordedBlob, 'recording.mp4'); // Correct extension for webm type
@@ -486,6 +486,9 @@ const ReviewRequestForm = () => {
 			setFiles((prevFiles) => [...prevFiles, uploadedFiles]);
 			setPreviews(prevPreviews => [...prevPreviews, uploadedFiles]);
 			setShowRecordVideoModal(false);
+			setSubmitRecLoader(false);
+			setRecordedBlob(null);
+
 		} catch (error) {
 			console.error('Upload failed:', error);
 		}
@@ -493,7 +496,24 @@ const ReviewRequestForm = () => {
 
 	const recordVideoStart = () => {
 		setShowRecordVideoModal(true);
+		setRecordedBlob(null);
+		setIsRecording(false);
 	};
+
+	const handleCloseRecordVideoModal = () => {
+		setShowRecordVideoModal(false);
+		setRecordedBlob(null);
+		setIsRecording(false);
+		if(videoRef.current.srcObject){
+			videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+			videoRef.current.srcObject = null;
+			videoRef.current.src = null;
+			videoRef.current.controls = false;
+		}
+		
+
+	}
+
 
 
 
@@ -613,7 +633,7 @@ const ReviewRequestForm = () => {
 												<RecordVideoIcon /> Rec
 											</div>
 										</div>
-										
+
 
 
 										{noOFfileUploadErr && <div className="discountrow uploadDocError ">
@@ -816,7 +836,7 @@ const ReviewRequestForm = () => {
 
 			<Modal show={showRecordVideoModal} className='reviewimagepopup' onHide={handleCloseRecordVideoModal} size="lg" backdrop="static">
 				<Modal.Header closeButton>
-					<Modal.Title>Recording Video</Modal.Title>
+					<Modal.Title>{translations.recordingVideoTitle}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 
@@ -827,13 +847,21 @@ const ReviewRequestForm = () => {
 						</div>
 
 						<div className="btnwrap justify-content-center">
-							{!isRecording ? (
-								<button className="revbtn" onClick={startRecording}>Start Recording</button>
-							) : (
-								<button className="revbtn" onClick={stopRecording}>Stop Recording</button>
-							)}
 
-							{recordedBlob && <button className="revbtn" onClick={submitRecording}>Submit Recording</button>}
+							{submitRecLoader ? (
+								<button className="revbtn" >{translations.uploadingRecordingBtnText}</button>
+							) : (
+								<>
+									{!isRecording ? (
+										<button className="revbtn" onClick={startRecording}>{translations.startRecordingBtnText}</button>
+									) : (
+										<button className="revbtn" onClick={stopRecording}>{translations.stopRecordingBtnText}</button>
+									)}
+									{recordedBlob && <button className="revbtn" onClick={submitRecording}>{translations.submitRecordingBtnText}</button>}
+								</>
+							)};
+
+
 						</div>
 					</div>
 				</Modal.Body>

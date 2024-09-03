@@ -7,6 +7,7 @@ import reviewRequestTimingSettings from './../routes/models/reviewRequestTimingS
 import productReviewWidgetCustomizes from './../routes/models/productReviewWidgetCustomizes';
 import reviewDiscountSettings from './../routes/models/reviewDiscountSettings';
 import sidebarReviewWidgetCustomizes from './../routes/models/sidebarReviewWidgetCustomizes';
+import reviewFormSettings from './../routes/models/reviewFormSettings';
 
 import settingsJson from './../utils/settings.json';
 
@@ -192,6 +193,19 @@ export async function storeShopDetails(session) {
 						buttonBackgroundColor: settingsJson.sidebarRatingWidgetCustomize.buttonBackgroundColor,
 						buttonTextColor: settingsJson.sidebarRatingWidgetCustomize.buttonTextColor,
 						hideOnMobile: settingsJson.sidebarRatingWidgetCustomize.hideOnMobile,
+					}
+				},
+				{ upsert: true }
+			);
+
+
+			await reviewFormSettings.updateOne(
+				{ shop_id: shopRecords._id },
+				{
+					$setOnInsert: {
+						shop_id: shopRecords._id,
+						themeColor: settingsJson.reviewFormSettings.themeColor,
+						themeTextColor: settingsJson.reviewFormSettings.themeTextColor,
 					}
 				},
 				{ upsert: true }

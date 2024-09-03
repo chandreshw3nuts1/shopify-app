@@ -49,7 +49,7 @@ const ThankYouPage = ({shopRecords, discountText, discountCode, otherProps }) =>
                 </div>
             </div>
             <div className="modal-footer">
-                <a href={shopUrl} className="revbtn lightbtn nextbtn continueBtn">Continue <LongArrowRight /></a>
+                <a href={shopUrl} className="revbtn lightbtn nextbtn continueBtn">{languageContent('continueButtonTitle')} <LongArrowRight /></a>
             </div>
 
 

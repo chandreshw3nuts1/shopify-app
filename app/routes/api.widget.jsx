@@ -7,6 +7,7 @@ import WidgetModalRviews from './components/widget-components/widget-modal-revie
 import CreateReviewModalWidget from './components/widget-components/create-review-modal-widget';
 import ReviewDetailModalWidget from './components/widget-components/review-detail-modal-widget';
 import RatingWidget from './components/widget-components/rating-widget';
+import AllReviewWidget from './components/widget-components/all-review-counter-widget';
 import SidebarRatingWidget from './components/widget-components/sidebar-rating-widget';
 
 
@@ -283,6 +284,7 @@ export async function action({ request }) {
                 
                 const query = {
                     shop_id: shopRecords._id,
+                    status: 'publish',
                 };
                 if (show_all_reviews == 'false' && product_id != "") {
                     query['product_id'] = product_id;
@@ -315,6 +317,84 @@ export async function action({ request }) {
                     show_empty_stars
                 }
                 const dynamicRatingComponent = <RatingWidget formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} />;
+                const htmlRatingContent = ReactDOMServer.renderToString(dynamicRatingComponent);
+                return json({
+                    htmlRatingContent: htmlRatingContent
+                });
+
+            } catch (error) {
+                console.log(error);
+                return json({
+                    error
+                });
+            }
+        } else if (actionType == "allReviewCounterWidget") {
+            try {
+                const product_id  = formData.get('product_id');
+                const font_size  = formData.get('font_size');
+                const widget_text_color  = formData.get('widget_text_color');
+                const widget_icon_color  = formData.get('widget_icon_color');
+                const widget_text  = formData.get('widget_text');
+                const widget_alignment  = formData.get('widget_alignment');
+                const widget_layout  = formData.get('widget_layout');
+                const open_float_reviews  = formData.get('open_float_reviews');
+                const border_radius  = formData.get('border_radius');
+                const show_branding  = formData.get('show_branding');
+                const show_rating  = formData.get('show_rating');
+                const show_rating_icon  = formData.get('show_rating_icon');
+                const show_review  = formData.get('show_review');
+                const widget_background_color  = formData.get('widget_background_color');
+                const widget_border_color  = formData.get('widget_border_color');
+                const widget_secondary_background_color  = formData.get('widget_secondary_background_color');
+                
+                
+
+
+                const hide_text  = formData.get('hide_text');
+                
+                const query = {
+                    shop_id: shopRecords._id,
+                    status: 'publish',
+                };
+                
+                const countRating = await productReviews.aggregate([
+                    { $match: query },
+                    { $group: { _id: "$rating", count: { $sum: 1 } } }
+                ])
+                var mapRatting = countRating.map(item => ({
+                    stars: item._id,
+                    count: item.count
+                }));
+                
+                const totalReviews = mapRatting.reduce((acc, item) => acc + item.count, 0);
+                var averageRating = Math.round((mapRatting.reduce((acc, item) => acc + item.stars * item.count, 0) / totalReviews).toFixed(1));
+                var displayRverageRating = ((mapRatting.reduce((acc, item) => acc + item.stars * item.count, 0) / totalReviews).toFixed(1));
+
+                if (isNaN(averageRating)) {
+                    averageRating = 0;
+                    displayRverageRating = 0.0;
+                }
+                const formParams = {
+                    totalReviews,
+                    averageRating,
+                    displayRverageRating,
+                    font_size,
+                    widget_text_color,
+                    widget_icon_color,
+                    open_float_reviews,
+                    widget_layout,
+                    widget_alignment,
+                    widget_text,
+                    border_radius,
+                    show_branding,
+                    show_rating_icon,
+                    show_rating,
+                    show_review,
+                    widget_background_color,
+                    widget_border_color,
+                    widget_secondary_background_color
+                }
+                const dynamicRatingComponent = <AllReviewWidget formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} />;
                 const htmlRatingContent = ReactDOMServer.renderToString(dynamicRatingComponent);
                 return json({
                     htmlRatingContent: htmlRatingContent
@@ -379,6 +459,7 @@ export async function action({ request }) {
             sortOption["_id"] = -1;
             const query = {
                 shop_id: shopRecords._id,
+                status: 'publish',
             };
             if (showAllReviews == 'false' && productId != "") {
                 query['product_id'] = productId;
