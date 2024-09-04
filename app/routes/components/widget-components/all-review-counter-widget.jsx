@@ -7,6 +7,9 @@ const AllReviewWidget = (props) => {
     let widgetText = props.formParams.widget_text;
 
     const openReviewsModalClass = props.formParams.open_float_reviews == 'true' && props.formParams.totalReviews > 0 ? "open-w3-float-modal" : "";
+
+    console.log(props.formParams);
+
     return (
         <>
             <style>
@@ -23,8 +26,11 @@ const AllReviewWidget = (props) => {
                         border-radius: ${props.formParams.border_radius}px;
                         overflow: hidden;
                         text-align: center;
-                        font-family: Arial, sans-serif;
                         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    }
+
+                    .trustbadgereview .review-content .total-reviews::before {
+                        background: ${textColor};
                     }
 
                     .custom-all-rating-div .review-content {
@@ -39,18 +45,12 @@ const AllReviewWidget = (props) => {
                     }
 
                     .custom-all-rating-div .total-reviews {
-                        display: block;
-                        margin-top: 2px;
                         font-size: ${props.formParams.font_size}px !important;
                         color: ${textColor} !important;
                     }
 
-                    .custom-all-rating-div.powered-by {
-                        background-color: #f9f9f9; /* Light background for the footer */
-                        color: #999;
-                        padding: 5px 0;
-                        font-size: 10px;
-                        border-top: 1px solid #ddd;
+                    .custom-all-rating-div .powered-by {
+                        background-color: ${props.formParams.widget_secondary_background_color}; /* Light background for the footer */
                     }
 
                     .custom-all-rating-div .powered-by a {
@@ -64,11 +64,12 @@ const AllReviewWidget = (props) => {
                     }
 				`}
             </style>
-            <div className={`form-group custom-all-rating-div ${openReviewsModalClass} ${props.formParams.widget_alignment}`}>
+            <div className={`form-group custom-all-rating-div trustbadgereview ${openReviewsModalClass} ${props.formParams.widget_alignment} ${props.formParams.widget_layout}`}>
                 {props.formParams.totalReviews > 0 ? (
                     <>
                         <div class="review-badge">
                             <div class="review-content">
+                                <div className="topreviewpart">
                                 {props.formParams.show_rating_icon &&
                                     <div className="iconwrap">
                                         <>
@@ -80,9 +81,17 @@ const AllReviewWidget = (props) => {
                                         </>
                                     </div>
                                 }
+                                {props.formParams.widget_layout === 'horizontal' &&
+                                    <>
+                                        {props.formParams.show_rating &&
+                                            <span class="average-rating">{props.formParams.displayRverageRating}/5</span>
+                                        }
+                                    </>
+                                }
+                                </div>
 
                                 <div class="rating">
-                                    {props.formParams.show_rating &&
+                                    {props.formParams.show_rating && props.formParams.widget_layout !== 'horizontal' &&
                                         <span class="average-rating">{props.formParams.displayRverageRating}/5</span>
                                     }
 
