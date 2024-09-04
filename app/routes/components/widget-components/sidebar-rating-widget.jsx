@@ -32,24 +32,11 @@ const SidebarRatingWidget = (props) => {
                 {`
 				
                     #sidebar_popup_extension_widget .review-sidebar {
-                        position: fixed; 
-                        transform: ${transform};
-                        ${leftCss};
-                        ${rightCss};
-                        
-                        top: ${top};
-                        display: flex;
-                        align-items: center;
                         background-color: ${props.sidebarReviewWidgetCustomizesModel.buttonBackgroundColor};
                         color: ${props.sidebarReviewWidgetCustomizesModel.buttonTextColor};
-                        padding: 0px 10px 0px 0px;
-                        border-radius: ${borderRadius};
-                        cursor: pointer;
-                        box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-                        font-size : 18px;
-                        z-index: 100000;
+                        
                     }
-                    @media (max-width: 480px) {
+                    @media (max-width: 767px) {
                         #sidebar_popup_extension_widget .hide-sidebar-widget-on-mobile {
                             display: none;
                         }
