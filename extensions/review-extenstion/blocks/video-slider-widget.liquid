@@ -1,0 +1,72 @@
+
+<div id="display-video-slider-widget-component-{{ block.id }}" class="w3-widgets" data-block-id="{{ block.id }}" data-product-id="{{ product.id }}" data-shop-domain="{{ shop.domain }}"  data-customer-locale="{{ request.locale.iso_code }}" data-common-settings='{{ block.settings | json }}' >
+</div>
+
+{% schema %}
+{
+  "name": "Video Slider Widget",
+  "target": "section",
+  "stylesheet": "video-slider.css",
+  "javascript": "video-slider-script.js",
+  "settings": [
+    {
+		"type": "header",
+		"content": "Widget Settings"
+    },
+	{
+      	"type": "checkbox",
+      	"id": "selected_reviews",
+      	"label": "Show selected reviews only",
+      	"default": false,
+		"info": "When checked, the slider will show manually selected reviews. If left unchecked, reviews will be displayed randomly."
+    },
+    {
+		"type": "range",
+		"id": "border_radius",
+		"min": 0,
+		"max": 48,
+		"step": 1,
+		"unit": "px",
+		"label": "Border radius",
+      "default": 8
+    },
+	{
+		"type": "checkbox",
+		"id": "show_rating",
+		"label": "Show rating",
+		"default": true
+	},
+	{
+		"type": "checkbox",
+		"id": "show_name",
+		"label": "Show reviewer name",
+		"default": true
+	},
+	{
+		"type": "checkbox",
+		"id": "hide_arrow_mobile",
+		"label": "Hide arrows on mobile",
+		"default": true
+	},
+	{
+		"type": "color",
+		"id": "widget_text_color",
+		"label": "Widget text color",
+		"default": "#000000"
+	},
+	{
+		"type": "color",
+		"id": "widget_icon_color",
+		"label": "Widget star color"
+	},
+	{
+		"type": "color",
+		"id": "play_button_color",
+		"label": "Play button color"
+	}
+
+  ]
+}
+{% endschema %}
+
+

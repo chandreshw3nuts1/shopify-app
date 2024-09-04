@@ -9,6 +9,7 @@ import ReviewDetailModalWidget from './components/widget-components/review-detai
 import RatingWidget from './components/widget-components/rating-widget';
 import AllReviewWidget from './components/widget-components/all-review-counter-widget';
 import SidebarRatingWidget from './components/widget-components/sidebar-rating-widget';
+import VideoSliderWidget from './components/widget-components/video-slider-widget';
 
 
 
@@ -40,7 +41,7 @@ export async function action({ request }) {
         const actionType = formData.get('actionType');
         const shop = formData.get('shop_domain');
         const shopRecords = await getShopDetailsByShop(shop);
-        const blockId = formData.get('block_id') != null ? "-"+formData.get('block_id') : "";
+        const blockId = formData.get('block_id') != null ? "-" + formData.get('block_id') : "";
 
         const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
 
@@ -88,16 +89,16 @@ export async function action({ request }) {
             const customQuestionsData = await getCustomQuestions({
                 shop_id: shopRecords._id,
             });
-            
-            
+
+
 
             const reviewFormSettingsModel = await reviewFormSettings.findOne({ shop_id: shopRecords._id });
-            if(reviewFormSettingsModel) {
+            if (reviewFormSettingsModel) {
                 const languageWiseReviewFormSettings = reviewFormSettingsModel[customer_locale] ? reviewFormSettingsModel[customer_locale] : {};
                 otherProps['reviewFormSettingsModel'] = reviewFormSettingsModel;
                 otherProps['languageWiseReviewFormSettings'] = languageWiseReviewFormSettings;
             }
-            
+
             const discountObj = await getDiscounts(shopRecords);
             const paramObj = {
                 cust_first_name: formData.get('cust_first_name'),
@@ -217,11 +218,11 @@ export async function action({ request }) {
                             status: 1,
                             images: 1,
                             replyText: 1,
-                            variant_title : 1,
+                            variant_title: 1,
                             product_id: 1,
                             is_review_request: 1,
                             tag_as_feature: 1,
-                            verify_badge : 1,
+                            verify_badge: 1,
                             reviewDocuments: {
                                 $filter: {
                                     input: "$reviewDocuments",
@@ -254,7 +255,7 @@ export async function action({ request }) {
                 const formParams = {
                     hideProductThumbnails: hideProductThumbnails,
                 }
-                const dynamicComponent = <ReviewDetailModalWidget shopRecords={shopRecords} reviewDetails={reviewDetails} productsDetails={productsDetails} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} otherProps={otherProps}/>;
+                const dynamicComponent = <ReviewDetailModalWidget shopRecords={shopRecords} reviewDetails={reviewDetails} productsDetails={productsDetails} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} otherProps={otherProps} />;
                 const htmlContent = ReactDOMServer.renderToString(dynamicComponent);
                 return json({
                     body: htmlContent,
@@ -269,19 +270,19 @@ export async function action({ request }) {
             }
         } else if (actionType == "reviewRatingWidget") {
             try {
-                const product_id  = formData.get('product_id');
-                const font_size  = formData.get('font_size');
-                const widget_text_color  = formData.get('widget_text_color');
-                const widget_icon_color  = formData.get('widget_icon_color');
-                const show_all_reviews  = formData.get('show_all_reviews');
-                const widget_text  = formData.get('widget_text');
-                const widget_alignment  = formData.get('widget_alignment');
-                const widget_layout  = formData.get('widget_layout');
-                const open_float_reviews  = formData.get('open_float_reviews');
-                const show_empty_stars  = formData.get('show_empty_stars');
-                
-                const hide_text  = formData.get('hide_text');
-                
+                const product_id = formData.get('product_id');
+                const font_size = formData.get('font_size');
+                const widget_text_color = formData.get('widget_text_color');
+                const widget_icon_color = formData.get('widget_icon_color');
+                const show_all_reviews = formData.get('show_all_reviews');
+                const widget_text = formData.get('widget_text');
+                const widget_alignment = formData.get('widget_alignment');
+                const widget_layout = formData.get('widget_layout');
+                const open_float_reviews = formData.get('open_float_reviews');
+                const show_empty_stars = formData.get('show_empty_stars');
+
+                const hide_text = formData.get('hide_text');
+
                 const query = {
                     shop_id: shopRecords._id,
                     status: 'publish',
@@ -297,7 +298,7 @@ export async function action({ request }) {
                     stars: item._id,
                     count: item.count
                 }));
-                
+
                 const totalReviews = mapRatting.reduce((acc, item) => acc + item.count, 0);
                 var averageRating = Math.round((mapRatting.reduce((acc, item) => acc + item.stars * item.count, 0) / totalReviews).toFixed(1));
                 if (isNaN(averageRating)) {
@@ -330,33 +331,33 @@ export async function action({ request }) {
             }
         } else if (actionType == "allReviewCounterWidget") {
             try {
-                const product_id  = formData.get('product_id');
-                const font_size  = formData.get('font_size');
-                const widget_text_color  = formData.get('widget_text_color');
-                const widget_icon_color  = formData.get('widget_icon_color');
-                const widget_text  = formData.get('widget_text');
-                const widget_alignment  = formData.get('widget_alignment');
-                const widget_layout  = formData.get('widget_layout');
-                const open_float_reviews  = formData.get('open_float_reviews');
-                const border_radius  = formData.get('border_radius');
-                const show_branding  = formData.get('show_branding');
-                const show_rating  = formData.get('show_rating');
-                const show_rating_icon  = formData.get('show_rating_icon');
-                const show_review  = formData.get('show_review');
-                const widget_background_color  = formData.get('widget_background_color');
-                const widget_border_color  = formData.get('widget_border_color');
-                const widget_secondary_background_color  = formData.get('widget_secondary_background_color');
-                
-                
+                const product_id = formData.get('product_id');
+                const font_size = formData.get('font_size');
+                const widget_text_color = formData.get('widget_text_color');
+                const widget_icon_color = formData.get('widget_icon_color');
+                const widget_text = formData.get('widget_text');
+                const widget_alignment = formData.get('widget_alignment');
+                const widget_layout = formData.get('widget_layout');
+                const open_float_reviews = formData.get('open_float_reviews');
+                const border_radius = formData.get('border_radius');
+                const show_branding = formData.get('show_branding');
+                const show_rating = formData.get('show_rating');
+                const show_rating_icon = formData.get('show_rating_icon');
+                const show_review = formData.get('show_review');
+                const widget_background_color = formData.get('widget_background_color');
+                const widget_border_color = formData.get('widget_border_color');
+                const widget_secondary_background_color = formData.get('widget_secondary_background_color');
 
 
-                const hide_text  = formData.get('hide_text');
-                
+
+
+                const hide_text = formData.get('hide_text');
+
                 const query = {
                     shop_id: shopRecords._id,
                     status: 'publish',
                 };
-                
+
                 const countRating = await productReviews.aggregate([
                     { $match: query },
                     { $group: { _id: "$rating", count: { $sum: 1 } } }
@@ -365,7 +366,7 @@ export async function action({ request }) {
                     stars: item._id,
                     count: item.count
                 }));
-                
+
                 const totalReviews = mapRatting.reduce((acc, item) => acc + item.count, 0);
                 var averageRating = Math.round((mapRatting.reduce((acc, item) => acc + item.stars * item.count, 0) / totalReviews).toFixed(1));
                 var displayRverageRating = ((mapRatting.reduce((acc, item) => acc + item.stars * item.count, 0) / totalReviews).toFixed(1));
@@ -406,14 +407,128 @@ export async function action({ request }) {
                     error
                 });
             }
-        }  else if (actionType == "sidebarRatingWidget") {
+        } else if (actionType == "videoSliderWidget") {
             try {
-                
+                const selected_reviews = formData.get('selected_reviews');
+                const border_radius = formData.get('border_radius');
+                const widget_text_color = formData.get('widget_text_color');
+                const widget_icon_color = formData.get('widget_icon_color');
+                const show_rating = formData.get('show_rating');
+                const show_name = formData.get('show_name');
+                const play_button_color = formData.get('play_button_color');
+
+                const limit = 10;
+
+                const sortOption = {};
+                sortOption["createdAt"] = -1;
+                sortOption["_id"] = -1;
+
+                let query = {
+                    shop_id: shopRecords._id,
+                    status: 'publish',
+                };
+
+                if(selected_reviews == 'true') {
+                    query["video_slider"] = true;
+                }
+                const reviewItems = await productReviews.aggregate([
+                    {
+                        $match: query
+                    },
+                    {
+                        $lookup: {
+                            from: 'review_documents',
+                            localField: '_id',
+                            foreignField: 'review_id',
+                            as: 'reviewDocuments'
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: "$_id",
+                            rating: { $first: "$rating" },
+                            first_name: { $first: "$first_name" },
+                            display_name: { $first: "$display_name" },
+                            last_name: { $first: "$last_name" },
+                            createdAt: { $first: "$createdAt" },
+                            product_id: { $first: "$product_id" },
+                            reviewDocuments: { $first: "$reviewDocuments" }, // Use $first to avoid duplicates
+                        }
+                    },
+                    {
+                        $sort: sortOption
+                    },
+                    
+                    {
+                        $project: {
+                            _id: 1,
+                            rating: 1,
+                            first_name: 1,
+                            display_name: 1,
+                            last_name: 1,
+                            createdAt: 1,
+                            product_id: 1,
+                            reviewDocuments: {
+                                $arrayElemAt: [
+                                    {
+                                        $filter: {
+                                            input: "$reviewDocuments",
+                                            as: "doc",
+                                            cond: {
+                                                $and: [
+                                                    { $eq: ["$$doc.is_approve", true] },
+                                                    { $eq: ["$$doc.is_cover", true] }
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    0
+                                ]
+                            },
+                        }
+                    },
+                    {
+                        $match: {
+                            reviewDocuments: { $ne: null }
+                        }
+                    },
+                    {
+                        $limit: limit
+                    },
+                ]);
+
+                // return reviewItems;
+                const formParams = {
+                    show_name,
+                    selected_reviews,
+                    widget_text_color,
+                    widget_icon_color,
+                    border_radius,
+                    show_rating,
+                    play_button_color
+                }
+
+                const dynamicComponent = <VideoSliderWidget formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} reviewItems={reviewItems} />;
+                const content = ReactDOMServer.renderToString(dynamicComponent);
+                console.log(content);
+                return json({
+                    content: content
+                });
+
+            } catch (error) {
+                console.log(error);
+                return json({
+                    error
+                });
+            }
+        } else if (actionType == "sidebarRatingWidget") {
+            try {
+
 
                 const sidebarReviewWidgetCustomizesModel = await sidebarReviewWidgetCustomizes.findOne({
                     shop_id: shopRecords._id
                 });
-        
+
                 const dynamicSidebarRatingComponent = <SidebarRatingWidget sidebarReviewWidgetCustomizesModel={sidebarReviewWidgetCustomizesModel} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} settingsJson={settingsJson} />;
                 const htmlSidebrRatingContent = ReactDOMServer.renderToString(dynamicSidebarRatingComponent);
                 return json({
@@ -602,10 +717,10 @@ export async function action({ request }) {
                         images: 1,
                         replyText: 1,
                         product_id: 1,
-                        variant_title : 1,
+                        variant_title: 1,
                         is_review_request: 1,
                         tag_as_feature: 1,
-                        verify_badge : 1,
+                        verify_badge: 1,
                         reviewDocuments: {
                             $filter: {
                                 input: "$reviewDocuments",
@@ -679,18 +794,18 @@ export async function action({ request }) {
                 mapRatting: mapRatting,
                 averageRating: averageRating,
                 blockId: blockId,
-                is_modal_reviews : is_modal_reviews
+                is_modal_reviews: is_modal_reviews
             }
-            if(is_modal_reviews == 'true') {
+            if (is_modal_reviews == 'true') {
                 var dynamicComponent = <WidgetModalRviews shopRecords={shopRecords} reviewItems={reviewItems} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} otherProps={otherProps} />;
                 var htmlContent = ReactDOMServer.renderToString(dynamicComponent);
-    
+
             } else {
                 var dynamicComponent = <ProductReviewWidget shopRecords={shopRecords} reviewItems={reviewItems} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} otherProps={otherProps} />;
                 var htmlContent = ReactDOMServer.renderToString(dynamicComponent);
-    
+
             }
-            
+
 
             return json({
                 body: htmlContent,

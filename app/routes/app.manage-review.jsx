@@ -264,6 +264,7 @@ export default function ManageReview() {
 														<option value="tag_as_feature">Featured review</option>
 														<option value="verify_badge">Verify badge review</option>
 														<option value="carousel_review">Carousel review</option>
+														<option value="video_slider">Video slider</option>
 														<option value="imported_review">Imported reviews</option>
 													</select>
 												</div>

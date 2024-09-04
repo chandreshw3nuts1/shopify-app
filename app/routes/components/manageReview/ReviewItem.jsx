@@ -97,9 +97,9 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 			});
 		} else {
 			shopify.toast.show(data.message, {
-                duration: settingsJson.toasterCloseTime,
-                isError: true
-            });
+				duration: settingsJson.toasterCloseTime,
+				isError: true
+			});
 		}
 		setReplyValueError(true);
 		setReplyText('');
@@ -146,9 +146,9 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 			setShowChangeProductModal(false);
 		} else {
 			shopify.toast.show(data.message, {
-                duration: settingsJson.toasterCloseTime,
-                isError: true
-            });
+				duration: settingsJson.toasterCloseTime,
+				isError: true
+			});
 		}
 
 	};
@@ -184,9 +184,9 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 
 					} else {
 						shopify.toast.show(data.message, {
-                            duration: settingsJson.toasterCloseTime,
-                            isError: true
-                        });
+							duration: settingsJson.toasterCloseTime,
+							isError: true
+						});
 					}
 
 				} catch (error) {
@@ -253,9 +253,9 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 						});
 					} else {
 						shopify.toast.show(data.message, {
-                            duration: settingsJson.toasterCloseTime,
-                            isError: true
-                        });
+							duration: settingsJson.toasterCloseTime,
+							isError: true
+						});
 					}
 
 					setSearchFormData((prevData) => ({
@@ -314,9 +314,9 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 						});
 					} else {
 						shopify.toast.show(data.message, {
-                            duration: settingsJson.toasterCloseTime,
-                            isError: true
-                        });
+							duration: settingsJson.toasterCloseTime,
+							isError: true
+						});
 					}
 					setReplyValueError(true);
 					setReplyText('');
@@ -391,12 +391,22 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 					));
 				}
 
+				else if (statusValue == 'add-to-video-slider') {
+					setFilteredReviews(filteredReviews.map((item, idx) =>
+						idx === index ? { ...item, video_slider: true } : item
+					));
+				} else if (statusValue == 'remove-video-slider') {
+					setFilteredReviews(filteredReviews.map((item, idx) =>
+						idx === index ? { ...item, video_slider: false } : item
+					));
+				}
+
 
 			} else {
 				shopify.toast.show(data.message, {
-                            duration: settingsJson.toasterCloseTime,
-                            isError: true
-                        });
+					duration: settingsJson.toasterCloseTime,
+					isError: true
+				});
 			}
 		}
 
@@ -472,10 +482,10 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 								}
 
 								<div className="rightinfo flxflexi">
-									{(result.tag_as_feature == true || result.verify_badge == true || result.add_to_carousel == true) &&
+									{(result.tag_as_feature == true || result.verify_badge == true || result.add_to_carousel == true || result.video_slider == true) &&
 										<div className="topbadges">
 											{result.tag_as_feature == true &&
-												<div className="featured_tag revbedge">Featured 
+												<div className="featured_tag revbedge">Featured
 													{/* <a href="#" className="bedclosebtn"><i className="twenty-closeicon"></i></a> */}
 												</div>
 											}
@@ -489,12 +499,17 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 													<i className="twenty-carousel"></i>
 												</div>
 											}
+											{result.video_slider == true &&
+												<div className="revbedge onlyicon darkcolor" title="Video slider">
+													<i className="twenty-video-player"></i>
+												</div>
+											}
 										</div>
 									}
 									<div className="titlebox">
 										{result.status == "unpublish" &&
 											<div className="checkmark unpublish">
-												<i className="twenty-closeicon"></i>	
+												<i className="twenty-closeicon"></i>
 											</div>
 										}
 										{result.status == "publish" &&
@@ -504,7 +519,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 										}
 										<h4 className="fleflexi">
 											<strong>{result.first_name} {result.last_name}</strong> about <strong>
-											{result.productDetails ? <a href={`https://${shopRecords.shop}/products/${result.productDetails.handle}`} target="_blank"> {result.productDetails.title} </a> : ''}</strong>
+												{result.productDetails ? <a href={`https://${shopRecords.shop}/products/${result.productDetails.handle}`} target="_blank"> {result.productDetails.title} </a> : ''}</strong>
 										</h4>
 									</div>
 									<div className="displayname">Display name: {result.display_name}</div>
@@ -592,6 +607,12 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 											{result.add_to_carousel == false && <Dropdown.Item eventKey="add-to-carousel" className="custom-dropdown-item">Add to Carousel</Dropdown.Item>}
 											{result.add_to_carousel == true && <Dropdown.Item eventKey="remove-add-to-carousel" className="custom-dropdown-item">Remove from Carousel</Dropdown.Item>}
 
+											{result.reviewDocuments.length > 0 &&
+												<>
+													{(result.video_slider == false || result.video_slider == null) && <Dropdown.Item eventKey="add-to-video-slider" className="custom-dropdown-item">Add to Video Slider</Dropdown.Item>}
+													{result.video_slider == true && <Dropdown.Item eventKey="remove-video-slider" className="custom-dropdown-item">Remove from Video Slider</Dropdown.Item>}
+												</>
+											}
 
 											<Dropdown.Item eventKey="delete" className="custom-dropdown-item">Delete</Dropdown.Item>
 										</DropdownButton>

@@ -141,6 +141,41 @@ function loadModalReviews(page) {
     });
 }
 
+
+$(document).on("click", ".common_widget_review_item", function () {
+    reviewId = $(this).data('reviewid');
+
+    var $commonWidget = $(this).parents(".w3-widgets");
+    widget_product_id = $commonWidget.data('product-id');
+    widget_shop_domain = $commonWidget.data('shop-domain');
+    widget_customer_locale = $commonWidget.data('customer-locale');
+    widget_block_id = $commonWidget.data('block-id');
+
+
+    $.ajax({
+        type: 'POST',
+        url: `/apps/w3-proxy/widget`,
+        data: {
+            reviewId: reviewId,
+            actionType: 'openReviewDetailModal',
+            shop_domain: widget_shop_domain,
+            customer_locale: widget_customer_locale
+        },
+        dataType: "json",
+        success: function (response) {
+            $("#staticBackdrop").remove();
+            var modal_html = response.body;
+            $("body").append(modal_html);
+            $("#staticBackdrop").modal("show");
+        },
+        error: function (xhr, status, error) {
+            console.error(xhr.responseText);
+        }
+    });
+});
+
+
+
 $(document).ready(function() {
 
     

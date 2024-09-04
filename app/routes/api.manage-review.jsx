@@ -1,7 +1,7 @@
 import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
 import { GraphQLClient } from "graphql-request";
-import { findOneRecord, getShopifyProducts, getLanguageWiseContents } from "./../utils/common"; 
+import { findOneRecord, getShopifyProducts, getLanguageWiseContents } from "./../utils/common";
 import ReplyEmailTemplate from './components/email/ReplyEmailTemplate';
 import ReactDOMServer from 'react-dom/server';
 import { ObjectId } from 'mongodb';
@@ -11,71 +11,51 @@ import reviewDocuments from "./models/reviewDocuments";
 import generalAppearances from "./models/generalAppearances";
 import emailReviewReplySettings from "./models/emailReviewReplySettings";
 
-import {getUploadDocument} from "./../utils/documentPath";
+import { getUploadDocument } from "./../utils/documentPath";
 export async function loader() {
 
-	const email = 'chandresh.w3@gmail.com';
-	const recipientName ="Chands";
-	const content ="okok okoko ko ko ";
-	const footer ="footer footerfooterfooter ";
-	
-	const subject = 'my subject';
-	const emailHtml = ReactDOMServer.renderToStaticMarkup(
-		<EmailTemplate recipientName={recipientName} content={content} footer={footer} />
-	  );
-	// const response = await sendEmail({
-	// 	to: email,
-	// 	subject,
-	// 	html: emailHtml,
-	// });
-
-	const options = [
-		{ label: 'Option 1', value: 'option1' },
-		{ label: 'Option 2', value: 'option2' },
-		{ label: 'Option 3', value: 'option3' },
-		];
-	return json(options);
+	return json({});
 }
 
 
-export async function action({ request} ) {
+export async function action({ request }) {
 	const requestBody = await request.json();
-   
+
 	const method = request.method;
 
-	switch(method){
+	switch (method) {
 		case "POST":
-			var {shop, page, limit , filter_status,filter_stars, search_keyword, filter_options,actionType } = requestBody;
+			var { shop, page, limit, filter_status, filter_stars, search_keyword, filter_options, actionType } = requestBody;
 			page = page == 0 ? 1 : page;
 			try {
 				if (actionType == 'changeReviewStatus') {
 
-					const status  = await productReviews.updateOne(
+					const status = await productReviews.updateOne(
 						{ _id: requestBody.oid },
 						{
-						  $set: { status : requestBody.value}
+							$set: { status: requestBody.value }
 						}
 					);
-					return json({"status" : 200, "message" : "Status updated!"});
-					
+					return json({ "status": 200, "message": "Status updated!" });
+
 				} else if (actionType == 'addReviewReply') {
 					await productReviews.updateOne(
 						{ _id: requestBody.review_id },
 						{
-						  $set: { replyText : requestBody.reply, replied_at : new Date()}
+							$set: { replyText: requestBody.reply, replied_at: new Date() }
 						}
 					);
 
-					if(requestBody.subActionType == 'editReview'){
+					if (requestBody.subActionType == 'editReview') {
 						var msg = "Your reply updated!";
-					} else if(requestBody.subActionType == 'deleteReply'){
+					} else if (requestBody.subActionType == 'deleteReply') {
 						var msg = "Your reply deleted!";
-					} else{
+					} else {
 
 						/* send email to admin when new reivew receive*/
-						
+
 						const productReviewsItem = await productReviews.findOne({ _id: requestBody.review_id });
-						
+
 						const replaceVars = {
 							"name": productReviewsItem.display_name,
 							"product": productReviewsItem.product_title,
@@ -83,15 +63,15 @@ export async function action({ request} ) {
 						}
 						const customer_locale = productReviewsItem.customer_locale ? productReviewsItem.customer_locale : "en";
 						const emailContents = await getLanguageWiseContents("review_reply", replaceVars, productReviewsItem.shop_id, productReviewsItem.customer_locale);
-						emailContents.banner =  getUploadDocument(emailContents.banner, 'banners');
+						emailContents.banner = getUploadDocument(emailContents.banner, 'banners');
 
 						const generalAppearancesObj = await generalAppearances.findOne({ shop_id: productReviewsItem.shop_id });
-						const logo =  getUploadDocument(generalAppearancesObj.logo, 'logo');
+						const logo = getUploadDocument(generalAppearancesObj.logo, 'logo');
 						emailContents.logo = logo;
 						const footer = '';
 						const subject = emailContents.subject;
 						const emailHtml = ReactDOMServer.renderToStaticMarkup(
-							<ReplyEmailTemplate emailContents={emailContents}  generalAppearancesObj={generalAppearancesObj} footer={footer} />
+							<ReplyEmailTemplate emailContents={emailContents} generalAppearancesObj={generalAppearancesObj} footer={footer} />
 						);
 						const response = await sendEmail({
 							to: productReviewsItem.email,
@@ -101,23 +81,23 @@ export async function action({ request} ) {
 
 						var msg = "Your reply added!";
 					}
-					return json({"status" : 200, "message" : msg});
-					
+					return json({ "status": 200, "message": msg });
+
 				} else if (actionType == 'bulkRatingStatus') {
-					const {shop, filter_status,filter_stars, search_keyword, filter_options } = requestBody.searchFormData;
-					
-					const shopRecords = await findOneRecord("shop_details", {"shop" : shop});
+					const { shop, filter_status, filter_stars, search_keyword, filter_options } = requestBody.searchFormData;
+
+					const shopRecords = await findOneRecord("shop_details", { "shop": shop });
 					const query = {
-						"shop_id" : shopRecords._id, "status" : filter_status, "rating" : parseInt(filter_stars),
+						"shop_id": shopRecords._id, "status": filter_status, "rating": parseInt(filter_stars),
 						$or: [
 							{ first_name: { $regex: search_keyword, $options: 'i' } },
 							{ last_name: { $regex: search_keyword, $options: 'i' } },
 							{ product_title: { $regex: search_keyword, $options: 'i' } }
-							]
+						]
 					};
-					if(filter_status == 'all'){
+					if (filter_status == 'all') {
 						delete query['status'];
-					}if(filter_stars == 'all'){
+					} if (filter_stars == 'all') {
 						delete query['rating'];
 					}
 
@@ -175,15 +155,15 @@ export async function action({ request} ) {
 					const reviewModels = await productReviews.aggregate([
 						reviewBulkItemsPipeline
 					]);
-					  
+
 					const reviewIds = reviewModels.map(review => review._id);
 
-					if(requestBody.subActionType == 'delete') {
+					if (requestBody.subActionType == 'delete') {
 
-						await productReviewQuestions.deleteMany({ review_id : { $in: reviewIds } });
-						await reviewDocuments.deleteMany({ review_id : { $in: reviewIds } });
+						await productReviewQuestions.deleteMany({ review_id: { $in: reviewIds } });
+						await reviewDocuments.deleteMany({ review_id: { $in: reviewIds } });
 						await productReviews.deleteMany(query);
-						
+
 						var msg = "Review deleted";
 					} else {
 						await productReviews.updateMany(
@@ -191,150 +171,172 @@ export async function action({ request} ) {
 							{ $set: { status: requestBody.subActionType } }
 						);
 
-						if(requestBody.subActionType == 'publish') {
+						if (requestBody.subActionType == 'publish') {
 							var msg = "Review published";
 						} else {
 							var msg = "Review unpublished";
 						}
 
 					}
-					return json({"status" : 200, "message" : msg});
-					
+					return json({ "status": 200, "message": msg });
+
 				} else if (actionType == 'imageSliderAction') {
-					const {doc_id, review_id, subActionType } = requestBody;
+					const { doc_id, review_id, subActionType } = requestBody;
 					const reviewDocumentModel = await reviewDocuments.findOne(
-						{ _id : doc_id }
+						{ _id: doc_id }
 					);
 					const docType = reviewDocumentModel.type == 'image' ? 'photo' : 'video';
 					if (subActionType == 'makeCoverPhoto') {
-						
+
 						await reviewDocuments.updateMany(
 							{ review_id: review_id },
 							{
-							  $set: { is_cover : false}
+								$set: { is_cover: false }
 							}
 						);
 
 						await reviewDocuments.updateOne(
-							{ _id : doc_id },
+							{ _id: doc_id },
 							{
-							  $set: { is_cover : true}
+								$set: { is_cover: true }
 							}
 						);
-						
+
 						var msg = `Cover ${docType} set`;
 					} else if (subActionType == 'hidePhoto') {
-						
+
 						await reviewDocuments.updateOne(
-							{ _id : doc_id },
+							{ _id: doc_id },
 							{
-							  $set: { is_approve : false }
+								$set: { is_approve: false }
 							}
 						);
 
 						var msg = `${docType.charAt(0).toUpperCase()}${docType.slice(1)} hidden`;
 					} else if (subActionType == 'approvePhoto') {
-						
+
 						await reviewDocuments.updateOne(
-							{ _id : doc_id },
+							{ _id: doc_id },
 							{
-							  $set: { is_approve : true }
+								$set: { is_approve: true }
 							}
 						);
-						
+
 						var msg = `${docType.charAt(0).toUpperCase()}${docType.slice(1)} approve`;
 					}
-					
 
-					return json({"status" : 200, "message" : msg});
+
+					return json({ "status": 200, "message": msg });
 				} else if (actionType == 'moreOptionChange') {
-					const {review_id, subActionType } = requestBody;
-					
+					const { review_id, subActionType } = requestBody;
+
 					const reviewId = new ObjectId(review_id);
 
 					if (subActionType == 'feature') {
-						
+
 						await productReviews.updateOne(
 							{ _id: reviewId },
 							{
-							  $set: { tag_as_feature: true }
+								$set: { tag_as_feature: true }
 							},
 							{ upsert: true }
-						  );
-						  
-						
+						);
+
+
 						var msg = "Feature tag added";
 					} else if (subActionType == 'remove-feature') {
-						
+
 						await productReviews.updateOne(
 							{ _id: reviewId },
 							{
-							  $set: { tag_as_feature: false }
+								$set: { tag_as_feature: false }
 							},
 							{ upsert: true }
-						  );
-						  
-						
+						);
+
+
 						var msg = "Feature tag removed";
 					} else if (subActionType == 'verify-badge') {
-						
+
 						await productReviews.updateOne(
 							{ _id: reviewId },
 							{
-							  $set: { verify_badge: true }
+								$set: { verify_badge: true }
 							},
 							{ upsert: true }
-						  );
-						  
-						
+						);
+
+
 						var msg = "Verified badge added";
 					} else if (subActionType == 'remove-verify-badge') {
-						
+
 						await productReviews.updateOne(
 							{ _id: reviewId },
 							{
-							  $set: { verify_badge: false }
+								$set: { verify_badge: false }
 							},
 							{ upsert: true }
-						  );
-						  
-						
+						);
+
+
 						var msg = "Verified badge removed";
 					} else if (subActionType == 'add-to-carousel') {
-						
+
 						await productReviews.updateOne(
 							{ _id: reviewId },
 							{
-							  $set: { add_to_carousel: true }
+								$set: { add_to_carousel: true }
 							},
 							{ upsert: true }
-						  );
-						
+						);
+
 						var msg = "Review added";
 					} else if (subActionType == 'remove-add-to-carousel') {
-						
+
 						await productReviews.updateOne(
 							{ _id: reviewId },
 							{
-							  $set: { add_to_carousel: false }
+								$set: { add_to_carousel: false }
 							},
 							{ upsert: true }
-						  );
-						
+						);
+
+						var msg = "Review removed";
+					} else if (subActionType == 'add-to-video-slider') {
+
+						await productReviews.updateOne(
+							{ _id: reviewId },
+							{
+								$set: { video_slider: true }
+							},
+							{ upsert: true }
+						);
+
+						var msg = "Review added";
+					} else if (subActionType == 'remove-video-slider') {
+
+						await productReviews.updateOne(
+							{ _id: reviewId },
+							{
+								$set: { video_slider: false }
+							},
+							{ upsert: true }
+						);
+
 						var msg = "Review removed";
 					}
-					
-					return json({"status" : 200, "message" : msg});
+
+					return json({ "status": 200, "message": msg });
 				} else if (actionType == 'changeProductHandle') {
-					const {review_id, changeProductHandle } = requestBody;
+					const { review_id, changeProductHandle } = requestBody;
 					var updatedProductData = "";
-					if(changeProductHandle != "" && review_id != "")  {
-						const shopSessionRecords = await findOneRecord("shopify_sessions", {"shop" : shop});
+					if (changeProductHandle != "" && review_id != "") {
+						const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shop });
 						const client = new GraphQLClient(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
 							headers: {
-									'X-Shopify-Access-Token': shopSessionRecords.accessToken,
-								},
-							});
+								'X-Shopify-Access-Token': shopSessionRecords.accessToken,
+							},
+						});
 
 						const productHandle = `"${changeProductHandle}"`;
 
@@ -347,58 +349,58 @@ export async function action({ request} ) {
 								handle
 								}
 							}`;
-									
+
 						const data = await client.request(query);
-						if(data.productByHandle != null) {
+						if (data.productByHandle != null) {
 							const newProductData = data.productByHandle;
 							const newProductId = newProductData.id.split('/').pop();
 							const newProductUrl = `/products/${newProductData.handle}`;
-							
+
 
 							await productReviews.updateOne(
 								{ _id: review_id },
 								{
-									$set: { 
-										product_id : newProductId,
-										product_title : newProductData.title,
-										product_url : newProductUrl,
+									$set: {
+										product_id: newProductId,
+										product_title: newProductData.title,
+										product_url: newProductUrl,
 									}
 								}
 							);
 							var msg = "Product changed";
 							var status = 200;
 							updatedProductData = {
-								product_title : newProductData.title,
-								product_url : newProductData.handle,
+								product_title: newProductData.title,
+								product_url: newProductData.handle,
 							}
 						} else {
 							var msg = `No product was found for handle: ${changeProductHandle}`;
 							var status = 400;
 						}
-						
+
 					} else {
 						var msg = "Product handle required";
 						var status = 400;
 					}
 
-					return json({"status" : status, "message" : msg, "updatedProductData" : updatedProductData});
+					return json({ "status": status, "message": msg, "updatedProductData": updatedProductData });
 
 				} else {
-					const shopRecords = await findOneRecord("shop_details", {"shop" : shop});
+					const shopRecords = await findOneRecord("shop_details", { "shop": shop });
 					const query = {
-						"shop_id" : shopRecords._id, "status" : filter_status, "rating" : parseInt(filter_stars),
+						"shop_id": shopRecords._id, "status": filter_status, "rating": parseInt(filter_stars),
 						$or: [
 							{ first_name: { $regex: search_keyword, $options: 'i' } },
 							{ last_name: { $regex: search_keyword, $options: 'i' } },
 							{ product_title: { $regex: search_keyword, $options: 'i' } }
-							]
+						]
 					};
-					if(filter_status == 'all'){
+					if (filter_status == 'all') {
 						delete query['status'];
-					}if(filter_stars == 'all'){
+					} if (filter_stars == 'all') {
 						delete query['rating'];
 					}
-					
+
 					let matchFilterOption = {};
 					if (filter_options == 'image_video') {
 						matchFilterOption = {
@@ -432,6 +434,10 @@ export async function action({ request} ) {
 					} else if (filter_options == 'carousel_review') {
 						query['add_to_carousel'] = true;
 
+					} else if (filter_options == 'video_slider') {
+						query['video_slider'] = true;
+					} else if (filter_options == 'imported_review') {
+						query['is_imported'] = true;
 					}
 
 
@@ -450,10 +456,10 @@ export async function action({ request} ) {
 					];
 					const totalReviewItemsResult = await productReviews.aggregate(totalReviewItemsPipeline);
 					const totalReviewItems = totalReviewItemsResult.length > 0 ? totalReviewItemsResult[0].total : 0;
-					
+
 
 					const reviewItems = await productReviews.aggregate([
-						{ 
+						{
 							$match: query // Apply your initial match query
 						},
 						{
@@ -509,9 +515,10 @@ export async function action({ request} ) {
 								tag_as_feature: { $first: "$tag_as_feature" },
 								verify_badge: { $first: "$verify_badge" },
 								add_to_carousel: { $first: "$add_to_carousel" },
+								video_slider: { $first: "$video_slider" },
 								discount_price_rule_id: { $first: "$discount_price_rule_id" },
 								reviewDocuments: { $first: "$reviewDocuments" }, // Use $first to avoid duplicates
-								reviewQuestionsAnswer: { 
+								reviewQuestionsAnswer: {
 									$push: {
 										_id: "$reviewQuestionsAnswer._id",
 										review_id: "$reviewQuestionsAnswer.review_id",
@@ -558,7 +565,8 @@ export async function action({ request} ) {
 								tag_as_feature: 1,
 								verify_badge: 1,
 								add_to_carousel: 1,
-								discount_price_rule_id : 1,
+								video_slider: 1,
+								discount_price_rule_id: 1,
 								reviewDocuments: 1,
 								reviewQuestionsAnswer: {
 									$filter: {
@@ -570,8 +578,8 @@ export async function action({ request} ) {
 							}
 						}
 					]);
-					
-					
+
+
 					//return reviewItems;
 					var hasMore = 0;
 					var mapProductDetails = {};
@@ -581,16 +589,16 @@ export async function action({ request} ) {
 						var hasMore = 1;
 						const uniqueProductIds = [...new Set(reviewItems.map(item => item.product_id))];
 
-						const productIds = uniqueProductIds.map((item) =>  `"gid://shopify/Product/${item}"`);
+						const productIds = uniqueProductIds.map((item) => `"gid://shopify/Product/${item}"`);
 						var productsDetails = await getShopifyProducts(shop, productIds);
-						
-						if(productsDetails.length > 0) {
+
+						if (productsDetails.length > 0) {
 							productsDetails.forEach(node => {
-								if(node) {
+								if (node) {
 									const id = node.id.split('/').pop();
 									mapProductDetails[id] = node;
 								}
-								
+
 							});
 						}
 					}
@@ -600,37 +608,37 @@ export async function action({ request} ) {
 						return items;
 					});
 
-					return json({reviewItems, totalReviewItems,  hasMore});
+					return json({ reviewItems, totalReviewItems, hasMore });
 				}
-				
 
-			  } catch (error) {
+
+			} catch (error) {
 				console.log(error);
-				return json({"status" : 400, "message" : "Operation failed"});
-			  }
+				return json({ "status": 400, "message": "Operation failed" });
+			}
 		case "DELETE":
-			try{
-				var {review_id} = requestBody;
+			try {
+				var { review_id } = requestBody;
 				const objectId = new ObjectId(review_id);
 				deleteReview(review_id);
-				return json({"status" : 200, "message" : "Review deleted successfully!"});
+				return json({ "status": 200, "message": "Review deleted successfully!" });
 			} catch (error) {
-				return json({"status" : 400, "message" : "Error deleting record!"});
+				return json({ "status": 400, "message": "Error deleting record!" });
 			}
-			
+
 		default:
 
-		return json({"message" : "", "method" : "POST"});
+			return json({ "message": "", "method": "POST" });
 
 	}
 
 }
 
 
-async function deleteReview(review_id){
-	await productReviews.findOneAndDelete({_id : review_id});
-	 
-	await productReviewQuestions.deleteMany({review_id : review_id});
-	await reviewDocuments.deleteMany({review_id : review_id});
+async function deleteReview(review_id) {
+	await productReviews.findOneAndDelete({ _id: review_id });
+
+	await productReviewQuestions.deleteMany({ review_id: review_id });
+	await reviewDocuments.deleteMany({ review_id: review_id });
 }
 
