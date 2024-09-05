@@ -221,7 +221,7 @@ export default function DisplayReviewWidget() {
                                         <div className="btnwrap">
                                             <a href="#" onClick={(e) => redirectToCustomizePage(e, "sidebarWidget")} className="simplelink">Customize</a>
                                             {isSidebarWidgetActivated ? (
-                                                <label className="revbtn smbtn greenlightbtn" >Activated</label>
+                                                <label className="revbtn smbtn blackbtn">Activated</label>
                                             ) : (
                                                 <button onClick={() => changeWidgetActivationStatus('sidebar')} className="revbtn smbtn">Activate</button>
                                             )}

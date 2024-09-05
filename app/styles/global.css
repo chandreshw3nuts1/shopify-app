@@ -103,7 +103,9 @@ body .revbtn.wbigbtn { height: 48px; font-weight: 600; font-size: 16px;}
 body .revbtn.wbigbtn:disabled { height: 48px; font-weight: 600; font-size: 16px; opacity: 0.5;}
 body .revbtn.plainlink { padding: 0; border-radius: 0; background: none; color: var(--darkColor); font-size: 16px; font-weight: 600; margin: 0; border: none; box-shadow: none; outline: none;}
 body .revbtn.plainlink:hover { background: none; border: none; box-shadow: none; outline: none; color: var(--blueColor);}
-body .revbtn.greenlightbtn { background: var(--darkGreenLight); color: #000000;}
+body .revbtn.greenlightbtn { background: var(--greenLight); color: #000000;}
+body .revbtn.blackbtn { background: var(--darkColor); color: var(--whiteText);}
+body .revbtn.blackbtn:hover { background: var(--darkColor); color: var(--whiteText);}
 
 a.simplelink { text-decoration: none; color: var(--blueColor); font-size: 14px;}
 a.simplelink:hover { text-decoration: underline;}
