@@ -4,11 +4,13 @@ import { useLoaderData } from '@remix-run/react';
 import LanguageSelector from "./components/language-selector";
 import ProductReviewWidget from './components/customizeWidget/ProductReviewWidget';
 import SidebarReviewWidget from './components/customizeWidget/SidebarReviewWidget';
+import FloatingWidget from './components/customizeWidget/FloatingWidget';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from './components/Breadcrumb';
 import { getShopDetails } from './../utils/getShopDetails';
 import productReviewWidgetCustomizes from './models/productReviewWidgetCustomizes';
 import sidebarReviewWidgetCustomizes from './models/sidebarReviewWidgetCustomizes';
+import floatingWidgetCustomizes from './models/floatingWidgetCustomizes';
 import generalSettings from './models/generalSettings';
 import { useTranslation } from "react-i18next";
 
@@ -29,6 +31,11 @@ export const loader = async ({ request, params }) => {
             break;
         case 'sidebar-review-widget':
             JsonData['customizeObj'] = await sidebarReviewWidgetCustomizes.findOne({
+                shop_id: shopRecords._id,
+            });
+            break;
+        case 'floating-widget':
+            JsonData['customizeObj'] = await floatingWidgetCustomizes.findOne({
                 shop_id: shopRecords._id,
             });
             break;
@@ -58,6 +65,11 @@ export default function WidgetCustomize() {
         case 'sidebar-review-widget':
             content = <SidebarReviewWidget shopRecords={shopRecords} customizeObj={customizeObj} />;
             customizeTemplateName = "Sidebar review widget";
+            hideLanguageSelector = true;
+            break;
+        case 'floating-widget':
+            content = <FloatingWidget shopRecords={shopRecords} customizeObj={customizeObj} />;
+            customizeTemplateName = "Floating Product Reviews Widget";
             hideLanguageSelector = true;
             break;
         default:
@@ -90,7 +102,7 @@ export default function WidgetCustomize() {
             <Page fullWidth>
                 <div className='pagetitle'>
                     <div className='pagebackbtn flxflexi'>
-                        <a href="#" onClick={backToWidgetPage}><i className='twenty-arrow-left'></i>Collect reviews</a>
+                        <a href="#" onClick={backToWidgetPage}><i className='twenty-arrow-left'></i>Reviews widgets</a>
                     </div>
                     <div className='flxfix'>
                         {!hideLanguageSelector && generalSettingsModel && generalSettingsModel.multilingual_support &&

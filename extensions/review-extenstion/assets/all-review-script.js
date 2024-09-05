@@ -7,7 +7,6 @@ $(document).ready(function () {
         var blockId = $(this).data('block-id');
 
         var settings_vars = $(this).data('rating-settings');
-        console.log(settings_vars);
         const product_id = $(this).data('product-id');
         const shop_domain = $(this).data('shop-domain');
         const customer_locale = $(this).data('customer-locale');
@@ -33,6 +32,7 @@ $(document).ready(function () {
                 widget_background_color: settings_vars.widget_background_color,
                 widget_border_color: settings_vars.widget_border_color,
                 widget_secondary_background_color: settings_vars.widget_secondary_background_color,
+                widget_secondary_text_color: settings_vars.widget_secondary_text_color,
                 product_id: product_id,
                 shop_domain: shop_domain,
                 customer_locale: customer_locale,

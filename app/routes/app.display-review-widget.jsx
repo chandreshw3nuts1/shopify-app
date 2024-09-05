@@ -36,17 +36,28 @@ export async function loader({ request }) {
         const productWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/product-review-widget`);
         const ratingWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/rating-widget`);
         const allReviewWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/all-review-counter-widget`);
+        const videoSliderWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/video-slider-widget`);
+        const cartReviewWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/cart-review-widget`);
+        
+        
 
         const shopifyProduct = await getShopifyLatestProducts(shopRecords.shop);
         const productName = (shopifyProduct.products) ? encodeURIComponent(`/products/${shopifyProduct.products[0]['handle']}`) : "/products";
+        const cartPreviewPath = encodeURIComponent("/cart");
 
         const productReviewWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?previewPath=${productName}&addAppBlockId=${productWidgetExtenstionId}&target=sectionId`;
         const ratingReviewWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?previewPath=${productName}&addAppBlockId=${ratingWidgetExtenstionId}&target=mainSection`;
-        const allReviewWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?previewPath=${productName}&addAppBlockId=${allReviewWidgetExtenstionId}&target=sectionId`;
+        const allReviewWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?addAppBlockId=${allReviewWidgetExtenstionId}&target=sectionId`;
+        const videoSliderWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?addAppBlockId=${videoSliderWidgetExtenstionId}&target=sectionId`;
+
+        const cartReviewWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?previewPath=${cartPreviewPath}&addAppBlockId=${cartReviewWidgetExtenstionId}&target=cart`;
+        
         const extensionUrs = {
             productReviewWidgetUrl,
             ratingReviewWidgetUrl,
-            allReviewWidgetUrl
+            allReviewWidgetUrl,
+            videoSliderWidgetUrl,
+            cartReviewWidgetUrl
         }
 
         return json({ shopRecords, sidebarReviewWidgetCustomizesModel, extensionUrs });
@@ -119,6 +130,8 @@ export default function DisplayReviewWidget() {
             navigate('/app/widget-customize/product-review-widget');
         } else if (type == 'sidebarWidget') {
             navigate('/app/widget-customize/sidebar-review-widget');
+        } else if (type == 'floatingWidget') {
+            navigate('/app/widget-customize/floating-widget');
         }
 
     }
@@ -229,6 +242,26 @@ export default function DisplayReviewWidget() {
                                     </div>
                                 </div>
                             </div>
+
+                            
+
+
+                            <div className="widgetboxwrp">
+                                <div className="widgetbox flxcol">
+                                    <div className="imagebox flxfix">
+                                        <Image src={widgetThumb07} alt="" />
+                                    </div>
+                                    <div className="detailbox flxflexi">
+                                        <h3>Cart Reviews Widget</h3>
+                                        <p>Reduce cart abandonment by showing ratings and reviews on the cart page, securing the trust needed to make the sale.</p>
+                                        <div className="btnwrap">
+                                            <a href="#" className="simplelink"></a>
+                                            <a href={extensionUrs.cartReviewWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="widgetboxwrp">
                                 <div className="widgetbox flxcol">
                                     <div className="imagebox flxfix">
@@ -274,6 +307,41 @@ export default function DisplayReviewWidget() {
                                     </div>
                                 </div>
                             </div>
+
+                            <div className="widgetboxwrp">
+                                <div className="widgetbox flxcol">
+                                    <div className="imagebox flxfix">
+                                        <Image src={widgetThumb09} alt="" />
+                                    </div>
+                                    <div className="detailbox flxflexi">
+                                        <h3>Video Slider Widget</h3>
+                                        <p>Display powerful photo and video reviews so store visitors can see your products in action.</p>
+                                        <div className="btnwrap">
+                                            <a href="#" className="simplelink"></a>
+                                            <a href={extensionUrs.videoSliderWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div className="widgetboxwrp">
+                                <div className="widgetbox flxcol">
+                                    <div className="imagebox flxfix">
+                                        <Image src={widgetThumb09} alt="" />
+                                    </div>
+                                    <div className="detailbox flxflexi">
+                                        <h3>Floating Product Reviews Widget
+                                        </h3>
+                                        <p>Present your reviews on a floating display so users can browse through reviews without leaving the page they are currently on.</p>
+                                        <div className="btnwrap">
+                                            <a href="#" onClick={(e) => redirectToCustomizePage(e, "floatingWidget")} className="simplelink">Customize</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
                         </div>
                     </div>
                 </div>

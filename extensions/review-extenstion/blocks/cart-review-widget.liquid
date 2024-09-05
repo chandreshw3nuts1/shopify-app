@@ -1,0 +1,55 @@
+
+
+<div id="display-widget-component" data-cust-cart-count = "{{ cart.item_count }}" data-cust-last_name = "{{ customer.last_name  }}"  data-cust-first_name = "{{ customer.first_name  }}"  data-cust-email= "{{ customer.email }}" data-product-id="{{ product.id }}" data-product-url="{{ product.url }}" data-shop-domain="{{ shop.domain }}" data-product-title="{{ product.title }}" data-customer-locale="{{ request.locale.iso_code }}"   data-product-settings='{{ block.settings | json }}' >
+    
+</div>
+
+{% schema %}
+{
+  "name": "Cart Review Widget",
+  "target": "section",
+  "stylesheet": "style.css",
+  "javascript": "script.js",
+  "settings": [
+    {
+		"type": "header",
+		"content": "Widget Settings"
+	  },
+    {
+      "type": "checkbox",
+      "id": "show_image_reviews",
+      "label": "Display only reviews with photos",
+      "default": false
+    },
+    {
+        "type": "checkbox",
+        "id": "show_all_reviews",
+        "label": "Show reviews from all products",
+        "default": true
+    },
+    {
+        "type": "checkbox",
+        "id": "hide_when_empty",
+        "label": "Hide widget when cart is empty",
+        "default": false
+    },
+    {
+      "type": "range",
+      "id": "no_of_review_per_page",
+      "min": 1,
+      "max": 20,
+      "step": 1,
+      "label": "Number of reviews to display",
+      "default": 10
+    },
+    {
+        "type": "checkbox",
+        "id": "hide_product_thumbnails",
+        "label": "Hide product thumbnails",
+        "default": false
+    }
+
+
+  ]
+}
+{% endschema %}

@@ -462,9 +462,9 @@ export async function getDiscounts(shopRecords, isReviewRequest = false) {
 }
 
 
-export async function fetchAllProductsByHandles(csvData,handleName, shop, accessToken) {
+export async function fetchAllProductsByHandles(csvData, handleName, shop, accessToken) {
 	const productHandles = csvData.map(item => item[handleName]);
-	
+
 	const batchSize = 250;
 	const handleBatches = [];
 
@@ -484,7 +484,7 @@ export async function fetchAllProductsByHandles(csvData,handleName, shop, access
 		const cleanId = id.replace('gid://shopify/Product/', ''); // Remove the prefix from id
 		acc[handle] = { id: cleanId, handle, ...rest };
 		return acc;
-	  }, {});
+	}, {});
 
 	return productsByHandle;
 
@@ -527,6 +527,54 @@ async function fetchProductsByBatch(batch, shop, accessToken) {
 		}
 
 		return mapProductDetails;
+
+	} catch (error) {
+		console.error('Error fetching product details:', error);
+		return null;
+	}
+}
+
+/* createMetafields it use to create meta fields in shopify store*/
+
+export async function createMetafields(shop, metafields, widgetType = "") {
+
+	try {
+
+		const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shop });
+		const metafieldApiUrl = `https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/metafields.json`;
+
+		const jsonMetafieldsString = JSON.stringify(metafields);
+		let metafieldData = {};
+		if (widgetType == "floatingWidgetCustomize") {
+			metafieldData = {
+				"metafield": {
+					"namespace": "extension_floating_modal",
+					"key": "modal_review_data",
+					"value": jsonMetafieldsString,
+					"type": "json"
+				}
+			}
+
+		} else if (widgetType == "sidebarReviewCustomize") {
+			metafieldData = {
+				"metafield": {
+					"namespace": "extension_status",
+					"key": "sidebar_widget_data",
+					"value": jsonMetafieldsString,
+					"type": "json"
+				}
+			}
+
+		}
+
+		const metafieldResponse = await fetch(metafieldApiUrl, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-Shopify-Access-Token': shopSessionRecords.accessToken,
+			},
+			body: JSON.stringify(metafieldData),
+		});
 
 	} catch (error) {
 		console.error('Error fetching product details:', error);

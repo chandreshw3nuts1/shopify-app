@@ -45,7 +45,7 @@ export default function ColorPicker(props) {
 		? settingsJson[props.pickerContent][props.pickerType]
 		: settingsJson.defaultColors[props.pickerType];
 
-	const [selectedColor, setSelectedColor] = useState(props.documentObj && props.documentObj[props.pickerType] ? props.documentObj[props.pickerType] : `#${defaultColor}`);
+	const [selectedColor, setSelectedColor] = useState(props.documentObj && props.documentObj[props.pickerType] ? props.documentObj[props.pickerType] : defaultColor);
 	const [isPickerVisible, setIsPickerVisible] = useState(false);
 	const [isColorInputEmpty, setIsColorInputEmpty] = useState(false);
 	const pickerRef = useRef(null);

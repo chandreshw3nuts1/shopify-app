@@ -176,9 +176,9 @@ $(document).on("click", ".common_widget_review_item", function () {
 
 
 
-$(document).ready(function() {
+$(document).ready(function () {
 
-    
+
     // Function to update button visibility based on video state
     function updateButtonVisibility(videoElement) {
         $(videoElement).closest('.videowrap').find('.mainVideoPlayButton').show();
@@ -224,25 +224,28 @@ $(document).ready(function() {
     });
 
     // Attach 'ended' event listeners to all video elements
-    $('.mainVideoPlayer').each(function() {
-        this.addEventListener('ended', function() {
+    $('.mainVideoPlayer').each(function () {
+        this.addEventListener('ended', function () {
 
             updateButtonVisibility(this);
         });
     });
 
-    if($("#sidebar_popup_extension_widget").length > 0) {
+    if ($("#sidebar_popup_extension_widget").length > 0) {
         var shop_domain = $("#sidebar_popup_extension_widget").data('shop-domain');
         $.ajax({
             type: 'POST',
             url: `/apps/w3-proxy/widget`,
             data: {
                 shop_domain: shop_domain,
-                actionType : "sidebarRatingWidget",
+                actionType: "sidebarRatingWidget",
             },
             dataType: "json",
             success: function (response) {
-                $("#sidebar_popup_extension_widget").html(response.content);
+                $("#sidebar_popup_extension_widget").addClass(response.class);
+                setTimeout(function () {
+                    $("#sidebar_popup_extension_widget").html(response.content);
+                }, 500);
             }
         });
     }

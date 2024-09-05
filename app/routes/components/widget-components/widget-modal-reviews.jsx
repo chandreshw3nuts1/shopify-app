@@ -51,7 +51,7 @@ const WidgetModalRviews = ({ shopRecords, reviewItems, formParams, generalAppear
         buttonBackground = "",
         starsBarBackground = "",
         starsBarFill = "";
-    let modalBackgroundOnBlank = "";
+    let modalBackgroundOnBlank = "#ffffff";
 
     if (productReviewWidgetCustomizesModel.widgetColor == 'custom') {
         headerTextColor = productReviewWidgetCustomizesModel.headerTextColor;
@@ -63,7 +63,6 @@ const WidgetModalRviews = ({ shopRecords, reviewItems, formParams, generalAppear
         buttonTextOnHover = productReviewWidgetCustomizesModel.buttonTextOnHover;
         starsBarBackground = productReviewWidgetCustomizesModel.starsBarBackground;
         starsBarFill = productReviewWidgetCustomizesModel.starsBarFill;
-        modalBackgroundOnBlank = "";
     } else if (productReviewWidgetCustomizesModel.widgetColor == 'white') {
         headerTextColor = '#ffffff';
         buttonBorderColor = `1px solid #ffffff`;

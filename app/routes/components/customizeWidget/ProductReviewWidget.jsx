@@ -618,7 +618,7 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                                 </select>
                                             </div>
                                         </div>
-                                        <div className="form-group m-0 horizontal-form alightop">
+                                        {/* <div className="form-group m-0 horizontal-form alightop">
                                             <label htmlFor="">Product Reviews Widget</label>
                                             <div className='sideinput mw300 flxflexi'>
                                                 <select name="productReviewsWidget" onChange={handleSelectChange} value={selectedProductReviewsWidget} className='input_text'>
@@ -630,7 +630,7 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                                 </select>
                                                 <div className='inputnote'>Note: Hiding the widget will also hide the "Write a review" button</div>
                                             </div>
-                                        </div>
+                                        </div> */}
                                         <div className="form-group m-0 horizontal-form alightop">
                                             <label htmlFor="">"Write a review" button</label>
                                             <div className='sideinput mw300 flxflexi'>

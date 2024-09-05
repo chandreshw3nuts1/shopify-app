@@ -8,6 +8,7 @@ import productReviewWidgetCustomizes from './../routes/models/productReviewWidge
 import reviewDiscountSettings from './../routes/models/reviewDiscountSettings';
 import sidebarReviewWidgetCustomizes from './../routes/models/sidebarReviewWidgetCustomizes';
 import reviewFormSettings from './../routes/models/reviewFormSettings';
+import floatingWidgetCustomizes from './../routes/models/floatingWidgetCustomizes';
 
 import settingsJson from './../utils/settings.json';
 
@@ -206,6 +207,18 @@ export async function storeShopDetails(session) {
 						shop_id: shopRecords._id,
 						themeColor: settingsJson.reviewFormSettings.themeColor,
 						themeTextColor: settingsJson.reviewFormSettings.themeTextColor,
+					}
+				},
+				{ upsert: true }
+			);
+
+			await floatingWidgetCustomizes.updateOne(
+				{ shop_id: shopRecords._id },
+				{
+					$setOnInsert: {
+						shop_id: shopRecords._id,
+						backgroundColor: settingsJson.floatingWidgetCustomize.backgroundColor,
+						textColor: settingsJson.floatingWidgetCustomize.textColor,
 					}
 				},
 				{ upsert: true }

@@ -1,5 +1,5 @@
 import { json } from "@remix-run/node";
-import { findOneRecord } from "./../utils/common";
+import { findOneRecord, createMetafields } from "./../utils/common";
 
 import fs from "fs";
 import path from "path";
@@ -10,6 +10,7 @@ import emailDiscountPhotoVideoReviewSettings from './../routes/models/emailDisco
 import productReviewWidgetCustomizes from './../routes/models/productReviewWidgetCustomizes';
 import reviewFormSettings from './../routes/models/reviewFormSettings';
 import sidebarReviewWidgetCustomizes from './../routes/models/sidebarReviewWidgetCustomizes';
+import floatingWidgetCustomizes from './../routes/models/floatingWidgetCustomizes';
 import settingsJson from './../utils/settings.json';
 
 export async function loader() {
@@ -282,6 +283,17 @@ export async function action({ params, request }) {
                         await reviewFormSettings.findOneAndUpdate(query, update, options);
                     } else if (subActionType == "sidebarRatingWidgetCustomize") {
                         await sidebarReviewWidgetCustomizes.findOneAndUpdate(query, update, options);
+                    } else if (subActionType == "floatingWidgetCustomize") {
+                        await floatingWidgetCustomizes.findOneAndUpdate(query, update, options);
+
+                        const floatingWidgetModel = await floatingWidgetCustomizes.findOneAndUpdate(query, update, options);
+
+                        const metafields = {
+                            "title": floatingWidgetModel.title,
+                            "backgroundColor": floatingWidgetModel.backgroundColor,
+                            "textColor": floatingWidgetModel.textColor
+                        };
+                        await createMetafields(shopRecords.shop, metafields, subActionType);
                     }
 
                     return json({ "status": 200, "message": "Settings saved " });

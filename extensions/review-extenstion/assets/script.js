@@ -420,11 +420,20 @@ const cust_first_name = $("#display-widget-component").data('cust-first_name');
 const cust_last_name = $("#display-widget-component").data('cust-last_name');
 const cust_email = $("#display-widget-component").data('cust-email');
 const customer_locale = $("#display-widget-component").data('customer-locale');
+const cart_count = $("#display-widget-component").data('cust-cart-count');
 //{{ block.settings | json }};
 
 var masonryObj;
 $(document).ready(function () {
-    loadReviews(page);
+    let hideProductWidget = false;
+    if(typeof settings_vars.hide_when_empty != "undefined" && settings_vars.hide_when_empty == true) {
+        if(typeof cart_count != "undefined" && cart_count == 0) {
+            hideProductWidget = true;
+        }
+    }
+    if(!hideProductWidget) {
+        loadReviews(page);
+    }
 });
 
 

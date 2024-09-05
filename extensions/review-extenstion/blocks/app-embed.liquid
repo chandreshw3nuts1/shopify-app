@@ -17,54 +17,53 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
 <div id="w3-float-modal-content-widget" class="modal fade addreviewpopup modalwidgetreviews" data-bs-backdrop="static">
-	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.9447 7.04523C17.2484 7.34897 17.2484 7.84143 16.9447 8.14517L13.198 11.8919L17.0528 15.7467C17.3566 16.0505 17.3566 16.5429 17.0528 16.8467C16.7491 17.1504 16.2566 17.1504 15.9529 16.8467L12.098 12.9918L8.14513 16.9447C7.84139 17.2485 7.34893 17.2485 7.04519 16.9447C6.74145 16.641 6.74145 16.1485 7.04519 15.8448L10.9981 11.8919L7.15334 8.04711C6.8496 7.74337 6.8496 7.25091 7.15334 6.94717C7.45708 6.64343 7.94954 6.64343 8.25328 6.94717L12.098 10.7919L15.8447 7.04523C16.1485 6.74148 16.6409 6.74148 16.9447 7.04523Z" fill="currentColor"></path></svg></button>
-			</div>
-			<div class="modal-body">
-			</div>
-		</div>
-	</div>
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: {{shop.metafields.extension_floating_modal.modal_review_data.value.backgroundColor}}; color: {{shop.metafields.extension_floating_modal.modal_review_data.value.textColor}}; margin-bottom:10px; font-size:20px;">
+        {% if shop.metafields.extension_floating_modal.modal_review_data.value.title != "" %}
+          <div>
+            {{ shop.metafields.extension_floating_modal.modal_review_data.value.title }}
+          </div>
+        {% endif %}
+
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M16.9447 7.04523C17.2484 7.34897 17.2484 7.84143 16.9447 8.14517L13.198 11.8919L17.0528 15.7467C17.3566 16.0505 17.3566 16.5429 17.0528 16.8467C16.7491 17.1504 16.2566 17.1504 15.9529 16.8467L12.098 12.9918L8.14513 16.9447C7.84139 17.2485 7.34893 17.2485 7.04519 16.9447C6.74145 16.641 6.74145 16.1485 7.04519 15.8448L10.9981 11.8919L7.15334 8.04711C6.8496 7.74337 6.8496 7.25091 7.15334 6.94717C7.45708 6.64343 7.94954 6.64343 8.25328 6.94717L12.098 10.7919L15.8447 7.04523C16.1485 6.74148 16.6409 6.74148 16.9447 7.04523Z" fill="currentColor"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+      </div>
+    </div>
+  </div>
 </div>
 
 
-
 {% assign sidebar_widget_data = shop.metafields.extension_status.sidebar_widget_data %}
-
 {%- if sidebar_widget_data -%}
-  {%- assign isActive_string = sidebar_widget_data | replace: '}', '' | split: '"isActive":' | last | split: ',' | first -%}
-  {%- assign isActive = isActive_string | replace: 'true', 'true' | replace: 'false', 'false' -%}
-  
-  {%- assign isHomePage_string = sidebar_widget_data | replace: '}', '' | split: '"isHomePage":' | last | split: ',' | first -%}
-  {%- assign isHomePage = isHomePage_string | replace: 'true', 'true' | replace: 'false', 'false' -%}
-  
-  {%- assign isCartPage_string = sidebar_widget_data | replace: '}', '' | split: '"isCartPage":' | last | split: ',' | first -%}
-  {%- assign isCartPage = isCartPage_string | replace: 'true', 'true' | replace: 'false', 'false' -%}
-  
-  {%- assign isProductPage_string = sidebar_widget_data | replace: '}', '' | split: '"isProductPage":' | last | split: ',' | first -%}
-  {%- assign isProductPage = isProductPage_string | replace: 'true', 'true' | replace: 'false', 'false' -%}
-  
-  {%- assign isOtherPages_string = sidebar_widget_data | replace: '}', '' | split: '"isOtherPages":' | last | split: ',' | first -%}
-  {%- assign isOtherPages = isOtherPages_string | replace: 'true', 'true' | replace: 'false', 'false' -%}
+  {%- assign isActive = shop.metafields.extension_status.sidebar_widget_data.value.isActive -%}
+  {%- assign isHomePage = shop.metafields.extension_status.sidebar_widget_data.value.isHomePage -%}
+  {%- assign isCartPage = shop.metafields.extension_status.sidebar_widget_data.value.isCartPage -%}
+  {%- assign isProductPage = shop.metafields.extension_status.sidebar_widget_data.value.isProductPage -%}
+  {%- assign isOtherPages = shop.metafields.extension_status.sidebar_widget_data.value.isOtherPages -%}
 {%- endif -%}
 
 {%- assign current_template = template.name -%}
 
-{% if isActive == "true" %}
-  {% if current_template == 'index' and isHomePage == "true" %}
+{% if isActive == true %}
+  {% if current_template == 'index' and isHomePage == true %}
     {% assign show_div = true %}
-  {% elsif current_template contains 'cart' and isCartPage == "true" %}
+  {% elsif current_template contains 'cart' and isCartPage == true %}
     {% assign show_div = true %}
-  {% elsif current_template contains 'product' and isProductPage == "true" %}
+  {% elsif current_template contains 'product' and isProductPage == true %}
     {% assign show_div = true %}
-  {% elsif isOtherPages == "true" and current_template != 'index' and current_template != 'product' and current_template != 'cart'  %}
+  {% elsif isOtherPages == true and current_template != 'index' and current_template != 'product' and current_template != 'cart'  %}
     {% assign show_div = true %}
   {% endif %}
 {% endif %}
  
 {% if show_div == true %}
-  	<div id="sidebar_popup_extension_widget" class="w3-widgets w3floatreview rightside bottomtotop"  data-shop-domain="{{ shop.domain }}" >
+  	<div id="sidebar_popup_extension_widget" class="w3-widgets w3floatreview " data-customer-locale="{{ request.locale.iso_code }}"  data-shop-domain="{{ shop.domain }}" >
 		
 	</div>
 {% endif %}

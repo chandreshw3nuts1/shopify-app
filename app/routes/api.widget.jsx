@@ -347,6 +347,7 @@ export async function action({ request }) {
                 const widget_background_color = formData.get('widget_background_color');
                 const widget_border_color = formData.get('widget_border_color');
                 const widget_secondary_background_color = formData.get('widget_secondary_background_color');
+                const widget_secondary_text_color = formData.get('widget_secondary_text_color');
 
 
 
@@ -393,8 +394,10 @@ export async function action({ request }) {
                     show_review,
                     widget_background_color,
                     widget_border_color,
-                    widget_secondary_background_color
+                    widget_secondary_background_color,
+                    widget_secondary_text_color
                 }
+
                 const dynamicRatingComponent = <AllReviewWidget formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} />;
                 const htmlRatingContent = ReactDOMServer.renderToString(dynamicRatingComponent);
                 return json({
@@ -428,7 +431,7 @@ export async function action({ request }) {
                     status: 'publish',
                 };
 
-                if(selected_reviews == 'true') {
+                if (selected_reviews == 'true') {
                     query["video_slider"] = true;
                 }
                 const reviewItems = await productReviews.aggregate([
@@ -458,7 +461,7 @@ export async function action({ request }) {
                     {
                         $sort: sortOption
                     },
-                    
+
                     {
                         $project: {
                             _id: 1,
@@ -510,7 +513,6 @@ export async function action({ request }) {
 
                 const dynamicComponent = <VideoSliderWidget formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} reviewItems={reviewItems} />;
                 const content = ReactDOMServer.renderToString(dynamicComponent);
-                console.log(content);
                 return json({
                     content: content
                 });
@@ -529,10 +531,18 @@ export async function action({ request }) {
                     shop_id: shopRecords._id
                 });
 
+                let dynamicClass = "";
+                if (sidebarReviewWidgetCustomizesModel.widgetPosition == 'left') {
+                    dynamicClass = sidebarReviewWidgetCustomizesModel.widgetOrientation == 'btt' ? 'leftside bottomtotop' : 'leftside';
+                } else {
+                    dynamicClass = sidebarReviewWidgetCustomizesModel.widgetOrientation == 'btt' ? 'rightside bottomtotop' : 'rightside';
+
+                }
                 const dynamicSidebarRatingComponent = <SidebarRatingWidget sidebarReviewWidgetCustomizesModel={sidebarReviewWidgetCustomizesModel} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} settingsJson={settingsJson} />;
                 const htmlSidebrRatingContent = ReactDOMServer.renderToString(dynamicSidebarRatingComponent);
                 return json({
-                    content: htmlSidebrRatingContent
+                    content: htmlSidebrRatingContent,
+                    class: dynamicClass
                 });
 
             } catch (error) {
