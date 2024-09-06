@@ -10,6 +10,7 @@ import RatingWidget from './components/widget-components/rating-widget';
 import AllReviewWidget from './components/widget-components/all-review-counter-widget';
 import SidebarRatingWidget from './components/widget-components/sidebar-rating-widget';
 import VideoSliderWidget from './components/widget-components/video-slider-widget';
+import TestimonialsCarouselWidget from './components/widget-components/testimonials-carousel-widget';
 
 
 
@@ -21,6 +22,7 @@ import generalSettings from "./models/generalSettings";
 import productReviewWidgetCustomizes from "./models/productReviewWidgetCustomizes";
 import reviewFormSettings from "./models/reviewFormSettings";
 import sidebarReviewWidgetCustomizes from "./models/sidebarReviewWidgetCustomizes";
+import floatingWidgetCustomizes from "./models/floatingWidgetCustomizes";
 
 
 import { getShopifyProducts, getDiscounts } from "./../utils/common";
@@ -523,6 +525,97 @@ export async function action({ request }) {
                     error
                 });
             }
+        } else if (actionType == "testimonialsCarouselWidget") {
+            try {
+                const font_size = formData.get('font_size');
+                const no_of_chars = formData.get('no_of_chars');
+                const quote_marks_icon_style = formData.get('quote_marks_icon_style');
+                const reviewer_name_color = formData.get('reviewer_name_color');
+                const text_color = formData.get('text_color');
+                const widget_icon_color = formData.get('widget_icon_color');
+                const quotes_icon_color = formData.get('quotes_icon_color');
+                const arrow_icon_color = formData.get('arrow_icon_color');
+                const hide_arrow_mobile = formData.get('hide_arrow_mobile');
+                const show_pagination_dots = formData.get('show_pagination_dots');
+                const selected_dot_color = formData.get('selected_dot_color');
+                const dot_background_color = formData.get('dot_background_color');
+                const auto_animation = formData.get('auto_animation');
+                const delay_sec = formData.get('delay_sec');
+
+                const sortOption = {};
+                sortOption["createdAt"] = -1;
+                sortOption["_id"] = -1;
+
+                let query = {
+                    shop_id: shopRecords._id,
+                    status: 'publish',
+                    add_to_carousel: true
+                };
+
+                const reviewItems = await productReviews.aggregate([
+                    {
+                        $match: query
+                    },
+                    {
+                        $group: {
+                            _id: "$_id",
+                            rating: { $first: "$rating" },
+                            first_name: { $first: "$first_name" },
+                            display_name: { $first: "$display_name" },
+                            last_name: { $first: "$last_name" },
+                            description: { $first: "$description" },
+                            createdAt: { $first: "$createdAt" },
+                            product_id: { $first: "$product_id" }
+                        }
+                    },
+                    {
+                        $sort: sortOption
+                    },
+                    {
+                        $project: {
+                            _id: 1,
+                            rating: 1,
+                            first_name: 1,
+                            display_name: 1,
+                            last_name: 1,
+                            description: 1,
+                            createdAt: 1,
+                            product_id: 1
+                        }
+                    }
+                    
+                ]);
+
+                const formParams = {
+                    font_size,
+                    no_of_chars,
+                    quote_marks_icon_style,
+                    reviewer_name_color,
+                    text_color,
+                    widget_icon_color,
+                    quotes_icon_color,
+                    arrow_icon_color,
+                    hide_arrow_mobile,
+                    show_pagination_dots,
+                    selected_dot_color,
+                    dot_background_color,
+                    auto_animation,
+                    delay_sec
+
+                }
+
+                const dynamicComponent = <TestimonialsCarouselWidget formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} reviewItems={reviewItems} />;
+                const content = ReactDOMServer.renderToString(dynamicComponent);
+                return json({
+                    content: content
+                });
+
+            } catch (error) {
+                console.log(error);
+                return json({
+                    error
+                });
+            }
         } else if (actionType == "sidebarRatingWidget") {
             try {
 
@@ -807,13 +900,17 @@ export async function action({ request }) {
                 is_modal_reviews: is_modal_reviews
             }
             if (is_modal_reviews == 'true') {
+
+                
+                const floatingWidgetCustomizesModel = await floatingWidgetCustomizes.findOne({ shop_id: shopRecords._id });
+                otherProps['floatingWidgetCustomizesModel'] = floatingWidgetCustomizesModel;
+
                 var dynamicComponent = <WidgetModalRviews shopRecords={shopRecords} reviewItems={reviewItems} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} otherProps={otherProps} />;
                 var htmlContent = ReactDOMServer.renderToString(dynamicComponent);
 
             } else {
                 var dynamicComponent = <ProductReviewWidget shopRecords={shopRecords} reviewItems={reviewItems} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} otherProps={otherProps} />;
                 var htmlContent = ReactDOMServer.renderToString(dynamicComponent);
-
             }
 
 

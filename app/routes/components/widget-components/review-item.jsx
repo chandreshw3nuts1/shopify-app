@@ -5,7 +5,7 @@ import { formatDate } from './../../../utils/dateFormat';
 import ReviewVerifyIcon from '../icons/ReviewVerifyIcon';
 
 const ReviewItem = (props) => {
-    const { translations, productReviewWidgetCustomizesModel, languageWiseProductWidgetSettings } = props.otherProps;
+    const { translations,floatingWidgetCustomizesModel, productReviewWidgetCustomizesModel, languageWiseProductWidgetSettings } = props.otherProps;
     let replyText = "",
         replyBackground = "",
         replyBackgroundOnHover = "",
@@ -24,6 +24,11 @@ const ReviewItem = (props) => {
 
     }
     const widgetItemClass = props.formParams.is_modal_reviews == 'true' ? "widget_w3grid-review-item" : "product_widget_w3grid-review-item";
+    
+    let floatShowProductThumb = true;
+    if(props.formParams?.is_modal_reviews && props.formParams.is_modal_reviews == 'true') {
+        floatShowProductThumb = floatingWidgetCustomizesModel?.showProductThumb || false;
+    }
     return (
         <>
             <style>
@@ -126,7 +131,7 @@ const ReviewItem = (props) => {
                                                     }
                                                 </div>
                                                 <div className='review_bottomwrap'>
-                                                    {(props.formParams.hideProductThumbnails != 'true') &&
+                                                    {(props.formParams.hideProductThumbnails  != 'true') &&
                                                         <div className="product-container product-thumb-detail">
                                                             <div className="image flxfix">
                                                                 <img src={review.productDetails.images.edges[0].node.transformedSrc} />
@@ -318,7 +323,7 @@ const ReviewItem = (props) => {
                                                 {(props.formParams.hideProductThumbnails !== 'true' || review.reviewDocuments.length > 0) &&
 
                                                     <div className='review_bottomwrap'>
-                                                        {(props.formParams.hideProductThumbnails != 'true' && review.productDetails) &&
+                                                        {(props.formParams.hideProductThumbnails != 'true' && floatShowProductThumb == true && review.productDetails) &&
                                                             <div className="product-container product-thumb-detail">
                                                                 <div className="image flxfix">
                                                                     <img src={review.productDetails.images.edges[0].node.transformedSrc} />

@@ -6,7 +6,7 @@ import ColorPicker from "./../settings/ColorPicker";
 const FloatingWidget = ({ shopRecords, customizeObj }) => {
     const [documentObj, setDocumentObj] = useState(customizeObj);
     const [title, setTitle] = useState('');
-    const [showProductThumb, setShowProductThumb] = useState(customizeObj?.isHomePage);
+    const [showProductThumb, setShowProductThumb] = useState(customizeObj?.showProductThumb);
     const [initialData, setInitialData] = useState({});
 
     useEffect(() => {

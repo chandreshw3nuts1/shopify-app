@@ -1,0 +1,143 @@
+
+<div id="testimonials-carousel-widget-component-{{ block.id }}" class="w3-widgets" data-block-id="{{ block.id }}" data-product-id="{{ product.id }}" data-shop-domain="{{ shop.domain }}"  data-customer-locale="{{ request.locale.iso_code }}" data-rating-settings='{{ block.settings | json }}' >
+</div>
+
+{% schema %}
+{
+  "name": "Testimonials Carousel",
+  "target": "section",
+  "stylesheet": "style.css",
+  "javascript": "testimonials-carousel-widget-script.js",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Widget Settings"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "no_of_chars",
+      "label": "Max number of characters",
+      "min": 50,
+      "max": 500,
+      "step": 10,
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "quote_marks_icon_style",
+      "label": "Quote marks icon",
+      "options": [
+        {
+          "label": "No Icon",
+          "value": ""
+        },
+        {
+          "label": "Style 1",
+          "value": "style_1"
+        },
+        {
+          "label": "Style 2",
+          "value": "style_2"
+        },
+        {
+          "label": "Style 3",
+          "value": "style_3"
+        },
+        {
+          "label": "Style 4",
+          "value": "style_4"
+        },
+        {
+          "label": "Style 5",
+          "value": "style_5"
+        }
+      ],
+      "default": "style_1"
+    },
+    {
+      "type": "color",
+      "id": "reviewer_name_color",
+      "label": "Reviewer name color"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "id": "widget_icon_color",
+      "label": "Widget star color"
+    },
+    {
+      "type": "color",
+      "id": "quotes_icon_color",
+      "label": "Quotes icon color"
+    },
+    {
+      "type": "color",
+      "id": "arrow_icon_color",
+      "label": "Arrow color"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_arrow_mobile",
+      "label": "Hide arrows on mobile",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Pagination Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pagination_dots",
+      "label": "Pagination dots",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "selected_dot_color",
+      "label": "Selected dot color"
+    },
+    {
+      "type": "color",
+      "id": "dot_background_color",
+      "label": "Dot background color"
+    },
+    {
+      "type": "header",
+      "content": "Animation Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_animation",
+      "label": "Auto animation",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "delay_sec",
+      "min": 1,
+      "max": 15,
+      "step": 1,
+      "unit": "s",
+      "label": "Delay (sec)",
+      "default": 2
+    }
+  ]
+}
+
+{% endschema %}
+
+
