@@ -2,6 +2,8 @@ import { getUploadDocument } from './../../../utils/documentPath';
 import VideoPlayIcon from '../icons/VideoPlayIcon';
 
 const VideoSliderWidget = (props) => {
+    const blockId = props.formParams.blockId;
+
     const iconColor = (props.formParams.widget_icon_color != "rgba(0,0,0,0)" && props.formParams.widget_icon_color != "") ? props.formParams.widget_icon_color : props.generalAppearancesModel.starIconColor;
     const textColor = (props.formParams.widget_text_color != "rgba(0,0,0,0)" && props.formParams.widget_text_color != "") ? props.formParams.widget_text_color : '#ffffff';
 
@@ -9,7 +11,7 @@ const VideoSliderWidget = (props) => {
         <>
             <style>
                 {`
-                    /* .w3-slider-wrapper .reviewer_name {
+                    /* #display-video-slider-widget-component${blockId} .w3-slider-wrapper .reviewer_name {
                         color: ${textColor} !important;
                     } */
 				`}

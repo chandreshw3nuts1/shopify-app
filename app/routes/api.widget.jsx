@@ -77,7 +77,8 @@ export async function action({ request }) {
             translations,
             productReviewWidgetCustomizesModel,
             languageWiseProductWidgetSettings,
-            generalSettingsModel
+            generalSettingsModel,
+            settingsJson
         }
 
         const StarIcon = generalAppearancesModel.starIcon.replace(/-/g, '');
@@ -317,7 +318,8 @@ export async function action({ request }) {
                     widget_layout,
                     widget_alignment,
                     widget_text,
-                    show_empty_stars
+                    show_empty_stars,
+                    blockId
                 }
                 const dynamicRatingComponent = <RatingWidget formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} />;
                 const htmlRatingContent = ReactDOMServer.renderToString(dynamicRatingComponent);
@@ -397,7 +399,8 @@ export async function action({ request }) {
                     widget_background_color,
                     widget_border_color,
                     widget_secondary_background_color,
-                    widget_secondary_text_color
+                    widget_secondary_text_color,
+                    blockId
                 }
 
                 const dynamicRatingComponent = <AllReviewWidget formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} />;
@@ -510,7 +513,8 @@ export async function action({ request }) {
                     widget_icon_color,
                     border_radius,
                     show_rating,
-                    play_button_color
+                    play_button_color,
+                    blockId
                 }
 
                 const dynamicComponent = <VideoSliderWidget formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} reviewItems={reviewItems} />;
@@ -539,8 +543,6 @@ export async function action({ request }) {
                 const show_pagination_dots = formData.get('show_pagination_dots');
                 const selected_dot_color = formData.get('selected_dot_color');
                 const dot_background_color = formData.get('dot_background_color');
-                const auto_animation = formData.get('auto_animation');
-                const delay_sec = formData.get('delay_sec');
 
                 const sortOption = {};
                 sortOption["createdAt"] = -1;
@@ -599,9 +601,7 @@ export async function action({ request }) {
                     show_pagination_dots,
                     selected_dot_color,
                     dot_background_color,
-                    auto_animation,
-                    delay_sec
-
+                    blockId
                 }
 
                 const dynamicComponent = <TestimonialsCarouselWidget formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} reviewItems={reviewItems} />;

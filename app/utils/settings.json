@@ -1,6 +1,8 @@
 {
 	"host_url": "https://heard-kill-luxury-mailman.trycloudflare.com",
 	"page_limit": 20,
+	"character_limit": 400,
+	"app_name" : "Kritic App",
 	"validImageExtensions": [
 		"jpg",
 		"jpeg",

@@ -1,6 +1,6 @@
 
 const RatingWidget = (props) => {
-
+    const blockId = props.formParams.blockId;
     const iconColor = (props.formParams.widget_icon_color != "rgba(0,0,0,0)" && props.formParams.widget_icon_color !="")  ? props.formParams.widget_icon_color : props.generalAppearancesModel.starIconColor;
     const textColor = props.formParams.widget_text_color != "rgba(0,0,0,0)" ? props.formParams.widget_text_color : '#000000';
     var widgetText = "";
@@ -18,18 +18,18 @@ const RatingWidget = (props) => {
         <>
             <style>
                 {`
-					.custom-rating-div svg {
+					#display-rating-widget-component${blockId} .custom-rating-div svg {
                         width: ${props.formParams.font_size >= 40 ? 64 : props.formParams.font_size * 1.6}px !important;
                         height: ${props.formParams.font_size >= 40 ? 64 : props.formParams.font_size * 1.6}px !important;
 					}
-                    .custom-rating-div svg + svg {
+                    #display-rating-widget-component${blockId} .custom-rating-div svg + svg {
                         margin-left: -${props.formParams.font_size / 4}px !important;
                     }
-                    .custom-rating-div  {
+                    #display-rating-widget-component${blockId} .custom-rating-div  {
 						text-align: ${props.formParams.widget_alignment} !important;
                         cursor : pointer;
 					}
-                    .custom-rating-text {
+                    #display-rating-widget-component${blockId} .custom-rating-div .custom-rating-text {
 						font-size: ${props.formParams.font_size}px !important;
                         color: ${textColor} !important;
                     }

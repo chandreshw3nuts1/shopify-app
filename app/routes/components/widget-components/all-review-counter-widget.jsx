@@ -1,5 +1,6 @@
 import settingsJson from "./../../../utils/settings.json";
 const AllReviewWidget = (props) => {
+    const blockId = props.formParams.blockId;
 
     const iconColor = (props.formParams.widget_icon_color != "rgba(0,0,0,0)" && props.formParams.widget_icon_color != "") ? props.formParams.widget_icon_color : props.generalAppearancesModel.starIconColor;
     const textColor = (props.formParams.widget_text_color != "rgba(0,0,0,0)" && props.formParams.widget_text_color != "") ? props.formParams.widget_text_color : '#000000';
@@ -16,15 +17,15 @@ const AllReviewWidget = (props) => {
         <>
             <style>
                 {`
-					.trustbadgereview svg {
+					#display-all-review-widget-component${blockId} .trustbadgereview svg {
                         width: ${props.formParams.font_size >= 40 ? 64 : props.formParams.font_size * 1.6}px !important;
                         height: ${props.formParams.font_size >= 40 ? 64 : props.formParams.font_size * 1.6}px !important;
 					}
-                    .trustbadgereview svg + svg {
+                    #display-all-review-widget-component${blockId} .trustbadgereview svg + svg {
                         margin-left: -${props.formParams.font_size / 4}px !important;
                     }
                      
-                    .trustbadgereview .review-badge {
+                    #display-all-review-widget-component${blockId} .trustbadgereview .review-badge {
                         border-radius: ${props.formParams.border_radius}px;
                         overflow: hidden;
                         text-align: center;
@@ -32,38 +33,38 @@ const AllReviewWidget = (props) => {
                         border : 1px solid ${contentBorderColor};
                     }
 
-                    .trustbadgereview .review-content .total-reviews::before {
+                    #display-all-review-widget-component${blockId} .trustbadgereview .review-content .total-reviews::before {
                         background: ${textColor};
                     }
 
-                    .trustbadgereview .review-content {
+                    #display-all-review-widget-component${blockId} .trustbadgereview .review-content {
                         background-color: ${contentBackgroundColor} !important;
                         padding: 10px;
                     }
 
-                    .trustbadgereview .average-rating {
+                    #display-all-review-widget-component${blockId} .trustbadgereview .average-rating {
                         font-weight: bold;
                         font-size: ${props.formParams.font_size}px !important;
                         color: ${textColor} !important;
                     }
 
-                    .trustbadgereview .total-reviews {
+                    #display-all-review-widget-component${blockId} .trustbadgereview .total-reviews {
                         font-size: ${props.formParams.font_size}px !important;
                         color: ${textColor} !important;
                     }
 
-                    .trustbadgereview .powered-by {
+                    #display-all-review-widget-component${blockId} .trustbadgereview .powered-by {
                         background-color: ${contentSecondaryBackgroundColor}; /* Light background for the footer */
                         color: ${contentSecondaryTextColor}; /* Light background for the footer */
                     }
 
-                    .trustbadgereview .powered-by a {
+                    #display-all-review-widget-component${blockId} .trustbadgereview .powered-by a {
                         color: ${contentSecondaryTextColor}; /* Light background for the footer */
                         text-decoration: none;
                         font-weight: bold;
                     }
 
-                    .trustbadgereview .powered-by a:hover {
+                    #display-all-review-widget-component${blockId} .trustbadgereview .powered-by a:hover {
                         text-decoration: underline;
                     }
 				`}

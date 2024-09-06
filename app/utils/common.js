@@ -581,3 +581,14 @@ export async function createMetafields(shop, metafields, widgetType = "") {
 		return null;
 	}
 }
+
+/* return sub string based on specified length */
+
+export function displayNoOfCharacters(length = 50, description = "") {
+	if (description.length <= length) {
+		return description;
+	  }
+	
+	  return `${description.substring(0, length)}...`;
+	
+}

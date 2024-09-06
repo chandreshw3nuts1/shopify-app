@@ -3,9 +3,9 @@ import { getUploadDocument } from './../../../utils/documentPath';
 import PlayIcon from '../icons/PlayIcon';
 import { formatDate } from './../../../utils/dateFormat';
 import ReviewVerifyIcon from '../icons/ReviewVerifyIcon';
-
+import {displayNoOfCharacters} from './../../../utils/common';
 const ReviewItem = (props) => {
-    const { translations,floatingWidgetCustomizesModel, productReviewWidgetCustomizesModel, languageWiseProductWidgetSettings } = props.otherProps;
+    const { translations,floatingWidgetCustomizesModel, productReviewWidgetCustomizesModel, languageWiseProductWidgetSettings, settingsJson } = props.otherProps;
     let replyText = "",
         replyBackground = "",
         replyBackgroundOnHover = "",
@@ -95,7 +95,7 @@ const ReviewItem = (props) => {
                                                 </div>
                                                 <div className="text_content">
                                                     <p style={{ color: reviewsText }}>
-                                                        {review.description}
+                                                        {displayNoOfCharacters(settingsJson.character_limit, review.description)}
                                                     </p>
                                                 </div>
                                                 {productReviewWidgetCustomizesModel.itemType == 'show' && review.variant_title && (
@@ -180,7 +180,7 @@ const ReviewItem = (props) => {
                                                 </div>
                                                 <div className="text_content">
                                                     <p style={{ color: reviewsText }}>
-                                                        {review.description}
+                                                        {displayNoOfCharacters(settingsJson.character_limit, review.description)}
                                                     </p>
                                                 </div>
                                                 {productReviewWidgetCustomizesModel.itemType == 'show' && review.variant_title && (
@@ -299,7 +299,7 @@ const ReviewItem = (props) => {
                                                 </div>
                                                 <div className="text_content">
                                                     <p style={{ color: reviewsText }}>
-                                                        {review.description}
+                                                        {displayNoOfCharacters(settingsJson.character_limit, review.description)}
                                                     </p>
                                                 </div>
 

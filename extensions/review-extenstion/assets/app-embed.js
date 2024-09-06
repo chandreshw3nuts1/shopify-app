@@ -59,6 +59,20 @@ $(document).on("click", ".dropdown-menu .widget_sort_by_filter", function (e) {
 
 $(document).on("click", ".widget_w3grid-review-item", function () {
     reviewId = $(this).data('reviewid');
+    let shop_domain = ""; 
+    let customer_locale = ""; 
+    
+    if(typeof widget_shop_domain == 'undefined'){
+
+        let $this = $(this).parents(".w3-widgets");
+        shop_domain = $this.data('shop-domain');
+        customer_locale = $this.data('customer-locale');
+
+    } else {
+        shop_domain = widget_shop_domain;
+        customer_locale = widget_customer_locale;
+    }
+
 
     $.ajax({
         type: 'POST',
@@ -66,8 +80,8 @@ $(document).on("click", ".widget_w3grid-review-item", function () {
         data: {
             reviewId: reviewId,
             actionType: 'openReviewDetailModal',
-            shop_domain: widget_shop_domain,
-            customer_locale: widget_customer_locale
+            shop_domain: shop_domain,
+            customer_locale: customer_locale
         },
         dataType: "json",
         success: function (response) {
@@ -76,7 +90,9 @@ $(document).on("click", ".widget_w3grid-review-item", function () {
             $("body").append(modal_html);
             $("#staticBackdrop").modal("show");
 
-            widgetElementObj.addClass("modal-backdrop-grey");
+            if(widgetElementObj){
+                widgetElementObj.addClass("modal-backdrop-grey");
+            }
         },
         error: function (xhr, status, error) {
             console.error(xhr.responseText);

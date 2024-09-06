@@ -37,6 +37,7 @@ export async function loader({ request }) {
         const ratingWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/rating-widget`);
         const allReviewWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/all-review-counter-widget`);
         const videoSliderWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/video-slider-widget`);
+        const testimonialSliderWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/testimonials-carousel-widget`);
         const cartReviewWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/cart-review-widget`);
         
         
@@ -49,7 +50,7 @@ export async function loader({ request }) {
         const ratingReviewWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?previewPath=${productName}&addAppBlockId=${ratingWidgetExtenstionId}&target=mainSection`;
         const allReviewWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?addAppBlockId=${allReviewWidgetExtenstionId}&target=sectionId`;
         const videoSliderWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?addAppBlockId=${videoSliderWidgetExtenstionId}&target=sectionId`;
-
+        const testimonialSliderWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?addAppBlockId=${testimonialSliderWidgetExtenstionId}&target=sectionId`;
         const cartReviewWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?previewPath=${cartPreviewPath}&addAppBlockId=${cartReviewWidgetExtenstionId}&target=cart`;
         
         const extensionUrs = {
@@ -57,7 +58,8 @@ export async function loader({ request }) {
             ratingReviewWidgetUrl,
             allReviewWidgetUrl,
             videoSliderWidgetUrl,
-            cartReviewWidgetUrl
+            cartReviewWidgetUrl,
+            testimonialSliderWidgetUrl
         }
 
         return json({ shopRecords, sidebarReviewWidgetCustomizesModel, extensionUrs });
@@ -183,11 +185,11 @@ export default function DisplayReviewWidget() {
                                         <Image src={widgetThumb03} alt="" />
                                     </div>
                                     <div className="detailbox flxflexi">
-                                        <h3>Questions and Answers</h3>
-                                        <p>Let potential customers ask questions about your products.</p>
+                                        <h3>Testimonials Carousel Widget</h3>
+                                        <p>Showcase the text of your best reviews in an eye-catching, dynamic display.</p>
                                         <div className="btnwrap">
-                                            <a href="#" className="simplelink">Customize</a>
-                                            <a href="#" className="revbtn smbtn">Add to theme</a>
+                                        <a href="#" className="simplelink"></a>
+                                        <a href={extensionUrs.testimonialSliderWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
                                         </div>
                                     </div>
                                 </div>

@@ -1,0 +1,188 @@
+:root {
+    --whiteBg: #FFFFFF;
+    --whiteText: #FFFFFF;
+    --blueColor: #2196F3;
+    --LightblueColor1: #99D3FF;
+    --LightblueColor2: #E3F3FF;
+    --LightblueColor3: #E3F3FF;
+    --darkColor: #222222;
+    --lightGreyColor: #757575;
+    --lightGreyBGcolor: #F8F9FB;
+    --borderColor: #E3E4E5;
+    --iconBGcolor: #EDEEF0;
+    --errorColor: #FF1515;
+    --errorLight: rgba(255, 21, 21, 0.10);
+
+    --redColor: #F44336;
+    --redLight: rgba(244, 67, 54, 0.2);
+    --orangeColor: #FF6F00;
+    --orangeLight: rgba(255, 111, 0, 0.2);
+    --yellowColor: #FFB300;
+    --yellowLight: rgba(255, 179, 0, 0.2);
+    --greenColor: #9CCC65;
+    --greenLight: rgba(156, 204, 101, 0.2);
+    --darkGreenColor: #4CAF50;
+    --darkGreenLight: rgba(76, 175, 79, 0.2);
+}
+
+.w3-testimonial-slider-wrapper {
+    padding: 40px 0;
+}
+
+.w3-testimonial-slider-wrapper .owl-carousel .item {
+    position: relative;
+    text-align: center;
+    padding: 0;
+}
+
+.w3-testimonial-slider-wrapper .owl-carousel .item .imagewrap {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.w3-testimonial-slider-wrapper .owl-carousel .item .imagewrap::before {
+    content: '';
+    padding-top: 177%;
+    display: block;
+}
+
+.w3-testimonial-slider-wrapper .owl-carousel .item .imagewrap img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.w3-testimonial-slider-wrapper .owl-carousel .item .video-div {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.w3-testimonial-slider-wrapper .owl-carousel .item .video-div::before {
+    content: '';
+    padding-top: 177%;
+    display: block;
+}
+
+.w3-testimonial-slider-wrapper .owl-carousel .item .video-div video {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.w3-testimonial-slider-wrapper .owl-carousel .item .video-div .mainbtnplay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.w3-testimonial-slider-wrapper .owl-carousel .item .video-div .mainbtnplay button {
+    border: solid 1px var(--whiteBg);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    box-shadow: none;
+    outline: none;
+    border-radius: 50px;
+    color: var(--whiteText);
+}
+
+
+
+.w3-testimonial-slider-wrapper .owl-carousel .item p {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.w3-testimonial-slider-wrapper .owl-carousel .owl-nav {
+    position: absolute;
+    left: -22px;
+    right: -22px;
+    top: 50%;
+    height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.w3-testimonial-slider-wrapper .owl-carousel .owl-nav button.owl-prev,
+.w3-testimonial-slider-wrapper .owl-carousel .owl-nav button.owl-next {
+    background-color: var(--whiteBg);
+    /* White background */
+    color: var(--darkColor);
+    /* Black arrow */
+    padding: 0;
+    border-radius: 100%;
+    border: solid 1px var(--borderColor) !important;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.w3-testimonial-slider-wrapper .itemwrap {
+    text-align: center;
+    cursor: pointer;
+}
+.w3-testimonial-slider-wrapper .itemwrap .bottom_meta .reviewer_name {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+}
+.w3-testimonial-slider-wrapper .itemwrap .bottom_meta .ratingstars {
+    justify-content: center;
+}
+.w3-testimonial-slider-wrapper .itemwrap .bottom_meta .ratingstars svg {
+    width: 24px;
+    height: 24px;
+}
+
+.w3-testimonial-slider-wrapper .review_description {
+    padding: 20px 40px;
+    font-style: italic;
+}
+
+.w3-testimonial-slider-wrapper .owl-dots {
+    margin-top: 20px;
+    text-align: center;
+}
+.w3-testimonial-slider-wrapper .owl-dots .owl-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: #cccccc;
+    border-radius: 50%;
+    margin: 5px;
+}
+.w3-testimonial-slider-wrapper .owl-dots .owl-dot.active {
+    background-color: #000000;
+}
