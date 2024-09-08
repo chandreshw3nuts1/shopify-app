@@ -10,6 +10,7 @@ import { Modal, Button } from 'react-bootstrap';
 import { getShopDetails } from './../utils/getShopDetails';
 import { findOneRecord } from './../utils/common';
 import InformationAlert from './components/common/information-alert';
+
 import { useNavigate } from 'react-router-dom';
 import settingsJson from './../utils/settings.json';
 
@@ -260,8 +261,6 @@ const ManualReviewRequestsPage = () => {
 												<div className='inputnote'>Select up to Five products</div>
 											</div>
 
-
-
 											<div className="formcontent" >
 												<TextField
 													value={requestEmailSubject}
@@ -273,7 +272,8 @@ const ManualReviewRequestsPage = () => {
 												/>
 
 											</div>
-											<InformationAlert alertKey="manual_review_request"/>
+											<InformationAlert alertKey="manual_review_request" alertClose/>
+
 											<div className="btnwrap emailbottom align-items-center">
 												<span>By sending this email, I confirm that the recipients have given consent</span>
 												<Button className="revbtn ms-auto" disabled={(displayProductMemo.length == 0 || emails.length == 0 || submittingRequest)} onClick={(e) => sendManualRequest()}>Send email <i className='twenty-longarrow-right'></i></Button>

@@ -3,9 +3,7 @@ import { Image } from "react-bootstrap";
 import LongArrowLeft from "../icons/LongArrowLeft";
 import LongArrowRight from "../icons/LongArrowRight";
 import { getUploadDocument } from './../../../utils/documentPath';
-import StarBigIcon from "../icons/StarBigIcon";
 import { formatDate } from './../../../utils/dateFormat';
-import settingsJson from './../../../utils/settings.json';
 import InfoIcon from "../icons/InfoIcon";
 import ArrowRightIcon from "../icons/ArrowRightIcon";
 import PlayIcon from "../icons/PlayIcon";
@@ -36,11 +34,11 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                                 {reviewDetails.reviewDocuments.map((media, i) => (
                                                     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to={i} className={i == 0 ? "active" : ""} aria-current={i == 0 ? "true" : ""} aria-label="Slide 1">
                                                         {media.type === 'image' ? (
-                                                            <Image src={getUploadDocument(media.url)} alt="" />
+                                                            <Image src={getUploadDocument(media.url, shopRecords.shop_id)} alt="" />
                                                         ) : (
                                                             // <Image src={videoIcon} alt="" />
                                                             <video>
-                                                                <source src={getUploadDocument(media.url)} type="video/mp4" />
+                                                                <source src={getUploadDocument(media.url, shopRecords.shop_id)} type="video/mp4" />
                                                             </video>
                                                         )}
                                                     </button>
@@ -52,11 +50,11 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                                     <div className={`carousel-item ${i == 0 ? "active" : ""}`}>
                                                         <div className="imagewrap">
                                                             {media.type === 'image' ? (
-                                                                <Image src={getUploadDocument(media.url)} alt="" />
+                                                                <Image src={getUploadDocument(media.url, shopRecords.shop_id)} alt="" />
                                                             ) : (
                                                                 <div className="videowrap">
                                                                     <video className="mainVideoPlayer">
-                                                                        <source src={getUploadDocument(media.url)} type="video/mp4" />
+                                                                        <source src={getUploadDocument(media.url, shopRecords.shop_id)} type="video/mp4" />
                                                                     </video>
                                                                     <button className="mainVideoPlayButton"><PlayIcon /></button>
                                                                     <button className="mainVideoPauseButton" style={{ display: 'none' }} ><PauseIcon /></button>

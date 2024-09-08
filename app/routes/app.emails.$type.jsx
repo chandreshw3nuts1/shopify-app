@@ -14,7 +14,6 @@ import emailReviewReplySettings from './models/emailReviewReplySettings';
 import emailDiscountPhotoVideoReviewSettings from './models/emailDiscountPhotoVideoReviewSettings';
 import generalAppearances from './models/generalAppearances';
 import generalSettings from './models/generalSettings';
-import { getUploadDocument } from './../utils/documentPath';
 import { useTranslation } from "react-i18next";
 
 import {

@@ -1,4 +1,3 @@
-import Masonry from 'react-masonry-css';
 import { getUploadDocument } from './../../../utils/documentPath';
 import PlayIcon from '../icons/PlayIcon';
 import { formatDate } from './../../../utils/dateFormat';
@@ -58,12 +57,12 @@ const ReviewItem = (props) => {
                                                         {review.reviewDocuments.slice(0, 1).map((media, i) => (
                                                             <div className='imagebox' key={i}>
                                                                 {media.type === 'image' ? (
-                                                                    <img style={{ width: '100%' }} src={getUploadDocument(media.url)} />
+                                                                    <img style={{ width: '100%' }} src={getUploadDocument(media.url, props.shopRecords.shop_id)} />
                                                                 ) : (
                                                                     <div className='videoth'>
                                                                         <div className='playicon'><PlayIcon /></div>
                                                                         <video>
-                                                                            <source src={getUploadDocument(media.url)} type="video/mp4" />
+                                                                            <source src={getUploadDocument(media.url, props.shopRecords.shop_id)} type="video/mp4" />
                                                                         </video>
                                                                     </div>
                                                                 )}
@@ -228,12 +227,12 @@ const ReviewItem = (props) => {
                                                             {review.reviewDocuments.slice(0, 2).map((media, i) => (
                                                                 <div className='imagebox' key={i}>
                                                                     {media.type === 'image' ? (
-                                                                        <img style={{ width: '100%' }} src={getUploadDocument(media.url)} />
+                                                                        <img style={{ width: '100%' }} src={getUploadDocument(media.url, props.shopRecords.shop_id)} />
                                                                     ) : (
                                                                         <div className='videoth'>
                                                                             <div className='playicon'><PlayIcon /></div>
                                                                             <video>
-                                                                                <source src={getUploadDocument(media.url)} type="video/mp4" />
+                                                                                <source src={getUploadDocument(media.url, props.shopRecords.shop_id)} type="video/mp4" />
                                                                             </video>
                                                                         </div>
                                                                     )}
@@ -340,12 +339,12 @@ const ReviewItem = (props) => {
                                                                 {review.reviewDocuments.map((media, i) => (
                                                                     <div className='imagebox' key={i}>
                                                                         {media.type === 'image' ? (
-                                                                            <img src={getUploadDocument(media.url)} />
+                                                                            <img src={getUploadDocument(media.url, props.shopRecords.shop_id)} />
                                                                         ) : (
                                                                             <div className='videoth'>
                                                                                 <div className='playicon'><PlayIcon /></div>
                                                                                 <video>
-                                                                                    <source src={getUploadDocument(media.url)} type="video/mp4" />
+                                                                                    <source src={getUploadDocument(media.url, props.shopRecords.shop_id)} type="video/mp4" />
                                                                                 </video>
                                                                             </div>
                                                                         )}

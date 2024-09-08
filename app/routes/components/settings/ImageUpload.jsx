@@ -7,7 +7,7 @@ const SingleImageUpload = (props) => {
 	const [file, setFile] = useState('');
 	const singleFilebanner = useRef(null);
 	useEffect(() => {
-		const bannerImgUrl = getUploadDocument(props.documentObj?.banner, 'banners');
+		const bannerImgUrl = getUploadDocument(props.documentObj?.banner, props.shopRecords.shop_id, 'banners');
 		setFile(bannerImgUrl);
 	}, []);
 
@@ -82,7 +82,7 @@ const SingleImageUpload = (props) => {
 				shopify.toast.show(data.message, {
 					duration: settingsJson.toasterCloseTime
 				});
-				const bannerImgUrl = getUploadDocument(defaultBannerName, 'banners');
+				const bannerImgUrl = getUploadDocument(defaultBannerName, props.shopRecords.shop_id, 'banners');
 				setFile(bannerImgUrl);
 				props.setDocumentObj({
 					...props.documentObj,

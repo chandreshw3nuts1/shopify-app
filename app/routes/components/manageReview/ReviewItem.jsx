@@ -477,7 +477,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 							<div className="topline">
 								{result.reviewDocuments.length > 0 &&
 									<div className="slider_imagebox flxfix">
-										<ImageSlider reviewDocuments={result.reviewDocuments} autoPlay={false} interval={500} />
+										<ImageSlider reviewDocuments={result.reviewDocuments} shopRecords={shopRecords} autoPlay={false} interval={500} />
 									</div>
 								}
 

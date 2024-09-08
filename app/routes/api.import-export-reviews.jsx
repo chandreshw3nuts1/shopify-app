@@ -169,7 +169,7 @@ export async function action({ request }) {
 
 						const productDetails = await fetchAllProductsByHandles(csvData, 'product_handle', shopRecords.shop, shopSessionRecords.accessToken)
 						const processCsvData = async () => {
-							const uploadsDir = path.join(process.cwd(), "public/uploads/");
+							const uploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/`);
 
 							await Promise.all(csvData.map(async (item, index) => {
 								if (productDetails && productDetails[item.product_handle] && item.rating && item.review_description && item.date && item.display_name && item.email) {
@@ -260,7 +260,7 @@ export async function action({ request }) {
 					if (csvData.length > 0) {
 						const productDetails = await fetchAllProductsByHandles(csvData, handleName, shopRecords.shop, shopSessionRecords.accessToken)
 						const processCsvData = async () => {
-							const uploadsDir = path.join(process.cwd(), "public/uploads/");
+							const uploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/`);
 							if (subActionType == 'loox') {
 								await Promise.all(csvData.map(async (item, index) => {
 

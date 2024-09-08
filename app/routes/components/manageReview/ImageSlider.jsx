@@ -9,7 +9,7 @@ import MoreIcon from '../../../images/MoreIcon';
 
 import UnPublishedIcon from '../../../images/UnPublishedIcon';
 
-const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
+const ImageSlider = ({ reviewDocuments, shopRecords, autoPlay, interval }) => {
 
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [preArrow, setPreArrow] = useState(false);
@@ -164,13 +164,13 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 	};
 
 	const openImageInNewTab = (imgPath) => {
-		const img = getUploadDocument(imgPath);
+		const img = getUploadDocument(imgPath, shopRecords.shop_id);
 
 		window.open(img, '_blank');
 	};
 
 	const downloadImage = (imageUrlPath) => {
-		const imageUrl = getUploadDocument(imageUrlPath);
+		const imageUrl = getUploadDocument(imageUrlPath, shopRecords.shop_id);
 
 		const imageName = imageUrl.split('/').pop();
 
@@ -206,10 +206,10 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 						>
 
 							{image.type === 'image' ? (
-								<img onClick={(e) => handleShowImageModal(e, image.type)} className={styles.img} src={getUploadDocument(image.url)} alt={`Slide ${index}`} />
+								<img onClick={(e) => handleShowImageModal(e, image.type)} className={styles.img} src={getUploadDocument(image.url, shopRecords.shop_id)} alt={`Slide ${index}`} />
 							) : (
 								<video onClick={(e) => handleShowImageModal(e, image.type)} className={styles.img} controls>
-									<source src={getUploadDocument(image.url)} type="video/mp4" />
+									<source src={getUploadDocument(image.url, shopRecords.shop_id)} type="video/mp4" />
 								</video>
 							)}
 
@@ -277,10 +277,10 @@ const ImageSlider = ({ reviewDocuments, autoPlay, interval }) => {
 				</Modal.Header>
 				<Modal.Body>
 					{documentType === 'image' && images[currentIndex] && images[currentIndex].url ? (
-						<img src={getUploadDocument(images[currentIndex].url)} alt={`Slide ${currentIndex}`} style={{ width: '100%' }} />
+						<img src={getUploadDocument(images[currentIndex].url, shopRecords.shop_id)} alt={`Slide ${currentIndex}`} style={{ width: '100%' }} />
 					) : documentType === 'video' && images[currentIndex] && images[currentIndex].url ? (
 						<video controls className={styles.videoWidth}>
-							<source src={getUploadDocument(images[currentIndex].url)} type="video/mp4" />
+							<source src={getUploadDocument(images[currentIndex].url, shopRecords.shop_id)} type="video/mp4" />
 						</video>
 					) : (
 						<p>No content to display</p>

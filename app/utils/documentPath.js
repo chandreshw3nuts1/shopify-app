@@ -1,17 +1,16 @@
 import settingsJson from './../utils/settings.json';
-export  function getUploadDocument( fileName = "", folder = "") {
+export  function getUploadDocument( fileName = "", shopId = "", folder = "") {
 	try{
 
 		if(fileName != "" && fileName != null) {
-			let folderPath = "uploads/";
+			let folderPath = `/uploads/${shopId}/`;
 			if(folder !="") {
-				folderPath = "uploads/"+folder+"/";
-
+				folderPath = `${folderPath}${folder}/`;
 			}
 			if(fileName == 'default-banner.png') {
-				return settingsJson.host_url+'/app/images/'+fileName;
+				return `${settingsJson.host_url}/app/images/${fileName}`;
 			}
-			return settingsJson.host_url+'/'+folderPath+fileName;
+			return `${settingsJson.host_url}${folderPath}${fileName}`;
 		}
 		return null;
 	} catch (error) {

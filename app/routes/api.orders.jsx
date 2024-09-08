@@ -180,7 +180,7 @@ export async function action({ request }) {
 						const manualRequestProductsModel = await manualRequestProducts.find({ manual_request_id: manualRequestModel._id });
 
 						const generalAppearancesObj = await generalAppearances.findOne({ shop_id: shopRecords._id });
-						const logo = getUploadDocument(generalAppearancesObj.logo, 'logo');
+						const logo = getUploadDocument(generalAppearancesObj.logo, shopRecords.shop_id, 'logo');
 
 						const uniqueProductIds = manualRequestProductsModel.map(item => item.product_id);
 
@@ -198,7 +198,7 @@ export async function action({ request }) {
 							"last_name": manualRequestModel.last_name,
 						}
 						const emailContents = await getLanguageWiseContents("review_request", replaceVars, shopRecords._id, customer_locale);
-						emailContents.banner = getUploadDocument(emailContents.banner, 'banners');
+						emailContents.banner = getUploadDocument(emailContents.banner, shopRecords.shop_id, 'banners');
 
 						emailContents.logo = logo;
 

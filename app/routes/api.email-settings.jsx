@@ -41,7 +41,7 @@ export async function action({ params, request }) {
                 } else if (actionType == 'sendReviewRequestEmail') {
                     const { language } = requestBody;
                     const generalAppearancesObj = await generalAppearances.findOne({ shop_id: shopRecords._id });
-                    const logo = getUploadDocument(generalAppearancesObj.logo, 'logo');
+                    const logo = getUploadDocument(generalAppearancesObj.logo, shopRecords.shop_id, 'logo');
                     const customer_locale = language ? language : 'en';
                     const replaceVars = {
                         "name": settingJson.defaultSampleEmailInfo.name,
@@ -50,7 +50,7 @@ export async function action({ params, request }) {
                         "order_number": settingJson.defaultSampleEmailInfo.order_number
                     }
                     const emailContents = await getLanguageWiseContents("review_request", replaceVars, shopRecords._id, customer_locale);
-                    emailContents.banner = getUploadDocument(emailContents.banner, 'banners');
+                    emailContents.banner = getUploadDocument(emailContents.banner, shopRecords.shop_id, 'banners');
                     emailContents.logo = logo;
 
                     const defaultProductImg = settingJson.host_url + '/app/images/product-default.png';

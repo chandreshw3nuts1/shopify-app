@@ -6,7 +6,7 @@ const UploadLogo = (props) => {
 	const [file, setFile] = useState('');
 	const inputfileimage = useRef(null);
 	useEffect(() => {
-		const logoImgUrl = getUploadDocument(props.documentObj?.logo, 'logo');
+		const logoImgUrl = getUploadDocument(props.documentObj?.logo, props.shopRecords.shop_id, 'logo');
 		setFile(logoImgUrl);
 	}, []);
 	const handleFileChange = async (event) => {

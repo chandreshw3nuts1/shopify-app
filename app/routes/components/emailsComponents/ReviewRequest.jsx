@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import ImageUploadMultiLang from '../settings/ImageUploadMultiLang';
-import AlertInfo from '../AlertInfo';
+import InformationAlert from './../common/information-alert';
+
 import { useNavigate } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import settingsJson from './../../../utils/settings.json';
@@ -144,10 +145,10 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances }) =>
         e.preventDefault();
 
         const sampleEmailData = {
-            logo: getUploadDocument(generalAppearances?.logo, 'logo'),
+            logo: getUploadDocument(generalAppearances?.logo, shopRecords.shop_id, 'logo'),
             body: body ? body : t('reviewRequestEmail.body'),
             buttonText: buttonText ? buttonText : t('reviewRequestEmail.buttonText'),
-            banner : getUploadDocument(languageWiseEmailTemplate.banner, 'banners'),
+            banner : getUploadDocument(languageWiseEmailTemplate.banner, shopRecords.shop_id, 'banners'),
             getDefaultProductImage: getDefaultProductImage(),
         }
         setEmailContents(sampleEmailData);
@@ -178,7 +179,8 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances }) =>
                                         <div className='banneruploadimg'>
                                             <ImageUploadMultiLang className="emailbannerimage" bannerType={bannerType} shopRecords={shopRecords} currentLanguage={currentLanguage} languageWiseEmailTemplate={languageWiseEmailTemplate} emailTemplateObjState={emailTemplateObjState} setEmailTemplateObjState={setEmailTemplateObjState} hasEdit />
                                         </div>
-                                        <AlertInfo colorTheme="primarybox" alertContent={alertContent} />
+                                        <InformationAlert alertKey="" />
+
                                     </div>
                                 </div>
                             </div>

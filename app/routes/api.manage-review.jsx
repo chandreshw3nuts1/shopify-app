@@ -1,7 +1,7 @@
 import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
 import { GraphQLClient } from "graphql-request";
-import { findOneRecord, getShopifyProducts, getLanguageWiseContents } from "./../utils/common";
+import { findOneRecord, getShopDetailsByShop, getShopifyProducts, getLanguageWiseContents } from "./../utils/common";
 import ReplyEmailTemplate from './components/email/ReplyEmailTemplate';
 import ReactDOMServer from 'react-dom/server';
 import { ObjectId } from 'mongodb';
@@ -9,7 +9,6 @@ import productReviews from "./models/productReviews";
 import productReviewQuestions from "./models/productReviewQuestions";
 import reviewDocuments from "./models/reviewDocuments";
 import generalAppearances from "./models/generalAppearances";
-import emailReviewReplySettings from "./models/emailReviewReplySettings";
 
 import { getUploadDocument } from "./../utils/documentPath";
 export async function loader() {
@@ -55,7 +54,7 @@ export async function action({ request }) {
 						/* send email to admin when new reivew receive*/
 
 						const productReviewsItem = await productReviews.findOne({ _id: requestBody.review_id });
-
+						const shopRecords = await findOneRecord("shop_details", { "_id": productReviewsItem.shop_id });
 						const replaceVars = {
 							"name": productReviewsItem.display_name,
 							"product": productReviewsItem.product_title,
@@ -63,10 +62,10 @@ export async function action({ request }) {
 						}
 						const customer_locale = productReviewsItem.customer_locale ? productReviewsItem.customer_locale : "en";
 						const emailContents = await getLanguageWiseContents("review_reply", replaceVars, productReviewsItem.shop_id, productReviewsItem.customer_locale);
-						emailContents.banner = getUploadDocument(emailContents.banner, 'banners');
+						emailContents.banner = getUploadDocument(emailContents.banner, shopRecords.shop_id, 'banners');
 
 						const generalAppearancesObj = await generalAppearances.findOne({ shop_id: productReviewsItem.shop_id });
-						const logo = getUploadDocument(generalAppearancesObj.logo, 'logo');
+						const logo = getUploadDocument(generalAppearancesObj.logo, shopRecords.shop_id, 'logo');
 						emailContents.logo = logo;
 						const footer = '';
 						const subject = emailContents.subject;

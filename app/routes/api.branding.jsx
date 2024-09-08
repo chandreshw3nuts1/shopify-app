@@ -47,7 +47,7 @@ export async function action({ params, request }) {
 
                 if (actionType == "uploadLogo") {
                     const logo = formData.get("logo");
-                    const uploadsDir = path.join(process.cwd(), "public/uploads/logo");
+                    const uploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/logo`);
                     fs.mkdirSync(uploadsDir, { recursive: true });
                     const fileName = Date.now() + "-" + logo.name;
 
@@ -76,7 +76,7 @@ export async function action({ params, request }) {
                     const language = formData.get('language') ?? "en";
 
                     const banner = formData.get("banner");
-                    const uploadsDir = path.join(process.cwd(), "public/uploads/banners");
+                    const uploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/banners`);
                     fs.mkdirSync(uploadsDir, { recursive: true });
                     const fileName = Date.now() + "-" + banner.name;
 
@@ -206,7 +206,7 @@ export async function action({ params, request }) {
 
                 } else if (actionType == "uploadCommonBanner") {
                     const banner = formData.get("banner");
-                    const uploadsDir = path.join(process.cwd(), "public/uploads/banners");
+                    const uploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/banners`);
                     fs.mkdirSync(uploadsDir, { recursive: true });
                     const fileName = Date.now() + "-" + banner.name;
 
@@ -320,7 +320,7 @@ export async function action({ params, request }) {
 
 
                     const deleteFileName = logoData.logo;
-                    const filePath = path.join(process.cwd(), "public/uploads/logo") + "/" + deleteFileName;
+                    const filePath = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/logo`) + "/" + deleteFileName;
                     if (fs.existsSync(filePath)) {
                         try {
                             fs.unlinkSync(filePath);
@@ -346,7 +346,7 @@ export async function action({ params, request }) {
 
 
                     const deleteFileName = logoData.logo;
-                    const filePath = path.join(process.cwd(), "public/uploads/banners") + "/" + deleteFileName;
+                    const filePath = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/banners`) + "/" + deleteFileName;
                     if (fs.existsSync(filePath)) {
                         try {
                             fs.unlinkSync(filePath);
@@ -362,7 +362,7 @@ export async function action({ params, request }) {
                     const actionSubType = formData.get('actionSubType');
                     const language = formData.get('language') ?? "en";
                     const query = { shop_id: shopRecords._id };
-                    const deletePath = path.join(process.cwd(), "public/uploads/banners") + "/";
+                    const deletePath = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/banners`) + "/";
                     if (actionSubType == "reviewRequest") {
                         const OldBannerModel = await emailReviewRequestSettings.findOne(query).select(`shop_id ${language}`);
                         if (OldBannerModel && OldBannerModel[language] && OldBannerModel[language].banner) {

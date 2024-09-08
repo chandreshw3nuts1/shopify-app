@@ -52,7 +52,7 @@ export async function action({ request }) {
 
 				if (actionType == "uploadDocuments") {
 					const files = formData.getAll("image_and_videos[]");
-					const uploadsDir = path.join(process.cwd(), "public/uploads");
+					const uploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/`);
 					fs.mkdirSync(uploadsDir, { recursive: true });
 					const imageAndVideoFiles = [];
 					for (let i = 0; i < files.length; i++) {
@@ -73,7 +73,7 @@ export async function action({ request }) {
 				} else if (actionType == "uploadVideoRecording") {
 					const video_record = formData.get("video_record");
 
-					const uploadsDir = path.join(process.cwd(), "public/uploads");
+					const uploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/`);
 					fs.mkdirSync(uploadsDir, { recursive: true });
 					const imageAndVideoFiles = [];
 
@@ -90,7 +90,7 @@ export async function action({ request }) {
 
 				} else if (actionType == "deleteDocuments") {
 					const deleteFileName = formData.get("deleteFileName");
-					const filePath = path.join(process.cwd(), "public/uploads") + "/" + deleteFileName;
+					const filePath = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/`) + deleteFileName;
 					if (fs.existsSync(filePath)) {
 						try {
 							fs.unlinkSync(filePath);
@@ -123,7 +123,7 @@ export async function action({ request }) {
 					const productNodes = productsDetails[0];
 
 					const generalAppearancesData = await generalAppearances.findOne({ shop_id: shopRecords._id });
-					const logo = getUploadDocument(generalAppearancesData.logo, 'logo');
+					const logo = getUploadDocument(generalAppearancesData.logo, shopRecords.shop_id, 'logo');
 
 					const shopifyStoreUrl = `${process.env.SHOPIFY_ADMIN_STORE_URL}/${shopRecords.name}/apps/${process.env.SHOPIFY_APP_NAME}/app/manage-review`;
 
@@ -281,7 +281,7 @@ export async function action({ request }) {
 							}
 							discountCode = discountCodeResponse.code;
 							const emailContentsDiscount = await getLanguageWiseContents("discount_photo_video_review", replaceVars, shopRecords._id, customer_locale);
-							emailContentsDiscount.banner = getUploadDocument(emailContentsDiscount.banner, 'banners');
+							emailContentsDiscount.banner = getUploadDocument(emailContentsDiscount.banner, shopRecords.shop_id, 'banners');
 							emailContentsDiscount.logo = logo;
 							emailContentsDiscount.discountCode = discountCode;
 							emailContentsDiscount.expire_on_date = discountCodeResponse.expire_on_date != "" ? formatDate(discountCodeResponse.expire_on_date, shopRecords.timezone, "MM-DD-YYYY") : "";

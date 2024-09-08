@@ -39,8 +39,6 @@ export async function action({ request, params }) {
 
                     for (const shop of shopDetailsModel) {
 
-                        var generalAppearancesObj = await generalAppearances.findOne({ shop_id: shop._id });
-                        var logo = getUploadDocument(generalAppearancesObj.logo, 'logo');
 
                         const timingSettings = reviewRequestTimingSettingsModel.find(setting => setting.shop_id.toString() === shop._id.toString());
 
@@ -139,9 +137,11 @@ export async function action({ request, params }) {
                                             "last_name": singleOrder.last_name,
                                         }
                                         const emailContents = await getLanguageWiseContents("review_request", replaceVars, shop._id, customer_locale);
-                                        emailContents.banner = getUploadDocument(emailContents.banner, 'banners');
+                                        emailContents.banner = getUploadDocument(emailContents.banner, shop.shop_id, 'banners');
 
-                                        emailContents.logo = logo;
+                                        var generalAppearancesObj = await generalAppearances.findOne({ shop_id: shop._id });
+
+                                        emailContents.logo = getUploadDocument(generalAppearancesObj.logo, shop.shop_id, 'logo');
 
                                         var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
                                             <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} footer={footer} />
@@ -181,7 +181,7 @@ export async function action({ request, params }) {
                                             }
                                         );
 
-                                        
+
                                         /* Add review request sent track  */
                                         const reviewRequestTracksModel = new reviewRequestTracks({
                                             shop_id: shop._id,

@@ -10,7 +10,7 @@ const ImageUploadMultiLang = (props) => {
 
 	useEffect(() => {
 
-		const bannerImgUrl = getUploadDocument(props.languageWiseEmailTemplate.banner, 'banners');
+		const bannerImgUrl = getUploadDocument(props.languageWiseEmailTemplate.banner, props.shopRecords.shop_id, 'banners');
 		setFile(bannerImgUrl);
 
 	}, [props.languageWiseEmailTemplate.banner, props.currentLanguage]);
@@ -145,7 +145,7 @@ const ImageUploadMultiLang = (props) => {
 					}
 				}));
 
-				const bannerImgUrl = getUploadDocument(data.fileName, 'banners');
+				const bannerImgUrl = getUploadDocument(data.fileName, props.shopRecords.shop_id, 'banners');
 				setFile(bannerImgUrl);
 
 			} else {

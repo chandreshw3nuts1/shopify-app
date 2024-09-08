@@ -517,7 +517,7 @@ export async function action({ request }) {
                     blockId
                 }
 
-                const dynamicComponent = <VideoSliderWidget formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} reviewItems={reviewItems} />;
+                const dynamicComponent = <VideoSliderWidget shopRecords={shopRecords} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} reviewItems={reviewItems} />;
                 const content = ReactDOMServer.renderToString(dynamicComponent);
                 return json({
                     content: content

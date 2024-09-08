@@ -24,7 +24,7 @@ const VideoSliderWidget = (props) => {
                                 <div className='itemwrap'>
                                     {review.reviewDocuments.type === 'image' ? (
                                         <div className='imagewrap'>
-                                            <img style={{ width: '100%' }} src={getUploadDocument(review.reviewDocuments.url)} />
+                                            <img style={{ width: '100%' }} src={getUploadDocument(review.reviewDocuments.url, props.shopRecords.shop_id)} />
                                         </div>
                                     ) : (
                                         <div className='video-div'>
@@ -34,7 +34,7 @@ const VideoSliderWidget = (props) => {
                                                 </button>
                                             </div>
                                             <video className='video-content'>
-                                                <source src={getUploadDocument(review.reviewDocuments.url)} type="video/mp4" />
+                                                <source src={getUploadDocument(review.reviewDocuments.url, props.shopRecords.shop_id)} type="video/mp4" />
                                             </video>
                                         </div>
                                     )}

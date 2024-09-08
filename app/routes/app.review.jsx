@@ -373,7 +373,7 @@ const ReviewPage = () => {
 										</div>
 
 										{/* Above DIV will be repeat */}
-										<InformationAlert alertKey="email_review" className="mt-24" />
+										<InformationAlert alertKey="email_review" className="mt-24" alertClose/>
 
 									</div>
 								</Collapsible>

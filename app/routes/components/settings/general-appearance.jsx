@@ -162,9 +162,9 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 	const viewSample = (e) => {
 		e.preventDefault();
 		const sampleEmailData = {
-			logo: getUploadDocument(documentObj?.logo, 'logo'),
+			logo: getUploadDocument(documentObj?.logo, shopRecords.shop_id, 'logo'),
 			body: settingsJson.defaultSampleEmailBody,
-			banner: getUploadDocument(documentObj?.banner, 'banners'),
+			banner: getUploadDocument(documentObj?.banner, shopRecords.shop_id, 'banners'),
 			getDefaultProductImage: getDefaultProductImage(),
 		}
 
