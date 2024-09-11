@@ -1,5 +1,10 @@
 import { getUploadDocument } from './../../../utils/documentPath';
 import VideoPlayIcon from '../icons/VideoPlayIcon';
+import StarBigIcon from '../icons/StarBigIcon';
+import PlayNewIcon from '../icons/PlayNewIcon';
+import PauseNewIcon from '../icons/PauseNewIcon';
+import MutedNewIcon from '../icons/MutedNewIcon';
+import UnmutedNewIcon from '../icons/UnmutedNewIcon';
 
 const VideoSliderWidget = (props) => {
     const blockId = props.formParams.blockId;
@@ -28,6 +33,19 @@ const VideoSliderWidget = (props) => {
                                         </div>
                                     ) : (
                                         <div className='video-div'>
+                                            <div className='topmetabox'>
+                                                <div className='reviewpopupbtn'>
+                                                    <a href="#"><StarBigIcon /> Read review</a>
+                                                </div>
+                                                <div className='rightaction'>
+                                                    <button className='muteunmute'>
+                                                        <UnmutedNewIcon />
+                                                    </button>
+                                                    <button className='playpause'>
+                                                        <PauseNewIcon />
+                                                    </button>
+                                                </div>
+                                            </div>
                                             <div className='mainbtnplay'>
                                                 <button class="play-pause">
                                                     <VideoPlayIcon />
