@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
-import { findOneRecord, getShopifyProducts, getLanguageWiseContents, createShopifyDiscountCode } from "./../utils/common";
+import { findOneRecord, getShopifyProducts, getLanguageWiseContents, createShopifyDiscountCode, generateRandomCode, generateVideoThumbnail, resizeImages } from "./../utils/common";
 import EmailTemplate from './components/email/EmailTemplate';
 import ReactDOMServer from 'react-dom/server';
 import { ObjectId } from 'mongodb';
@@ -25,7 +25,6 @@ import reviewFormSettings from "./models/reviewFormSettings";
 
 import fs from "fs";
 import path from "path";
-
 
 export async function loader() {
 	return json({
@@ -53,23 +52,45 @@ export async function action({ request }) {
 				if (actionType == "uploadDocuments") {
 					const files = formData.getAll("image_and_videos[]");
 					const uploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/`);
+					const thumbUploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/thumbs/`);
 					fs.mkdirSync(uploadsDir, { recursive: true });
 					const imageAndVideoFiles = [];
 					for (let i = 0; i < files.length; i++) {
 						if (files[i].name != "" && files[i].name != null) {
-							const fileName = Date.now() + "-" + files[i].name;
+							const randomName = await generateRandomCode(10);
+							const fileSize = files[i].size;
+							const fileName = randomName + "-" + files[i].name;
 							const fileExtension = fileName.split('.').pop().toLowerCase();
-							if ( (generalSettingsModel.is_enabled_video_review && (validImageExtensions.includes(fileExtension) || validVideoExtensions.includes(fileExtension)) ) || (generalSettingsModel.is_enabled_video_review == false && validImageExtensions.includes(fileExtension) ) ) {
+							if ((generalSettingsModel.is_enabled_video_review && (validImageExtensions.includes(fileExtension) || validVideoExtensions.includes(fileExtension))) || (generalSettingsModel.is_enabled_video_review == false && validImageExtensions.includes(fileExtension))) {
 								const filePath = path.join(uploadsDir, fileName);
 								const buffer = Buffer.from(await files[i].arrayBuffer());
 								fs.writeFileSync(filePath, buffer);
-								imageAndVideoFiles.push(fileName);
+
+
+								/* resize images */
+								let fileNameImgVd = fileName;
+
+								if (validImageExtensions.includes(fileExtension)) {
+									const fileSizeMB = fileSize / (1024 * 1024); // Convert bytes to MB
+
+									if(fileSizeMB >= 1) {
+										fileNameImgVd = `resize-${fileName}`;
+
+										await resizeImages(filePath, uploadsDir, fileNameImgVd);
+									}
+								} else {
+									fileNameImgVd = fileName;
+								}
+
+			
+								imageAndVideoFiles.push(fileNameImgVd);
 							}
 						}
 					}
-					return json({ files: imageAndVideoFiles, content: generalSettingsModel.is_enabled_video_review|| false });
 
-					return ;
+					// fs.unlinkSync(filePath);
+					return json({ files: imageAndVideoFiles, content: generalSettingsModel.is_enabled_video_review || false });
+
 				} else if (actionType == "uploadVideoRecording") {
 					const video_record = formData.get("video_record");
 
@@ -77,9 +98,7 @@ export async function action({ request }) {
 					fs.mkdirSync(uploadsDir, { recursive: true });
 					const imageAndVideoFiles = [];
 
-					const fileName = Date.now() + "-" + video_record.name;
-
-					const fileExtension = fileName.split('.').pop().toLowerCase();
+					const fileName = await generateRandomCode(10) + "-" + video_record.name;
 
 					const filePath = path.join(uploadsDir, fileName);
 
@@ -239,20 +258,26 @@ export async function action({ request }) {
 					let discountCode = "";
 					if (file_objects != null && file_objects != "") {
 						let files = file_objects.split(',');
+						const uploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/`);
 
 						for (let i = 0; i < files.length; i++) {
 							const fileName = files[i];
-
 							var docType = 'image';
 
+							let thumbNailName = "";
+
 							const fileExtension = fileName.split('.').pop().toLowerCase();
+
 							if (validImageExtensions.includes(fileExtension)) {
 								var docType = "image";
 								hasPhoto = true;
-
 							} else if (validVideoExtensions.includes(fileExtension)) {
 								var docType = "video";
 								hasVideo = true;
+
+								thumbNailName = await generateRandomCode(10) + ".png";
+								const thumbnailUploadFilePath = path.join(uploadsDir, fileName);
+								await generateVideoThumbnail(thumbnailUploadFilePath, uploadsDir, thumbNailName); // Generate thumbnail
 							}
 							const isCover = i === 0; // index 0 will be true, others will be false
 							const reviewDocumentModel = new reviewDocuments({
@@ -260,7 +285,8 @@ export async function action({ request }) {
 								type: docType,
 								url: fileName,
 								is_approve: true,
-								is_cover: isCover
+								is_cover: isCover,
+								thumbnail_name: thumbNailName
 							});
 
 							await reviewDocumentModel.save();

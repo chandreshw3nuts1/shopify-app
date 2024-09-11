@@ -1,0 +1,119 @@
+
+<div id="card-carousel-widget-component-{{ block.id }}" class="w3-widgets" data-block-id="{{ block.id }}" data-product-id="{{ product.id }}" data-shop-domain="{{ shop.domain }}"  data-customer-locale="{{ request.locale.iso_code }}" data-common-settings='{{ block.settings | json }}' >
+</div>
+
+{% schema %}
+{
+  "name": "Card Carousel",
+  "target": "section",
+  "stylesheet": "card-carousel-widget.css",
+  "javascript": "card-carousel-widget-script.js",
+  "settings": [
+    {
+		"type": "header",
+		"content": "Widget Settings"
+    },
+    {
+		"type": "range",
+		"id": "border_radius",
+		"min": 0,
+		"max": 48,
+		"step": 1,
+		"unit": "px",
+		"label": "Corner radius",
+		"default": 8
+    },
+
+    {
+		"type": "range",
+		"id": "desktop_reviews",
+		"min": 1,
+		"max": 5,
+		"step": 1,
+		"unit": "px",
+		"label": "Number of reviews on desktop",
+		"default": 4
+    },
+
+    {
+		"type": "range",
+		"id": "mobile_reviews",
+		"min": 1,
+		"max": 3,
+		"step": 1,
+		"unit": "px",
+		"label": "Number of reviews on mobile",
+		"default": 1
+    },
+	{
+      "type": "range",
+      "id": "no_of_chars",
+      "label": "Max number of characters",
+      "min": 50,
+      "max": 500,
+      "step": 10,
+      "default": 100
+    },
+
+    {
+      "type": "color",
+      "id": "reviewer_name_color",
+      "label": "Reviewer name color"
+    },
+	{
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color"
+    },
+	{
+      "type": "color",
+      "id": "text_bg_color",
+      "label": "Text background color"
+    },
+	{
+      "type": "color",
+      "id": "widget_icon_color",
+      "label": "Widget star color"
+    },
+	{
+      "type": "color",
+      "id": "widget_bg_icon_color",
+      "label": "Widget star background color"
+    },
+	{
+      "type": "color",
+      "id": "arrow_icon_color",
+      "label": "Arrow color"
+    },
+	{
+      "type": "color",
+      "id": "arrow_bg_color",
+      "label": "Arrow background color"
+    },
+	{
+      "type": "checkbox",
+      "id": "show_border",
+      "label": "Show border",
+      "default": false
+    },
+    {
+		"type": "range",
+		"id": "border_width",
+		"min": 1,
+		"max": 10,
+		"step": 1,
+		"unit": "px",
+		"label": "Border width",
+		"default": 1
+    },
+	{
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color"
+    }
+	
+  ]
+}
+{% endschema %}
+
+

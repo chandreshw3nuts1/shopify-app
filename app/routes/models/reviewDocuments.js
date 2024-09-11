@@ -10,6 +10,7 @@ const reviewDocumentsSchema = new mongoose.Schema({
     type: { type: String, required: true },
     url: { type: String, required: true },
     is_approve: { type: Boolean, required: true },
+    thumbnail_name: { type: String },
     is_cover: { type: Boolean, required: true },
 },{
     timestamps: true

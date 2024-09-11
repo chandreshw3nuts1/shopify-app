@@ -10,7 +10,9 @@ import RatingWidget from './components/widget-components/rating-widget';
 import AllReviewWidget from './components/widget-components/all-review-counter-widget';
 import SidebarRatingWidget from './components/widget-components/sidebar-rating-widget';
 import VideoSliderWidget from './components/widget-components/video-slider-widget';
+import GalleyCarouselWidget from './components/widget-components/galley-carousel-widget';
 import TestimonialsCarouselWidget from './components/widget-components/testimonials-carousel-widget';
+import CardCarouselWidget from './components/widget-components/card-carousel-widget';
 
 
 
@@ -28,6 +30,7 @@ import floatingWidgetCustomizes from "./models/floatingWidgetCustomizes";
 import { getShopifyProducts, getDiscounts } from "./../utils/common";
 import { ratingbabycloth, ratingbasket, ratingbones, ratingcoffeecup, ratingcrisamascap, ratingdiamondfront, ratingdiamondtop, ratingdogsleg, ratingfireflame, ratingflight, ratingfood, ratinggraduationcap, ratingheartround, ratingheartsq, ratingleafcanada, ratingleafnormal, ratinglikenormal, ratinglikerays, ratingpethouse, ratingplant, ratingshirt, ratingshoppingbag1, ratingshoppingbag2, ratingshoppingbag3, ratingstarrays, ratingstarrounded, ratingstarsq, ratingsunglass, ratingteacup, ratingtrophy1, ratingtrophy2, ratingtrophy3, ratingtshirt, ratingwine } from './../routes/components/icons/CommonIcons';
 import settingsJson from './../utils/settings.json';
+
 
 export async function loader() {
 
@@ -253,7 +256,7 @@ export async function action({ request }) {
                 const productId = `"gid://shopify/Product/${reviewDetails.product_id}"`;
                 var productsDetails = await getShopifyProducts(shop, productId);
 
-                const hideProductThumbnails = formData.get('hide_product_thumbnails');
+                const hideProductThumbnails = formData.get('hide_product_thumbnails') || 'false';
 
                 const formParams = {
                     hideProductThumbnails: hideProductThumbnails,
@@ -354,8 +357,6 @@ export async function action({ request }) {
                 const widget_secondary_text_color = formData.get('widget_secondary_text_color');
 
 
-
-
                 const hide_text = formData.get('hide_text');
 
                 const query = {
@@ -424,8 +425,6 @@ export async function action({ request }) {
                 const show_rating = formData.get('show_rating');
                 const show_name = formData.get('show_name');
                 const play_button_color = formData.get('play_button_color');
-
-                const limit = 10;
 
                 const sortOption = {};
                 sortOption["createdAt"] = -1;
@@ -499,10 +498,7 @@ export async function action({ request }) {
                         $match: {
                             reviewDocuments: { $ne: null }
                         }
-                    },
-                    {
-                        $limit: limit
-                    },
+                    }
                 ]);
 
                 // return reviewItems;
@@ -518,6 +514,91 @@ export async function action({ request }) {
                 }
 
                 const dynamicComponent = <VideoSliderWidget shopRecords={shopRecords} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} reviewItems={reviewItems} />;
+                const content = ReactDOMServer.renderToString(dynamicComponent);
+                return json({
+                    content: content
+                });
+
+            } catch (error) {
+                console.log(error);
+                return json({
+                    error
+                });
+            }
+        } else if (actionType == "galleryCarouselWidget") {
+            try {
+                const reviewer_name_color = formData.get('reviewer_name_color');
+                const border_radius = formData.get('border_radius');
+                const widget_icon_color = formData.get('widget_icon_color');
+                const arrow_icon_color = formData.get('arrow_icon_color');
+                const arrow_bg_color = formData.get('arrow_bg_color');
+                const show_border = formData.get('show_border');
+                const border_color = formData.get('border_color');
+                const border_width = formData.get('border_width');
+
+                const formParams = {
+                    reviewer_name_color,
+                    show_border,
+                    widget_icon_color,
+                    border_radius,
+                    arrow_icon_color,
+                    border_color,
+                    arrow_bg_color,
+                    border_width,
+                    blockId
+                }
+
+                const reviewItems = await getImageAndVideoForCarousel(shopRecords);
+                console.log(reviewItems);
+                const dynamicComponent = <GalleyCarouselWidget shopRecords={shopRecords} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} reviewItems={reviewItems} />;
+                const content = ReactDOMServer.renderToString(dynamicComponent);
+                return json({
+                    content: content
+                });
+
+            } catch (error) {
+                console.log(error);
+                return json({
+                    error
+                });
+            }
+        } else if (actionType == "cardCarouselWidget") {
+            try {
+
+
+                const reviewer_name_color = formData.get('reviewer_name_color');
+                const border_radius = formData.get('border_radius');
+                const widget_icon_color = formData.get('widget_icon_color');
+                const arrow_icon_color = formData.get('arrow_icon_color');
+                const arrow_bg_color = formData.get('arrow_bg_color');
+                const show_border = formData.get('show_border');
+                const border_color = formData.get('border_color');
+                const border_width = formData.get('border_width');
+                const no_of_chars = formData.get('no_of_chars');
+                const text_color = formData.get('text_color');
+                const text_bg_color = formData.get('text_bg_color');
+                const widget_bg_icon_color = formData.get('widget_bg_icon_color');
+
+                const formParams = {
+                    reviewer_name_color,
+                    show_border,
+                    widget_icon_color,
+                    border_radius,
+                    arrow_icon_color,
+                    border_color,
+                    arrow_bg_color,
+                    border_width,
+                    no_of_chars,
+                    text_color,
+                    text_bg_color,
+                    widget_bg_icon_color,
+                    blockId
+                }
+
+                const reviewItems = await getImageAndVideoForCarousel(shopRecords);
+
+
+                const dynamicComponent = <CardCarouselWidget shopRecords={shopRecords} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} reviewItems={reviewItems} />;
                 const content = ReactDOMServer.renderToString(dynamicComponent);
                 return json({
                     content: content
@@ -585,7 +666,6 @@ export async function action({ request }) {
                             product_id: 1
                         }
                     }
-                    
                 ]);
 
                 const formParams = {
@@ -901,7 +981,7 @@ export async function action({ request }) {
             }
             if (is_modal_reviews == 'true') {
 
-                
+
                 const floatingWidgetCustomizesModel = await floatingWidgetCustomizes.findOne({ shop_id: shopRecords._id });
                 otherProps['floatingWidgetCustomizesModel'] = floatingWidgetCustomizesModel;
 
@@ -927,3 +1007,82 @@ export async function action({ request }) {
     }
 
 }
+
+
+async function getImageAndVideoForCarousel(shopRecords) {
+    const sortOption = {};
+    sortOption["createdAt"] = -1;
+    sortOption["_id"] = -1;
+
+    let query = {
+        shop_id: shopRecords._id,
+        status: 'publish',
+        add_to_carousel: true
+    };
+
+    const reviewItems = await productReviews.aggregate([
+        {
+            $match: query
+        },
+        {
+            $lookup: {
+                from: 'review_documents',
+                localField: '_id',
+                foreignField: 'review_id',
+                as: 'reviewDocuments'
+            }
+        },
+        {
+            $group: {
+                _id: "$_id",
+                rating: { $first: "$rating" },
+                first_name: { $first: "$first_name" },
+                display_name: { $first: "$display_name" },
+                last_name: { $first: "$last_name" },
+                createdAt: { $first: "$createdAt" },
+                product_id: { $first: "$product_id" },
+                reviewDocuments: { $first: "$reviewDocuments" }, // Use $first to avoid duplicates
+            }
+        },
+        {
+            $sort: sortOption
+        },
+        {
+            $project: {
+                _id: 1,
+                rating: 1,
+                first_name: 1,
+                display_name: 1,
+                last_name: 1,
+                createdAt: 1,
+                product_id: 1,
+                reviewDocuments: {
+                    $arrayElemAt: [
+                        {
+                            $filter: {
+                                input: "$reviewDocuments",
+                                as: "doc",
+                                cond: {
+                                    $and: [
+                                        { $eq: ["$$doc.is_approve", true] },
+                                        { $eq: ["$$doc.is_cover", true] }
+                                    ]
+                                }
+                            }
+                        },
+                        0
+                    ]
+                }
+            }
+        },
+        {
+            $match: {
+                reviewDocuments: { $ne: null }
+            }
+        }
+    ]);
+
+    return reviewItems;
+
+}
+

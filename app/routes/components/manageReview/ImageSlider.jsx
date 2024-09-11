@@ -205,13 +205,14 @@ const ImageSlider = ({ reviewDocuments, shopRecords, autoPlay, interval }) => {
 							className={`${styles.slide} ${index === currentIndex ? styles.active : ''}`}
 						>
 
-							{image.type === 'image' ? (
-								<img onClick={(e) => handleShowImageModal(e, image.type)} className={styles.img} src={getUploadDocument(image.url, shopRecords.shop_id)} alt={`Slide ${index}`} />
+							<img onClick={(e) => handleShowImageModal(e, image.type)} className={styles.img} src={getUploadDocument(image.thumbnail_name || image.url, shopRecords.shop_id)} alt={`Slide ${index}`} />
+
+							{/* {image.type === 'image' ? (
 							) : (
 								<video onClick={(e) => handleShowImageModal(e, image.type)} className={styles.img} controls>
-									<source src={getUploadDocument(image.url, shopRecords.shop_id)} type="video/mp4" />
+									<source src={getUploadDocument(image.thumbnail_name || image.url, shopRecords.shop_id)} type="video/mp4" />
 								</video>
-							)}
+							)} */}
 
 
 							<div className='flxfix dropdownwrap ddlightbtn'>
@@ -228,24 +229,7 @@ const ImageSlider = ({ reviewDocuments, shopRecords, autoPlay, interval }) => {
 
 								</DropdownButton>
 							</div>
-							{/* <div className={styles.menu_icon} onClick={handleMenuToggle}>
-								<FaEllipsisV />
-								{isMenuOpen && (
-									<div className={styles.menu}>
-										<ul>
-											{image.is_cover == false && image.is_approve == true ?
-												<li onClick={(e) => makeCoverPhoto(e, index)}>Make cover photo</li> : ""}
-
-											{image.is_approve == false ?
-												<li onClick={(e) => approvePhoto(e, index)}>Approve photo</li> : ""}
-											{image.is_approve && <li onClick={(e) => hidePhoto(e, index)}>Hide photo</li>}
-											<li onClick={(e) => openImageInNewTab(image.url)} >View photo</li>
-											<li onClick={(e) => downloadImage(image.url)}>
-												Download photo</li>
-										</ul>
-									</div>
-								)}
-							</div> */}
+							
 							{image.is_cover && image.is_approve && (
 								<span className={`${styles.cover_photo_label} ${styles.coverphotolabel}`}>
 									<i className='starsico-single-star'></i> cover {image.type == "image" ? "photo" : "video"}

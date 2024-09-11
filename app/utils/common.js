@@ -7,6 +7,11 @@ import emailDiscountPhotoVideoReviewSettings from './../routes/models/emailDisco
 import reviewDiscountSettings from './../routes/models/reviewDiscountSettings';
 import settingJson from './../utils/settings.json';
 import { getCurrentDate, getCustomFormattedEndDateTime } from './dateFormat';
+import ffmpeg from 'fluent-ffmpeg';
+import sharp from 'sharp';
+import path from 'path';
+import fs from "fs";
+import { v4 as uuidv4 } from 'uuid'; // Import UUID package
 
 export async function findOneRecord(collection = "", params = {}) {
 	try {
@@ -587,8 +592,108 @@ export async function createMetafields(shop, metafields, widgetType = "") {
 export function displayNoOfCharacters(length = 50, description = "") {
 	if (description.length <= length) {
 		return description;
-	  }
-	
-	  return `${description.substring(0, length)}...`;
-	
+	}
+
+	return `${description.substring(0, length)}...`;
+
+}
+
+export async function generateVideoThumbnail(videoPath, outputDir, thumbnailName) {
+	try {
+		return new Promise((resolve, reject) => {
+			// First, get the video dimensions using ffprobe
+			ffmpeg.ffprobe(videoPath, (err, metadata) => {
+				if (err) {
+					return reject(err);
+				}
+
+				console.log('Probe start ---------');
+				console.log(metadata);
+
+				// Extract width and height from the video metadata
+				const { width, height } = metadata.streams.find(stream => stream.width && stream.height);
+				console.log('Video dimensions:', width, height);
+
+				if (!width || !height) {
+					return reject(new Error('Could not get video dimensions.'));
+				}
+
+				// Generate a dynamic name for the temporary thumbnail (UUID)
+				const tempThumbnailName = `temp-thumbnail-${uuidv4()}.png`;
+				const tempThumbnailPath = path.join(outputDir, tempThumbnailName);
+				const finalThumbnailPath = path.join(outputDir, thumbnailName);
+
+				// Step 1: Generate the thumbnail with the same size as the original video
+				ffmpeg(videoPath)
+					.on('end', async () => {
+
+						// Step 2: Compress the generated thumbnail using sharp
+						try {
+							await sharp(tempThumbnailPath)
+								.jpeg({ quality: 70 }) // Adjust quality here (range from 0-100)
+								.toFile(finalThumbnailPath); // Save the compressed image with the final name
+
+							console.log('Compressed thumbnail created:', finalThumbnailPath);
+
+							// Step 3: Delete the temporary resized thumbnail
+							fs.unlink(tempThumbnailPath, (err) => {
+								if (err) {
+									console.error('Error deleting temporary thumbnail:', err);
+								} else {
+									console.log('Temporary thumbnail deleted:', tempThumbnailPath);
+								}
+							});
+
+							resolve(finalThumbnailPath);
+						} catch (compressionErr) {
+							console.error('Error compressing thumbnail:', compressionErr);
+							reject(compressionErr);
+						}
+					})
+					.on('error', (err) => {
+						console.error('Error generating thumbnail:', err);
+						reject(err);
+					})
+					.screenshots({
+						timestamps: ['00:00:02'], // Take thumbnail at 2 seconds
+						count: 1,
+						folder: outputDir,
+						filename: tempThumbnailName, // Use dynamic name for the initial thumbnail
+						size: `${width}x${height}`, // Use the original video dimensions
+					});
+			});
+		});
+	} catch (error) {
+		console.error('Error generating video thumbnail:', error);
+	}
+}
+
+
+
+export async function resizeImages(imagePath, outputDir, thumbnailName) {
+	try {
+		// Ensure output directory exists
+		if (!fs.existsSync(outputDir)) {
+			fs.mkdirSync(outputDir, { recursive: true });
+		}
+
+		return new Promise((resolve, reject) => {
+			const outputPath = path.join(outputDir, thumbnailName);
+
+			sharp(imagePath)
+				.toFormat('jpeg') // Convert to JPEG (optional)
+				.jpeg({ quality: 50 }) // Compress image (adjust quality)
+				.toFile(outputPath, (err, info) => {
+					if (err) {
+						console.error('Error generating image thumbnail:', err);
+						return reject(err);
+					}
+
+					resolve(outputPath);
+
+				});
+		});
+	} catch (error) {
+		console.error('Error generating image thumbnail:', error);
+	}
 }

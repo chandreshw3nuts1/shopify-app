@@ -552,7 +552,7 @@ form textarea.input_text { height: 80px; padding-top: 8px; padding-bottom: 8px;}
 .singleratingpreview.center { justify-content: center;}
 .singleratingpreview.right { justify-content: flex-end;}
 
-.w3floatreview { position: fixed; left: 0; font-size: 18px; z-index: 100000; width: 0; top: 50%; display: flex; justify-content: center; transition-duration: 0.4s; transition-timing-function: cubic-bezier(1, 0, 0, 1);}
+.w3floatreview { position: fixed; left: 0; font-size: 18px; z-index: 1000; width: 0; top: 50%; display: flex; justify-content: center; transition-duration: 0.4s; transition-timing-function: cubic-bezier(1, 0, 0, 1);}
 .w3floatreview.leftside { left: 0; transform: rotate(270deg) translate(-50%, 0); transform-origin: top;}
 .w3floatreview.rightside { transform: rotate(90deg) translate(50%, 50%); left: auto; right: 0;}
 .w3floatreview .review-sidebar { padding: 8px 15px 8px 15px; font-size: 18px; line-height: 1; cursor: pointer; position: relative; transition-duration: 0.4s; transition-timing-function: cubic-bezier(1, 0, 0, 1); width: auto; white-space: nowrap; border-radius: 0 0 15px 15px; margin: 0 8px 0px 8px; display: flex; justify-content: center; align-items: center; gap: 4px;}
