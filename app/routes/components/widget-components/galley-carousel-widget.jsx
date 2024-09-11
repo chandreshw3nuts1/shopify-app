@@ -3,18 +3,13 @@ import VideoPlayIcon from '../icons/VideoPlayIcon';
 
 const GalleyCarouselWidget = (props) => {
     const blockId = props.formParams.blockId;
-    console.log(props.formParams);
     const iconColor = (props.formParams.widget_icon_color != "rgba(0,0,0,0)" && props.formParams.widget_icon_color != "") ? props.formParams.widget_icon_color : props.generalAppearancesModel.starIconColor;
 
     const reviewerNameColor = (props.formParams.reviewer_name_color != "rgba(0,0,0,0)" && props.formParams.reviewer_name_color != "") ? props.formParams.reviewer_name_color : '#000000';
     const borderColor = (props.formParams.border_color != "rgba(0,0,0,0)" && props.formParams.border_color != "") ? props.formParams.border_color : '#000000';
-    // const dotBackgroundColor = (props.formParams.dot_background_color != "rgba(0,0,0,0)" && props.formParams.dot_background_color != "") ? props.formParams.dot_background_color : '#cccccc';
     const arrowIconColor = (props.formParams.arrow_icon_color != "rgba(0,0,0,0)" && props.formParams.arrow_icon_color != "") ? props.formParams.arrow_icon_color : '#595959';
     const arrowBgIconColor = (props.formParams.arrow_bg_color != "rgba(0,0,0,0)" && props.formParams.arrow_bg_color != "") ? props.formParams.arrow_bg_color : '#ffffff';
-    // const quotesIconColor = (props.formParams.quotes_icon_color != "rgba(0,0,0,0)" && props.formParams.quotes_icon_color != "") ? props.formParams.quotes_icon_color : '#cccccc';
-    // const hideDots = props.formParams.show_pagination_dots == "true" ? "block" : "none";
     const showBorder = props.formParams.show_border == "true" ? `border : ${props.formParams.border_width}px solid ${borderColor};` : "";
-
 
 
     return (
@@ -44,10 +39,24 @@ const GalleyCarouselWidget = (props) => {
                         {props.reviewItems.map((review, i) => (
                             <div key={i} className="item widget_w3grid-review-item" data-reviewid={review._id}>
                                 <div className='itemwrap'>
-                                    <div className='imagewrap'>
-                                        <img style={{ width: '100%' }} src={getUploadDocument(review.reviewDocuments.url, props.shopRecords.shop_id)} />
-                                    </div>
 
+                                    {review.reviewDocuments.type === 'image' ? (
+                                        <div className='imagewrap'>
+                                            <img style={{ width: '100%' }} src={getUploadDocument(review.reviewDocuments.url, props.shopRecords.shop_id)} />
+                                        </div>
+                                    ) : (
+
+                                        <div className='video-div'>
+                                            <img style={{ width: '100%' }} src={getUploadDocument(review.reviewDocuments.thumbnail_name, props.shopRecords.shop_id)} />
+
+                                            <div className='mainbtnplay'>
+                                                <button class="play-pausess">
+                                                    <VideoPlayIcon />
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    )}
 
                                     <div className='bottom_meta'>
                                         <div class="reviewer_name">{review.display_name}</div>

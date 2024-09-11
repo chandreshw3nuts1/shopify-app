@@ -13,18 +13,21 @@ $(document).ready(function () {
             data: {
                 selected_reviews: settingsVars.selected_reviews,
                 border_radius: settingsVars.border_radius,
-				show_rating: settingsVars.show_rating,
                 show_rating_icon: settingsVars.show_rating_icon,
                 show_name: settingsVars.show_name,
                 hide_arrow_mobile: settingsVars.hide_arrow_mobile,
                 widget_text_color: settingsVars.widget_text_color,
                 widget_icon_color: settingsVars.widget_icon_color,
                 play_button_color: settingsVars.play_button_color,
+                show_border: settingsVars.show_border,
+                border_color: settingsVars.border_color,
+                border_width: settingsVars.border_width,
                 product_id: productId,
                 shop_domain: shopDomain,
                 customer_locale: customerLocale,
                 block_id: blockId,
                 actionType: "videoSliderWidget",
+                is_editing : Shopify.designMode || false
             },
             dataType: "json",
             success: function (response) {
@@ -33,18 +36,25 @@ $(document).ready(function () {
 
                 // Initialize Owl Carousel after the content is fully loaded
                 $(`#display-video-slider-widget-component-${blockId} .owl-carousel`).owlCarousel({
-                    loop: false,
-                    margin: 30,
+                    loop: true,
+                    margin: 10,
                     nav: true,
                     autoplay: false,
                     autoplayTimeout: 5000,
                     autoplayHoverPause: true,
                     dots: false,
-                    items: 3,
                     navText: [
-                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M14.7559 17.7625C15.0814 17.4459 15.0814 16.9325 14.7559 16.6159L10.0118 12L14.7559 7.38414C15.0814 7.0675 15.0814 6.55412 14.7559 6.23748C14.4305 5.92084 13.9028 5.92084 13.5774 6.23748L8.24408 11.4267C8.0878 11.5787 8 11.785 8 12C8 12.215 8.0878 12.4213 8.24408 12.5733L13.5774 17.7625C13.9028 18.0792 14.4305 18.0792 14.7559 17.7625Z" fill="currentColor"/></svg>', 
+                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M14.7559 17.7625C15.0814 17.4459 15.0814 16.9325 14.7559 16.6159L10.0118 12L14.7559 7.38414C15.0814 7.0675 15.0814 6.55412 14.7559 6.23748C14.4305 5.92084 13.9028 5.92084 13.5774 6.23748L8.24408 11.4267C8.0878 11.5787 8 11.785 8 12C8 12.215 8.0878 12.4213 8.24408 12.5733L13.5774 17.7625C13.9028 18.0792 14.4305 18.0792 14.7559 17.7625Z" fill="currentColor"/></svg>',
                         '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.24408 17.7625C7.91864 17.4459 7.91864 16.9325 8.24408 16.6159L12.9882 12L8.24408 7.38414C7.91864 7.0675 7.91864 6.55412 8.24408 6.23748C8.56951 5.92084 9.09715 5.92084 9.42259 6.23748L14.7559 11.4267C14.9122 11.5787 15 11.785 15 12C15 12.215 14.9122 12.4213 14.7559 12.5733L9.42259 17.7625C9.09715 18.0792 8.56951 18.0792 8.24408 17.7625Z" fill="currentColor"/></svg>'
                     ],
+                    responsive: {
+                        0: {
+                            items: 1  // 1 image on mobile devices (0px and up)
+                        },
+                        768: {
+                            items: 3  // 3 images on desktop (1000px and up)
+                        }
+                    }
                 });
             },
             error: function (xhr, status, error) {
@@ -57,6 +67,18 @@ $(document).ready(function () {
     $(document).on('click', '.owl-carousel .play-pause', function () {
         const video = $(this).closest('.item').find('.video-content')[0];
         const videoDiv = $(this).closest('.item');
+        
+        
+        // Pause all other videos in the carousel
+        $('.owl-carousel .video-content').each(function () {
+            if (this !== video) {
+                this.pause();
+                this.currentTime = 0; // Optionally reset the video to the start
+                $(this).closest('.item').find('.play-pause').html('<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 8.98505V6.48882C3.5 3.37974 5.65027 2.1092 8.28325 3.66374L10.4043 4.91933L12.5253 6.17492C15.1582 7.72946 15.1582 10.2705 12.5253 11.8251L10.4043 13.0807L8.28325 14.3363C5.65027 15.8908 3.5 14.6203 3.5 11.5112V8.98505Z" fill="currentColor"/></svg>'); // Play Icon
+                $(this).closest('.item').removeClass('videoplaying');
+            }
+        });
+
 
         if (video.paused) {
             video.play();
@@ -67,7 +89,7 @@ $(document).ready(function () {
             $(this).html('<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 8.98505V6.48882C3.5 3.37974 5.65027 2.1092 8.28325 3.66374L10.4043 4.91933L12.5253 6.17492C15.1582 7.72946 15.1582 10.2705 12.5253 11.8251L10.4043 13.0807L8.28325 14.3363C5.65027 15.8908 3.5 14.6203 3.5 11.5112V8.98505Z" fill="currentColor"/></svg>'); // Play Icon
         }
 
-        $(video).on('ended',function(){
+        $(video).on('ended', function () {
             videoDiv.removeClass('videoplaying');
             $(this).parents('.item').find('.play-pause').html('<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 8.98505V6.48882C3.5 3.37974 5.65027 2.1092 8.28325 3.66374L10.4043 4.91933L12.5253 6.17492C15.1582 7.72946 15.1582 10.2705 12.5253 11.8251L10.4043 13.0807L8.28325 14.3363C5.65027 15.8908 3.5 14.6203 3.5 11.5112V8.98505Z" fill="currentColor"/></svg>'); // Play Icon
             video.currentTime = 0;
@@ -91,16 +113,6 @@ $(document).ready(function () {
 
     });
 
-    $(document).on('click', '.owl-carousel .mute-unmute', function () {
-        const video = $(this).closest('.item').find('.video-content')[0];
-        if (video.muted) {
-            video.muted = false;
-            $(this).text('Mute');
-        } else {
-            video.muted = true;
-            $(this).text('Unmute');
-        }
-    });
 
     $(document).on('click', '.owl-carousel .rightaction .muteunmute', function () {
         const video = $(this).closest('.item').find('.video-content')[0];
@@ -115,7 +127,7 @@ $(document).ready(function () {
 
     $(document).on('translate.owl.carousel', '.owl-carousel', function (event) {
         // Pause all videos when the slide changes
-		$(this).find('video').each(function() {
+        $(this).find('video').each(function () {
             this.pause();
             $(this).closest('.item').find('.play-pause').html('<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 8.98505V6.48882C3.5 3.37974 5.65027 2.1092 8.28325 3.66374L10.4043 4.91933L12.5253 6.17492C15.1582 7.72946 15.1582 10.2705 12.5253 11.8251L10.4043 13.0807L8.28325 14.3363C5.65027 15.8908 3.5 14.6203 3.5 11.5112V8.98505Z" fill="currentColor"/></svg>'); // Play Icon
             $(this).closest('.item').removeClass('videoplaying');
@@ -124,6 +136,5 @@ $(document).ready(function () {
 
     $(document).on('ended', '.owl-carousel .video-content', function () {
         $(this).closest('.item').find('.play-pause').html('<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 2C5.82843 2 6.5 2.67157 6.5 3.5L6.5 14.5C6.5 15.3284 5.82843 16 5 16C4.17157 16 3.5 15.3284 3.5 14.5L3.5 3.5C3.5 2.67157 4.17157 2 5 2ZM13 2C13.8284 2 14.5 2.67157 14.5 3.5L14.5 14.5C14.5 15.3284 13.8284 16 13 16C12.1716 16 11.5 15.3284 11.5 14.5L11.5 3.5C11.5 2.67157 12.1716 2 13 2Z" fill="currentColor"/></svg>'); // Pause Icon
-        console.log('ended');
     });
 });

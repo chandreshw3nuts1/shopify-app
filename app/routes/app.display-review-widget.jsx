@@ -39,6 +39,8 @@ export async function loader({ request }) {
         const videoSliderWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/video-slider-widget`);
         const testimonialSliderWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/testimonials-carousel-widget`);
         const cartReviewWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/cart-review-widget`);
+        const galleryCarouselWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/gallery-carousel-widget`);
+        const cardCarouselWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/card-carousel-widget`);
         
         
 
@@ -52,6 +54,8 @@ export async function loader({ request }) {
         const videoSliderWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?addAppBlockId=${videoSliderWidgetExtenstionId}&target=sectionId`;
         const testimonialSliderWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?addAppBlockId=${testimonialSliderWidgetExtenstionId}&target=sectionId`;
         const cartReviewWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?previewPath=${cartPreviewPath}&addAppBlockId=${cartReviewWidgetExtenstionId}&target=cart`;
+        const galleryCarouselWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?addAppBlockId=${galleryCarouselWidgetExtenstionId}&target=sectionId`;
+        const cardCarouselWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?addAppBlockId=${cardCarouselWidgetExtenstionId}&target=sectionId`;
         
         const extensionUrs = {
             productReviewWidgetUrl,
@@ -59,7 +63,9 @@ export async function loader({ request }) {
             allReviewWidgetUrl,
             videoSliderWidgetUrl,
             cartReviewWidgetUrl,
-            testimonialSliderWidgetUrl
+            testimonialSliderWidgetUrl,
+            galleryCarouselWidgetUrl,
+            cardCarouselWidgetUrl
         }
 
         return json({ shopRecords, sidebarReviewWidgetCustomizesModel, extensionUrs });
@@ -194,36 +200,8 @@ export default function DisplayReviewWidget() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="widgetboxwrp">
-                                <div className="widgetbox flxcol">
-                                    <div className="imagebox flxfix">
-                                        <Image src={widgetThumb04} alt="" />
-                                    </div>
-                                    <div className="detailbox flxflexi">
-                                        <h3>Reviews Carousel</h3>
-                                        <p>Showcase your best reviews in a carousel on a page of your choice.</p>
-                                        <div className="btnwrap">
-                                            <a href="#" className="simplelink">Customize</a>
-                                            <a href="#" className="revbtn smbtn">Add to theme</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="widgetboxwrp">
-                                <div className="widgetbox flxcol">
-                                    <div className="imagebox flxfix">
-                                        <Image src={widgetThumb05} alt="" />
-                                    </div>
-                                    <div className="detailbox flxflexi">
-                                        <h3>All Reviews Page</h3>
-                                        <p>Show all your reviews and collect shop-level reviews on a dedicated page.</p>
-                                        <div className="btnwrap">
-                                            <a href="#" className="simplelink">Customize</a>
-                                            <a href="#" className="revbtn smbtn">Add to theme</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                           
+                            
                             <div className="widgetboxwrp">
                                 <div className="widgetbox flxcol">
                                     <div className="imagebox flxfix">
@@ -264,43 +242,15 @@ export default function DisplayReviewWidget() {
                                 </div>
                             </div>
 
-                            <div className="widgetboxwrp">
-                                <div className="widgetbox flxcol">
-                                    <div className="imagebox flxfix">
-                                        <Image src={widgetThumb07} alt="" />
-                                    </div>
-                                    <div className="detailbox flxflexi">
-                                        <h3>W3 Reviews Medals</h3>
-                                        <p>Display your W3 Reviews Medals as a badge. Manage.</p>
-                                        <div className="btnwrap">
-                                            <a href="#" className="simplelink">Customize</a>
-                                            <a href="#" className="revbtn smbtn">Add to theme</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="widgetboxwrp">
-                                <div className="widgetbox flxcol">
-                                    <div className="imagebox flxfix">
-                                        <Image src={widgetThumb08} alt="" />
-                                    </div>
-                                    <div className="detailbox flxflexi">
-                                        <h3>Verified Reviews Counter</h3>
-                                        <p>Display the number of verified reviews your products have received.</p>
-                                        <div className="btnwrap">
-                                            <a href="#" className="simplelink">Customize</a>
-                                            <a href="#" className="revbtn smbtn">Add to theme</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                           
+                            
                             <div className="widgetboxwrp">
                                 <div className="widgetbox flxcol">
                                     <div className="imagebox flxfix">
                                         <Image src={widgetThumb09} alt="" />
                                     </div>
                                     <div className="detailbox flxflexi">
-                                        <h3>All Reviews Counter</h3>
+                                        <h3>Trust Badge Rating Widget</h3>
                                         <p>Shows the total number of published reviews you've received and their average rating.</p>
                                         <div className="btnwrap">
                                             <a href="#" className="simplelink"></a>
@@ -325,6 +275,40 @@ export default function DisplayReviewWidget() {
                                     </div>
                                 </div>
                             </div>
+
+                            <div className="widgetboxwrp">
+                                <div className="widgetbox flxcol">
+                                    <div className="imagebox flxfix">
+                                        <Image src={widgetThumb09} alt="" />
+                                    </div>
+                                    <div className="detailbox flxflexi">
+                                        <h3>Gallery Carousel Widget</h3>
+                                        <p>Highlight your customers' user-generated photos in this dynamic carousel so visitors can see your products in action.</p>
+                                        <div className="btnwrap">
+                                            <a href="#" className="simplelink"></a>
+                                            <a href={extensionUrs.galleryCarouselWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="widgetboxwrp">
+                                <div className="widgetbox flxcol">
+                                    <div className="imagebox flxfix">
+                                        <Image src={widgetThumb09} alt="" />
+                                    </div>
+                                    <div className="detailbox flxflexi">
+                                        <h3>Cards Carousel Widget</h3>
+                                        <p>Combine visual reviews, text, and star ratings in this stylish and engaging carousel.</p>
+                                        <div className="btnwrap">
+                                            <a href="#" className="simplelink"></a>
+                                            <a href={extensionUrs.cardCarouselWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
 
 
                             <div className="widgetboxwrp">

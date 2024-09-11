@@ -10,9 +10,11 @@ import RatingWidget from './components/widget-components/rating-widget';
 import AllReviewWidget from './components/widget-components/all-review-counter-widget';
 import SidebarRatingWidget from './components/widget-components/sidebar-rating-widget';
 import VideoSliderWidget from './components/widget-components/video-slider-widget';
+import VideoSliderError from './components/widget-components/video-slider-error';
 import GalleyCarouselWidget from './components/widget-components/galley-carousel-widget';
 import TestimonialsCarouselWidget from './components/widget-components/testimonials-carousel-widget';
 import CardCarouselWidget from './components/widget-components/card-carousel-widget';
+import SnippetWidget from './components/widget-components/snippet-widget';
 
 
 
@@ -420,11 +422,16 @@ export async function action({ request }) {
             try {
                 const selected_reviews = formData.get('selected_reviews');
                 const border_radius = formData.get('border_radius');
+                const show_rating_icon = formData.get('show_rating_icon');
+                const show_name = formData.get('show_name');
+                const hide_arrow_mobile = formData.get('hide_arrow_mobile');
                 const widget_text_color = formData.get('widget_text_color');
                 const widget_icon_color = formData.get('widget_icon_color');
-                const show_rating = formData.get('show_rating');
-                const show_name = formData.get('show_name');
                 const play_button_color = formData.get('play_button_color');
+                const show_border = formData.get('show_border');
+                const border_color = formData.get('border_color');
+                const border_width = formData.get('border_width');
+                const is_editing = formData.get('is_editing') || false;
 
                 const sortOption = {};
                 sortOption["createdAt"] = -1;
@@ -501,24 +508,90 @@ export async function action({ request }) {
                     }
                 ]);
 
-                // return reviewItems;
                 const formParams = {
-                    show_name,
                     selected_reviews,
+                    border_radius,
+                    show_rating_icon,
+                    show_name,
+                    hide_arrow_mobile,
                     widget_text_color,
                     widget_icon_color,
-                    border_radius,
-                    show_rating,
                     play_button_color,
+                    show_border,
+                    border_color,
+                    border_width,
                     blockId
                 }
 
-                const dynamicComponent = <VideoSliderWidget shopRecords={shopRecords} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} reviewItems={reviewItems} />;
+                if (is_editing == 'true' && reviewItems.length < 3) {
+                    const dynamicComponent = <VideoSliderError />;
+                    const content = ReactDOMServer.renderToString(dynamicComponent);
+                    return json({
+                        content: content
+                    });
+                } else if (reviewItems.length >= 3) {
+                    const dynamicComponent = <VideoSliderWidget shopRecords={shopRecords} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} reviewItems={reviewItems} />;
+                    const content = ReactDOMServer.renderToString(dynamicComponent);
+                    return json({
+                        content: content
+                    });
+                }
+                return json({
+                    content: ""
+                });
+
+            } catch (error) {
+                console.log(error);
+                return json({
+                    error
+                });
+            }
+        } else if (actionType == "snippetWidget") {
+            try {
+                const widget_alignment = formData.get('widget_alignment');
+                const widget_width = formData.get('widget_width');
+                const no_display_reviews = parseInt(formData.get('no_display_reviews'));
+                const show_rating_icon = formData.get('show_rating_icon');
+                const show_review_image = formData.get('show_review_image');
+                const hide_arrow_mobile = formData.get('hide_arrow_mobile');
+                const font_size = formData.get('font_size');
+                const no_of_chars = formData.get('no_of_chars');
+                const show_border = formData.get('show_border');
+                const border_radius = formData.get('border_radius');
+                const background_color = formData.get('background_color');
+                const text_color = formData.get('text_color');
+                const reviewer_name_color = formData.get('reviewer_name_color');
+                const widget_icon_color = formData.get('widget_icon_color');
+                const border_color = formData.get('border_color');
+                
+                const reviewItems = await getImageAndVideoForCarousel(shopRecords, no_display_reviews);
+
+                const formParams = {
+                    widget_alignment,
+                    widget_width,
+                    no_display_reviews,
+                    show_rating_icon,
+                    show_review_image,
+                    hide_arrow_mobile,
+                    font_size,
+                    no_of_chars,
+                    show_border,
+                    border_radius,
+                    background_color,
+                    text_color,
+                    reviewer_name_color,
+                    widget_icon_color,
+                    border_color,
+                    blockId
+                }
+
+                
+                const dynamicComponent = <SnippetWidget shopRecords={shopRecords} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} reviewItems={reviewItems} />;
                 const content = ReactDOMServer.renderToString(dynamicComponent);
                 return json({
                     content: content
                 });
-
+                
             } catch (error) {
                 console.log(error);
                 return json({
@@ -549,7 +622,6 @@ export async function action({ request }) {
                 }
 
                 const reviewItems = await getImageAndVideoForCarousel(shopRecords);
-                console.log(reviewItems);
                 const dynamicComponent = <GalleyCarouselWidget shopRecords={shopRecords} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} reviewItems={reviewItems} />;
                 const content = ReactDOMServer.renderToString(dynamicComponent);
                 return json({
@@ -1008,11 +1080,11 @@ export async function action({ request }) {
 
 }
 
-
-async function getImageAndVideoForCarousel(shopRecords) {
-    const sortOption = {};
-    sortOption["createdAt"] = -1;
-    sortOption["_id"] = -1;
+async function getImageAndVideoForCarousel(shopRecords, limit = null) {
+    const sortOption = {
+        createdAt: -1,
+        _id: -1
+    };
 
     let query = {
         shop_id: shopRecords._id,
@@ -1020,7 +1092,7 @@ async function getImageAndVideoForCarousel(shopRecords) {
         add_to_carousel: true
     };
 
-    const reviewItems = await productReviews.aggregate([
+    const aggregationPipeline = [
         {
             $match: query
         },
@@ -1039,9 +1111,10 @@ async function getImageAndVideoForCarousel(shopRecords) {
                 first_name: { $first: "$first_name" },
                 display_name: { $first: "$display_name" },
                 last_name: { $first: "$last_name" },
+                description: { $first: "$description" },
                 createdAt: { $first: "$createdAt" },
                 product_id: { $first: "$product_id" },
-                reviewDocuments: { $first: "$reviewDocuments" }, // Use $first to avoid duplicates
+                reviewDocuments: { $first: "$reviewDocuments" } // Use $first to avoid duplicates
             }
         },
         {
@@ -1054,6 +1127,7 @@ async function getImageAndVideoForCarousel(shopRecords) {
                 first_name: 1,
                 display_name: 1,
                 last_name: 1,
+                description: 1,
                 createdAt: 1,
                 product_id: 1,
                 reviewDocuments: {
@@ -1080,9 +1154,15 @@ async function getImageAndVideoForCarousel(shopRecords) {
                 reviewDocuments: { $ne: null }
             }
         }
-    ]);
+    ];
+
+    // Add limit stage if a limit is passed
+    if (limit) {
+        aggregationPipeline.push({ $limit: limit });
+    }
+
+    const reviewItems = await productReviews.aggregate(aggregationPipeline);
 
     return reviewItems;
-
 }
 

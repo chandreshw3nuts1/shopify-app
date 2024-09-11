@@ -50,7 +50,7 @@ $(document).ready(function () {
                         0: {
                             items: noOfMobileReviews  // 1 image on mobile devices (0px and up)
                         },
-                        600: {
+                        768: {
                             items: noOfDesktopReviews  // 3 images on desktop (1000px and up)
                         }
                     }

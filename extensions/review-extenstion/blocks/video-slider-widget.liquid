@@ -32,8 +32,8 @@
     },
 	{
 		"type": "checkbox",
-		"id": "show_rating",
-		"label": "Show rating",
+		"id": "show_rating_icon",
+		"label": "Show rating icon",
 		"default": true
 	},
 	{
@@ -63,7 +63,28 @@
 		"type": "color",
 		"id": "play_button_color",
 		"label": "Play button color"
-	}
+	},
+	{
+      "type": "checkbox",
+      "id": "show_border",
+      "label": "Show border",
+      "default": false
+    },
+    {
+		"type": "range",
+		"id": "border_width",
+		"min": 1,
+		"max": 10,
+		"step": 1,
+		"unit": "px",
+		"label": "Border width",
+		"default": 1
+    },
+	{
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color"
+    }
 
   ]
 }

@@ -607,12 +607,8 @@ export async function generateVideoThumbnail(videoPath, outputDir, thumbnailName
 					return reject(err);
 				}
 
-				console.log('Probe start ---------');
-				console.log(metadata);
-
 				// Extract width and height from the video metadata
 				const { width, height } = metadata.streams.find(stream => stream.width && stream.height);
-				console.log('Video dimensions:', width, height);
 
 				if (!width || !height) {
 					return reject(new Error('Could not get video dimensions.'));
@@ -630,10 +626,9 @@ export async function generateVideoThumbnail(videoPath, outputDir, thumbnailName
 						// Step 2: Compress the generated thumbnail using sharp
 						try {
 							await sharp(tempThumbnailPath)
-								.jpeg({ quality: 70 }) // Adjust quality here (range from 0-100)
+								.jpeg({ quality: 100 }) // Adjust quality here (range from 0-100)
 								.toFile(finalThumbnailPath); // Save the compressed image with the final name
 
-							console.log('Compressed thumbnail created:', finalThumbnailPath);
 
 							// Step 3: Delete the temporary resized thumbnail
 							fs.unlink(tempThumbnailPath, (err) => {
@@ -682,7 +677,7 @@ export async function resizeImages(imagePath, outputDir, thumbnailName) {
 
 			sharp(imagePath)
 				.toFormat('jpeg') // Convert to JPEG (optional)
-				.jpeg({ quality: 50 }) // Compress image (adjust quality)
+				.jpeg({ quality: 10 }) // Compress image (adjust quality)
 				.toFile(outputPath, (err, info) => {
 					if (err) {
 						console.error('Error generating image thumbnail:', err);

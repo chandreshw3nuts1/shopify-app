@@ -2,9 +2,9 @@ import { getUploadDocument } from './../../../utils/documentPath';
 import PlayIcon from '../icons/PlayIcon';
 import { formatDate } from './../../../utils/dateFormat';
 import ReviewVerifyIcon from '../icons/ReviewVerifyIcon';
-import {displayNoOfCharacters} from './../../../utils/common';
+import { displayNoOfCharacters } from './../../../utils/common';
 const ReviewItem = (props) => {
-    const { translations,floatingWidgetCustomizesModel, productReviewWidgetCustomizesModel, languageWiseProductWidgetSettings, settingsJson } = props.otherProps;
+    const { translations, floatingWidgetCustomizesModel, productReviewWidgetCustomizesModel, languageWiseProductWidgetSettings, settingsJson } = props.otherProps;
     let replyText = "",
         replyBackground = "",
         replyBackgroundOnHover = "",
@@ -23,9 +23,9 @@ const ReviewItem = (props) => {
 
     }
     const widgetItemClass = props.formParams.is_modal_reviews == 'true' ? "widget_w3grid-review-item" : "product_widget_w3grid-review-item";
-    
+
     let floatShowProductThumb = true;
-    if(props.formParams?.is_modal_reviews && props.formParams.is_modal_reviews == 'true') {
+    if (props.formParams?.is_modal_reviews && props.formParams.is_modal_reviews == 'true') {
         floatShowProductThumb = floatingWidgetCustomizesModel?.showProductThumb || false;
     }
     return (
@@ -61,9 +61,7 @@ const ReviewItem = (props) => {
                                                                 ) : (
                                                                     <div className='videoth'>
                                                                         <div className='playicon'><PlayIcon /></div>
-                                                                        <video>
-                                                                            <source src={getUploadDocument(media.url, props.shopRecords.shop_id)} type="video/mp4" />
-                                                                        </video>
+                                                                        <img style={{ width: '100%' }} src={getUploadDocument(media.thumbnail_name, props.shopRecords.shop_id)} />
                                                                     </div>
                                                                 )}
                                                             </div>
@@ -130,7 +128,7 @@ const ReviewItem = (props) => {
                                                     }
                                                 </div>
                                                 <div className='review_bottomwrap'>
-                                                    {(props.formParams.hideProductThumbnails  != 'true') &&
+                                                    {(props.formParams.hideProductThumbnails != 'true') &&
                                                         <div className="product-container product-thumb-detail">
                                                             <div className="image flxfix">
                                                                 <img src={review.productDetails.images.edges[0].node.transformedSrc} />
@@ -231,9 +229,7 @@ const ReviewItem = (props) => {
                                                                     ) : (
                                                                         <div className='videoth'>
                                                                             <div className='playicon'><PlayIcon /></div>
-                                                                            <video>
-                                                                                <source src={getUploadDocument(media.url, props.shopRecords.shop_id)} type="video/mp4" />
-                                                                            </video>
+                                                                            <img style={{ width: '100%' }} src={getUploadDocument(media.thumbnail_name, props.shopRecords.shop_id)} />
                                                                         </div>
                                                                     )}
                                                                 </div>
@@ -343,9 +339,7 @@ const ReviewItem = (props) => {
                                                                         ) : (
                                                                             <div className='videoth'>
                                                                                 <div className='playicon'><PlayIcon /></div>
-                                                                                <video>
-                                                                                    <source src={getUploadDocument(media.url, props.shopRecords.shop_id)} type="video/mp4" />
-                                                                                </video>
+                                                                                <img style={{ width: '100%' }} src={getUploadDocument(media.thumbnail_name, props.shopRecords.shop_id)} />
                                                                             </div>
                                                                         )}
 

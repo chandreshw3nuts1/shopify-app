@@ -1,0 +1,163 @@
+
+<div id="snippet-widget-component-{{ block.id }}" class="w3-widgets" data-block-id="{{ block.id }}" data-product-id="{{ product.id }}" data-shop-domain="{{ shop.domain }}"  data-customer-locale="{{ request.locale.iso_code }}" data-rating-settings='{{ block.settings | json }}' >
+</div>
+
+{% schema %}
+{
+  "name": "Snippet Widget",
+  "target": "section",
+  "stylesheet": "snippet-widget.css",
+  "javascript": "snippet-widget-script.js",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Widget Settings"
+    },
+    {
+      "type": "select",
+      "id": "widget_alignment",
+      "label": "Widget Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "widget_width",
+      "label": "Widget width",
+      "options": [
+        {
+          "value": "fill",
+          "label": "Fill"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "range",
+      "id": "no_display_reviews",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "label": "Number of reviews to display",
+      "default": 5
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating_icon",
+      "label": "Show rating icon",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_review_image",
+      "label": "Show review image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_arrow_mobile",
+      "label": "Hide arrows on mobile",
+      "default": true
+    },
+    
+    {
+      "type": "range",
+      "id": "font_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "no_of_chars",
+      "label": "Max number of characters",
+      "min": 50,
+      "max": 500,
+      "step": 10,
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Border Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_border",
+      "label": "Show border",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 8
+    },
+
+    {
+      "type": "header",
+      "content": "Color Settings"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "id": "reviewer_name_color",
+      "label": "Reviewer name color"
+    },
+    {
+      "type": "color",
+      "id": "widget_icon_color",
+      "label": "Widget star color"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color"
+    }
+  ]
+}
+
+
+{% endschema %}
+
+
