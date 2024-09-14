@@ -3,16 +3,17 @@ import { Image } from "react-bootstrap";
 import LongArrowLeft from "../icons/LongArrowLeft";
 import LongArrowRight from "../icons/LongArrowRight";
 import { getUploadDocument } from './../../../utils/documentPath';
-import { formatDate } from './../../../utils/dateFormat';
+import { formatDate, reviewersNameFormat } from './../../../utils/dateFormat';
 import InfoIcon from "../icons/InfoIcon";
 import ArrowRightIcon from "../icons/ArrowRightIcon";
 import PlayIcon from "../icons/PlayIcon";
 import PauseIcon from "../icons/PauseIcon";
 import ReviewVerifyIcon from "../icons/ReviewVerifyIcon";
+import VerifyTransparencyPopup from "./components/VerifyTransparencyPopup";
+
 
 const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, formParams, generalAppearancesModel, CommonRatingComponent, otherProps }) => {
     const { translations, productReviewWidgetCustomizesModel, languageWiseProductWidgetSettings } = otherProps;
-
     return (
         <>
             <div className={`modal fade reviewdetailpopup ${reviewDetails.reviewDocuments.length > 0 ? '' : 'imagemissing'}`} data-bs-backdrop="static" id="staticBackdrop" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -83,16 +84,34 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                     <div className="top_detail flxfix">
                                         <div className="namerow flxrow">
                                             <div className='nametitle flxrow align-items-center'>
-                                                <h3>{reviewDetails.first_name} {reviewDetails.last_name}</h3>
+                                                <h3>
+                                                    {reviewersNameFormat(reviewDetails.first_name, reviewDetails.last_name, shopRecords.reviewers_name_format)}
+                                                </h3>
 
-                                                {reviewDetails.verify_badge &&
-                                                    <div className='verifiedreview'>
-                                                        <ReviewVerifyIcon /> {translations.verifiedPurchase}
-                                                    </div>
-                                                }
+                                                {reviewDetails.verify_badge ? (
+                                                    <>
+                                                        {shopRecords.verified_review_style == "icon" ? (
+                                                            <div className='verifiedreview'>
+                                                                <ReviewVerifyIcon />
+                                                            </div>
+                                                        ) : (
+                                                            <div className='verifiedreview'>
+                                                                <ReviewVerifyIcon /> {translations.verifiedPurchase}
+                                                            </div>
+                                                        )}
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        {shopRecords.is_enable_review_not_verified &&
+                                                            <div className='verifiedreview'>
+                                                                {translations.unVerifiedPurchase}
+                                                            </div>
+                                                        }
+                                                    </>
+                                                )}
 
                                             </div>
-                                            <div className="infoicon">
+                                            <div className="infoicon open-transparency-popup-modal">
                                                 <InfoIcon />
                                             </div>
                                         </div>
@@ -172,6 +191,9 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                 </div>
                             </div>
                         </div>
+
+                        <VerifyTransparencyPopup shopRecords={shopRecords} reviewDetails={reviewDetails} />
+                        
                     </div>
                 </div>
             </div>

@@ -3,14 +3,15 @@ import QuoteStyle2Icon from '../icons/QuoteStyle2Icon';
 import QuoteStyle3Icon from '../icons/QuoteStyle3Icon';
 import QuoteStyle4Icon from '../icons/QuoteStyle4Icon';
 import QuoteStyle5Icon from '../icons/QuoteStyle5Icon';
-
-import {displayNoOfCharacters} from './../../../utils/common';
+import { displayNoOfCharacters } from './../../../utils/common';
+import { reviewersNameFormat } from './../../../utils/dateFormat';
+import ReviewVerifyIcon from '../icons/ReviewVerifyIcon';
 
 const TestimonialsCarouselWidget = (props) => {
     const blockId = props.formParams.blockId;
-
+    console.log(props.shopRecords);
     const iconColor = (props.formParams.widget_icon_color != "rgba(0,0,0,0)" && props.formParams.widget_icon_color != "") ? props.formParams.widget_icon_color : props.generalAppearancesModel.starIconColor;
-    const textColor = (props.formParams.text_color != "rgba(0,0,0,0)" && props.formParams.text_color != "") ? props.formParams.text_color : '#ffffff';
+    const textColor = (props.formParams.text_color != "rgba(0,0,0,0)" && props.formParams.text_color != "") ? props.formParams.text_color : '#000000';
     const reviewerNameColor = (props.formParams.reviewer_name_color != "rgba(0,0,0,0)" && props.formParams.reviewer_name_color != "") ? props.formParams.reviewer_name_color : '#000000';
     const selectedDotColor = (props.formParams.selected_dot_color != "rgba(0,0,0,0)" && props.formParams.selected_dot_color != "") ? props.formParams.selected_dot_color : '#000000';
     const dotBackgroundColor = (props.formParams.dot_background_color != "rgba(0,0,0,0)" && props.formParams.dot_background_color != "") ? props.formParams.dot_background_color : '#cccccc';
@@ -97,7 +98,12 @@ const TestimonialsCarouselWidget = (props) => {
                                         {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 4 ? iconColor : "currentColor"} /> : null}
                                         {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 5 ? iconColor : "currentColor"} /> : null}
                                     </div>
-                                    <div class="reviewer_name">{review.display_name}</div>
+                                    <div class="reviewer_name">{reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}</div>
+                                    {review.verify_badge &&
+                                        <div className='verifiedreview'>
+                                            <ReviewVerifyIcon />
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         ))}

@@ -78,16 +78,16 @@ export default function EmailTemplateSettings() {
 	let emailTemplateName;
 	switch (type) {
 		case 'review-request':
-			content = <ReviewRequest shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} />;
+			content = <ReviewRequest shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} generalSettingsModel={generalSettingsModel} />;
 			emailTemplateName = "Review request"
 			break;
 		case 'review-reply':
-			content = <ReviewReply shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} />;
+			content = <ReviewReply shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} generalSettingsModel={generalSettingsModel}  />;
 			emailTemplateName = "Reply to review"
 
 			break;
 		case 'discount-photo-video-review':
-			content = <DiscountPhotoVideoReview shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} />;
+			content = <DiscountPhotoVideoReview shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} generalSettingsModel={generalSettingsModel}  />;
 			emailTemplateName = "Discount for photo/video review"
 
 			break;

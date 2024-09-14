@@ -47,7 +47,6 @@ const SnippetWidget = (props) => {
                                                     <VideoPlayIcon />
                                                 </button>
                                             </div>
-
                                         </div>
                                     )}
 

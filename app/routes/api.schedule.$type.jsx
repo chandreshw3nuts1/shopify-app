@@ -8,6 +8,8 @@ import manualReviewRequests from "./models/manualReviewRequests";
 import manualRequestProducts from "./models/manualRequestProducts";
 
 import generalAppearances from "./models/generalAppearances";
+import generalSettings from './models/generalSettings';
+
 import settingsJson from './../utils/settings.json';
 import { addDaysToDate } from './../utils/dateFormat';
 import { getUploadDocument } from './../utils/documentPath';
@@ -129,8 +131,6 @@ export async function action({ request, params }) {
                                         var mapProductDetails = await getShopifyProducts(shop.shop, productIds, 200);
                                         const customer_locale = singleOrder.customer_locale;
 
-                                        const footer = "";
-
                                         const replaceVars = {
                                             "order_number": singleOrder.order_number,
                                             "name": singleOrder.first_name,
@@ -143,8 +143,17 @@ export async function action({ request, params }) {
 
                                         emailContents.logo = getUploadDocument(generalAppearancesObj.logo, shop.shop_id, 'logo');
 
+                                        var generalSettingsModel = await generalSettings.findOne({ shop_id: shop._id });
+
+                                        var footerContent = "";
+                                        if (generalSettingsModel.email_footer_enabled) {
+                                            footerContent = generalSettingsModel[customer_locale] ? generalSettingsModel[customer_locale].footerText : "";
+                                        }
+                                        emailContents.footerContent = footerContent;
+                                        emailContents.email_footer_enabled = generalSettingsModel.email_footer_enabled;
+
                                         var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
-                                            <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} footer={footer} />
+                                            <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} />
                                         );
 
                                         await Promise.all(singleOrder.manualRequestProducts.map(async (product, index) => {

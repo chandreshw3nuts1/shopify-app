@@ -1,4 +1,3 @@
-import { format, formatDistanceToNow } from 'date-fns';
 import moment from 'moment-timezone';
 
 export const formatDate = (date, timeZone = "Asia/Kolkata", formatDate = "YYYY-MM-DD") => {
@@ -51,3 +50,23 @@ export const isValidDateFormat = (dateString) => {
 	
 	return null;
 }
+
+/* returns name format for reviews*/
+export function reviewersNameFormat(firstName = "", lastName = "", format = "default") {
+	switch (format) {
+	  case "default":
+		return `${firstName} ${lastName.charAt(0)}.`;
+		
+	  case "fn":
+		return firstName;
+		
+	  case "ln":
+		return lastName;
+		
+	  case "initial":
+		return `${firstName.charAt(0)}. ${lastName.charAt(0)}.`;
+		
+	  default:
+		return `${firstName} ${lastName}`;
+	}
+  }

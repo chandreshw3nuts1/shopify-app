@@ -12,7 +12,14 @@ const generalSettingsSchema = new mongoose.Schema({
     reply_email: {type: String, default : "" },
     email_footer_enabled : {type : Boolean , default : false},
     is_enabled_video_review: { type: Boolean, default: false },
-
+    reviewers_name_format: { type: String, default : "default" },
+    verified_review_style: { type: String, default : "icon" },
+    is_enable_import_from_external_source: { type: Boolean, default : false },
+    is_enable_marked_verified_by_store_owner: { type: Boolean, default : false },
+    is_enable_review_written_by_site_visitor: { type: Boolean, default : false },
+    is_enable_review_not_verified: { type: Boolean, default : false },
+    is_enable_future_purchase_discount: { type: Boolean, default : false },
+    
     en: { "type": "Object" },
     fr: { "type": "Object" },
     es: { "type": "Object" },

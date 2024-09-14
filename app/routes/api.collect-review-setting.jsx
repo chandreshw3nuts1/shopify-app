@@ -53,9 +53,15 @@ export async function action({ params, request }) {
 
                     emailContents.logo = logo;
 
-                    const footer = "";
+                    var footerContent = "";
+                    if (generalSettingsModel.email_footer_enabled) {
+                        footerContent = generalSettingsModel[customer_locale] ? generalSettingsModel[customer_locale].footerText : "";
+                    }
+                    emailContents.footerContent = footerContent;
+                    emailContents.email_footer_enabled = generalSettingsModel.email_footer_enabled;
+
                     var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
-                        <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} footer={footer} />
+                        <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} />
                     );
                     const updateEmailsAndSendRequests = async () => {
                         const emailPromises = emails.map(async (email, index) => {

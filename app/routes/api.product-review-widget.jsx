@@ -52,7 +52,6 @@ export async function action({ request }) {
 				if (actionType == "uploadDocuments") {
 					const files = formData.getAll("image_and_videos[]");
 					const uploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/`);
-					const thumbUploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/thumbs/`);
 					fs.mkdirSync(uploadsDir, { recursive: true });
 					const imageAndVideoFiles = [];
 					for (let i = 0; i < files.length; i++) {
@@ -73,7 +72,7 @@ export async function action({ request }) {
 								if (validImageExtensions.includes(fileExtension)) {
 									const fileSizeMB = fileSize / (1024 * 1024); // Convert bytes to MB
 
-									if(fileSizeMB >= 1) {
+									if (fileSizeMB >= 1) {
 										fileNameImgVd = `resize-${fileName}`;
 
 										await resizeImages(filePath, uploadsDir, fileNameImgVd);
@@ -82,7 +81,7 @@ export async function action({ request }) {
 									fileNameImgVd = fileName;
 								}
 
-			
+
 								imageAndVideoFiles.push(fileNameImgVd);
 							}
 						}
@@ -152,7 +151,9 @@ export async function action({ request }) {
 						var reviewStatus = 'pending';
 					} else {
 
-						if (settings.reviewPublishMode == 'auto' || settings.reviewPublishMode == '5star') {
+						if (settings.reviewPublishMode == 'auto') {
+							var reviewStatus = 'publish';
+						} else if (settings.reviewPublishMode == '5star' && reviewStarRating == 5) {
 							var reviewStatus = 'publish';
 						} else if (settings.reviewPublishMode == 'above4' && reviewStarRating >= 4) {
 							var reviewStatus = 'publish';
@@ -296,8 +297,7 @@ export async function action({ request }) {
 
 						const discountCodeResponse = await createShopifyDiscountCode(shopRecords, hasPhoto, hasVideo, is_review_request);
 
-
-						if (discountCodeResponse) {
+						if (Object.keys(discountCodeResponse).length > 0) {
 							discountText = discountCodeResponse.value_type == 'percentage' ? `${discountCodeResponse.discount_value}%` : `${shopRecords.currency_symbol}${discountCodeResponse.discount_value}`;
 							const replaceVars = {
 								"discount": discountText,
@@ -311,7 +311,12 @@ export async function action({ request }) {
 							emailContentsDiscount.logo = logo;
 							emailContentsDiscount.discountCode = discountCode;
 							emailContentsDiscount.expire_on_date = discountCodeResponse.expire_on_date != "" ? formatDate(discountCodeResponse.expire_on_date, shopRecords.timezone, "MM-DD-YYYY") : "";
-
+							var footerContent = "";
+							if (generalSettingsModel.email_footer_enabled) {
+								footerContent = generalSettingsModel[customer_locale] ? generalSettingsModel[customer_locale].footerText : "";
+							}
+							emailContentsDiscount.footerContent = footerContent;
+							emailContentsDiscount.email_footer_enabled = generalSettingsModel.email_footer_enabled;
 
 							var discountEmailHtmlContent = ReactDOMServer.renderToStaticMarkup(
 								<DiscountPhotoVideoReviewEmail emailContents={emailContentsDiscount} generalAppearancesObj={generalAppearancesData} shopRecords={shopRecords} />
@@ -418,10 +423,9 @@ export async function action({ request }) {
 
 					};
 
-					const footer = "";
 					const subject = `New review (${formData.get('rating')}★) of ${productNodes.title} ${display_name}`;
 					const emailHtml = ReactDOMServer.renderToStaticMarkup(
-						<EmailTemplate emailContents={emailContents} footer={footer} />
+						<EmailTemplate emailContents={emailContents} />
 					);
 
 					const response = await sendEmail({

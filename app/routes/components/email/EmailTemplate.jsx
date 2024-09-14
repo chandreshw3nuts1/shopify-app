@@ -1,7 +1,7 @@
 import React from 'react';
 import settingJson from './../../../utils/settings.json';
 
-const EmailTemplate = ({ emailContents, footer }) => {
+const EmailTemplate = ({ emailContents }) => {
 
     const checkMarkEmail = settingJson.host_url + '/app/images/email_template/check-mark-email.png';
     const mainStarIcon = settingJson.host_url + '/app/images/email_template/main-star-icon.png';
@@ -240,7 +240,7 @@ const EmailTemplate = ({ emailContents, footer }) => {
                                             </tr>
                                             <tr>
                                                 <td align="center" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#222222">
-                                                    This email is sent for <a href="#" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#222222;text-decoration:underline">companyname@gmail.com</a>
+                                                    This email is sent for <a href="https://${emailContents.shop_domain}" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#222222;text-decoration:underline">${emailContents.shop_domain}</a>
                                                 </td>
                                             </tr>
                                             <tr>

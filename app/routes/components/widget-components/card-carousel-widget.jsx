@@ -1,6 +1,8 @@
 import { getUploadDocument } from './../../../utils/documentPath';
 import VideoPlayIcon from '../icons/VideoPlayIcon';
 import { displayNoOfCharacters } from './../../../utils/common';
+import { reviewersNameFormat } from './../../../utils/dateFormat';
+import ReviewVerifyIcon from '../icons/ReviewVerifyIcon';
 
 const CardCarouselWidget = (props) => {
     const blockId = props.formParams.blockId;
@@ -62,7 +64,12 @@ const CardCarouselWidget = (props) => {
                                         </div>
                                     )}
                                     <div className='bottom_meta'>
-                                        <div class="reviewer_name">{review.display_name}</div>
+                                        <div class="reviewer_name">{reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}</div>
+                                        {review.verify_badge &&
+                                                <div className='verifiedreview'>
+                                                    <ReviewVerifyIcon />
+                                                </div>
+                                        }    
                                         <div class="review_description">{displayNoOfCharacters(props.formParams.no_of_chars, review.description)}</div>
 
                                         <div className={`ratingstars flxrow star-${review.rating}`}>

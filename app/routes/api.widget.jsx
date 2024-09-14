@@ -52,7 +52,14 @@ export async function action({ request }) {
 
         const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
 
-
+		shopRecords.reviewers_name_format = generalSettingsModel.reviewers_name_format;
+		shopRecords.verified_review_style = generalSettingsModel.verified_review_style;
+		shopRecords.is_enable_import_from_external_source = generalSettingsModel.is_enable_import_from_external_source;
+		shopRecords.is_enable_marked_verified_by_store_owner = generalSettingsModel.is_enable_marked_verified_by_store_owner;
+		shopRecords.is_enable_review_written_by_site_visitor = generalSettingsModel.is_enable_review_written_by_site_visitor;
+		shopRecords.is_enable_review_not_verified = generalSettingsModel.is_enable_review_not_verified;
+		shopRecords.is_enable_future_purchase_discount = generalSettingsModel.is_enable_future_purchase_discount;
+        
         var customer_locale = formData.get('customer_locale') || generalSettingsModel.defaul_language;
         const shopSessionRecords = await findOneRecord("shopify_sessions", { shop: shop });
         const generalAppearancesModel = await generalAppearances.findOne({
@@ -183,6 +190,7 @@ export async function action({ request }) {
                             product_id: { $first: "$product_id" },
                             tag_as_feature: { $first: "$tag_as_feature" },
                             verify_badge: { $first: "$verify_badge" },
+                            is_imported: { $first: "$is_imported" },
                             reviewDocuments: { $first: "$reviewDocuments" }, // Use $first to avoid duplicates
                             reviewQuestionsAnswer: {
                                 $push: {
@@ -231,6 +239,7 @@ export async function action({ request }) {
                             is_review_request: 1,
                             tag_as_feature: 1,
                             verify_badge: 1,
+                            is_imported : 1,
                             reviewDocuments: {
                                 $filter: {
                                     input: "$reviewDocuments",
@@ -466,6 +475,7 @@ export async function action({ request }) {
                             last_name: { $first: "$last_name" },
                             createdAt: { $first: "$createdAt" },
                             product_id: { $first: "$product_id" },
+                            verify_badge: { $first: "$verify_badge" },
                             reviewDocuments: { $first: "$reviewDocuments" }, // Use $first to avoid duplicates
                         }
                     },
@@ -482,6 +492,7 @@ export async function action({ request }) {
                             last_name: 1,
                             createdAt: 1,
                             product_id: 1,
+                            verify_badge :1,
                             reviewDocuments: {
                                 $arrayElemAt: [
                                     {
@@ -720,7 +731,8 @@ export async function action({ request }) {
                             last_name: { $first: "$last_name" },
                             description: { $first: "$description" },
                             createdAt: { $first: "$createdAt" },
-                            product_id: { $first: "$product_id" }
+                            product_id: { $first: "$product_id" },
+                            verify_badge: { $first: "$verify_badge" }
                         }
                     },
                     {
@@ -735,11 +747,13 @@ export async function action({ request }) {
                             last_name: 1,
                             description: 1,
                             createdAt: 1,
-                            product_id: 1
+                            product_id: 1,
+                            verify_badge: 1
+                            
                         }
                     }
                 ]);
-
+                
                 const formParams = {
                     font_size,
                     no_of_chars,
@@ -756,7 +770,7 @@ export async function action({ request }) {
                     blockId
                 }
 
-                const dynamicComponent = <TestimonialsCarouselWidget formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} reviewItems={reviewItems} />;
+                const dynamicComponent = <TestimonialsCarouselWidget shopRecords={shopRecords} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} reviewItems={reviewItems} />;
                 const content = ReactDOMServer.renderToString(dynamicComponent);
                 return json({
                     content: content
@@ -1114,6 +1128,7 @@ async function getImageAndVideoForCarousel(shopRecords, limit = null) {
                 description: { $first: "$description" },
                 createdAt: { $first: "$createdAt" },
                 product_id: { $first: "$product_id" },
+                verify_badge: { $first: "$verify_badge" },
                 reviewDocuments: { $first: "$reviewDocuments" } // Use $first to avoid duplicates
             }
         },
@@ -1130,6 +1145,7 @@ async function getImageAndVideoForCarousel(shopRecords, limit = null) {
                 description: 1,
                 createdAt: 1,
                 product_id: 1,
+                verify_badge :1,
                 reviewDocuments: {
                     $arrayElemAt: [
                         {

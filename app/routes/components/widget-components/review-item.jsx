@@ -1,6 +1,6 @@
 import { getUploadDocument } from './../../../utils/documentPath';
 import PlayIcon from '../icons/PlayIcon';
-import { formatDate } from './../../../utils/dateFormat';
+import { formatDate, reviewersNameFormat } from './../../../utils/dateFormat';
 import ReviewVerifyIcon from '../icons/ReviewVerifyIcon';
 import { displayNoOfCharacters } from './../../../utils/common';
 const ReviewItem = (props) => {
@@ -115,13 +115,30 @@ const ReviewItem = (props) => {
                                                 <div className='mid_detail flxflexi'>
                                                     <div className='nametitle flxrow align-items-center'>
                                                         <h4 style={{ color: reviewsText }}>
-                                                            {review.display_name}
+                                                            {reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}
                                                         </h4>
-                                                        {review.verify_badge &&
-                                                            <div className='verifiedreview'>
-                                                                <ReviewVerifyIcon /> {translations.verifiedPurchase}
-                                                            </div>
-                                                        }
+                                                        {review.verify_badge ? (
+                                                            <>
+                                                                {props.shopRecords.verified_review_style == "icon" ? (
+                                                                    <div className='verifiedreview'>
+                                                                        <ReviewVerifyIcon />
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className='verifiedreview'>
+                                                                        <ReviewVerifyIcon /> {translations.verifiedPurchase}
+                                                                    </div>
+                                                                )}
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                {props.shopRecords.is_enable_review_not_verified &&
+                                                                    <div className='verifiedreview'>
+                                                                        {translations.unVerifiedPurchase}
+                                                                    </div>
+                                                                }
+                                                            </>
+                                                        )}
+
                                                     </div>
                                                     {productReviewWidgetCustomizesModel.reviewDates == 'show' &&
                                                         <div className="date" style={{ color: reviewsText }}>{formatDate(review.createdAt, props.shopRecords.timezone, 'M/D/YYYY')}</div>
@@ -162,13 +179,29 @@ const ReviewItem = (props) => {
                                                     <div className='mid_detail flxrow'>
                                                         <div className='nametitle flxrow align-items-center'>
                                                             <h4 style={{ color: reviewsText }}>
-                                                                {review.display_name}
+                                                                {reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}
                                                             </h4>
-                                                            {review.verify_badge &&
-                                                                <div className='verifiedreview'>
-                                                                    <ReviewVerifyIcon /> {translations.verifiedPurchase}
-                                                                </div>
-                                                            }
+                                                            {review.verify_badge ? (
+                                                                <>
+                                                                    {props.shopRecords.verified_review_style == "icon" ? (
+                                                                        <div className='verifiedreview'>
+                                                                            <ReviewVerifyIcon />
+                                                                        </div>
+                                                                    ) : (
+                                                                        <div className='verifiedreview'>
+                                                                            <ReviewVerifyIcon /> {translations.verifiedPurchase}
+                                                                        </div>
+                                                                    )}
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    {props.shopRecords.is_enable_review_not_verified &&
+                                                                        <div className='verifiedreview'>
+                                                                            {translations.unVerifiedPurchase}
+                                                                        </div>
+                                                                    }
+                                                                </>
+                                                            )}
                                                         </div>
                                                         {productReviewWidgetCustomizesModel.reviewDates == 'show' &&
                                                             <div className="date" style={{ color: reviewsText }}>{formatDate(review.createdAt, props.shopRecords.timezone, 'M/D/YYYY')}</div>
@@ -264,13 +297,29 @@ const ReviewItem = (props) => {
                                                     <div className='mid_detail flxflexi'>
                                                         <div className='nametitle flxrow align-items-center'>
                                                             <h4 style={{ color: reviewsText }}>
-                                                                {review.display_name}
+                                                                {reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}
                                                             </h4>
-                                                            {review.verify_badge &&
-                                                                <div className='verifiedreview'>
-                                                                    <ReviewVerifyIcon /> {translations.verifiedPurchase}
-                                                                </div>
-                                                            }
+                                                            {review.verify_badge ? (
+                                                                <>
+                                                                    {props.shopRecords.verified_review_style == "icon" ? (
+                                                                        <div className='verifiedreview'>
+                                                                            <ReviewVerifyIcon />
+                                                                        </div>
+                                                                    ) : (
+                                                                        <div className='verifiedreview'>
+                                                                            <ReviewVerifyIcon /> {translations.verifiedPurchase}
+                                                                        </div>
+                                                                    )}
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    {props.shopRecords.is_enable_review_not_verified &&
+                                                                        <div className='verifiedreview'>
+                                                                            {translations.unVerifiedPurchase}
+                                                                        </div>
+                                                                    }
+                                                                </>
+                                                            )}
                                                         </div>
                                                         {productReviewWidgetCustomizesModel.reviewDates == 'show' &&
                                                             <div className="date" style={{ color: reviewsText }}>{formatDate(review.createdAt, props.shopRecords.timezone, 'M/D/YYYY')}</div>

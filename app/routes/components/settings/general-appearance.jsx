@@ -9,7 +9,7 @@ import ColorPicker from "./ColorPicker";
 import SampleAppearanceEmailTemplate from './../email/SampleAppearanceEmailTemplate';
 
 
-export default function GeneralAppearance({ shopRecords, generalAppearances }) {
+export default function GeneralAppearance({ shopRecords, generalAppearances, generalSettingsModel }) {
 	const [starIcon, setStarIcon] = useState(generalAppearances?.starIcon);
 	const [cornerRadiusSelection, setCornerRadiusSelection] = useState(generalAppearances?.cornerRadius);
 	const [widgetFontSelection, setWidgetFontSelection] = useState(generalAppearances?.widgetFont);
@@ -161,11 +161,18 @@ export default function GeneralAppearance({ shopRecords, generalAppearances }) {
 	};
 	const viewSample = (e) => {
 		e.preventDefault();
+		var footerContent = "";
+        if(generalSettingsModel.email_footer_enabled) {
+			const defaultLang = generalSettingsModel.defaul_language;
+            footerContent = generalSettingsModel[defaultLang] ? generalSettingsModel[defaultLang].footerText : "";
+        }
 		const sampleEmailData = {
 			logo: getUploadDocument(documentObj?.logo, shopRecords.shop_id, 'logo'),
 			body: settingsJson.defaultSampleEmailBody,
 			banner: getUploadDocument(documentObj?.banner, shopRecords.shop_id, 'banners'),
 			getDefaultProductImage: getDefaultProductImage(),
+			email_footer_enabled : generalSettingsModel.email_footer_enabled,
+			footerContent: footerContent,
 		}
 
 		setEmailContents(sampleEmailData);

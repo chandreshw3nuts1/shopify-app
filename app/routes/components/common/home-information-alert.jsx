@@ -18,12 +18,6 @@ const HomeInformationAlert = ({ alertKey, className }) => {
         localStorage.setItem(`infoAlertDismissed_${alertKey}`, 'true');
     };
 
-    const showBrandingPage = (e) => {
-        e.preventDefault();
-        navigate('/app/branding');
-    }
-
-
     return (
         <>
             {

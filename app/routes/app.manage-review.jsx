@@ -4,6 +4,7 @@ import ReviewPageSidebar from "./components/headerMenu/ReviewPageSidebar";
 import RatingSummary from "./components/manageReview/RatingSummary";
 import ReviewItem from "./components/manageReview/ReviewItem";
 import { useNavigate } from 'react-router-dom';
+import generalSettings from './models/generalSettings';
 
 import { mongoConnection } from './../utils/mongoConnection';
 import { getShopDetails } from './../utils/getShopDetails';
@@ -54,9 +55,11 @@ export async function loader({ request }) {
 			"search_keyword": "",
 			"filter_options": "all",
 		}
-		// const reviewItems = await fetchAllReviewsApi(defaultSearchParams);
 
-
+		const generalSettingsModel = await generalSettings.findOne({
+			shop_id: shopRecords._id
+		});
+		shopRecords.reviewers_name_format = generalSettingsModel.reviewers_name_format;
 		return json({ "outputRatting": outputRatting, "countRating": countRating.length, "shopRecords": shopRecords, "defaultSearchParams": defaultSearchParams });
 	} catch (error) {
 		console.error('Error fetching manage review:', error);

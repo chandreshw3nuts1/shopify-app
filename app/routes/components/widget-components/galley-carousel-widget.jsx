@@ -1,5 +1,7 @@
 import { getUploadDocument } from './../../../utils/documentPath';
 import VideoPlayIcon from '../icons/VideoPlayIcon';
+import { reviewersNameFormat } from './../../../utils/dateFormat';
+import ReviewVerifyIcon from '../icons/ReviewVerifyIcon';
 
 const GalleyCarouselWidget = (props) => {
     const blockId = props.formParams.blockId;
@@ -59,7 +61,12 @@ const GalleyCarouselWidget = (props) => {
                                     )}
 
                                     <div className='bottom_meta'>
-                                        <div class="reviewer_name">{review.display_name}</div>
+                                        <div class="reviewer_name">{reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}</div>
+                                        {review.verify_badge &&
+                                            <div className='verifiedreview'>
+                                                <ReviewVerifyIcon />
+                                            </div>
+                                        }
                                         <div className={`ratingstars flxrow star-${review.rating}`}>
                                             {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 1 ? iconColor : "currentColor"} /> : null}
                                             {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 2 ? iconColor : "currentColor"} /> : null}

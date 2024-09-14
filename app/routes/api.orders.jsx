@@ -10,6 +10,7 @@ import manualRequestProducts from "./models/manualRequestProducts";
 import generalAppearances from "./models/generalAppearances";
 import reviewRequestTimingSettings from './models/reviewRequestTimingSettings';
 import reviewRequestTracks from './models/reviewRequestTracks';
+import generalSettings from './models/generalSettings';
 
 import { getUploadDocument } from './../utils/documentPath';
 import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTemplate';
@@ -190,8 +191,6 @@ export async function action({ request }) {
 
 						const customer_locale = manualRequestModel.customer_locale;
 
-						const footer = "";
-
 						const replaceVars = {
 							"order_number": manualRequestModel.order_number,
 							"name": manualRequestModel.first_name,
@@ -203,8 +202,18 @@ export async function action({ request }) {
 						emailContents.logo = logo;
 
 
+						var generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
+
+						var footerContent = "";
+						if (generalSettingsModel.email_footer_enabled) {
+							footerContent = generalSettingsModel[customer_locale] ? generalSettingsModel[customer_locale].footerText : "";
+						}
+						emailContents.footerContent = footerContent;
+						emailContents.email_footer_enabled = generalSettingsModel.email_footer_enabled;
+
+
 						var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
-							<ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} footer={footer} />
+							<ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} />
 						);
 
 						await Promise.all(manualRequestProductsModel.map(async (product, index) => {

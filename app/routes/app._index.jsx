@@ -5,23 +5,11 @@ import { useNavigate } from 'react-router-dom';
 
 import { getShopDetails } from './../utils/getShopDetails';
 import HomeInformationAlert from './components/common/home-information-alert';
+import EnableAppEmbedAlert from './components/common/enable-app-embed-alert';
 import Cookies from 'js-cookie';
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 
-import {
-	Page,
-	Layout,
-	Text,
-	Card,
-	Button,
-	BlockStack,
-	Box,
-	List,
-	Link,
-	InlineStack,
-	Grid,
-	LegacyCard
-} from "@shopify/polaris";
+
 import bannerImage from "./../images/medium-shot-young-people-with-reviews.jpg"
 import { Dropdown, DropdownButton, Image } from 'react-bootstrap';
 
@@ -36,16 +24,18 @@ import ImpressionsDashIcon from "./components/icons/ImpressionsDashIcon";
 import InfoFillIcon from "./components/icons/InfoFillIcon";
 import settingsJson from './../utils/settings.json';
 import 'react-tooltip/dist/react-tooltip.css';
+import { getAllThemes, checkAppEmbedAppStatus } from './../utils/common';
 
 
 export const loader = async ({ request }) => {
 	try {
 
 		const shopRecords = await getShopDetails(request);
+		const activeThemes = await getAllThemes(shopRecords.shop, true);
+		const isEnabledAppEmbed = await checkAppEmbedAppStatus(shopRecords.shop, activeThemes.id);
+        const reviewExtensionId = process.env.SHOPIFY_ALL_REVIEW_EXTENSION_ID;
 
-
-
-		return json({ shopRecords });
+		return json({ shopRecords, isEnabledAppEmbed, reviewExtensionId, activeThemes });
 
 	} catch (error) {
 		console.error('Error fetching records:', error);
@@ -71,7 +61,7 @@ export async function fetchStatisticApi(requestParams) {
 	}
 }
 export default function Index() {
-	const { shopRecords } = useLoaderData();
+	const { shopRecords, isEnabledAppEmbed, reviewExtensionId, activeThemes } = useLoaderData();
 	const [selectedDays, setSelectedDays] = useState(30);
 	const [daysFilterTitle, setDaysFilterTitle] = useState('30 days');
 	const [statisticResponse, setStatisticResponse] = useState({});
@@ -121,8 +111,11 @@ export default function Index() {
 	return (
 		<>
 			<div className="dashboardwrap max1048 mx-auto">
-				<HomeInformationAlert alertKey="home_header_info" />
-				
+				{/* <HomeInformationAlert alertKey="home_header_info" /> */}
+
+				{!isEnabledAppEmbed && 
+					<EnableAppEmbedAlert alertKey="home_header_info" shopRecords={shopRecords} reviewExtensionId={reviewExtensionId} activeThemeId={activeThemes.id} />
+				}
 
 				<div className="dashbbanner">
 					<div className="detailbox flxflexi">

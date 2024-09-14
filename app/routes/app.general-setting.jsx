@@ -4,7 +4,7 @@ import Breadcrumb from "./components/Breadcrumb";
 import SettingPageSidebar from "./components/headerMenu/SettingPageSidebar";
 import { getShopDetails } from './../utils/getShopDetails';
 import generalSettings from './models/generalSettings';
-// import { findOneRecord } from './../utils/common';
+import { getAllThemes } from './../utils/common';
 import CrownIcon from '../images/crown-icon.svg'
 import { Image } from "react-bootstrap";
 import AlertInfo from "./components/AlertInfo";
@@ -22,11 +22,16 @@ export async function loader({ request }) {
 	try {
 
 		const shopRecords = await getShopDetails(request);
+
+		const allThemes = await getAllThemes(shopRecords.shop);
+
 		const generalSettingsModel = await generalSettings.findOne({
 			shop_id: shopRecords._id
 		});
 
-		return json({ shopRecords, generalSettingsModel });
+		const reviewExtensionId = process.env.SHOPIFY_ALL_REVIEW_EXTENSION_ID;
+
+		return json({ shopRecords, generalSettingsModel, allThemes, reviewExtensionId });
 
 	} catch (error) {
 		console.error('Error fetching records:', error);
@@ -39,6 +44,11 @@ export default function GeneralSettings() {
 	const loaderData = useLoaderData();
 	const shopRecords = loaderData.shopRecords;
 	const [generalSettings, setGeneralSettings] = useState(loaderData.generalSettingsModel);
+	const reviewExtensionId = loaderData.reviewExtensionId;
+	const allThemes = loaderData.allThemes;
+
+	const [selectedTheme, setSelectedTheme] = useState('');
+	const [addAppThemeButton, setAddAppThemeButton] = useState(false);
 
 	const [initialData, setInitialData] = useState({});
 
@@ -51,14 +61,41 @@ export default function GeneralSettings() {
 	const [isEnableFooterTextChecked, setIsEnableFooterTextChecked] = useState(
 		generalSettings?.email_footer_enabled || false
 	);
+	const [isEnableImportFromExternalSource, setIsEnableImportFromExternalSource] = useState(
+		generalSettings?.is_enable_import_from_external_source || false
+	);
+	const [isEnableFuturePurchaseDiscount, setIsEnableFuturePurchaseDiscount] = useState(
+		generalSettings?.is_enable_future_purchase_discount || false
+	);
+	const [isEnableReviewNotVerified, setIsEnableReviewNotVerified] = useState(
+		generalSettings?.is_enable_review_not_verified || false
+	);
+	const [isEnableReviewWrittenBySiteVisitor, setIsEnableReviewWrittenBySiteVisitor] = useState(
+		generalSettings?.is_enable_review_written_by_site_visitor || false
+	);
+	const [isEnableMarkedVerifiedByStoreOwner, setIsEnableMarkedVerifiedByStoreOwner] = useState(
+		generalSettings?.is_enable_marked_verified_by_store_owner || false
+	);
+	
 	const [currentLanguage, setCurrentLanguage] = useState(generalSettings?.defaul_language || '');
 	const [footerText, setFooterText] = useState('');
+
+	let themesOptions = allThemes.map(theme => ({
+		label: theme.name,
+		value: theme.id
+	}));
+	themesOptions = [
+		{ label: 'Please select theme', value: '' },
+		...themesOptions
+	];
 
 
 	const formattedLanguages = settingsJson.languages.map(language => ({
 		value: language.code,
 		label: language.lang
 	}));
+
+
 
 	useEffect(() => {
 
@@ -207,6 +244,16 @@ export default function GeneralSettings() {
 			}
 			if (eventKey == 'email_footer_enabled') {
 				setIsEnableFooterTextChecked(!event.target.checked);
+			} else if (eventKey == 'is_enable_import_from_external_source') {
+				setIsEnableImportFromExternalSource(!event.target.checked);
+			} else if (eventKey == 'is_enable_marked_verified_by_store_owner') {
+				setIsEnableMarkedVerifiedByStoreOwner(!event.target.checked);
+			} else if (eventKey == 'is_enable_review_written_by_site_visitor') {
+				setIsEnableReviewWrittenBySiteVisitor(!event.target.checked);
+			} else if (eventKey == 'is_enable_review_not_verified') {
+				setIsEnableReviewNotVerified(!event.target.checked);
+			} else if (eventKey == 'is_enable_future_purchase_discount') {
+				setIsEnableFuturePurchaseDiscount(!event.target.checked);
 			}
 		} catch (error) {
 			console.error('Error updating record:', error);
@@ -255,6 +302,28 @@ export default function GeneralSettings() {
 
 	}
 
+	const handleSelectThemeChange = async (value, name) => {
+		setSelectedTheme(parseInt(value));
+		if (value == "") {
+			setAddAppThemeButton(false);
+		} else {
+			setAddAppThemeButton(true);
+		}
+	};
+
+	const addAppEmbedToTheme = async () => {
+		const appEmbedUrl = `https://admin.shopify.com/store/${shopRecords.name}/themes/${selectedTheme}/editor?context=apps&activateAppId=${reviewExtensionId}%2Fapp-embed`;
+		window.open(appEmbedUrl, '_blank');
+	}
+
+	const reviewerNameFormatOptions = [
+		{ "value": "default", "label": "First name, last initial (John S.)" },
+		{ "value": "fn", "label": "First name (John)" },
+		{ "value": "ln", "label": "Last name (Smith)" },
+		{ "value": "initial", "label": "First initial, last initial (J. S.)" },
+	];
+
+
 	const crumbs = [
 		{ "title": "Settings", "link": "./../branding" },
 		{ "title": "General setting", "link": "" }
@@ -279,44 +348,51 @@ export default function GeneralSettings() {
 								</div>
 								<div className="detailbox flxflexi">
 									<h6>Our plans</h6>
-									<p>Choose the right W3 Reviews plan to grow your business</p>
+									<p>Choose the right {settingsJson.app_name} Reviews plan to grow your business</p>
 								</div>
 								<div className="linkicon flxfix">
 									<i className="twenty-longarrow-right"></i>
 								</div>
 							</a>
 						</div>
-						{/* <div className="whitebox">
-						<div className="general_row">
-							<div className="row_title">
-								<div className="flxflexi lefttitle">
-									<h4>Add W3 Reviews to your theme</h4>
-									<p>Send customers a next-purchase code after submitting a review with a photo/video.</p>
-								</div>
-							</div>
-							<div className="formrow flxrow gapx24">
-								<div className="flxflexi">
-									<div className="form-group m-0">
-										<select className="input_text">
-											<option>Theme 1</option>
-											<option>Theme 2</option>
-											<option>Theme 3</option>
-											<option>Theme 4</option>
-										</select>
+						<div className="whitebox">
+							<div className="general_row">
+								<div className="row_title">
+									<div className="flxflexi lefttitle">
+										<h4>Add {settingsJson.app_name} to your theme</h4>
+										<p><b>To enable the {settingsJson.app_name} Core Script on your Shopify theme, follow the steps below.</b></p>
+										<p>1 . Select the theme you want to integrate with {settingsJson.app_name}</p>
+										<p>2 . Click "Add {settingsJson.app_name} to your theme"</p>
+										<p>3 . Make sure "{settingsJson.app_name} Core Script" is on</p>
+										<p>4 . Click "Save"</p>
 									</div>
 								</div>
-								<div className="flxfix">
-									<input type="submit" value="Add W3 Reviews to your theme" className="revbtn" />
+								<div className="formrow flxrow gapx24">
+									<div className="flxflexi">
+										<div className="form-group m-0">
+											<Select
+												name="theme_id"
+												id="theme_id"
+												options={themesOptions}
+												onChange={
+													handleSelectThemeChange
+												}
+												value={selectedTheme}
+											/>
+										</div>
+									</div>
+									<div className="flxfix">
+										<button type="button" className="revbtn" onClick={addAppEmbedToTheme} disabled={!addAppThemeButton}  >Add {settingsJson.app_name} to your theme</button>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div> */}
 						<div className="whitebox">
 							<div className="general_row">
 								<div className="row_title">
 									<div className="flxflexi lefttitle">
 										<h4>Localization</h4>
-										<p>Customize the languages used in W3 widgets and emails</p>
+										<p>Customize the languages used in {settingsJson.app_name} widgets and emails</p>
 									</div>
 								</div>
 								<div className="formrow">
@@ -364,7 +440,7 @@ export default function GeneralSettings() {
 								<div className="row_title">
 									<div className="flxflexi lefttitle">
 										<h4>Email replies address</h4>
-										<p>Customer replies to W3 emails will be sent to this email address</p>
+										<p>Customer replies to {settingsJson.app_name} emails will be sent to this email address</p>
 									</div>
 								</div>
 								<div className="formrow">
@@ -390,7 +466,7 @@ export default function GeneralSettings() {
 								<div className="row_title">
 									<div className="flxflexi lefttitle">
 										<h4>Email footer</h4>
-										<p>Display text in the footer of W3 emails</p>
+										<p>Display text in the footer of {settingsJson.app_name} emails</p>
 									</div>
 									<div className="flxfix rightaction">
 										<div className="form-check form-switch">
@@ -458,7 +534,7 @@ export default function GeneralSettings() {
 								<div className="row_title">
 									<div className="flxflexi lefttitle">
 										<h4>Email compliance</h4>
-										<p>Choose who receives W3 emails, and how to handle unsubscribes</p>
+										<p>Choose who receives {settingsJson.app_name} emails, and how to handle unsubscribes</p>
 									</div>
 								</div>
 								<div className="formrow">
@@ -490,7 +566,7 @@ export default function GeneralSettings() {
 								<div className="row_title">
 									<div className="flxflexi lefttitle">
 										<h4>Transparency</h4>
-										<p>W3 enables you to automatically display disclosures, in order to comply with any local laws, rules and regulations</p>
+										<p>{settingsJson.app_name} enables you to automatically display disclosures, in order to comply with any local laws, rules and regulations</p>
 									</div>
 								</div>
 								<div className="formrow">
@@ -498,49 +574,153 @@ export default function GeneralSettings() {
 										<div className="col-lg-4">
 											<div className="form-group m-0">
 												<label htmlFor="">Verified review style</label>
-												<select className="input_text">
-													<option>Icon only</option>
-													<option>Icon + Text</option>
-												</select>
+
+												<Select
+													name="verified_review_style"
+													id="verified_review_style"
+													options={[{ "label": "Icon only", "value": "icon" }, { "label": "Icon + Text", "value": "icon_text" }]}
+													onChange={
+														handleSelectChange
+													}
+													value={generalSettings.verified_review_style}
+												/>
+
 											</div>
 										</div>
 										<div className="col-lg-12">
 											<div className="form-group m-0">
 												<div className="form-check form-switch">
-													<input className="form-check-input" type="checkbox" role="switch" name="Transparency01" id="Transparency01" />
-													<label className="form-check-label" for="Transparency01">Indicate that a review was imported from an external source <span>Display a disclosure in the review detail popup about reviews that were imported from a CSV file or another external source.</span></label>
+													
+													<input
+														checked={
+															isEnableImportFromExternalSource
+														}
+														onChange={
+															handleCheckboxEnableChange
+														}
+														className="form-check-input"
+														type="checkbox"
+														role="switch"
+														name="is_enable_import_from_external_source"
+														id="is_enable_import_from_external_source"
+													/>
+													<label
+														className="form-check-label"
+														htmlFor="is_enable_import_from_external_source"
+													>
+														Indicate that a review was imported from an external source <span>Display a disclosure in the review detail popup about reviews that were imported from a CSV file or another external source.</span>
+													</label>
+
+
 												</div>
 											</div>
 										</div>
 										<div className="col-lg-12">
 											<div className="form-group m-0">
 												<div className="form-check form-switch">
-													<input className="form-check-input" type="checkbox" role="switch" name="Transparency02" id="Transparency02" />
-													<label className="form-check-label" for="Transparency02">Indicate that a review was marked as verified by the store owner<span>Display a disclosure in the review detail popup about site visitor reviews and imported reviews that you marked as verified.</span></label>
+														
+
+													<input
+														checked={
+															isEnableMarkedVerifiedByStoreOwner
+														}
+														onChange={
+															handleCheckboxEnableChange
+														}
+														className="form-check-input"
+														type="checkbox"
+														role="switch"
+														name="is_enable_marked_verified_by_store_owner"
+														id="is_enable_marked_verified_by_store_owner"
+													/>
+													<label
+														className="form-check-label"
+														htmlFor="is_enable_marked_verified_by_store_owner"
+													>
+														Indicate that a review was marked as verified by the store owner<span>Display a disclosure in the review detail popup about site visitor reviews and imported reviews that you marked as verified.</span>
+													</label>
+												
 												</div>
 											</div>
 										</div>
 										<div className="col-lg-12">
 											<div className="form-group m-0">
 												<div className="form-check form-switch">
-													<input className="form-check-input" type="checkbox" role="switch" name="Transparency03" id="Transparency03" />
-													<label className="form-check-label" for="Transparency03">Indicate that a review was written by a site visitor<span>Display a disclosure in the review detail popup about reviews that were submitted by a visitor on your store.</span></label>
+													<input
+														checked={
+															isEnableReviewWrittenBySiteVisitor
+														}
+														onChange={
+															handleCheckboxEnableChange
+														}
+														className="form-check-input"
+														type="checkbox"
+														role="switch"
+														name="is_enable_review_written_by_site_visitor"
+														id="is_enable_review_written_by_site_visitor"
+													/>
+													<label
+														className="form-check-label"
+														htmlFor="is_enable_review_written_by_site_visitor"
+													>
+														Indicate that a review was written by a site visitor<span>Display a disclosure in the review detail popup about reviews that were submitted by a visitor on your store.</span>
+
+													</label>
+												
 												</div>
 											</div>
 										</div>
 										<div className="col-lg-12">
 											<div className="form-group m-0">
 												<div className="form-check form-switch">
-													<input className="form-check-input" type="checkbox" role="switch" name="Transparency04" id="Transparency04" />
-													<label className="form-check-label" for="Transparency04">Indicate that a review is not verified<span>Display a disclosure about reviews from non-verified customers.</span></label>
+													
+													<input
+														checked={
+															isEnableReviewNotVerified
+														}
+														onChange={
+															handleCheckboxEnableChange
+														}
+														className="form-check-input"
+														type="checkbox"
+														role="switch"
+														name="is_enable_review_not_verified"
+														id="is_enable_review_not_verified"
+													/>
+													<label
+														className="form-check-label"
+														htmlFor="is_enable_review_not_verified"
+													>
+														Indicate that a review is not verified<span>Display a disclosure about reviews from non-verified customers.</span>
+
+													</label>
 												</div>
 											</div>
 										</div>
 										<div className="col-lg-12">
 											<div className="form-group m-0">
 												<div className="form-check form-switch">
-													<input className="form-check-input" type="checkbox" role="switch" name="Transparency05" id="Transparency05" />
-													<label className="form-check-label" for="Transparency05">Indicate that the reviewer received a future purchase discount for adding media to their review<span>Display a disclosure when the reviewer received an incentive for adding a photo or a video to their review.</span></label>
+													
+													<input
+														checked={
+															isEnableFuturePurchaseDiscount
+														}
+														onChange={
+															handleCheckboxEnableChange
+														}
+														className="form-check-input"
+														type="checkbox"
+														role="switch"
+														name="is_enable_future_purchase_discount"
+														id="is_enable_future_purchase_discount"
+													/>
+													<label
+														className="form-check-label"
+														htmlFor="is_enable_future_purchase_discount"
+													>
+														Indicate that the reviewer received a future purchase discount for adding media to their review<span>Display a disclosure when the reviewer received an incentive for adding a photo or a video to their review.</span>
+
+													</label>
 												</div>
 											</div>
 										</div>
@@ -553,7 +733,7 @@ export default function GeneralSettings() {
 								<div className="row_title">
 									<div className="flxflexi lefttitle">
 										<h4>Reviewers name format</h4>
-										<p>Customize how the reviewer name is displayed on W3 widgets</p>
+										<p>Customize how the reviewer name is displayed on {settingsJson.app_name} widgets</p>
 									</div>
 								</div>
 								<div className="formrow">
@@ -561,12 +741,17 @@ export default function GeneralSettings() {
 										<div className="col-lg-12">
 											<div className="form-group m-0">
 												<label htmlFor="">Display name</label>
-												<select className="input_text">
-													<option>First name, Last name (John S.)</option>
-													<option>First name (John)</option>
-													<option>Last name (Smith)</option>
-													<option>First initial, last initial (J. S.)</option>
-												</select>
+
+												<Select
+													name="reviewers_name_format"
+													id="reviewers_name_format"
+													options={reviewerNameFormatOptions}
+													onChange={
+														handleSelectChange
+													}
+													value={generalSettings.reviewers_name_format}
+												/>
+
 											</div>
 										</div>
 									</div>

@@ -1,7 +1,7 @@
 // app/components/EmailTemplate.jsx
 import React from 'react';
 
-const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, generalAppearancesObj, footer }) => {
+const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, generalAppearancesObj }) => {
     var emailContentColor = "#ffffff";
     var emailBgColor = `bgcolor=#f8f9fb`;
     var emailTextColor = `#222222`;
@@ -102,9 +102,10 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, generalA
     `;
     }
 
-
     var bannerHtml = "";
     var logoHtml = "";
+    var footerContent = "";
+
     if (emailContents.banner != null && emailContents.banner != "") {
         bannerHtml = ` <tr>
                 <td align="center">
@@ -139,7 +140,13 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, generalA
                     </table>
     `;
     }
-
+    if (emailContents.email_footer_enabled){
+        footerContent = `<tr>
+            <td align="center" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#222222">
+                ${emailContents.footerContent}
+            </td>
+        </tr>`;
+    }
     const emailHtml = `<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -197,11 +204,7 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, generalA
                                             <tr>
                                                 <td style="padding-top: 24px;"></td>
                                             </tr>
-                                            <tr>
-                                                <td align="center" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#222222">
-                                                    This email is sent for <a href="#" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#222222;text-decoration:underline">companyname@gmail.com</a>
-                                                </td>
-                                            </tr>
+                                            ${footerContent}
                                             <tr>
                                                 <td style="padding-top: 12px;"></td>
                                             </tr>

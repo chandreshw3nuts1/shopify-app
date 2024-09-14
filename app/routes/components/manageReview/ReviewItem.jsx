@@ -1,17 +1,14 @@
-import { useState, useCallback } from "react";
-import { formatDate, formatTimeAgo } from './../../../utils/dateFormat';
+import { useState } from "react";
+import { formatTimeAgo, reviewersNameFormat } from './../../../utils/dateFormat';
 import Swal from 'sweetalert2';
 import settingsJson from './../../../utils/settings.json';
 
-import reviewImage from "./../../../images/no-reviews-yet.svg"
-import customerImage from "./../../../images/customer-image.jpg"
 import mailBlueIcon from "./../../../images/blue-mail-icon.svg"
 import PublishedIcon from "../../../images/PublishedIcon";
 import UnPublishedIcon from "../../../images/UnPublishedIcon";
 import ReplyIcon from "../../../images/ReplyIcon";
 
 import facebookSocial from "./../../../images/Facebook-Original.svg"
-import redditSocial from "./../../../images/Reddit-Original.svg"
 import twitterxicon from "./../../../images/twitter-x-icon.svg"
 import pinterestSocial from "./../../../images/Pinterest-Original.svg"
 import { Dropdown, DropdownButton, Modal, Button } from 'react-bootstrap';
@@ -41,7 +38,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 		setReplyHelpText('This reply is public and will appear on reviews widget. We will send the reviewer a notification email.');
 		setIsUpdatingReply(false);
 	}
-
+	
 	const [showChangeProductModal, setShowChangeProductModal] = useState(false);
 	const [changeProductIndex, setChangeProductIndex] = useState('');
 
@@ -522,7 +519,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 												{result.productDetails ? <a href={`https://${shopRecords.shop}/products/${result.productDetails.handle}`} target="_blank"> {result.productDetails.title} </a> : ''}</strong>
 										</h4>
 									</div>
-									<div className="displayname">Display name: {result.display_name}</div>
+									<div className="displayname">Display name: {reviewersNameFormat(result.first_name, result.last_name, shopRecords.reviewers_name_format)}</div>
 									<div className="ratingstars flxrow">
 										<div className="inside_ratingstars">
 											<div className="filledicon" style={{ width: `${result.rating * 20}%` }}>

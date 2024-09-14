@@ -9,7 +9,7 @@ import settingsJson from './../../../utils/settings.json';
 import { getDefaultProductImage, getUploadDocument } from './../../../utils/documentPath';
 import SampleReviewRequestEmail from './../email/SampleReviewRequestEmail';
 
-const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances }) => {
+const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances, generalSettingsModel }) => {
     const { t, i18n } = useTranslation();
     const bannerType = "reviewRequest";
     const [emailTemplateObjState, setEmailTemplateObjState] = useState(emailTemplateObj);
@@ -143,13 +143,18 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances }) =>
 
     const viewSample = (e) => {
         e.preventDefault();
-
+        var footerContent = "";
+        if(generalSettingsModel.email_footer_enabled) {
+            footerContent = generalSettingsModel[currentLanguage] ? generalSettingsModel[currentLanguage].footerText : "";
+        }
         const sampleEmailData = {
             logo: getUploadDocument(generalAppearances?.logo, shopRecords.shop_id, 'logo'),
             body: body ? body : t('reviewRequestEmail.body'),
             buttonText: buttonText ? buttonText : t('reviewRequestEmail.buttonText'),
             banner : getUploadDocument(languageWiseEmailTemplate.banner, shopRecords.shop_id, 'banners'),
             getDefaultProductImage: getDefaultProductImage(),
+            footerContent : footerContent,
+            email_footer_enabled : generalSettingsModel.email_footer_enabled
         }
         setEmailContents(sampleEmailData);
         setShowViewSampleModal(true);

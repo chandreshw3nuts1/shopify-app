@@ -24,6 +24,7 @@ const SampleDiscountPhotoVideoReviewEmail = ({ emailContents, generalAppearances
     }
     var bannerHtml = "";
     var logoHtml = "";
+    var footerContent = "";
     if (emailContents.banner != null && emailContents.banner != "") {
         bannerHtml = ` <tr>
                 <td align="center">
@@ -57,6 +58,13 @@ const SampleDiscountPhotoVideoReviewEmail = ({ emailContents, generalAppearances
                         </tr>
                     </table>
     `;
+    }
+    if (emailContents.email_footer_enabled){
+        footerContent = `<tr>
+            <td align="center" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#222222">
+                ${emailContents.footerContent}
+            </td>
+        </tr>`;
     }
     const emailHtml = `<head>
     <meta charset="UTF-8">
@@ -150,11 +158,7 @@ const SampleDiscountPhotoVideoReviewEmail = ({ emailContents, generalAppearances
                                             <tr>
                                                 <td style="padding-top: 24px;"></td>
                                             </tr>
-                                            <tr>
-                                                <td align="center" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#222222">
-                                                    This email is sent for <a href="#" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#222222;text-decoration:underline">companyname@gmail.com</a>
-                                                </td>
-                                            </tr>
+                                            ${footerContent}
                                             <tr>
                                                 <td style="padding-top: 12px;"></td>
                                             </tr>

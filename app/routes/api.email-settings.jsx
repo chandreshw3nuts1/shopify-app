@@ -3,6 +3,7 @@ import settings from './models/settings';
 import emailReviewRequestSettings from './models/emailReviewRequestSettings';
 import emailReviewReplySettings from './models/emailReviewReplySettings';
 import generalAppearances from "./models/generalAppearances";
+import generalSettings from './models/generalSettings';
 
 import { getShopDetailsByShop, getLanguageWiseContents } from './../utils/common';
 import { sendEmail } from "./../utils/email.server";
@@ -11,6 +12,7 @@ import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTem
 import { getUploadDocument } from './../utils/documentPath';
 import settingJson from './../utils/settings.json';
 import emailDiscountPhotoVideoReviewSettings from "./models/emailDiscountPhotoVideoReviewSettings";
+
 export async function loader() {
     return json({
         name: "loading"
@@ -56,10 +58,17 @@ export async function action({ params, request }) {
                     const defaultProductImg = settingJson.host_url + '/app/images/product-default.png';
                     emailContents.defaultProductImg = defaultProductImg;
 
+                    var generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
 
-                    const footer = "";
+                    var footerContent = "";
+                    if (generalSettingsModel.email_footer_enabled) {
+                        footerContent = generalSettingsModel[customer_locale] ? generalSettingsModel[customer_locale].footerText : "";
+                    }
+                    emailContents.footerContent = footerContent;
+                    emailContents.email_footer_enabled = generalSettingsModel.email_footer_enabled;
+
                     var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
-                        <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={[]} generalAppearancesObj={generalAppearancesObj} footer={footer} />
+                        <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={[]} generalAppearancesObj={generalAppearancesObj} />
                     );
 
                     const settingsModel = await settings.findOne({

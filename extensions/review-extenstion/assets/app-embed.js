@@ -265,6 +265,19 @@ $(document).ready(function () {
             }
         });
     }
+    
+    $(document).on("click", ".open-transparency-popup-modal", function () {
+        $(".verify-transparency-popup-icon").toggle();
+    });
+
+    $(document).mouseup(function (e) {
+        var popup = $(".verify-transparency-popup-icon");
+        // If the target of the click isn't the popup or the toggle button
+        if (!popup.is(e.target) && popup.has(e.target).length === 0) {
+            popup.hide();
+        }
+    });
+
 });
 
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ReplyEmailTemplate = ({ emailContents, generalAppearancesObj, footer }) => {
+const ReplyEmailTemplate = ({ emailContents, generalAppearancesObj }) => {
     var emailContentColor = "#ffffff";
     var emailBgColor = `bgcolor=#f8f9fb`;
     var emailTextColor = `#222222`;
@@ -24,6 +24,8 @@ const ReplyEmailTemplate = ({ emailContents, generalAppearancesObj, footer }) =>
     }
     var bannerHtml = "";
     var logoHtml = "";
+    var footerContent = "";
+
     if (emailContents.banner != null && emailContents.banner != "") {
         bannerHtml = ` <tr>
                 <td align="center">
@@ -57,6 +59,13 @@ const ReplyEmailTemplate = ({ emailContents, generalAppearancesObj, footer }) =>
                         </tr>
                     </table>
     `;
+    }
+    if (emailContents.email_footer_enabled){
+        footerContent = `<tr>
+            <td align="center" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#222222">
+                ${emailContents.footerContent}
+            </td>
+        </tr>`;
     }
     const emailHtml = `<head>
     <meta charset="UTF-8">
@@ -113,11 +122,7 @@ const ReplyEmailTemplate = ({ emailContents, generalAppearancesObj, footer }) =>
                                             <tr>
                                                 <td style="padding-top: 24px;"></td>
                                             </tr>
-                                            <tr>
-                                                <td align="center" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#222222">
-                                                    This email is sent for <a href="#" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#222222;text-decoration:underline">companyname@gmail.com</a>
-                                                </td>
-                                            </tr>
+                                            ${footerContent}
                                             <tr>
                                                 <td style="padding-top: 12px;"></td>
                                             </tr>

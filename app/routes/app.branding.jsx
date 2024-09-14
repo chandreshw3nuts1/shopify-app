@@ -4,8 +4,9 @@ import Breadcrumb from "./components/Breadcrumb";
 import SettingPageSidebar from "./components/headerMenu/SettingPageSidebar";
 import { getShopDetails } from './../utils/getShopDetails';
 import GeneralAppearance from "./components/settings/general-appearance";
-import { findOneRecord } from './../utils/common';
 import { json } from "@remix-run/node";
+import generalAppearances from './models/generalAppearances';
+import generalSettings from './models/generalSettings';
 
 import {
   Page
@@ -15,11 +16,11 @@ export async function loader({request}) {
 	try {
 		
 		const shopRecords = await getShopDetails(request);
-		const generalAppearances = await findOneRecord('general_appearances',{
-			shop_id: shopRecords._id,
-		});
 
-		return json({shopRecords : shopRecords,generalAppearances : generalAppearances});
+		const generalAppearancesModel =  await generalAppearances.findOne({ shop_id: shopRecords._id });
+		const generalSettingsModel =  await generalSettings.findOne({ shop_id: shopRecords._id });
+		
+		return json({shopRecords : shopRecords,generalAppearances : generalAppearancesModel,  generalSettingsModel : generalSettingsModel});
 
 	  } catch (error) {
 		console.error('Error fetching records:', error);
@@ -32,6 +33,7 @@ export default function Branding() {
 	const loaderData = useLoaderData();
 	const shopRecords = loaderData.shopRecords;
 	const generalAppearances = loaderData.generalAppearances;
+	const generalSettingsModel = loaderData.generalSettingsModel;
 	const [isClient, setIsClient] = useState(false);
 
 	useEffect(() => {
@@ -54,7 +56,7 @@ export default function Branding() {
 						<h2>General appearance</h2>
 						<p>Customize visual elements to fit your brand's look & feel</p>
 					</div>
-					<GeneralAppearance shopRecords={shopRecords} generalAppearances={generalAppearances}/>
+					<GeneralAppearance shopRecords={shopRecords} generalAppearances={generalAppearances} generalSettingsModel={generalSettingsModel}/>
 
 				</div>
 			

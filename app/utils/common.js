@@ -208,13 +208,13 @@ export async function createShopifyDiscountCode(shopRecords, hasPhoto = false, h
 					} else {
 						const errorResponse = await discountResponse.json();
 						console.error('Error creating discount code:', errorResponse);
-						return [];
+						return {};
 					}
 
 				} else {
 					const errorResponse = await priceRuleResponse.json();
 					console.error('Error creating price rule:', errorResponse);
-					return [];
+					return {};
 				}
 			} else if (reviewDiscountSettingsModel.discountCode != "") {
 
@@ -246,7 +246,7 @@ export async function createShopifyDiscountCode(shopRecords, hasPhoto = false, h
 			return response;
 
 		}
-		return [];
+		return {};
 
 	} catch (error) {
 		console.error('Error creating discount code:', error);
@@ -450,8 +450,8 @@ export async function getDiscounts(shopRecords, isReviewRequest = false) {
 				response.discount = reviewDiscountSettingsModel.sameDiscountType == 'percentage' ? `${reviewDiscountSettingsModel.sameDiscountValue}%` : `${shopRecords.currency_symbol}${reviewDiscountSettingsModel.sameDiscountValue}`;
 
 			} else {
-				response.photoDiscount = reviewDiscountSettingsModel.differentDiscountPhotoType == 'percentage' ? `${reviewDiscountSettingsModel.differentDiscountVideoValue}%` : `${shopRecords.currency_symbol}${reviewDiscountSettingsModel.differentDiscountVideoValue}`;
-				response.videoDiscount = reviewDiscountSettingsModel.differentDiscountVideoType == 'percentage' ? `${reviewDiscountSettingsModel.differentDiscountPhotoValue}%` : `${shopRecords.currency_symbol}${reviewDiscountSettingsModel.differentDiscountPhotoValue}`;
+				response.photoDiscount = reviewDiscountSettingsModel.differentDiscountPhotoType == 'percentage' ? `${reviewDiscountSettingsModel.differentDiscountPhotoValue}%` : `${shopRecords.currency_symbol}${reviewDiscountSettingsModel.differentDiscountPhotoValue}`;
+				response.videoDiscount = reviewDiscountSettingsModel.differentDiscountVideoType == 'percentage' ? `${reviewDiscountSettingsModel.differentDiscountVideoValue}%` : `${shopRecords.currency_symbol}${reviewDiscountSettingsModel.differentDiscountVideoValue}`;
 
 			}
 			response.isSameDiscount = reviewDiscountSettingsModel.isSameDiscount;
@@ -692,3 +692,77 @@ export async function resizeImages(imagePath, outputDir, thumbnailName) {
 		console.error('Error generating image thumbnail:', error);
 	}
 }
+
+/* fetch all themes*/
+export async function getAllThemes(shop, activeTheme = false) {
+
+	try {
+		const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shop });
+
+		const response = await fetch(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/themes.json`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-Shopify-Access-Token': shopSessionRecords.accessToken
+			}
+		});
+
+		if (!response.ok) {
+			throw new Error(`Error fetching themes: ${response.statusText}`);
+		}
+		const data = await response.json();
+
+		if (activeTheme) {
+			return data.themes.find(theme => theme.role === 'main');
+		}
+		return data.themes;
+
+	} catch (error) {
+		console.error('Error fetching themes:', error.message);
+	}
+}
+
+
+/* activate App embed app */
+export async function checkAppEmbedAppStatus(shop, themeId) {
+	try {
+		const reviewExtensionId = process.env.SHOPIFY_ALL_REVIEW_EXTENSION_ID;
+
+		const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shop });
+
+		const url = `https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/themes/${themeId}/assets.json`;
+		const params = new URLSearchParams({
+			'asset[key]': 'config/settings_data.json',
+		});
+		const response = await fetch(`${url}?${params.toString()}`, {
+			method: 'GET',
+			headers: {
+				'X-Shopify-Access-Token': shopSessionRecords.accessToken,
+				'Content-Type': 'application/json'
+			}
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		const data = await response.json();
+		let activeAppEmbeds = false;
+		const contentFile = JSON.parse(data.asset.value);
+		if (contentFile && contentFile?.current?.blocks) {
+			const appEmbeds = contentFile?.current?.blocks;
+			for (const key in appEmbeds) {
+				if (Object.prototype.hasOwnProperty.call(appEmbeds, key)) {
+					const app = appEmbeds[key];
+					if (app.type.includes(reviewExtensionId) && app.disabled == false) {
+						activeAppEmbeds = true;
+						break;
+					}
+				}
+			}
+		}
+		return activeAppEmbeds;
+	} catch (error) {
+		console.error('Error:', error);
+	}
+}
+

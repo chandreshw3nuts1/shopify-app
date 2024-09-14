@@ -8,7 +8,7 @@ import settingsJson from './../../../utils/settings.json';
 import { getUploadDocument } from './../../../utils/documentPath';
 import SampleDiscountPhotoVideoReviewEmail from './../email/SampleDiscountPhotoVideoReviewEmail';
 
-const DiscountPhotoVideoReview = ({ shopRecords, emailTemplateObj, generalAppearances }) => {
+const DiscountPhotoVideoReview = ({ shopRecords, emailTemplateObj, generalAppearances, generalSettingsModel }) => {
     const { t, i18n } = useTranslation();
     const bannerType = "discountPhotoVideoReview";
     const [emailTemplateObjState, setEmailTemplateObjState] = useState(emailTemplateObj);
@@ -116,12 +116,17 @@ const DiscountPhotoVideoReview = ({ shopRecords, emailTemplateObj, generalAppear
 
     const viewSample = (e) => {
         e.preventDefault();
-
+        var footerContent = "";
+        if(generalSettingsModel.email_footer_enabled) {
+            footerContent = generalSettingsModel[currentLanguage] ? generalSettingsModel[currentLanguage].footerText : "";
+        }
         const sampleEmailData = {
             logo: getUploadDocument(generalAppearances?.logo, shopRecords.shop_id, 'logo'),
             body: body ? body : t('dicountPhotoVideoReviewEmail.body'),
             buttonText: buttonText ? buttonText : t('dicountPhotoVideoReviewEmail.buttonText'),
             banner : getUploadDocument(languageWiseEmailTemplate.banner, shopRecords.shop_id, 'banners'),
+            footerContent : footerContent,
+            email_footer_enabled : generalSettingsModel.email_footer_enabled
         }
         setEmailContents(sampleEmailData);
         setShowViewSampleModal(true);
