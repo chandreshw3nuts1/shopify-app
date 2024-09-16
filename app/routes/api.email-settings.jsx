@@ -55,7 +55,7 @@ export async function action({ params, request }) {
                     emailContents.banner = getUploadDocument(emailContents.banner, shopRecords.shop_id, 'banners');
                     emailContents.logo = logo;
 
-                    const defaultProductImg = settingJson.host_url + '/app/images/product-default.png';
+                    const defaultProductImg = settingJson.host_url + '/images/product-default.png';
                     emailContents.defaultProductImg = defaultProductImg;
 
                     var generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });

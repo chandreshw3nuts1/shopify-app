@@ -7,7 +7,7 @@ import { findOneRecord } from './../utils/common';
 import settingsJson from './../utils/settings.json';
 
 import { json } from "@remix-run/node";
-import aliExpressImage from './../images/ali-express-bg.png';
+const aliExpressImage = '/images/ali-express-bg.png';
 import InformationAlert from "./components/common/information-alert";
 import AlertInfo from "./components/AlertInfo";
 import DragIcon from "./components/icons/DragIcon";

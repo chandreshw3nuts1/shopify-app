@@ -3,14 +3,14 @@ import { formatTimeAgo, reviewersNameFormat } from './../../../utils/dateFormat'
 import Swal from 'sweetalert2';
 import settingsJson from './../../../utils/settings.json';
 
-import mailBlueIcon from "./../../../images/blue-mail-icon.svg"
+const mailBlueIcon = `/images/blue-mail-icon.svg`;
 import PublishedIcon from "../../../images/PublishedIcon";
 import UnPublishedIcon from "../../../images/UnPublishedIcon";
 import ReplyIcon from "../../../images/ReplyIcon";
 
-import facebookSocial from "./../../../images/Facebook-Original.svg"
-import twitterxicon from "./../../../images/twitter-x-icon.svg"
-import pinterestSocial from "./../../../images/Pinterest-Original.svg"
+const facebookSocial = "/images/Facebook-Original.svg";
+const twitterxicon = "/images/twitter-x-icon.svg";
+const pinterestSocial = "/images/Pinterest-Original.svg";
 import { Dropdown, DropdownButton, Modal, Button } from 'react-bootstrap';
 import ImageSlider from './ImageSlider';
 

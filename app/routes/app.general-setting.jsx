@@ -5,7 +5,7 @@ import SettingPageSidebar from "./components/headerMenu/SettingPageSidebar";
 import { getShopDetails } from './../utils/getShopDetails';
 import generalSettings from './models/generalSettings';
 import { getAllThemes } from './../utils/common';
-import CrownIcon from '../images/crown-icon.svg'
+const CrownIcon = '/images/crown-icon.svg'
 import { Image } from "react-bootstrap";
 import AlertInfo from "./components/AlertInfo";
 import settingsJson from './../utils/settings.json';

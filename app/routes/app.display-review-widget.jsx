@@ -10,15 +10,15 @@ import settingsJson from './../utils/settings.json';
 
 import sidebarReviewWidgetCustomizes from "./models/sidebarReviewWidgetCustomizes";
 import { Image } from "react-bootstrap";
-import widgetThumb01 from './../images/widget-thumbs/Review-Widget-image.jpg'
-import widgetThumb02 from './../images/widget-thumbs/Star-Rating-Badge-image.jpg'
-import widgetThumb03 from './../images/widget-thumbs/Questions-and-Answers-image.jpg'
-import widgetThumb04 from './../images/widget-thumbs/Reviews-Carousel-image.jpg'
-import widgetThumb05 from './../images/widget-thumbs/All-Reviews-Page-image.jpg'
-import widgetThumb06 from './../images/widget-thumbs/Floating-Reviews-Tab-image.jpg'
-import widgetThumb07 from './../images/widget-thumbs/W3-Reviews-Medals-image.jpg'
-import widgetThumb08 from './../images/widget-thumbs/Verified-Reviews-Counter-image.jpg'
-import widgetThumb09 from './../images/widget-thumbs/All-Reviews-Counter-image.jpg'
+const  widgetThumb01 = `${settingsJson.host_url}/images/widget-thumbs/Review-Widget-image.jpg`;
+const widgetThumb02 = `/images/widget-thumbs/Review-Widget-image.jpg`;; 
+const widgetThumb03 = widgetThumb01; 
+const widgetThumb04 = widgetThumb01; 
+const widgetThumb05 = widgetThumb01; 
+const widgetThumb06 = widgetThumb01; 
+const widgetThumb07 = widgetThumb01; 
+const widgetThumb08 = widgetThumb01;  
+const widgetThumb09 = widgetThumb01; 
 
 import {
     Page

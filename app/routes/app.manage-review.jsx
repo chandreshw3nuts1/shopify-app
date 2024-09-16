@@ -11,7 +11,8 @@ import { getShopDetails } from './../utils/getShopDetails';
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import settingsJson from './../utils/settings.json';
-import reviewImage from "./../images/no-reviews-yet.svg"
+const reviewImage = `/images/no-reviews-yet.svg`;
+
 import {
 	Layout,
 	Page,

@@ -61,7 +61,7 @@ export default function MasonryLayout(props) {
                                     <div className='review'>
                                         <div className='review_imageswrap flxrow'>
                                             <div className='imagebox' >
-                                                <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
+                                                <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
                                             </div>
                                         </div>
                                         <div className='review_topbar flxrow'>
@@ -120,7 +120,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -139,7 +139,7 @@ export default function MasonryLayout(props) {
                                     <div className='review'>
                                         <div className='review_imageswrap flxrow'>
                                             <div className='imagebox' >
-                                                <img src={`${settingsJson.host_url}/app/images/sample-review-images/2.png`} alt="" />
+                                                <img src={`${settingsJson.host_url}/images/sample-review-images/2.png`} alt="" />
                                             </div>
                                         </div>
                                         <div className='review_topbar flxrow'>
@@ -198,7 +198,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -217,7 +217,7 @@ export default function MasonryLayout(props) {
                                     <div className='review'>
                                         <div className='review_imageswrap flxrow'>
                                             <div className='imagebox' >
-                                                <img src={`${settingsJson.host_url}/app/images/sample-review-images/3.png`} alt="" />
+                                                <img src={`${settingsJson.host_url}/images/sample-review-images/3.png`} alt="" />
                                             </div>
                                         </div>
                                         <div className='review_topbar flxrow'>
@@ -265,7 +265,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -284,7 +284,7 @@ export default function MasonryLayout(props) {
                                     <div className='review'>
                                         <div className='review_imageswrap flxrow'>
                                             <div className='imagebox' >
-                                                <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
+                                                <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
                                             </div>
                                         </div>
                                         <div className='review_topbar flxrow'>
@@ -344,7 +344,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -363,7 +363,7 @@ export default function MasonryLayout(props) {
                                     <div className='review'>
                                         <div className='review_imageswrap flxrow'>
                                             <div className='imagebox' >
-                                                <img src={`${settingsJson.host_url}/app/images/sample-review-images/2.png`} alt="" />
+                                                <img src={`${settingsJson.host_url}/images/sample-review-images/2.png`} alt="" />
                                             </div>
                                         </div>
                                         <div className='review_topbar flxrow'>
@@ -422,7 +422,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -441,7 +441,7 @@ export default function MasonryLayout(props) {
                                     <div className='review'>
                                         <div className='review_imageswrap flxrow'>
                                             <div className='imagebox' >
-                                                <img src={`${settingsJson.host_url}/app/images/sample-review-images/3.png`} alt="" />
+                                                <img src={`${settingsJson.host_url}/images/sample-review-images/3.png`} alt="" />
                                             </div>
                                         </div>
                                         <div className='review_topbar flxrow'>
@@ -491,7 +491,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -510,7 +510,7 @@ export default function MasonryLayout(props) {
                                     <div className='review'>
                                         <div className='review_imageswrap flxrow'>
                                             <div className='imagebox' >
-                                                <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
+                                                <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
                                             </div>
                                         </div>
                                         <div className='review_topbar flxrow'>
@@ -559,7 +559,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -578,7 +578,7 @@ export default function MasonryLayout(props) {
                                     <div className='review'>
                                         <div className='review_imageswrap flxrow'>
                                             <div className='imagebox' >
-                                                <img src={`${settingsJson.host_url}/app/images/sample-review-images/2.png`} alt="" />
+                                                <img src={`${settingsJson.host_url}/images/sample-review-images/2.png`} alt="" />
                                             </div>
                                         </div>
                                         <div className='review_topbar flxrow'>
@@ -636,7 +636,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -655,7 +655,7 @@ export default function MasonryLayout(props) {
                                     <div className='review'>
                                         <div className='review_imageswrap flxrow'>
                                             <div className='imagebox' >
-                                                <img src={`${settingsJson.host_url}/app/images/sample-review-images/3.png`} alt="" />
+                                                <img src={`${settingsJson.host_url}/images/sample-review-images/3.png`} alt="" />
                                             </div>
                                         </div>
                                         <div className='review_topbar flxrow'>
@@ -703,7 +703,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -722,7 +722,7 @@ export default function MasonryLayout(props) {
                                     <div className='review'>
                                         <div className='review_imageswrap flxrow'>
                                             <div className='imagebox' >
-                                                <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
+                                                <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
                                             </div>
                                         </div>
                                         <div className='review_topbar flxrow'>
@@ -771,7 +771,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -851,7 +851,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
 
                                                 </div>
                                                 <div className='text flxflexi'>
@@ -860,10 +860,10 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
                                                 </div>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/2.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/2.png`} alt="" />
                                                 </div>
 
                                             </div>
@@ -926,7 +926,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
 
                                                 </div>
                                                 <div className='text flxflexi'>
@@ -935,7 +935,7 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/2.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/2.png`} alt="" />
                                                 </div>
 
                                             </div>
@@ -1006,7 +1006,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
 
                                                 </div>
                                                 <div className='text flxflexi'>
@@ -1015,10 +1015,10 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/3.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/3.png`} alt="" />
                                                 </div>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/2.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/2.png`} alt="" />
                                                 </div>
 
                                             </div>
@@ -1090,7 +1090,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
 
                                                 </div>
                                                 <div className='text flxflexi'>
@@ -1099,10 +1099,10 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
                                                 </div>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/3.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/3.png`} alt="" />
                                                 </div>
 
                                             </div>
@@ -1165,7 +1165,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
 
                                                 </div>
                                                 <div className='text flxflexi'>
@@ -1174,10 +1174,10 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/3.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/3.png`} alt="" />
                                                 </div>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/2.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/2.png`} alt="" />
                                                 </div>
 
                                             </div>
@@ -1249,7 +1249,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
 
                                                 </div>
                                                 <div className='text flxflexi'>
@@ -1258,7 +1258,7 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
                                                 </div>
 
                                             </div>
@@ -1330,7 +1330,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
 
                                                 </div>
                                                 <div className='text flxflexi'>
@@ -1339,10 +1339,10 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
                                                 </div>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/2.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/2.png`} alt="" />
                                                 </div>
 
                                             </div>
@@ -1414,7 +1414,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
 
                                                 </div>
                                                 <div className='text flxflexi'>
@@ -1423,7 +1423,7 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/3.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/3.png`} alt="" />
                                                 </div>
 
 
@@ -1496,7 +1496,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
 
                                                 </div>
                                                 <div className='text flxflexi'>
@@ -1505,10 +1505,10 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
                                                 </div>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
                                                 </div>
 
                                             </div>
@@ -1578,7 +1578,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
 
                                                 </div>
                                                 <div className='text flxflexi'>
@@ -1587,7 +1587,7 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/2.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/2.png`} alt="" />
                                                 </div>
                                             </div>
                                         </div>
@@ -1655,7 +1655,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -1663,10 +1663,10 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
                                                 </div>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/2.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/2.png`} alt="" />
                                                 </div>
                                             </div>
                                         </div>
@@ -1718,7 +1718,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -1726,10 +1726,10 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
                                                 </div>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/3.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/3.png`} alt="" />
                                                 </div>
                                             </div>
                                         </div>
@@ -1790,7 +1790,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -1798,7 +1798,7 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/2.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/2.png`} alt="" />
                                                 </div>
 
                                             </div>
@@ -1860,7 +1860,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -1868,10 +1868,10 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
                                                 </div>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/3.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/3.png`} alt="" />
                                                 </div>
                                             </div>
                                         </div>
@@ -1933,7 +1933,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -1941,7 +1941,7 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
                                                 </div>
                                             </div>
                                         </div>
@@ -1994,7 +1994,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -2002,7 +2002,7 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/2.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/2.png`} alt="" />
                                                 </div>
 
                                             </div>
@@ -2065,7 +2065,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -2073,10 +2073,10 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/2.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/2.png`} alt="" />
                                                 </div>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/3.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/3.png`} alt="" />
                                                 </div>
                                             </div>
                                         </div>
@@ -2138,7 +2138,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -2146,10 +2146,10 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
                                                 </div>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/3.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/3.png`} alt="" />
                                                 </div>
                                             </div>
                                         </div>
@@ -2201,7 +2201,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -2209,10 +2209,10 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/3.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/3.png`} alt="" />
                                                 </div>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/1.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
                                                 </div>
                                             </div>
                                         </div>
@@ -2274,7 +2274,7 @@ export default function MasonryLayout(props) {
                                         <div className='review_bottomwrap'>
                                             <div className='product-container product-thumb-detail'>
                                                 <div className='image flxfix'>
-                                                    <img src={`${settingsJson.host_url}/app/images/product-default.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
                                                 </div>
                                                 <div className='text flxflexi'>
                                                     <p>Sample Product</p>
@@ -2282,7 +2282,7 @@ export default function MasonryLayout(props) {
                                             </div>
                                             <div className='review_imageswrap flxrow'>
                                                 <div className='imagebox'>
-                                                    <img src={`${settingsJson.host_url}/app/images/sample-review-images/2.png`} alt="" />
+                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/2.png`} alt="" />
                                                 </div>
                                             </div>
                                         </div>

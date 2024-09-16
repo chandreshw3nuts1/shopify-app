@@ -33,7 +33,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 export const links = () => {
-	const stylesUrl = `${settingsJson.host_url}/app/styles/reviewRequest.css`;
+	const stylesUrl = `${settingsJson.host_url}/styles/reviewRequest.css`;
 	return [{ rel: "stylesheet", href: stylesUrl }];
 };
 

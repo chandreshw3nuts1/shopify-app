@@ -10,7 +10,7 @@ import Cookies from 'js-cookie';
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 
 
-import bannerImage from "./../images/medium-shot-young-people-with-reviews.jpg"
+const bannerImage = "/images/medium-shot-young-people-with-reviews.jpg"
 import { Dropdown, DropdownButton, Image } from 'react-bootstrap';
 
 import ReviewRequestsSentIcon from "./components/icons/ReviewRequestsSentIcon";

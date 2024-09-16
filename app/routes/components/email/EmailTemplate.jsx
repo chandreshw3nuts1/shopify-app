@@ -3,13 +3,13 @@ import settingJson from './../../../utils/settings.json';
 
 const EmailTemplate = ({ emailContents }) => {
 
-    const checkMarkEmail = settingJson.host_url + '/app/images/email_template/check-mark-email.png';
-    const mainStarIcon = settingJson.host_url + '/app/images/email_template/main-star-icon.png';
-    const eyeIcon = settingJson.host_url + '/app/images/email_template/eye-icon.png';
-    const logoImg = settingJson.host_url + '/app/images/email_template/logo.png';
+    const checkMarkEmail = settingJson.host_url + '/images/email_template/check-mark-email.png';
+    const mainStarIcon = settingJson.host_url + '/images/email_template/main-star-icon.png';
+    const eyeIcon = settingJson.host_url + '/images/email_template/eye-icon.png';
+    const logoImg = settingJson.host_url + '/images/email_template/logo.png';
 
     const productUrl = `https://${emailContents.shop_domain}/products/${emailContents.product_url}`;
-    const starIcon = settingJson.host_url + `/app/images/email_template/star-${emailContents.rating}.png`;
+    const starIcon = settingJson.host_url + `/images/email_template/star-${emailContents.rating}.png`;
     const questionsHtml = emailContents.questions.map((item) => {
         if (item.answer != null) {
             return ` <tr>
