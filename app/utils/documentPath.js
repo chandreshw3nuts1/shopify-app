@@ -8,7 +8,7 @@ export  function getUploadDocument( fileName = "", shopId = "", folder = "") {
 				folderPath = `${folderPath}${folder}/`;
 			}
 			if(fileName == 'default-banner.png') {
-				return `${settingsJson.host_url}/app/images/${fileName}`;
+				return `${settingsJson.host_url}/images/${fileName}`;
 			}
 			return `${settingsJson.host_url}${folderPath}${fileName}`;
 		}
@@ -19,6 +19,6 @@ export  function getUploadDocument( fileName = "", shopId = "", folder = "") {
 }
 
 export function getDefaultProductImage() {
-	return settingsJson.host_url+'/app/images/product-default.png';
+	return settingsJson.host_url+'/images/product-default.png';
 }
 

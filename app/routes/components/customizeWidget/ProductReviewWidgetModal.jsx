@@ -1,7 +1,6 @@
 
 import React from 'react';
-import { Modal, Button } from 'react-bootstrap';
-import Dropdown from 'react-bootstrap/Dropdown';
+import { Modal, Button, Dropdown } from 'react-bootstrap';
 import MasonryLayout from './ResponsiveMasonry';
 
 const ProductReviewWidgetModal = ({ show, handleClose, documentObj, shopRecords, getPreviewText, currentLanguage, translator, lightDarkModel, changeLightDarkModel }) => {

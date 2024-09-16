@@ -1,10 +1,8 @@
 import { json } from "@remix-run/node";
 import { mongoConnection } from './../utils/mongoConnection';
-
 import generalSettings from './models/generalSettings';
+import { getShopDetailsByShop } from './../utils/common';
 
-import { getShopDetailsByShop, activateAppEmbedApp } from './../utils/common';
-import settingJson from './../utils/settings.json';
 export async function loader() {
     return json({
         name: "loading"

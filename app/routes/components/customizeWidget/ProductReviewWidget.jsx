@@ -6,7 +6,8 @@ import ColorPicker from "./../settings/ColorPicker";
 import GridLayoutIcon from '../icons/GridLayoutIcon';
 import ListLayoutIcon from '../icons/ListLayoutIcon';
 import CompactLayoutIcon from '../icons/CompactLayoutIcon';
-import Dropdown from 'react-bootstrap/Dropdown';
+import { Dropdown } from "react-bootstrap";
+
 import {
     Select,
 } from '@shopify/polaris';
