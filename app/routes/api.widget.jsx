@@ -9,6 +9,7 @@ import ReviewDetailModalWidget from './components/widget-components/review-detai
 import RatingWidget from './components/widget-components/rating-widget';
 import AllReviewWidget from './components/widget-components/all-review-counter-widget';
 import SidebarRatingWidget from './components/widget-components/sidebar-rating-widget';
+import PopupModalWidget from './components/widget-components/popup-modal-widget';
 import VideoSliderWidget from './components/widget-components/video-slider-widget';
 import VideoSliderError from './components/widget-components/video-slider-error';
 import GalleyCarouselWidget from './components/widget-components/galley-carousel-widget';
@@ -27,6 +28,7 @@ import productReviewWidgetCustomizes from "./models/productReviewWidgetCustomize
 import reviewFormSettings from "./models/reviewFormSettings";
 import sidebarReviewWidgetCustomizes from "./models/sidebarReviewWidgetCustomizes";
 import floatingWidgetCustomizes from "./models/floatingWidgetCustomizes";
+import popupModalWidgetCustomizes from "./models/popupModalWidgetCustomizes";
 
 
 import { getShopifyProducts, getDiscounts } from "./../utils/common";
@@ -52,14 +54,14 @@ export async function action({ request }) {
 
         const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
 
-		shopRecords.reviewers_name_format = generalSettingsModel.reviewers_name_format;
-		shopRecords.verified_review_style = generalSettingsModel.verified_review_style;
-		shopRecords.is_enable_import_from_external_source = generalSettingsModel.is_enable_import_from_external_source;
-		shopRecords.is_enable_marked_verified_by_store_owner = generalSettingsModel.is_enable_marked_verified_by_store_owner;
-		shopRecords.is_enable_review_written_by_site_visitor = generalSettingsModel.is_enable_review_written_by_site_visitor;
-		shopRecords.is_enable_review_not_verified = generalSettingsModel.is_enable_review_not_verified;
-		shopRecords.is_enable_future_purchase_discount = generalSettingsModel.is_enable_future_purchase_discount;
-        
+        shopRecords.reviewers_name_format = generalSettingsModel.reviewers_name_format;
+        shopRecords.verified_review_style = generalSettingsModel.verified_review_style;
+        shopRecords.is_enable_import_from_external_source = generalSettingsModel.is_enable_import_from_external_source;
+        shopRecords.is_enable_marked_verified_by_store_owner = generalSettingsModel.is_enable_marked_verified_by_store_owner;
+        shopRecords.is_enable_review_written_by_site_visitor = generalSettingsModel.is_enable_review_written_by_site_visitor;
+        shopRecords.is_enable_review_not_verified = generalSettingsModel.is_enable_review_not_verified;
+        shopRecords.is_enable_future_purchase_discount = generalSettingsModel.is_enable_future_purchase_discount;
+
         var customer_locale = formData.get('customer_locale') || generalSettingsModel.defaul_language;
         const shopSessionRecords = await findOneRecord("shopify_sessions", { shop: shop });
         const generalAppearancesModel = await generalAppearances.findOne({
@@ -239,7 +241,7 @@ export async function action({ request }) {
                             is_review_request: 1,
                             tag_as_feature: 1,
                             verify_badge: 1,
-                            is_imported : 1,
+                            is_imported: 1,
                             reviewDocuments: {
                                 $filter: {
                                     input: "$reviewDocuments",
@@ -492,7 +494,7 @@ export async function action({ request }) {
                             last_name: 1,
                             createdAt: 1,
                             product_id: 1,
-                            verify_badge :1,
+                            verify_badge: 1,
                             reviewDocuments: {
                                 $arrayElemAt: [
                                     {
@@ -574,9 +576,8 @@ export async function action({ request }) {
                 const reviewer_name_color = formData.get('reviewer_name_color');
                 const widget_icon_color = formData.get('widget_icon_color');
                 const border_color = formData.get('border_color');
-                
-                const reviewItems = await getImageAndVideoForCarousel(shopRecords, no_display_reviews);
 
+                const reviewItems = await getImageAndVideoForCarousel(shopRecords, no_display_reviews);
                 const formParams = {
                     widget_alignment,
                     widget_width,
@@ -596,13 +597,13 @@ export async function action({ request }) {
                     blockId
                 }
 
-                
+
                 const dynamicComponent = <SnippetWidget shopRecords={shopRecords} formParams={formParams} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} reviewItems={reviewItems} />;
                 const content = ReactDOMServer.renderToString(dynamicComponent);
                 return json({
                     content: content
                 });
-                
+
             } catch (error) {
                 console.log(error);
                 return json({
@@ -749,11 +750,11 @@ export async function action({ request }) {
                             createdAt: 1,
                             product_id: 1,
                             verify_badge: 1
-                            
+
                         }
                     }
                 ]);
-                
+
                 const formParams = {
                     font_size,
                     no_of_chars,
@@ -808,6 +809,130 @@ export async function action({ request }) {
                 console.log(error);
                 return json({
                     error
+                });
+            }
+        } else if (actionType == "popupModalWidget") {
+            try {
+
+                const popupModalWidgetCustomizesModel = await popupModalWidgetCustomizes.findOne({ shop_id: shopRecords._id });
+
+                let query = {
+                    shop_id: shopRecords._id,
+                    status: 'publish'
+                };
+
+                const sortOption = {
+                    createdAt: -1,
+                    _id: -1
+                };
+
+                const aggregationPipeline = [
+                    {
+                        $match: query
+                    },
+                    {
+                        $lookup: {
+                            from: 'review_documents',
+                            localField: '_id',
+                            foreignField: 'review_id',
+                            as: 'reviewDocuments'
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: "$_id",
+                            rating: { $first: "$rating" },
+                            first_name: { $first: "$first_name" },
+                            display_name: { $first: "$display_name" },
+                            last_name: { $first: "$last_name" },
+                            description: { $first: "$description" },
+                            createdAt: { $first: "$createdAt" },
+                            product_id: { $first: "$product_id" },
+                            verify_badge: { $first: "$verify_badge" },
+                            reviewDocuments: { $first: "$reviewDocuments" } // Use $first to avoid duplicates
+                        }
+                    },
+                    {
+                        $sort: sortOption
+                    },
+                    {
+                        $project: {
+                            _id: 1,
+                            rating: 1,
+                            first_name: 1,
+                            display_name: 1,
+                            last_name: 1,
+                            description: 1,
+                            createdAt: 1,
+                            product_id: 1,
+                            verify_badge: 1,
+                            reviewDocuments: {
+                                $arrayElemAt: [
+                                    {
+                                        $filter: {
+                                            input: "$reviewDocuments",
+                                            as: "doc",
+                                            cond: {
+                                                $and: [
+                                                    { $eq: ["$$doc.is_approve", true] },
+                                                    { $eq: ["$$doc.is_cover", true] }
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        $match: {
+                            reviewDocuments: { $ne: null }
+                        }
+                    },
+                    {
+                        $limit: parseInt(popupModalWidgetCustomizesModel.maximumPerPage > 0 ? popupModalWidgetCustomizesModel.maximumPerPage : settingsJson.page_limit )
+                    }
+                ];
+
+                const reviewItems = await productReviews.aggregate(aggregationPipeline);
+
+                var mapProductDetails = {};
+
+                if (reviewItems.length > 0) {
+                    const uniqueProductIds = [...new Set(reviewItems.map(item => item.product_id))];
+
+                    const productIds = uniqueProductIds.map((item) => `"gid://shopify/Product/${item}"`);
+                    var productsDetails = await getShopifyProducts(shop, productIds);
+
+                    if (productsDetails.length > 0) {
+                        productsDetails.forEach(node => {
+                            if (node) {
+                                const id = node.id.split('/').pop();
+                                mapProductDetails[id] = node;
+                            }
+
+                        });
+                    }
+
+                }
+
+                reviewItems.map(items => {
+                    items.productDetails = mapProductDetails[items.product_id];
+                    return items;
+                });
+
+
+                const dynamicPopupModalComponent = <PopupModalWidget shopRecords={shopRecords} popupModalWidgetCustomizesModel={popupModalWidgetCustomizesModel} reviewItems={reviewItems} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} settingsJson={settingsJson} />;
+                const htmlPopupModalContent = ReactDOMServer.renderToString(dynamicPopupModalComponent);
+                return json({
+                    content: htmlPopupModalContent
+                });
+
+            } catch (error) {
+                console.log(error);
+                return json({
+                    content: ""
                 });
             }
         } else {
@@ -1024,11 +1149,7 @@ export async function action({ request }) {
                 if (totalPages >= totalReviewItems) {
                     hasMore = 0;
                 }
-                const client = new GraphQLClient(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
-                    headers: {
-                        'X-Shopify-Access-Token': shopSessionRecords.accessToken,
-                    },
-                });
+
 
                 const uniqueProductIds = [...new Set(reviewItems.map(item => item.product_id))];
 
@@ -1145,7 +1266,7 @@ async function getImageAndVideoForCarousel(shopRecords, limit = null) {
                 description: 1,
                 createdAt: 1,
                 product_id: 1,
-                verify_badge :1,
+                verify_badge: 1,
                 reviewDocuments: {
                     $arrayElemAt: [
                         {

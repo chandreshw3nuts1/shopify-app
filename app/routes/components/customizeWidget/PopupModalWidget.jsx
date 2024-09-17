@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import settingsJson from './../../../utils/settings.json';
-import ColorPicker from "./../settings/ColorPicker";
-import GridLayoutIcon from '../icons/GridLayoutIcon';
-import ListLayoutIcon from '../icons/ListLayoutIcon';
 
-
-const SidebarProductReviewWidget = ({ shopRecords, customizeObj }) => {
+const PopupModalWidget = ({ shopRecords, customizeObj }) => {
     const [documentObj, setDocumentObj] = useState(customizeObj);
-    const [selectedWidgetPosition, setSelectedWidgetPosition] = useState(customizeObj?.widgetPosition);
-    const [selectedwidgetOrientation, setSelectedwidgetOrientation] = useState(customizeObj?.widgetOrientation);
-    const [buttonText, setButtonText] = useState('');
     const [isActive, setIsActive] = useState(customizeObj?.isActive);
-
+    const [selectedWidgetPosition, setSelectedWidgetPosition] = useState(customizeObj?.widgetPosition);
+    const [selectedCornerRadius, setSelectedCornerRadius] = useState(customizeObj?.cornerRadius);
+    const [minimumRatingDisplay, setMinimumRatingDisplay] = useState(customizeObj?.minimumRatingDisplay);
+    const [initialDelay, setInitialDelay] = useState(customizeObj?.initialDelay);
+    const [delayBetweenPopups, setDelayBetweenPopups] = useState(customizeObj?.delayBetweenPopups);
+    const [popupDisplayTime, setPopupDisplayTime] = useState(customizeObj?.popupDisplayTime);
+    const [maximumPerPage, setMaximumPerPage] = useState(customizeObj?.maximumPerPage);
+    const [showProductThumb, setShowProductThumb] = useState(customizeObj?.showProductThumb);
+    const [hideOnMobile, setHideOnMobile] = useState(customizeObj?.hideOnMobile);
     const [isHomePage, setIsHomePage] = useState(customizeObj?.isHomePage);
     const [isProductPage, setIsProductPage] = useState(customizeObj?.isProductPage);
     const [isCartPage, setIsCartPage] = useState(customizeObj?.isCartPage);
     const [isOtherPages, setIsOtherPages] = useState(customizeObj?.isOtherPages);
-    const [hideOnMobile, setHideOnMobile] = useState(customizeObj?.hideOnMobile);
 
     const [initialData, setInitialData] = useState({});
 
@@ -25,12 +25,22 @@ const SidebarProductReviewWidget = ({ shopRecords, customizeObj }) => {
 
         const documentObjInfo = (documentObj) ? documentObj : {};
         const {
-            buttonText,
+            initialDelay,
+            delayBetweenPopups,
+            popupDisplayTime,
+            maximumPerPage,
+
         } = documentObjInfo;
-        setButtonText(buttonText || '');
+        setInitialDelay(initialDelay || '');
+        setDelayBetweenPopups(delayBetweenPopups || '');
+        setPopupDisplayTime(popupDisplayTime || '');
+        setMaximumPerPage(maximumPerPage || '');
 
         setInitialData({
-            buttonText: buttonText || '',
+            initialDelay: initialDelay || '',
+            delayBetweenPopups: delayBetweenPopups || '',
+            popupDisplayTime: popupDisplayTime || '',
+            maximumPerPage: maximumPerPage || '',
         });
 
     }, []);
@@ -52,13 +62,15 @@ const SidebarProductReviewWidget = ({ shopRecords, customizeObj }) => {
             eventVal = !isOtherPages;
         } else if (eventKey == 'hideOnMobile') {
             eventVal = !hideOnMobile;
+        } else if (eventKey == 'showProductThumb') {
+            eventVal = !showProductThumb;
         }
-        
+
         const updateData = {
             field: event.target.name,
             value: eventVal,
             shop: shopRecords.shop,
-            actionType: "sidebarReviewCustomize"
+            actionType: "popupModalReviewCustomize"
         };
         const response = await fetch('/api/customize-widget', {
             method: 'POST',
@@ -87,8 +99,10 @@ const SidebarProductReviewWidget = ({ shopRecords, customizeObj }) => {
         }
         if (eventKey == 'widgetPosition') {
             setSelectedWidgetPosition(eventVal);
-        } else if (eventKey == 'widgetOrientation') {
-            setSelectedwidgetOrientation(eventVal);
+        } else if (eventKey == 'cornerRadius') {
+            setSelectedCornerRadius(eventVal);
+        } else if (eventKey == 'minimumRatingDisplay') {
+            setMinimumRatingDisplay(eventVal);
         } else if (eventKey == 'isActive') {
             setIsActive(!isActive);
         } else if (eventKey == 'isHomePage') {
@@ -99,8 +113,10 @@ const SidebarProductReviewWidget = ({ shopRecords, customizeObj }) => {
             setIsCartPage(!isCartPage);
         } else if (eventKey == 'isOtherPages') {
             setIsOtherPages(!isOtherPages);
-        }else if (eventKey == 'hideOnMobile') {
+        } else if (eventKey == 'hideOnMobile') {
             setHideOnMobile(!hideOnMobile);
+        } else if (eventKey == 'showProductThumb') {
+            setShowProductThumb(!showProductThumb);
         }
     };
 
@@ -108,8 +124,14 @@ const SidebarProductReviewWidget = ({ shopRecords, customizeObj }) => {
     const changeLanguageInput = (event) => {
         const eventKey = event.target.name;
         const eventVal = event.target.value;
-        if (eventKey == 'buttonText') {
-            setButtonText(eventVal);
+        if (eventKey == 'initialDelay') {
+            setInitialDelay(eventVal);
+        } else if (eventKey == 'delayBetweenPopups') {
+            setDelayBetweenPopups(eventVal);
+        } else if (eventKey == 'popupDisplayTime') {
+            setPopupDisplayTime(eventVal);
+        } else if (eventKey == 'maximumPerPage') {
+            setMaximumPerPage(eventVal);
         }
     };
 
@@ -119,7 +141,7 @@ const SidebarProductReviewWidget = ({ shopRecords, customizeObj }) => {
                 field: e.target.name,
                 value: e.target.value,
                 shop: shopRecords.shop,
-                actionType: "sidebarReviewCustomize"
+                actionType: "popupModalReviewCustomize"
             };
             const response = await fetch('/api/customize-widget', {
                 method: 'POST',
@@ -159,8 +181,8 @@ const SidebarProductReviewWidget = ({ shopRecords, customizeObj }) => {
     return (
         <>
             <div className="subtitlebox">
-                <h2>Sidebar Review Widget</h2>
-                <p>Give your visitors easy access to all of your store's reviews by clicking a tab on the side of their screen.
+                <h2>Pop-up Widget</h2>
+                <p>Spotlight relevant reviews and drive visitors to your product pages with a subtle social proof pop-up.
                 </p>
             </div>
             <div className='flxfix'>
@@ -200,74 +222,88 @@ const SidebarProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                                     <label htmlFor="">Position</label>
                                                     <div className='sideinput mw300 flxflexi'>
                                                         <select name="widgetPosition" onChange={handleSelectChange} value={selectedWidgetPosition} className='input_text'>
-                                                            <option value="left">Left</option>
-                                                            <option value="right">Right</option>
+                                                            <option value="bottom_left">Bottom-left corner</option>
+                                                            <option value="bottom_right">Bottom-right corner</option>
+                                                            <option value="top_left">Top-left corner</option>
+                                                            <option value="top_right">Top-right corner</option>
                                                         </select>
                                                     </div>
                                                 </div>
 
                                                 <div className="form-group m-0 horizontal-form alightop">
-                                                    <label htmlFor="">Orientation</label>
+                                                    <label htmlFor="">Corner Radius</label>
                                                     <div className='sideinput mw300 flxflexi'>
-                                                        <div className="form-group m-0">
-                                                            <div className='layoutstr'>
-                                                                <div className='layoutbox'>
-                                                                    <input
-                                                                        type='radio'
-                                                                        value="ttb"
-                                                                        name='widgetOrientation'
-                                                                        id='gridlayout'
-                                                                        onChange={handleSelectChange}
-                                                                        checked={selectedwidgetOrientation === 'ttb'}
+                                                        <select name="cornerRadius" onChange={handleSelectChange} value={selectedCornerRadius} className='input_text'>
+                                                            <option value="0">Sharp</option>
+                                                            <option value="4">Slightly Rounded</option>
+                                                            <option value="8">Rounded</option>
+                                                            <option value="16">Extra Rounded</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div className="form-group m-0 horizontal-form alightop">
+                                                    <label htmlFor="">Minimum rating to display</label>
+                                                    <div className='sideinput mw300 flxflexi'>
+                                                        <select name="minimumRatingDisplay" onChange={handleSelectChange} value={minimumRatingDisplay} className='input_text'>
+                                                            <option value="5">5 stars only</option>
+                                                            <option value="4">4 stars and up</option>
+                                                            <option value="3">3 stars and up</option>
+                                                            <option value="2">2 stars and up</option>
+                                                            <option value="all">All reviews</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
 
-                                                                    />
-                                                                    <label htmlFor="gridlayout">
-                                                                        <div className='iconbox'><GridLayoutIcon /></div>
-                                                                        <span>Top to bottom</span>
-                                                                    </label>
-                                                                </div>
-                                                                <div className='layoutbox'>
-                                                                    <input
-                                                                        type='radio'
-                                                                        value="btt"
-                                                                        name='widgetOrientation'
-                                                                        id='listlayout'
-                                                                        onChange={handleSelectChange}
-                                                                        checked={selectedwidgetOrientation === 'btt'}
-                                                                    />
-                                                                    <label htmlFor="listlayout">
-                                                                        <div className='iconbox'><ListLayoutIcon /></div>
-                                                                        <span>Bottom to top
-                                                                        </span>
-                                                                    </label>
-                                                                </div>
+                                                <div className="form-group m-0 horizontal-form">
+                                                    <label htmlFor="">Initial Delay (Sec.)</label>
+                                                    <div className='sideinput mw300  flxflexi'>
+                                                        <input type='number' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="initialDelay" value={initialDelay} placeholder="5" />
+                                                    </div>
+                                                </div>
 
-                                                            </div>
+                                                <div className="form-group m-0 horizontal-form">
+                                                    <label htmlFor="">Delay between pop-ups (Sec.)</label>
+                                                    <div className='sideinput mw300  flxflexi'>
+                                                        <input type='number' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="delayBetweenPopups" value={delayBetweenPopups} placeholder="5" />
+                                                    </div>
+                                                </div>
+
+                                                <div className="form-group m-0 horizontal-form">
+                                                    <label htmlFor="">Pop-up display time (Sec.)</label>
+                                                    <div className='sideinput mw300  flxflexi'>
+                                                        <input type='number' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="popupDisplayTime" value={popupDisplayTime} placeholder="5" />
+                                                    </div>
+                                                </div>
+
+                                                <div className="form-group m-0 horizontal-form">
+                                                    <label htmlFor="">Maximum per page (pop-ups.)</label>
+                                                    <div className='sideinput mw300  flxflexi'>
+                                                        <input type='number' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="maximumPerPage" value={maximumPerPage} placeholder={settingsJson.page_limit} />
+                                                    </div>
+                                                </div>
+
+
+
+
+                                                <div className="form-group m-0 horizontal-form">
+                                                    <label htmlFor="" className='p-0'>Product thumbnail </label>
+                                                    <div className='sideinput mw300 flxflexi'>
+                                                        <div className="form-check form-switch">
+                                                            <input
+                                                                checked={
+                                                                    showProductThumb
+                                                                }
+                                                                onChange={
+                                                                    handleSelectChange
+                                                                }
+                                                                className="form-check-input"
+                                                                type="checkbox"
+                                                                role="switch"
+                                                                name="showProductThumb"
+                                                            />
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                                <div className="form-group m-0 horizontal-form">
-                                                    <label htmlFor="">Button text</label>
-                                                    <div className='sideinput mw300 flxflexi'>
-                                                        <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="buttonText" value={buttonText} placeholder="Reviews" />
-                                                    </div>
-                                                </div>
-
-                                                <div className="form-group m-0 horizontal-form">
-                                                    <label htmlFor="">Button background color </label>
-                                                    <div className='sideinput mw300 flxflexi'>
-                                                        <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="sidebarRatingWidgetCustomize" pickerType="buttonBackgroundColor" />
-                                                    </div>
-                                                </div>
-
-                                                <div className="form-group m-0 horizontal-form">
-                                                    <label htmlFor="">Button text color</label>
-                                                    <div className='sideinput mw300 flxflexi'>
-                                                        <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="sidebarRatingWidgetCustomize" pickerType="buttonTextColor" />
-                                                    </div>
-                                                </div>
-
 
                                                 <div className="form-group m-0 horizontal-form">
                                                     <label htmlFor="" className='p-0'>Hide on mobile</label>
@@ -391,4 +427,4 @@ const SidebarProductReviewWidget = ({ shopRecords, customizeObj }) => {
     );
 };
 
-export default SidebarProductReviewWidget;
+export default PopupModalWidget;

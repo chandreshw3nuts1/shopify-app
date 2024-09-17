@@ -570,8 +570,17 @@ export async function createMetafields(shop, metafields, widgetType = "") {
 				}
 			}
 
+		} else if (widgetType == "popupModalReviewCustomize") {
+			metafieldData = {
+				"metafield": {
+					"namespace": "extension_popup_modal",
+					"key": "popup_modal_data",
+					"value": jsonMetafieldsString,
+					"type": "json"
+				}
+			}
 		}
-
+		
 		const metafieldResponse = await fetch(metafieldApiUrl, {
 			method: 'POST',
 			headers: {

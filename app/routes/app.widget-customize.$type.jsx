@@ -4,12 +4,14 @@ import { useLoaderData } from '@remix-run/react';
 import LanguageSelector from "./components/language-selector";
 import ProductReviewWidget from './components/customizeWidget/ProductReviewWidget';
 import SidebarReviewWidget from './components/customizeWidget/SidebarReviewWidget';
+import PopupModalWidget from './components/customizeWidget/PopupModalWidget';
 import FloatingWidget from './components/customizeWidget/FloatingWidget';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from './components/Breadcrumb';
 import { getShopDetails } from './../utils/getShopDetails';
 import productReviewWidgetCustomizes from './models/productReviewWidgetCustomizes';
 import sidebarReviewWidgetCustomizes from './models/sidebarReviewWidgetCustomizes';
+import popupModalWidgetCustomizes from './models/popupModalWidgetCustomizes';
 import floatingWidgetCustomizes from './models/floatingWidgetCustomizes';
 import generalSettings from './models/generalSettings';
 import { useTranslation } from "react-i18next";
@@ -36,6 +38,11 @@ export const loader = async ({ request, params }) => {
             break;
         case 'floating-widget':
             JsonData['customizeObj'] = await floatingWidgetCustomizes.findOne({
+                shop_id: shopRecords._id,
+            });
+            break;
+        case 'popup-widget':
+            JsonData['customizeObj'] = await popupModalWidgetCustomizes.findOne({
                 shop_id: shopRecords._id,
             });
             break;
@@ -70,6 +77,11 @@ export default function WidgetCustomize() {
         case 'floating-widget':
             content = <FloatingWidget shopRecords={shopRecords} customizeObj={customizeObj} />;
             customizeTemplateName = "Floating Product Reviews Widget";
+            hideLanguageSelector = true;
+            break;
+        case 'popup-widget':
+            content = <PopupModalWidget shopRecords={shopRecords} customizeObj={customizeObj} />;
+            customizeTemplateName = "Pop-up Widget";
             hideLanguageSelector = true;
             break;
         default:

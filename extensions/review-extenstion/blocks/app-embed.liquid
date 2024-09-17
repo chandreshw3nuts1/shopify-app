@@ -38,6 +38,7 @@
   </div>
 </div>
 
+{%- assign current_template = template.name -%}
 
 {% assign sidebar_widget_data = shop.metafields.extension_status.sidebar_widget_data %}
 {%- if sidebar_widget_data -%}
@@ -48,7 +49,6 @@
   {%- assign isOtherPages = shop.metafields.extension_status.sidebar_widget_data.value.isOtherPages -%}
 {%- endif -%}
 
-{%- assign current_template = template.name -%}
 
 {% if isActive == true %}
   {% if current_template == 'index' and isHomePage == true %}
@@ -69,6 +69,35 @@
 {% endif %}
 
 
+{% assign popup_modal_widget_data = shop.metafields.extension_popup_modal.popup_modal_data %}
+
+{%- if popup_modal_widget_data -%}
+  {%- assign isActivePopup = shop.metafields.extension_popup_modal.popup_modal_data.value.isActive -%}
+  {%- assign isHomePagePopup = shop.metafields.extension_popup_modal.popup_modal_data.value.isHomePage -%}
+  {%- assign isCartPagePopup = shop.metafields.extension_popup_modal.popup_modal_data.value.isCartPage -%}
+  {%- assign isProductPagePopup = shop.metafields.extension_popup_modal.popup_modal_data.value.isProductPage -%}
+  {%- assign isOtherPagesPopup = shop.metafields.extension_popup_modal.popup_modal_data.value.isOtherPages -%}
+{%- endif -%}
+
+
+{% if isActivePopup == true %}
+  {% if current_template == 'index' and isHomePagePopup == true %}
+    {% assign show_popup_modal = true %}
+  {% elsif current_template contains 'cart' and isCartPagePopup == true %}
+    {% assign show_popup_modal = true %}
+  {% elsif current_template contains 'product' and isProductPagePopup == true %}
+    {% assign show_popup_modal = true %}
+  {% elsif isOtherPagesPopup == true and current_template != 'index' and current_template != 'product' and current_template != 'cart'  %}
+    {% assign show_popup_modal = true %}
+  {% endif %}
+{% endif %}
+ 
+
+{% if show_popup_modal == true %}
+  	<div id="popup_modal_extension_widget" class="w3-widgets w3floatreview " data-popup-settings={{popup_modal_widget_data}} data-customer-locale="{{ request.locale.iso_code }}"  data-shop-domain="{{ shop.domain }}" >
+		
+	</div>
+{% endif %}
 
 
 {% schema %}

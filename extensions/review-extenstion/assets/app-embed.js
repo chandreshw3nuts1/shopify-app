@@ -59,10 +59,10 @@ $(document).on("click", ".dropdown-menu .widget_sort_by_filter", function (e) {
 
 $(document).on("click", ".widget_w3grid-review-item", function () {
     reviewId = $(this).data('reviewid');
-    let shop_domain = ""; 
-    let customer_locale = ""; 
-    
-    if(typeof widget_shop_domain == 'undefined'){
+    let shop_domain = "";
+    let customer_locale = "";
+
+    if (typeof widget_shop_domain == 'undefined') {
 
         let $this = $(this).parents(".w3-widgets");
         shop_domain = $this.data('shop-domain');
@@ -90,7 +90,7 @@ $(document).on("click", ".widget_w3grid-review-item", function () {
             $("body").append(modal_html);
             $("#staticBackdrop").modal("show");
 
-            if(widgetElementObj){
+            if (widgetElementObj) {
                 widgetElementObj.addClass("modal-backdrop-grey");
             }
         },
@@ -247,6 +247,7 @@ $(document).ready(function () {
         });
     });
 
+    /* Display Sidebar rating widget */
     if ($("#sidebar_popup_extension_widget").length > 0) {
         var shop_domain = $("#sidebar_popup_extension_widget").data('shop-domain');
         $.ajax({
@@ -265,7 +266,108 @@ $(document).ready(function () {
             }
         });
     }
-    
+
+
+    /* Display Popup Modals widget */
+    if ($("#popup_modal_extension_widget").length > 0) {
+        var shop_domain = $("#popup_modal_extension_widget").data('shop-domain');
+        $.ajax({
+            type: 'POST',
+            url: `/apps/w3-proxy/widget`,
+            data: {
+                shop_domain: shop_domain,
+                actionType: "popupModalWidget",
+            },
+            dataType: "json",
+            success: function (response) {
+                // Insert the content of the modals dynamically into the widget container
+                $("#popup_modal_extension_widget").html(response.content);
+                const popupSettingData = $("#popup_modal_extension_widget").data('popup-settings');
+
+                let numberOfModals = popupSettingData.maximumPerPage > 0 ? popupSettingData.maximumPerPage : 20;
+                let modals = [];
+                for (let i = 1; i <= numberOfModals; i++) {
+                    modals.push(`#w3-popup-modal-content-${i}`);
+                }
+        
+                let currentIndex = 0;
+                const intervalTime = popupSettingData.popupDisplayTime > 0 ? popupSettingData.popupDisplayTime*1000 : 5000;
+                let hoverPause = false;
+                let timeoutId = null;
+        
+                // Function to show each modal in sequence
+                function showModal(index) {
+                    if (index >= modals.length) {
+                        return; // End the slideshow if all modals have been displayed
+                    }
+        
+                    const modal = $(modals[index]);
+                    modal.css('display', 'block');
+                    setTimeout(function () {
+                        modal.addClass('slide-in');
+                    }, 100);
+        
+                    timeoutId = setTimeout(function () {
+                        if (!hoverPause) {
+                            modal.addClass('slide-out');
+                            setTimeout(function () {
+                                modal.css('display', 'none');
+                                modal.removeClass('slide-in slide-out');
+                                currentIndex++;
+                                showModal(currentIndex); // Show next modal
+                            }, popupSettingData.delayBetweenPopups > 0 ? popupSettingData.delayBetweenPopups*1000 : 5000); // Allow time for the slide-out animation
+                        }
+                    }, intervalTime);
+                }
+        
+                // Hide all modals if the close button is clicked
+                function hideAllModals() {
+                    clearTimeout(timeoutId); // Stop any active timeouts
+                    modals.forEach(function (modalId) {
+                        const modal = $(modalId);
+                        modal.addClass('slide-out');
+                        setTimeout(function () {
+                            modal.css('display', 'none');
+                            modal.removeClass('slide-in slide-out');
+                        }, 500);
+                    });
+                }
+        
+                // Close modal when close button is clicked
+                $('.close-modal').on('click', function () {
+                    hideAllModals();
+                });
+        
+                // Start the modal slideshow
+                function startSlideshow() {
+                    clearTimeout(timeoutId);
+                    showModal(currentIndex);
+                }
+        
+                
+                setTimeout(function () {
+                    startSlideshow(); // Initial start
+                }, popupSettingData.initialDelay*1000);
+
+                // Pause and resume slideshow on hover
+                modals.forEach(function (modalId) {
+                    $(modalId).hover(
+                        function () {
+                            hoverPause = true; // Pause the slideshow on hover
+                            clearTimeout(timeoutId); // Clear the current timeout
+                        },
+                        function () {
+                            hoverPause = false; // Resume slideshow on hover out
+                            startSlideshow(); // Continue from where it left off
+                        }
+                    );
+                });
+            }
+        });
+        
+    }
+
+
     $(document).on("click", ".open-transparency-popup-modal", function () {
         $(".verify-transparency-popup-icon").toggle();
     });

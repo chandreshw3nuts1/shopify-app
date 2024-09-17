@@ -9,7 +9,6 @@ import ReviewVerifyIcon from '../icons/ReviewVerifyIcon';
 
 const TestimonialsCarouselWidget = (props) => {
     const blockId = props.formParams.blockId;
-    console.log(props.shopRecords);
     const iconColor = (props.formParams.widget_icon_color != "rgba(0,0,0,0)" && props.formParams.widget_icon_color != "") ? props.formParams.widget_icon_color : props.generalAppearancesModel.starIconColor;
     const textColor = (props.formParams.text_color != "rgba(0,0,0,0)" && props.formParams.text_color != "") ? props.formParams.text_color : '#000000';
     const reviewerNameColor = (props.formParams.reviewer_name_color != "rgba(0,0,0,0)" && props.formParams.reviewer_name_color != "") ? props.formParams.reviewer_name_color : '#000000';

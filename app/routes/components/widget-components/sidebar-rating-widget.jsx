@@ -44,12 +44,12 @@ const SidebarRatingWidget = (props) => {
 
 				`}
             </style>
-            <div class={`open-w3-float-modal ${hideOnMobileClass}`}>
-                <div class="review-sidebar">
-                    <div class="review-icon">
+            <div className={`open-w3-float-modal ${hideOnMobileClass}`}>
+                <div className="review-sidebar">
+                    <div className="review-icon">
                         {props.CommonRatingComponent ? <props.CommonRatingComponent color={iconColor} /> : null}
                     </div>
-                    <span class="review-text">{reviewText}</span>
+                    <span className="review-text">{reviewText}</span>
                 </div>
             </div>
         </>

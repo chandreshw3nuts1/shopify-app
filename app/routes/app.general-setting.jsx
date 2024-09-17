@@ -520,11 +520,7 @@ export default function GeneralSettings() {
 												<input type="text" disabled={!isEnableFooterTextChecked} onChange={changeInput} onBlur={inputFooterTextBlur} value={footerText} className="input_text" name="footerText" placeholder="Enter your email address" />
 											</div>
 										</div>
-										<div className="col-lg-12">
-											<div className="btnwrap m-0">
-												<input type="submit" value="View sample" className="revbtn" />
-											</div>
-										</div>
+										
 									</div>
 								</div>
 							</div>

@@ -4,6 +4,7 @@ import { ObjectId } from 'mongodb';
 import { getShopDetailsByShop } from './../utils/common';
 import productReviewWidgetCustomizes from "./models/productReviewWidgetCustomizes";
 import sidebarReviewWidgetCustomizes from "./models/sidebarReviewWidgetCustomizes";
+import popupModalWidgetCustomizes from "./models/popupModalWidgetCustomizes";
 import floatingWidgetCustomizes from "./models/floatingWidgetCustomizes";
 import reviewFormSettings from "./models/reviewFormSettings";
 import { findOneRecord, createMetafields } from './../utils/common';
@@ -107,6 +108,35 @@ export async function action({ request }) {
                             "title" : floatingWidgetModel.title,
                             "backgroundColor" : floatingWidgetModel.backgroundColor,
                             "textColor" : floatingWidgetModel.textColor
+                        };
+                        await createMetafields(shopRecords.shop, metafields, actionType);
+                    }
+                    return json({ "status": 200, "message": "Settings saved" });
+                } else if (actionType == 'popupModalReviewCustomize') {
+                    const query = { shop_id: shopRecords._id };
+                    const update = {
+                        $set: {
+                            [requestBody.field]: requestBody.value
+                        }
+                    };
+                    const options = { upsert: true, returnOriginal: false };
+                    
+
+                    await popupModalWidgetCustomizes.findOneAndUpdate(query, update, options);
+                    
+                    if (["maximumPerPage","initialDelay","delayBetweenPopups","popupDisplayTime", "isActive", "isHomePage","isCartPage","isProductPage","isOtherPages",].includes(requestBody.field)) {
+                        const popupWidgetModel = await popupModalWidgetCustomizes.findOne({ shop_id: shopRecords._id });
+                        const metafields = {
+                            "initialDelay" : popupWidgetModel.initialDelay,
+                            "delayBetweenPopups" : popupWidgetModel.delayBetweenPopups,
+                            "popupDisplayTime" : popupWidgetModel.popupDisplayTime,
+                            "isActive" : popupWidgetModel.isActive,
+                            "isHomePage" : popupWidgetModel.isHomePage,
+                            "isCartPage" : popupWidgetModel.isCartPage,
+                            "isProductPage" : popupWidgetModel.isProductPage,
+                            "isOtherPages" : popupWidgetModel.isOtherPages,
+                            "maximumPerPage" : popupWidgetModel.maximumPerPage,
+                            
                         };
                         await createMetafields(shopRecords.shop, metafields, actionType);
                     }

@@ -1,5 +1,6 @@
 import { getUploadDocument } from './../../../utils/documentPath';
 import VideoPlayIcon from '../icons/VideoPlayIcon';
+import { displayNoOfCharacters } from './../../../utils/common';
 
 const SnippetWidget = (props) => {
     const blockId = props.formParams.blockId;
@@ -21,7 +22,9 @@ const SnippetWidget = (props) => {
                         ${showBorder}
                     }
 
-                    #snippet-widget-component${blockId} .w3-snippet-wrapper .owl-carousel .owl-nav button.owl-prev, 
+                    #snippet-widget-component${blockId} .w3-snippet-wrapper  {
+                        width: 200px !important;
+                    }
                     
 
 				`}
@@ -32,33 +35,38 @@ const SnippetWidget = (props) => {
                         {props.reviewItems.map((review, i) => (
                             <div key={i} className="item widget_w3grid-review-item" data-reviewid={review._id}>
                                 <div className='itemwrap'>
+                                    {props.formParams.show_review_image == "true" &&
+                                        <div className="img-video-content">
+                                            {review.reviewDocuments.type === 'image' ? (
+                                                <div className='imagewrap'>
+                                                    <img style={{ width: '100%' }} src={getUploadDocument(review.reviewDocuments.url, props.shopRecords.shop_id)} />
+                                                </div>
+                                            ) : (
 
-                                    {review.reviewDocuments.type === 'image' ? (
-                                        <div className='imagewrap'>
-                                            <img style={{ width: '100%' }} src={getUploadDocument(review.reviewDocuments.url, props.shopRecords.shop_id)} />
+                                                <div className='video-div'>
+                                                    <img style={{ width: '100%' }} src={getUploadDocument(review.reviewDocuments.thumbnail_name, props.shopRecords.shop_id)} />
+
+                                                    <div className='mainbtnplay'>
+                                                        <button class="play-pausess">
+                                                            <VideoPlayIcon />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
-                                    ) : (
-
-                                        <div className='video-div'>
-                                            <img style={{ width: '100%' }} src={getUploadDocument(review.reviewDocuments.thumbnail_name, props.shopRecords.shop_id)} />
-
-                                            <div className='mainbtnplay'>
-                                                <button class="play-pausess">
-                                                    <VideoPlayIcon />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )}
-
+                                    }
                                     <div className='bottom_meta'>
                                         <div class="reviewer_name">{review.display_name}</div>
-                                        <div className={`ratingstars flxrow star-${review.rating}`}>
-                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 1 ? iconColor : "currentColor"} /> : null}
-                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 2 ? iconColor : "currentColor"} /> : null}
-                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 3 ? iconColor : "currentColor"} /> : null}
-                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 4 ? iconColor : "currentColor"} /> : null}
-                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 5 ? iconColor : "currentColor"} /> : null}
-                                        </div>
+                                        <div class="reviewer_name">{displayNoOfCharacters(props.formParams.no_of_chars, review.description)}</div>
+                                        {props.formParams.show_rating_icon == "true" &&
+                                            <div className={`ratingstars flxrow star-${review.rating}`}>
+                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 1 ? iconColor : "currentColor"} /> : null}
+                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 2 ? iconColor : "currentColor"} /> : null}
+                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 3 ? iconColor : "currentColor"} /> : null}
+                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 4 ? iconColor : "currentColor"} /> : null}
+                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 5 ? iconColor : "currentColor"} /> : null}
+                                            </div>
+                                        }
                                     </div>
                                 </div>
 
