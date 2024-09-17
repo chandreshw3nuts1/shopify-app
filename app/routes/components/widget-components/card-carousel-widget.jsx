@@ -17,6 +17,9 @@ const CardCarouselWidget = (props) => {
     // const quotesIconColor = (props.formParams.quotes_icon_color != "rgba(0,0,0,0)" && props.formParams.quotes_icon_color != "") ? props.formParams.quotes_icon_color : '#cccccc';
     // const hideDots = props.formParams.show_pagination_dots == "true" ? "block" : "none";
     const showBorder = props.formParams.show_border == "true" ? `border : ${props.formParams.border_width}px solid ${borderColor};` : "";
+    const textColor = (props.formParams.text_color != "rgba(0,0,0,0)" && props.formParams.text_color != "") ? props.formParams.text_color : '#ffffff';
+    const textBgColor = (props.formParams.text_bg_color != "rgba(0,0,0,0)" && props.formParams.text_bg_color != "") ? props.formParams.text_bg_color : '#ffffff';
+    const widgetBgIconColor = (props.formParams.widget_bg_icon_color != "rgba(0,0,0,0)" && props.formParams.widget_bg_icon_color != "") ? props.formParams.widget_bg_icon_color : '#ffffff';
 
 
 
@@ -37,6 +40,15 @@ const CardCarouselWidget = (props) => {
                     #card-carousel-widget-component${blockId} .w3-card-slider-wrapper .owl-carousel .owl-nav button.owl-next {
                         color: ${arrowIconColor};
                         background-color : ${arrowBgIconColor} !important;
+                    }
+                    #card-carousel-widget-component${blockId} .w3-card-slider-wrapper .itemwrap  .bottom_meta {
+                        background-color : ${textBgColor} !important;
+                    }
+                    #card-carousel-widget-component${blockId} .w3-card-slider-wrapper .itemwrap  .bottom_meta .ratingstars {
+                        background-color : ${widgetBgIconColor} !important;
+                    }
+                    #card-carousel-widget-component${blockId} .w3-card-slider-wrapper .itemwrap .bottom_meta .review_description {
+                        color: ${textColor} !important;
                     }
 
 				`}
@@ -64,21 +76,26 @@ const CardCarouselWidget = (props) => {
                                         </div>
                                     )}
                                     <div className='bottom_meta'>
-                                        <div class="reviewer_name">{reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}</div>
-                                        {review.verify_badge &&
+                                        <div className='ratingstars_wrap'>
+                                            <div className={`ratingstars flxrow star-${review.rating}`}>
+                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 1 ? iconColor : "currentColor"} /> : null}
+                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 2 ? iconColor : "currentColor"} /> : null}
+                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 3 ? iconColor : "currentColor"} /> : null}
+                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 4 ? iconColor : "currentColor"} /> : null}
+                                                {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 5 ? iconColor : "currentColor"} /> : null}
+                                            </div>
+                                        </div>
+                                        <div className='nameandverifywrap'>
+                                            <div class="reviewer_name">{reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}</div>
+                                            {review.verify_badge &&
                                                 <div className='verifiedreview'>
                                                     <ReviewVerifyIcon />
                                                 </div>
-                                        }    
+                                            }    
+                                        </div>
                                         <div class="review_description">{displayNoOfCharacters(props.formParams.no_of_chars, review.description)}</div>
 
-                                        <div className={`ratingstars flxrow star-${review.rating}`}>
-                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 1 ? iconColor : "currentColor"} /> : null}
-                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 2 ? iconColor : "currentColor"} /> : null}
-                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 3 ? iconColor : "currentColor"} /> : null}
-                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 4 ? iconColor : "currentColor"} /> : null}
-                                            {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 5 ? iconColor : "currentColor"} /> : null}
-                                        </div>
+                                        
                                     </div>
                                 </div>
 

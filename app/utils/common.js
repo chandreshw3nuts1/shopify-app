@@ -609,8 +609,12 @@ export function displayNoOfCharacters(length = 50, description = "") {
 
 export async function generateVideoThumbnail(videoPath, outputDir, thumbnailName) {
 	try {
+
 		return new Promise((resolve, reject) => {
 			// First, get the video dimensions using ffprobe
+			ffmpeg.setFfprobePath(`C:\\ffmpeg\\bin\\ffprobe.exe`);
+			ffmpeg.setFfmpegPath(`C:\\ffmpeg\\bin\\ffmpeg.exe`);
+
 			ffmpeg.ffprobe(videoPath, (err, metadata) => {
 				if (err) {
 					return reject(err);
