@@ -48,16 +48,16 @@ const PopupModalWidget = (props) => {
                                         {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 4 ? iconColor : "currentColor"} /> : null}
                                         {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 5 ? iconColor : "currentColor"} /> : null}
                                     </div>
-                                    <div class="reviewer_description">{displayNoOfCharacters(50, review.description)}</div>
+                                    <div class="descriptionbox">{displayNoOfCharacters(50, review.description)}</div>
 
                                 </div>
                                 <div className='review_bottomwrap'>
                                     <div className="product-container product-thumb-detail">
-                                        <div className="image flxfix">
+                                        <div className="imagepro flxfix">
                                             <img src={review.productDetails.images.edges[0].node.transformedSrc} />
                                         </div>
-                                        <div className="text flxflexi">
-                                            <p >{review.productDetails.title}</p>
+                                        <div className="textpro flxflexi">
+                                            {review.productDetails.title}
                                         </div>
                                     </div>
                                 </div>
