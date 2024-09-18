@@ -9,16 +9,20 @@ import { useNavigate } from 'react-router-dom';
 import settingsJson from './../utils/settings.json';
 
 import sidebarReviewWidgetCustomizes from "./models/sidebarReviewWidgetCustomizes";
+import popupModalWidgetCustomizes from "./models/popupModalWidgetCustomizes";
 import { Image } from "react-bootstrap";
-const  widgetThumb01 = `${settingsJson.host_url}/images/widget-thumbs/Review-Widget-image.jpg`;
-const widgetThumb02 = `/images/widget-thumbs/Review-Widget-image.jpg`;; 
-const widgetThumb03 = widgetThumb01; 
-const widgetThumb04 = widgetThumb01; 
-const widgetThumb05 = widgetThumb01; 
-const widgetThumb06 = widgetThumb01; 
-const widgetThumb07 = widgetThumb01; 
-const widgetThumb08 = widgetThumb01;  
-const widgetThumb09 = widgetThumb01; 
+const widgetThumb01 = `/images/widget-thumbs/Product Reviews Widget.png`;
+const widgetThumb02 = `/images/widget-thumbs/Rating Widget.png`;
+const widgetThumb03 = `/images/widget-thumbs/Testimonials Carousel Widget.png`;
+const widgetThumb04 = `/images/widget-thumbs/Reviews Sidebar Widget.png`;
+const widgetThumb05 = `/images/widget-thumbs/Cart Reviews Widget.png`;
+const widgetThumb06 = `/images/widget-thumbs/Trust Badge.png`;
+const widgetThumb07 = `/images/widget-thumbs/Video Slider Widget.png`;
+const widgetThumb08 = `/images/widget-thumbs/Gallery Carousel Widget.png`;
+const widgetThumb09 = `/images/widget-thumbs/Cards Carousel Widget.png`;
+const widgetThumb10 = `/images/widget-thumbs/Floating Product Reviews Widget.png`;
+const widgetThumb11 = `/images/widget-thumbs/Pop-up Widget.png`;
+const widgetThumb12 = `/images/widget-thumbs/Snippets Widget.png`;
 
 import {
     Page
@@ -30,6 +34,7 @@ export async function loader({ request }) {
         const shopRecords = await getShopDetails(request);
 
         const sidebarReviewWidgetCustomizesModel = await sidebarReviewWidgetCustomizes.findOne({ shop_id: shopRecords._id });
+        const popupModalWidgetCustomizesModel = await popupModalWidgetCustomizes.findOne({ shop_id: shopRecords._id });
 
         const reviewExtensionId = process.env.SHOPIFY_ALL_REVIEW_EXTENSION_ID;
 
@@ -41,8 +46,9 @@ export async function loader({ request }) {
         const cartReviewWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/cart-review-widget`);
         const galleryCarouselWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/gallery-carousel-widget`);
         const cardCarouselWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/card-carousel-widget`);
-        
-        
+        const snippetWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/snippet-widget`);
+
+
 
         const shopifyProduct = await getShopifyLatestProducts(shopRecords.shop);
         const productName = (shopifyProduct.products) ? encodeURIComponent(`/products/${shopifyProduct.products[0]['handle']}`) : "/products";
@@ -56,7 +62,8 @@ export async function loader({ request }) {
         const cartReviewWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?previewPath=${cartPreviewPath}&addAppBlockId=${cartReviewWidgetExtenstionId}&target=cart`;
         const galleryCarouselWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?addAppBlockId=${galleryCarouselWidgetExtenstionId}&target=sectionId`;
         const cardCarouselWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?addAppBlockId=${cardCarouselWidgetExtenstionId}&target=sectionId`;
-        
+        const snippetReviewWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?previewPath=${productName}&addAppBlockId=${snippetWidgetExtenstionId}&target=mainSection`;
+
         const extensionUrs = {
             productReviewWidgetUrl,
             ratingReviewWidgetUrl,
@@ -65,10 +72,11 @@ export async function loader({ request }) {
             cartReviewWidgetUrl,
             testimonialSliderWidgetUrl,
             galleryCarouselWidgetUrl,
-            cardCarouselWidgetUrl
+            cardCarouselWidgetUrl,
+            snippetReviewWidgetUrl
         }
 
-        return json({ shopRecords, sidebarReviewWidgetCustomizesModel, extensionUrs });
+        return json({ shopRecords, sidebarReviewWidgetCustomizesModel, popupModalWidgetCustomizesModel, extensionUrs });
 
     } catch (error) {
         console.error('Error fetching records:', error);
@@ -82,8 +90,10 @@ export default function DisplayReviewWidget() {
     const shopRecords = loaderData.shopRecords;
     const extensionUrs = loaderData.extensionUrs;
     const sidebarReviewWidgetCustomizes = loaderData.sidebarReviewWidgetCustomizesModel;
+    const popupModalWidgetCustomizes = loaderData.popupModalWidgetCustomizesModel;
     const [isClient, setIsClient] = useState(false);
     const [isSidebarWidgetActivated, setIsSidebarWidgetActivated] = useState(sidebarReviewWidgetCustomizes?.isActive);
+    const [isPopupWidgetActivated, setIsPopupWidgetActivated] = useState(popupModalWidgetCustomizes?.isActive);
 
     const navigate = useNavigate();
 
@@ -94,18 +104,23 @@ export default function DisplayReviewWidget() {
 
 
     const changeWidgetActivationStatus = async (widgetType) => {
-        let value = "", field = "";
+        let value = "", field = "", actionType = "";
 
         if (widgetType == 'sidebar') {
             value = !isSidebarWidgetActivated;
             field = "isActive";
+            actionType = "sidebarReviewCustomize";
+        } else if (widgetType == 'popup') {
+            value = !isPopupWidgetActivated;
+            field = "isActive";
+            actionType = "popupModalReviewCustomize";
         }
 
         const updateData = {
             field: field,
             value: value,
             shop: shopRecords.shop,
-            actionType: "sidebarReviewCustomize"
+            actionType: actionType
         };
         const response = await fetch('/api/customize-widget', {
             method: 'POST',
@@ -128,6 +143,8 @@ export default function DisplayReviewWidget() {
         }
         if (widgetType == 'sidebar') {
             setIsSidebarWidgetActivated(!isSidebarWidgetActivated);
+        } else if (widgetType == 'popup') {
+            setIsPopupWidgetActivated(!isPopupWidgetActivated);
         }
     };
 
@@ -140,6 +157,8 @@ export default function DisplayReviewWidget() {
             navigate('/app/widget-customize/sidebar-review-widget');
         } else if (type == 'floatingWidget') {
             navigate('/app/widget-customize/floating-widget');
+        } else if (type == 'popupWidget') {
+            navigate('/app/widget-customize/popup-widget');
         }
 
     }
@@ -194,18 +213,54 @@ export default function DisplayReviewWidget() {
                                         <h3>Testimonials Carousel Widget</h3>
                                         <p>Showcase the text of your best reviews in an eye-catching, dynamic display.</p>
                                         <div className="btnwrap">
-                                        <a href="#" className="simplelink"></a>
-                                        <a href={extensionUrs.testimonialSliderWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
+                                            <a href="#" className="simplelink"></a>
+                                            <a href={extensionUrs.testimonialSliderWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                           
-                            
+
                             <div className="widgetboxwrp">
                                 <div className="widgetbox flxcol">
                                     <div className="imagebox flxfix">
-                                        <Image src={widgetThumb06} alt="" />
+                                        <Image src={widgetThumb11} alt="" />
+                                    </div>
+                                    <div className="detailbox flxflexi">
+                                        <h3>Pop-up Widget</h3>
+                                        <p>Spotlight relevant reviews and drive visitors to your product pages with a subtle social proof pop-up.</p>
+                                        <div className="btnwrap">
+                                            <a href="#" onClick={(e) => redirectToCustomizePage(e, "popupWidget")} className="simplelink">Customize</a>
+                                            {isPopupWidgetActivated ? (
+                                                <label className="revbtn smbtn blackbtn">Activated</label>
+                                            ) : (
+                                                <button onClick={() => changeWidgetActivationStatus('popup')} className="revbtn smbtn">Activate</button>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div className="widgetboxwrp">
+                                <div className="widgetbox flxcol">
+                                    <div className="imagebox flxfix">
+                                        <Image src={widgetThumb12} alt="" />
+                                    </div>
+                                    <div className="detailbox flxflexi">
+                                        <h3>Snippets Widget</h3>
+                                        <p>Build instant trust by showing a glimpse of your best reviews at the top of your product pages, where purchase decisions are made.</p>
+                                        <div className="btnwrap">
+                                            <a href="#" className="simplelink"></a>
+                                            <a href={extensionUrs.snippetReviewWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div className="widgetboxwrp">
+                                <div className="widgetbox flxcol">
+                                    <div className="imagebox flxfix">
+                                        <Image src={widgetThumb04} alt="" />
                                     </div>
                                     <div className="detailbox flxflexi">
                                         <h3>Sidebar Reviews Widget
@@ -223,13 +278,13 @@ export default function DisplayReviewWidget() {
                                 </div>
                             </div>
 
-                            
+
 
 
                             <div className="widgetboxwrp">
                                 <div className="widgetbox flxcol">
                                     <div className="imagebox flxfix">
-                                        <Image src={widgetThumb07} alt="" />
+                                        <Image src={widgetThumb05} alt="" />
                                     </div>
                                     <div className="detailbox flxflexi">
                                         <h3>Cart Reviews Widget</h3>
@@ -242,12 +297,12 @@ export default function DisplayReviewWidget() {
                                 </div>
                             </div>
 
-                           
-                            
+
+
                             <div className="widgetboxwrp">
                                 <div className="widgetbox flxcol">
                                     <div className="imagebox flxfix">
-                                        <Image src={widgetThumb09} alt="" />
+                                        <Image src={widgetThumb06} alt="" />
                                     </div>
                                     <div className="detailbox flxflexi">
                                         <h3>Trust Badge Rating Widget</h3>
@@ -263,7 +318,7 @@ export default function DisplayReviewWidget() {
                             <div className="widgetboxwrp">
                                 <div className="widgetbox flxcol">
                                     <div className="imagebox flxfix">
-                                        <Image src={widgetThumb09} alt="" />
+                                        <Image src={widgetThumb07} alt="" />
                                     </div>
                                     <div className="detailbox flxflexi">
                                         <h3>Video Slider Widget</h3>
@@ -279,7 +334,7 @@ export default function DisplayReviewWidget() {
                             <div className="widgetboxwrp">
                                 <div className="widgetbox flxcol">
                                     <div className="imagebox flxfix">
-                                        <Image src={widgetThumb09} alt="" />
+                                        <Image src={widgetThumb08} alt="" />
                                     </div>
                                     <div className="detailbox flxflexi">
                                         <h3>Gallery Carousel Widget</h3>
@@ -314,7 +369,7 @@ export default function DisplayReviewWidget() {
                             <div className="widgetboxwrp">
                                 <div className="widgetbox flxcol">
                                     <div className="imagebox flxfix">
-                                        <Image src={widgetThumb09} alt="" />
+                                        <Image src={widgetThumb10} alt="" />
                                     </div>
                                     <div className="detailbox flxflexi">
                                         <h3>Floating Product Reviews Widget

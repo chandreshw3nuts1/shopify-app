@@ -30,8 +30,14 @@
 .w3-card-slider-wrapper .owl-carousel .item {
     position: relative;
     text-align: center;
-    padding: 0;
+    padding: 16px 8px;
+    transition: transform 0.6s ease, box-shadow 0.6s ease; /* Slower transition for smooth hover effect */
 }
+
+.w3-card-slider-wrapper .owl-carousel .item:hover {
+    transform: translateY(-10px);
+}
+
 .w3-card-slider-wrapper .owl-carousel .item .imagewrap { position: relative; overflow: hidden;}
 .w3-card-slider-wrapper .owl-carousel .item .imagewrap::before { content: ''; padding-top: 100%; display: block;}
 .w3-card-slider-wrapper .owl-carousel .item .imagewrap img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover;}
@@ -41,7 +47,7 @@
 .w3-card-slider-wrapper .owl-carousel .item .video-div img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover;}
 
 .w3-card-slider-wrapper .owl-carousel .item .video-div .mainbtnplay { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 1;}
-.w3-card-slider-wrapper .owl-carousel .item .video-div .mainbtnplay button { border: solid 1px var(--whiteBg); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: none; box-shadow: none; outline: none; border-radius: 50px; color: var(--whiteText);}
+.w3-card-slider-wrapper .owl-carousel .item .video-div .mainbtnplay button { border: solid 1px var(--whiteBg); width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; background: none; box-shadow: none; outline: none; border-radius: 50px; color: var(--whiteText);}
 
 
 .w3-card-slider-wrapper .owl-carousel .item p {
@@ -71,7 +77,8 @@
     display: flex; align-items: center; justify-content: center;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
-.w3-card-slider-wrapper .itemwrap { position: relative; cursor: pointer; overflow: hidden;}
+.w3-card-slider-wrapper .itemwrap { position: relative; cursor: pointer; overflow: hidden; box-shadow: 0 7px 12px -4px rgba(0,0,0,.22); }
+
 /* .w3-card-slider-wrapper .itemwrap::before { content: ''; position: absolute; left: 0; top: 0; right: 0; bottom: 0; z-index: 1;
     background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 0%, rgba(0, 0, 0, 0.80) 100%);
 } */

@@ -347,6 +347,7 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
             <DndProvider backend={HTML5Backend}>
                 {customQuestionsAnswer.map((input, index) => (
                     <DraggableQuestion
+                        key={input._id}
                         id={input._id}
                         index={index}
                         questionItem={input}

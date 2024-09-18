@@ -58,7 +58,6 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                                                         <source src={getUploadDocument(media.url, shopRecords.shop_id)} type="video/mp4" />
                                                                     </video>
                                                                     <button className="mainVideoPlayButton"><PlayIcon /></button>
-                                                                    <button className="mainVideoPauseButton" style={{ display: 'none' }} ><PauseIcon /></button>
                                                                 </div>
                                                             )}
 
@@ -111,10 +110,14 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                                 )}
 
                                             </div>
-                                            <div className="infoicon open-transparency-popup-modal">
-                                                <InfoIcon />
-                                            </div>
+
+                                            {( (shopRecords.is_enable_future_purchase_discount && reviewDetails.reviewDocuments.length > 0) || (shopRecords.is_enable_import_from_external_source && reviewDetails.is_imported) || (shopRecords.is_enable_review_written_by_site_visitor  && !reviewDetails.is_imported) || (shopRecords.is_enable_marked_verified_by_store_owner &&  reviewDetails.verify_badge) ) &&
+                                                <div className="infoicon open-transparency-popup-modal">
+                                                    <InfoIcon />
+                                                </div>
+                                            }
                                         </div>
+
                                         {/* <div>{JSON.stringify(reviewDetails.reviewDocuments)}</div> */}
                                         <div className="reviewanddates">
                                             <div className={`ratingstars flxrow star-${reviewDetails.rating}`}>
@@ -193,7 +196,7 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                         </div>
 
                         <VerifyTransparencyPopup shopRecords={shopRecords} reviewDetails={reviewDetails} />
-                        
+
                     </div>
                 </div>
             </div>

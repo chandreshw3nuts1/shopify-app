@@ -131,11 +131,15 @@ if (typeof jQuery !== 'undefined') {
                 this.pause();
                 $(this).closest('.item').find('.play-pause').html('<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 8.98505V6.48882C3.5 3.37974 5.65027 2.1092 8.28325 3.66374L10.4043 4.91933L12.5253 6.17492C15.1582 7.72946 15.1582 10.2705 12.5253 11.8251L10.4043 13.0807L8.28325 14.3363C5.65027 15.8908 3.5 14.6203 3.5 11.5112V8.98505Z" fill="currentColor"/></svg>'); // Play Icon
                 $(this).closest('.item').removeClass('videoplaying');
+
+                $(this).closest('.item').find('.playpause').html('<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 2C5.82843 2 6.5 2.67157 6.5 3.5L6.5 14.5C6.5 15.3284 5.82843 16 5 16C4.17157 16 3.5 15.3284 3.5 14.5L3.5 3.5C3.5 2.67157 4.17157 2 5 2ZM13 2C13.8284 2 14.5 2.67157 14.5 3.5L14.5 14.5C14.5 15.3284 13.8284 16 13 16C12.1716 16 11.5 15.3284 11.5 14.5L11.5 3.5C11.5 2.67157 12.1716 2 13 2Z" fill="currentColor"/></svg>'); // Play Icon
+
+                
             });
         });
 
-        $(document).on('ended', '.owl-carousel .video-content', function () {
-            $(this).closest('.item').find('.play-pause').html('<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 2C5.82843 2 6.5 2.67157 6.5 3.5L6.5 14.5C6.5 15.3284 5.82843 16 5 16C4.17157 16 3.5 15.3284 3.5 14.5L3.5 3.5C3.5 2.67157 4.17157 2 5 2ZM13 2C13.8284 2 14.5 2.67157 14.5 3.5L14.5 14.5C14.5 15.3284 13.8284 16 13 16C12.1716 16 11.5 15.3284 11.5 14.5L11.5 3.5C11.5 2.67157 12.1716 2 13 2Z" fill="currentColor"/></svg>'); // Pause Icon
-        });
+        // $(document).on('ended', '.owl-carousel .video-content', function () {
+        //     $(this).closest('.item').find('.play-pause').html('<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 2C5.82843 2 6.5 2.67157 6.5 3.5L6.5 14.5C6.5 15.3284 5.82843 16 5 16C4.17157 16 3.5 15.3284 3.5 14.5L3.5 3.5C3.5 2.67157 4.17157 2 5 2ZM13 2C13.8284 2 14.5 2.67157 14.5 3.5L14.5 14.5C14.5 15.3284 13.8284 16 13 16C12.1716 16 11.5 15.3284 11.5 14.5L11.5 3.5C11.5 2.67157 12.1716 2 13 2Z" fill="currentColor"/></svg>'); // Pause Icon
+        // });
     });
 }

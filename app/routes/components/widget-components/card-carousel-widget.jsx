@@ -17,7 +17,7 @@ const CardCarouselWidget = (props) => {
     // const quotesIconColor = (props.formParams.quotes_icon_color != "rgba(0,0,0,0)" && props.formParams.quotes_icon_color != "") ? props.formParams.quotes_icon_color : '#cccccc';
     // const hideDots = props.formParams.show_pagination_dots == "true" ? "block" : "none";
     const showBorder = props.formParams.show_border == "true" ? `border : ${props.formParams.border_width}px solid ${borderColor};` : "";
-    const textColor = (props.formParams.text_color != "rgba(0,0,0,0)" && props.formParams.text_color != "") ? props.formParams.text_color : '#ffffff';
+    const textColor = (props.formParams.text_color != "rgba(0,0,0,0)" && props.formParams.text_color != "") ? props.formParams.text_color : '#000000';
     const textBgColor = (props.formParams.text_bg_color != "rgba(0,0,0,0)" && props.formParams.text_bg_color != "") ? props.formParams.text_bg_color : '#ffffff';
     const widgetBgIconColor = (props.formParams.widget_bg_icon_color != "rgba(0,0,0,0)" && props.formParams.widget_bg_icon_color != "") ? props.formParams.widget_bg_icon_color : '#ffffff';
 
@@ -28,7 +28,7 @@ const CardCarouselWidget = (props) => {
             <style>
                 {`
                     
-                    #card-carousel-widget-component${blockId} .w3-card-slider-wrapper .reviewer_name {
+                    #card-carousel-widget-component${blockId} .w3-card-slider-wrapper .reviewer_name, #card-carousel-widget-component${blockId} .w3-card-slider-wrapper .verifiedreview {
                         color: ${reviewerNameColor} !important;
                     }
                     #card-carousel-widget-component${blockId} .w3-card-slider-wrapper .itemwrap {

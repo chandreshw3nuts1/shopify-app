@@ -11,7 +11,7 @@ const SettingPageSidebar = (props) => {
               <li><NavLink  to="./../branding"><i className='twenty-brandingicon'></i>Branding</NavLink></li>
               {/* <li><NavLink  to="./../integrations"><i className='twenty-integrationicon'></i>Integrations</NavLink></li> */}
               <li><NavLink  to="./../orders"><i className='twenty-ordericon'></i>Orders</NavLink></li>
-              <li><NavLink  to="./../general-setting"><i className='twenty-genesettingsicon'></i>General Setting</NavLink></li>
+              <li><NavLink  to="./../general-setting"><i className='twenty-genesettingsicon'></i>General setting</NavLink></li>
           </ul>
       </Layout.Section>
     </div>

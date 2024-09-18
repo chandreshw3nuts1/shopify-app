@@ -37,7 +37,7 @@ const TestimonialsCarouselWidget = (props) => {
             <style>
                 {`
                     
-                    #testimonials-carousel-widget-component${blockId} .w3-testimonial-slider-wrapper .reviewer_name {
+                    #testimonials-carousel-widget-component${blockId} .w3-testimonial-slider-wrapper .reviewer_name, #testimonials-carousel-widget-component${blockId} .w3-testimonial-slider-wrapper .verifiedreview {
                         color: ${reviewerNameColor} !important;
                     }
                         
@@ -97,12 +97,14 @@ const TestimonialsCarouselWidget = (props) => {
                                         {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 4 ? iconColor : "currentColor"} /> : null}
                                         {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 5 ? iconColor : "currentColor"} /> : null}
                                     </div>
-                                    <div class="reviewer_name">{reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}</div>
-                                    {review.verify_badge &&
-                                        <div className='verifiedreview'>
-                                            <ReviewVerifyIcon />
-                                        </div>
-                                    }
+                                    <div className='nameandverifywrap'>
+                                        <div class="reviewer_name">{reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}</div>
+                                        {review.verify_badge &&
+                                            <div className='verifiedreview'>
+                                                <ReviewVerifyIcon />
+                                            </div>
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         ))}

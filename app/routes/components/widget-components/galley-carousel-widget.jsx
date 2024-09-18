@@ -6,7 +6,6 @@ import ReviewVerifyIcon from '../icons/ReviewVerifyIcon';
 const GalleyCarouselWidget = (props) => {
     const blockId = props.formParams.blockId;
     const iconColor = (props.formParams.widget_icon_color != "rgba(0,0,0,0)" && props.formParams.widget_icon_color != "") ? props.formParams.widget_icon_color : props.generalAppearancesModel.starIconColor;
-
     const reviewerNameColor = (props.formParams.reviewer_name_color != "rgba(0,0,0,0)" && props.formParams.reviewer_name_color != "") ? props.formParams.reviewer_name_color : '#000000';
     const borderColor = (props.formParams.border_color != "rgba(0,0,0,0)" && props.formParams.border_color != "") ? props.formParams.border_color : '#000000';
     const arrowIconColor = (props.formParams.arrow_icon_color != "rgba(0,0,0,0)" && props.formParams.arrow_icon_color != "") ? props.formParams.arrow_icon_color : '#595959';
@@ -19,9 +18,10 @@ const GalleyCarouselWidget = (props) => {
             <style>
                 {`
                     
-                    #gallery-carousel-widget-component${blockId} .w3-gallery-slider-wrapper .reviewer_name {
+                    #gallery-carousel-widget-component${blockId} .w3-gallery-slider-wrapper .reviewer_name, #gallery-carousel-widget-component${blockId} .w3-gallery-slider-wrapper .verifiedreview {
                         color: ${reviewerNameColor} !important;
                     }
+                    
                     #gallery-carousel-widget-component${blockId} .w3-gallery-slider-wrapper .itemwrap {
                         border-radius: ${props.formParams.border_radius}px;
                         ${showBorder}
@@ -61,12 +61,16 @@ const GalleyCarouselWidget = (props) => {
                                     )}
 
                                     <div className='bottom_meta'>
-                                        <div class="reviewer_name">{reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}</div>
-                                        {review.verify_badge &&
-                                            <div className='verifiedreview'>
-                                                <ReviewVerifyIcon />
-                                            </div>
-                                        }
+                                        <div className='nameandverifywrap'>
+                                            <div class="reviewer_name">{reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}</div>
+                                            {review.verify_badge &&
+                                                <div className='verifiedreview'>
+                                                    <ReviewVerifyIcon />
+                                                </div>
+                                            }
+                                        </div>
+
+                                        
                                         <div className={`ratingstars flxrow star-${review.rating}`}>
                                             {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 1 ? iconColor : "currentColor"} /> : null}
                                             {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 2 ? iconColor : "currentColor"} /> : null}

@@ -21,7 +21,7 @@ const VideoSliderWidget = (props) => {
         <>
             <style>
                 {`
-                    #display-video-slider-widget-component${blockId} .w3-slider-wrapper .reviewer_name {
+                    #display-video-slider-widget-component${blockId} .w3-slider-wrapper .reviewer_name, #display-video-slider-widget-component${blockId} .w3-slider-wrapper .verifiedreview {
                         color: ${textColor} !important;
                     }
 
@@ -79,14 +79,17 @@ const VideoSliderWidget = (props) => {
                                         </div>
                                     )}
                                     <div className='bottom_meta'>
-                                        {props.formParams.show_name == "true" &&
-                                            <div class="reviewer_name">{reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}</div>
-                                        }
-                                        {review.verify_badge &&
-                                            <div className='verifiedreview'>
-                                                <ReviewVerifyIcon />
-                                            </div>
-                                        }
+                                        <div className='nameandverifywrap'>
+                                            {props.formParams.show_name == "true" &&
+                                                <div class="reviewer_name">{reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}</div>
+                                            }
+                                            {review.verify_badge &&
+                                                <div className='verifiedreview'>
+                                                    <ReviewVerifyIcon />
+                                                </div>
+                                            }
+                                        </div>
+
                                         {props.formParams.show_rating_icon == "true" &&
                                             <div className={`ratingstars flxrow star-${review.rating}`}>
                                                 {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 1 ? iconColor : "currentColor"} /> : null}

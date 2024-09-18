@@ -34,7 +34,15 @@ $(document).on('hide.bs.modal', '#w3-float-modal-content-widget', function () {
     widgetElementObj.find('.modal-body').html('');
 });
 $(document).on('hide.bs.modal', '#staticBackdrop', function () {
+
+    $('#staticBackdrop video').each(function () {
+        this.pause();
+        this.currentTime = 0;
+    });
+
     $("#w3-float-modal-content-widget").removeClass("modal-backdrop-grey");
+
+
 });
 
 $(document).on("click", ".dropdown-menu .widget_stardetailrow, .stardetaildd .widget_stardetailrow", function (e) {
@@ -58,6 +66,13 @@ $(document).on("click", ".dropdown-menu .widget_sort_by_filter", function (e) {
 
 
 $(document).on("click", ".widget_w3grid-review-item", function () {
+    var $this = $(this);
+
+    if ($this.data('requestRunning')) {
+        return;
+    }
+    $this.data('requestRunning', true);
+
     reviewId = $(this).data('reviewid');
     let shop_domain = "";
     let customer_locale = "";
@@ -96,6 +111,8 @@ $(document).on("click", ".widget_w3grid-review-item", function () {
         },
         error: function (xhr, status, error) {
             console.error(xhr.responseText);
+        }, complete: function () {
+            $this.data('requestRunning', false);
         }
     });
 });
@@ -195,55 +212,43 @@ $(document).on("click", ".common_widget_review_item", function () {
 $(document).ready(function () {
 
 
-    // Function to update button visibility based on video state
-    function updateButtonVisibility(videoElement) {
-        $(videoElement).closest('.videowrap').find('.mainVideoPlayButton').show();
-        $(videoElement).closest('.videowrap').find('.mainVideoPauseButton').hide();
-    }
 
-    // Play video when play button is clicked
-    $(document).on("click", ".mainVideoPlayButton", function () {
-        // Pause all videos before playing a new one
-        $('video').each(function () {
-            this.pause();
+
+
+    $(document).on('click', '.carousel-inner .mainVideoPlayButton', function () {
+        const video = $(this).closest('.videowrap').find('.mainVideoPlayer')[0];
+
+        if (video.paused) {
+            video.play();
+            $(this).html('<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 2C5.82843 2 6.5 2.67157 6.5 3.5L6.5 14.5C6.5 15.3284 5.82843 16 5 16C4.17157 16 3.5 15.3284 3.5 14.5L3.5 3.5C3.5 2.67157 4.17157 2 5 2ZM13 2C13.8284 2 14.5 2.67157 14.5 3.5L14.5 14.5C14.5 15.3284 13.8284 16 13 16C12.1716 16 11.5 15.3284 11.5 14.5L11.5 3.5C11.5 2.67157 12.1716 2 13 2Z" fill="currentColor"/></svg>');
+        } else {
+            video.pause();
+            $(this).html('<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 8.98505V6.48882C3.5 3.37974 5.65027 2.1092 8.28325 3.66374L10.4043 4.91933L12.5253 6.17492C15.1582 7.72946 15.1582 10.2705 12.5253 11.8251L10.4043 13.0807L8.28325 14.3363C5.65027 15.8908 3.5 14.6203 3.5 11.5112V8.98505Z" fill="currentColor"/></svg>');
+        }
+
+        $(video).on('ended', function () {
+            $(this).parents('.videowrap').find('.mainVideoPlayButton').html('<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 8.98505V6.48882C3.5 3.37974 5.65027 2.1092 8.28325 3.66374L10.4043 4.91933L12.5253 6.17492C15.1582 7.72946 15.1582 10.2705 12.5253 11.8251L10.4043 13.0807L8.28325 14.3363C5.65027 15.8908 3.5 14.6203 3.5 11.5112V8.98505Z" fill="currentColor"/></svg>');
+            video.currentTime = 0;
         });
 
-        // Hide all play buttons and show all pause buttons
-        $('.mainVideoPlayButton').show();
-        $('.mainVideoPauseButton').hide();
-
-        // Find the closest video to the play button clicked
-        var video = $(this).closest('.videowrap').find('.mainVideoPlayer')[0];
-
-        if (video) {
-            video.play().then(() => {
-                // Hide the play button and show the pause button only for the related video
-                $(this).hide();
-                $(this).siblings('.mainVideoPauseButton').show();
-            }).catch(error => {
-                console.error('Error playing video:', error);
-            });
-        }
+    });
+    $(document).on('slid.bs.carousel', "#carouselExampleCaptions", function () {
+        $('#carouselExampleCaptions video').each(function () {
+            this.pause(); // Pause the video
+            $(this).siblings('.mainVideoPlayButton').html('<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 8.98505V6.48882C3.5 3.37974 5.65027 2.1092 8.28325 3.66374L10.4043 4.91933L12.5253 6.17492C15.1582 7.72946 15.1582 10.2705 12.5253 11.8251L10.4043 13.0807L8.28325 14.3363C5.65027 15.8908 3.5 14.6203 3.5 11.5112V8.98505Z" fill="currentColor"/></svg>');
+            this.currentTime = 0;
+        });
     });
 
-    // Pause video when pause button is clicked
-    $(document).on("click", ".mainVideoPauseButton", function () {
-        // Find the closest video to the pause button clicked
-        var video = $(this).closest('.videowrap').find('.mainVideoPlayer')[0];
+    $(document).on('translate.owl.carousel', '.carousel', function (event) {
+        $(this).find('video').each(function () {
+            this.pause();
+            $(this).closest('.item').find('.play-pause').html('<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 8.98505V6.48882C3.5 3.37974 5.65027 2.1092 8.28325 3.66374L10.4043 4.91933L12.5253 6.17492C15.1582 7.72946 15.1582 10.2705 12.5253 11.8251L10.4043 13.0807L8.28325 14.3363C5.65027 15.8908 3.5 14.6203 3.5 11.5112V8.98505Z" fill="currentColor"/></svg>'); // Play Icon
+            $(this).closest('.item').removeClass('videoplaying');
 
-        if (video) {
-            video.pause();
-            // Hide the pause button and show the play button only for the related video
-            $(this).hide();
-            $(this).siblings('.mainVideoPlayButton').show();
-        }
-    });
+            $(this).closest('.item').find('.playpause').html('<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 2C5.82843 2 6.5 2.67157 6.5 3.5L6.5 14.5C6.5 15.3284 5.82843 16 5 16C4.17157 16 3.5 15.3284 3.5 14.5L3.5 3.5C3.5 2.67157 4.17157 2 5 2ZM13 2C13.8284 2 14.5 2.67157 14.5 3.5L14.5 14.5C14.5 15.3284 13.8284 16 13 16C12.1716 16 11.5 15.3284 11.5 14.5L11.5 3.5C11.5 2.67157 12.1716 2 13 2Z" fill="currentColor"/></svg>'); // Play Icon
 
-    // Attach 'ended' event listeners to all video elements
-    $('.mainVideoPlayer').each(function () {
-        this.addEventListener('ended', function () {
 
-            updateButtonVisibility(this);
         });
     });
 
@@ -289,24 +294,24 @@ $(document).ready(function () {
                 for (let i = 1; i <= numberOfModals; i++) {
                     modals.push(`#w3-popup-modal-content-${i}`);
                 }
-        
+
                 let currentIndex = 0;
-                const intervalTime = popupSettingData.popupDisplayTime > 0 ? popupSettingData.popupDisplayTime*1000 : 5000;
+                const intervalTime = popupSettingData.popupDisplayTime > 0 ? popupSettingData.popupDisplayTime * 1000 : 5000;
                 let hoverPause = false;
                 let timeoutId = null;
-        
+
                 // Function to show each modal in sequence
                 function showModal(index) {
                     if (index >= modals.length) {
                         return; // End the slideshow if all modals have been displayed
                     }
-        
+
                     const modal = $(modals[index]);
                     modal.css('display', 'block');
                     setTimeout(function () {
                         modal.addClass('slide-in');
                     }, 100);
-        
+
                     timeoutId = setTimeout(function () {
                         if (!hoverPause) {
                             modal.addClass('slide-out');
@@ -315,11 +320,11 @@ $(document).ready(function () {
                                 modal.removeClass('slide-in slide-out');
                                 currentIndex++;
                                 showModal(currentIndex); // Show next modal
-                            }, popupSettingData.delayBetweenPopups > 0 ? popupSettingData.delayBetweenPopups*1000 : 5000); // Allow time for the slide-out animation
+                            }, popupSettingData.delayBetweenPopups > 0 ? popupSettingData.delayBetweenPopups * 1000 : 5000); // Allow time for the slide-out animation
                         }
                     }, intervalTime);
                 }
-        
+
                 // Hide all modals if the close button is clicked
                 function hideAllModals() {
                     clearTimeout(timeoutId); // Stop any active timeouts
@@ -332,22 +337,22 @@ $(document).ready(function () {
                         }, 500);
                     });
                 }
-        
+
                 // Close modal when close button is clicked
                 $('.close-modal').on('click', function () {
                     hideAllModals();
                 });
-        
+
                 // Start the modal slideshow
                 function startSlideshow() {
                     clearTimeout(timeoutId);
                     showModal(currentIndex);
                 }
-        
-                
+
+
                 setTimeout(function () {
                     startSlideshow(); // Initial start
-                }, popupSettingData.initialDelay*1000);
+                }, popupSettingData.initialDelay > 0 ? popupSettingData.initialDelay * 1000 : 5000);
 
                 // Pause and resume slideshow on hover
                 modals.forEach(function (modalId) {
@@ -364,7 +369,7 @@ $(document).ready(function () {
                 });
             }
         });
-        
+
     }
 
 

@@ -41,7 +41,7 @@
 .w3-slider-wrapper .owl-carousel .item .video-div video { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover;}
 
 .w3-slider-wrapper .owl-carousel .item .video-div .mainbtnplay { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 1;}
-.w3-slider-wrapper .owl-carousel .item .video-div .mainbtnplay button { border: solid 1px var(--whiteBg); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: none; box-shadow: none; outline: none; border-radius: 50px; color: var(--whiteText); padding: 0;}
+.w3-slider-wrapper .owl-carousel .item .video-div .mainbtnplay button { border: solid 1px var(--whiteBg); width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; background: none; box-shadow: none; outline: none; border-radius: 50px; color: var(--whiteText); padding: 0;}
 .w3-slider-wrapper .owl-carousel .item.videoplaying .itemwrap::before { opacity: 0; pointer-events: none;}
 .w3-slider-wrapper .owl-carousel .item.videoplaying .video-div .mainbtnplay { display: none;}
 
@@ -91,6 +91,7 @@
 .w3-slider-wrapper .itemwrap .topmetabox .rightaction button { display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.7); color: var(--darkColor); border: none; outline: none; box-shadow: none; cursor: pointer; border-radius: 50px; width: 42px; height: 42px;}
 
 .w3-slider-wrapper .videoplaying .itemwrap .topmetabox { display: flex;}
+.w3-slider-wrapper .itemwrap .bottom_meta .nameandverifywrap { display: flex; align-content: center; justify-content: center; column-gap: 10px;}
 
 
 .w3-slider-wrapper .play-btn, 

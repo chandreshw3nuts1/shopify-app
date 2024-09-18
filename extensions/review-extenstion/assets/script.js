@@ -531,6 +531,12 @@ if (typeof jQuery !== 'undefined') {
 
 
     $(document).on("click", ".product_widget_w3grid-review-item", function () {
+        var $this = $(this);
+
+        if ($this.data('requestRunning')) {
+            return;
+        }
+        $this.data('requestRunning', true);
 
         reviewId = $(this).data('reviewid');
         $.ajax({
@@ -555,6 +561,9 @@ if (typeof jQuery !== 'undefined') {
             error: function (xhr, status, error) {
                 // Handle errors
                 console.error(xhr.responseText);
+            },
+            complete: function() {
+                $this.data('requestRunning', false);
             }
         });
 

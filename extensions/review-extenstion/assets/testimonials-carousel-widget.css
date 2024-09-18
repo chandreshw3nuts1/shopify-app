@@ -91,8 +91,8 @@
 
 .w3-testimonial-slider-wrapper .owl-carousel .item .video-div .mainbtnplay button {
     border: solid 1px var(--whiteBg);
-    width: 32px;
-    height: 32px;
+    width: 64px;
+    height: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -186,3 +186,4 @@
 .w3-testimonial-slider-wrapper .owl-dots .owl-dot.active {
     background-color: #000000;
 }
+.w3-testimonial-slider-wrapper .itemwrap .bottom_meta .nameandverifywrap { display: flex; align-content: center; justify-content: center; column-gap: 10px;}
