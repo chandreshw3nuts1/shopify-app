@@ -79,7 +79,7 @@
 }
 .w3-gallery-slider-wrapper .itemwrap .bottom_meta { position: absolute; left: 0; bottom: 0; right: 0; padding: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px; z-index: 2;}
 .w3-gallery-slider-wrapper .itemwrap .bottom_meta .reviewer_name { text-align: center; color: var(--whiteText); font-size: 16px; font-weight: 600; margin: 0; padding: 0;}
-.w3-gallery-slider-wrapper .itemwrap .bottom_meta .ratingstars { justify-content: center;}
+.w3-gallery-slider-wrapper .itemwrap .bottom_meta .ratingstars { justify-content: center; color: rgba(227, 228, 229, 0.3);}
 .w3-gallery-slider-wrapper .itemwrap .bottom_meta .ratingstars svg { width: 28px; height: 28px;}
 .w3-gallery-slider-wrapper .itemwrap .bottom_meta .nameandverifywrap { display: flex; align-content: center; justify-content: center; column-gap: 10px;}
 
