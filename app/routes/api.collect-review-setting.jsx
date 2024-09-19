@@ -16,7 +16,7 @@ import ReactDOMServer from 'react-dom/server';
 import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTemplate';
 import { getUploadDocument } from './../utils/documentPath';
 import settingJson from './../utils/settings.json';
-import { findOneRecord } from './../utils/common';
+import { findOneRecord, generateUnsubscriptionLink } from './../utils/common';
 export async function loader() {
     return json({
         name: "loading"
@@ -59,12 +59,13 @@ export async function action({ params, request }) {
                     }
                     emailContents.footerContent = footerContent;
                     emailContents.email_footer_enabled = generalSettingsModel.email_footer_enabled;
-
-                    var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
-                        <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} />
-                    );
+                    
+                    
                     const updateEmailsAndSendRequests = async () => {
                         const emailPromises = emails.map(async (email, index) => {
+                            var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
+                                <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} />
+                            );
                             const query = { email: email };
                             const update = {
                                 $set: {
@@ -95,6 +96,14 @@ export async function action({ params, request }) {
                                 emailHtmlContent = emailHtmlContent.replace(`{{variant_title_${product}}}`, variantTitle);
 
                             }));
+
+                            /* create unscubscribe link*/
+                            const unsubscribeData = { 
+                                "shop_id": shopRecords.shop_id,
+                                "email": email,
+                            }
+                            const unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
+                            emailHtmlContent = emailHtmlContent.replace(`{{unsubscriptionLink}}`, unsubscriptionLink);
 
                             // Send request email
                             const subject = requestBody.requestEmailSubject != "" ? requestBody.requestEmailSubject : emailContents.subject;

@@ -5,7 +5,7 @@ import emailReviewReplySettings from './models/emailReviewReplySettings';
 import generalAppearances from "./models/generalAppearances";
 import generalSettings from './models/generalSettings';
 
-import { getShopDetailsByShop, getLanguageWiseContents } from './../utils/common';
+import { getShopDetailsByShop, getLanguageWiseContents, generateUnsubscriptionLink } from './../utils/common';
 import { sendEmail } from "./../utils/email.server";
 import ReactDOMServer from 'react-dom/server';
 import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTemplate';
@@ -66,15 +66,23 @@ export async function action({ params, request }) {
                     }
                     emailContents.footerContent = footerContent;
                     emailContents.email_footer_enabled = generalSettingsModel.email_footer_enabled;
-
+                    
                     var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
                         <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={[]} generalAppearancesObj={generalAppearancesObj} />
                     );
-
+                    
                     const settingsModel = await settings.findOne({
                         shop_id: shopRecords._id,
                     });
                     const email = settingsModel?.reviewNotificationEmail || shopRecords.email;
+                    
+                    const unsubscribeData = { 
+                        "shop_id": shopRecords.shop_id,
+                        "email": email,
+                    }
+                    const unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
+                    emailHtmlContent = emailHtmlContent.replace(`{{unsubscriptionLink}}`, unsubscriptionLink);
+
                     // Send request email
                     const subject = emailContents.subject;
                     const response = await sendEmail({

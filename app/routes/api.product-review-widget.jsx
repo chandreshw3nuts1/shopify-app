@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
-import { findOneRecord, getShopifyProducts, getLanguageWiseContents, createShopifyDiscountCode, generateRandomCode, generateVideoThumbnail, resizeImages } from "./../utils/common";
+import { findOneRecord, getShopifyProducts, getLanguageWiseContents, createShopifyDiscountCode, generateRandomCode, generateVideoThumbnail, resizeImages, generateUnsubscriptionLink } from "./../utils/common";
 import EmailTemplate from './components/email/EmailTemplate';
 import ReactDOMServer from 'react-dom/server';
 import { ObjectId } from 'mongodb';
@@ -318,6 +318,13 @@ export async function action({ request }) {
 							emailContentsDiscount.footerContent = footerContent;
 							emailContentsDiscount.email_footer_enabled = generalSettingsModel.email_footer_enabled;
 
+
+							const unsubscribeData = { 
+								"shop_id": shopRecords.shop_id,
+								"email": formData.get('email'),
+							}
+							emailContentsDiscount.unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
+
 							var discountEmailHtmlContent = ReactDOMServer.renderToStaticMarkup(
 								<DiscountPhotoVideoReviewEmail emailContents={emailContentsDiscount} generalAppearancesObj={generalAppearancesData} shopRecords={shopRecords} />
 							);
@@ -420,8 +427,12 @@ export async function action({ request }) {
 						logo: logo,
 						shop_domain: shopRecords.shop,
 						status: reviewStatus
-
 					};
+					const unsubscribeData = { 
+						"shop_id": shopRecords.shop_id,
+						"email": email,
+					}
+					emailContents.unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
 
 					const subject = `New review (${formData.get('rating')}★) of ${productNodes.title} ${display_name}`;
 					const emailHtml = ReactDOMServer.renderToStaticMarkup(

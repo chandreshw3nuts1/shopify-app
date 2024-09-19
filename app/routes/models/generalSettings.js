@@ -19,6 +19,8 @@ const generalSettingsSchema = new mongoose.Schema({
     is_enable_review_written_by_site_visitor: { type: Boolean, default : false },
     is_enable_review_not_verified: { type: Boolean, default : false },
     is_enable_future_purchase_discount: { type: Boolean, default : false },
+    send_email_type: { type: String, default : "everyone" },
+    unsubscribing_type: { type: String, default : "not_unsubscribe_marking_email" },
     
     en: { "type": "Object" },
     fr: { "type": "Object" },

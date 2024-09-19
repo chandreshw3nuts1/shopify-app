@@ -1,7 +1,7 @@
 import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
 import { GraphQLClient } from "graphql-request";
-import { findOneRecord, getShopifyProducts, getLanguageWiseContents } from "./../utils/common";
+import { findOneRecord, getShopifyProducts, getLanguageWiseContents, generateUnsubscriptionLink } from "./../utils/common";
 import ReplyEmailTemplate from './components/email/ReplyEmailTemplate';
 import ReactDOMServer from 'react-dom/server';
 import { ObjectId } from 'mongodb';
@@ -224,6 +224,14 @@ export async function action({ request }) {
 							emailHtmlContent = emailHtmlContent.replace(`{{variant_title_${product.product_id}}}`, variantTitle);
 						}));
 
+						
+						const unsubscribeData = { 
+							"shop_id": shopRecords.shop_id,
+							"email": manualRequestModel.email,
+						}
+						const unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
+						emailHtmlContent = emailHtmlContent.replace(`{{unsubscriptionLink}}`, unsubscriptionLink);
+						
 
 						// Send request email
 						const subject = emailContents.subject;

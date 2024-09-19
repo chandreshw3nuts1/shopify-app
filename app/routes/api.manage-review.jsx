@@ -1,7 +1,7 @@
 import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
 import { GraphQLClient } from "graphql-request";
-import { findOneRecord, getShopifyProducts, getLanguageWiseContents } from "./../utils/common";
+import { findOneRecord, getShopifyProducts, getLanguageWiseContents, generateUnsubscriptionLink } from "./../utils/common";
 import ReplyEmailTemplate from './components/email/ReplyEmailTemplate';
 import ReactDOMServer from 'react-dom/server';
 import { ObjectId } from 'mongodb';
@@ -78,6 +78,12 @@ export async function action({ request }) {
 						}
 						emailContents.footerContent = footerContent;
 						emailContents.email_footer_enabled = generalSettingsModel.email_footer_enabled;
+
+						const unsubscribeData = { 
+							"shop_id": shopRecords.shop_id,
+							"email": productReviewsItem.email,
+						}
+						emailContents.unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
 
 						const emailHtml = ReactDOMServer.renderToStaticMarkup(
 							<ReplyEmailTemplate emailContents={emailContents} generalAppearancesObj={generalAppearancesObj} />

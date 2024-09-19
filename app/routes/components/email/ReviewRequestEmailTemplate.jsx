@@ -209,7 +209,7 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, generalA
                                                 <td style="padding-top: 12px;"></td>
                                             </tr>
                                             <tr>
-                                                <td align="center" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#2196F3"><a href="#" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#2196F3;text-decoration:underline">Unsubscribe</a>
+                                                <td align="center" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#2196F3"><a href="{{unsubscriptionLink}}" style="font-family:'Manrope', sans-serif,Roboto, arial,tahoma,verdana;text-align:center;font-size:14px;color:#2196F3;text-decoration:underline">${emailContents.unsubscribeText}</a>
                                                 </td>
                                             </tr>
                                         </tbody>

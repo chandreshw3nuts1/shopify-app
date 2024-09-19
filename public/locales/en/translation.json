@@ -41,6 +41,7 @@
     "stopRecordingBtnText" : "Stop recording",
     "submitRecordingBtnText" : "Submit video",
     "uploadingRecordingBtnText" : "Uploading...",
+    "unsubscriptionText" : "Unsubscribe",
     "productReviewConstomize": {
         "reviewHeaderTitle": "Customer Review",
         "reviewSingular": "Review",

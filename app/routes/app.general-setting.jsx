@@ -76,7 +76,7 @@ export default function GeneralSettings() {
 	const [isEnableMarkedVerifiedByStoreOwner, setIsEnableMarkedVerifiedByStoreOwner] = useState(
 		generalSettings?.is_enable_marked_verified_by_store_owner || false
 	);
-	
+
 	const [currentLanguage, setCurrentLanguage] = useState(generalSettings?.defaul_language || '');
 	const [footerText, setFooterText] = useState('');
 
@@ -323,6 +323,15 @@ export default function GeneralSettings() {
 		{ "value": "initial", "label": "First initial, last initial (J. S.)" },
 	];
 
+	const emailsOptions = [
+		{ "value": "everyone", "label": "Everyone" },
+		{ "value": "marketing_emails_only", "label": "Customers who consent to receive marketing emails" }
+	];
+	const unsubscribeOptions = [
+		{ "value": "not_unsubscribe_marking_email", "label": "Does not unsubscribe the customer from Shopify marketing emails" },
+		{ "value": "unsubscribe_marking_email", "label": "Also unsubscribes the customer from Shopify marketing emails" }
+	];
+
 
 	const crumbs = [
 		{ "title": "Settings", "link": "./../branding" },
@@ -520,7 +529,7 @@ export default function GeneralSettings() {
 												<input type="text" disabled={!isEnableFooterTextChecked} onChange={changeInput} onBlur={inputFooterTextBlur} value={footerText} className="input_text" name="footerText" placeholder="Enter your email address" />
 											</div>
 										</div>
-										
+
 									</div>
 								</div>
 							</div>
@@ -537,20 +546,35 @@ export default function GeneralSettings() {
 									<div className="row gapy16">
 										<div className="col-lg-12">
 											<div className="form-group m-0">
+
 												<label htmlFor="">Send emails</label>
-												<select className="input_text">
-													<option>Everyone</option>
-													<option>Customers who consent to receive marketing emails</option>
-												</select>
+
+												<Select
+													name="send_email_type"
+													id="send_email_type"
+													options={emailsOptions}
+													onChange={
+														handleSelectChange
+													}
+													value={generalSettings?.send_email_type}
+												/>
+
+ 
 											</div>
 										</div>
 										<div className="col-lg-12">
 											<div className="form-group m-0">
 												<label htmlFor="">Unsubscribing</label>
-												<select className="input_text">
-													<option>Does not unsubscribe the customer from Shopify marketing emails</option>
-													<option>Also unsubscribes the customer from Shopify marketing emails</option>
-												</select>
+
+												<Select
+													name="unsubscribing_type"
+													id="unsubscribing_type"
+													options={unsubscribeOptions}
+													onChange={
+														handleSelectChange
+													}
+													value={generalSettings?.unsubscribing_type}
+												/>
 											</div>
 										</div>
 									</div>
@@ -586,7 +610,7 @@ export default function GeneralSettings() {
 										<div className="col-lg-12">
 											<div className="form-group m-0">
 												<div className="form-check form-switch">
-													
+
 													<input
 														checked={
 															isEnableImportFromExternalSource
@@ -614,7 +638,7 @@ export default function GeneralSettings() {
 										<div className="col-lg-12">
 											<div className="form-group m-0">
 												<div className="form-check form-switch">
-														
+
 
 													<input
 														checked={
@@ -635,7 +659,7 @@ export default function GeneralSettings() {
 													>
 														Indicate that a review was marked as verified by the store owner<span>Display a disclosure in the review detail popup about site visitor reviews and imported reviews that you marked as verified.</span>
 													</label>
-												
+
 												</div>
 											</div>
 										</div>
@@ -662,14 +686,14 @@ export default function GeneralSettings() {
 														Indicate that a review was written by a site visitor<span>Display a disclosure in the review detail popup about reviews that were submitted by a visitor on your store.</span>
 
 													</label>
-												
+
 												</div>
 											</div>
 										</div>
 										<div className="col-lg-12">
 											<div className="form-group m-0">
 												<div className="form-check form-switch">
-													
+
 													<input
 														checked={
 															isEnableReviewNotVerified
@@ -696,7 +720,7 @@ export default function GeneralSettings() {
 										<div className="col-lg-12">
 											<div className="form-group m-0">
 												<div className="form-check form-switch">
-													
+
 													<input
 														checked={
 															isEnableFuturePurchaseDiscount

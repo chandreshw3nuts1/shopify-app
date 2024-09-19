@@ -13,7 +13,7 @@ import generalSettings from './models/generalSettings';
 import settingsJson from './../utils/settings.json';
 import { addDaysToDate } from './../utils/dateFormat';
 import { getUploadDocument } from './../utils/documentPath';
-import { getShopifyProducts, getLanguageWiseContents } from "./../utils/common";
+import { getShopifyProducts, getLanguageWiseContents, generateUnsubscriptionLink } from "./../utils/common";
 import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTemplate';
 import reviewRequestTracks from './models/reviewRequestTracks';
 
@@ -164,6 +164,14 @@ export async function action({ request, params }) {
                                             emailHtmlContent = emailHtmlContent.replace(`{{variant_title_${product.product_id}}}`, variantTitle);
 
                                         }));
+
+                                        const unsubscribeData = { 
+                                            "shop_id": shop.shop_id,
+                                            "email": singleOrder.email,
+                                        }
+                                        const unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
+                                        emailHtmlContent = emailHtmlContent.replace(`{{unsubscriptionLink}}`, unsubscriptionLink);
+                                        
 
                                         // Send request email
                                         const subject = emailContents.subject;

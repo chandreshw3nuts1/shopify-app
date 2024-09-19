@@ -12,6 +12,7 @@ import sharp from 'sharp';
 import path from 'path';
 import fs from "fs";
 import { v4 as uuidv4 } from 'uuid'; // Import UUID package
+import crypto from 'crypto';
 
 export async function findOneRecord(collection = "", params = {}) {
 	try {
@@ -382,7 +383,7 @@ export async function getLanguageWiseContents(type, replaceVars, shop_id, locale
 		emailContents = await replaceEmailDiscountPhotoVideoReview(replaceVars, settingJsonData, transalationData);
 
 	}
-
+	emailContents.unsubscribeText = transalationContent.unsubscriptionText
 	return emailContents;
 
 }
@@ -580,7 +581,7 @@ export async function createMetafields(shop, metafields, widgetType = "") {
 				}
 			}
 		}
-		
+
 		const metafieldResponse = await fetch(metafieldApiUrl, {
 			method: 'POST',
 			headers: {
@@ -779,3 +780,31 @@ export async function checkAppEmbedAppStatus(shop, themeId) {
 	}
 }
 
+// generate unsubscription link
+export function generateUnsubscriptionLink(paramData) {
+	const secretKey = process.env.SECRET_KEY;
+
+	// Encrypt user ID and shop ID or any other required data
+	const encryptedData = encryptData(paramData, secretKey);
+	const unsubscribeLink = `${settingJson.host_url}/unsubscribe?data=${encodeURIComponent(encryptedData)}`;
+
+	return unsubscribeLink;
+}
+
+// Encryption function
+export function encryptData(data, secretKey) {
+	const iv = crypto.randomBytes(16); // Initialization vector
+	const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(secretKey), iv);
+	let encrypted = cipher.update(JSON.stringify(data), 'utf-8', 'hex');
+	encrypted += cipher.final('hex');
+	return iv.toString('hex') + ':' + encrypted;
+}
+
+// Decryption function
+export function decryptData(encryptedData, secretKey) {
+	const [iv, encrypted] = encryptedData.split(':');
+	const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(secretKey), Buffer.from(iv, 'hex'));
+	let decrypted = decipher.update(Buffer.from(encrypted, 'hex'));
+	decrypted = Buffer.concat([decrypted, decipher.final()]);
+	return JSON.parse(decrypted.toString());
+}
