@@ -32,6 +32,13 @@ import { Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
+export const meta = () => {
+	return [
+		{ title: `${settingsJson.app_name} Review Request` },
+	];
+};
+
+
 export const links = () => {
 	const stylesUrl = `${settingsJson.host_url}/styles/reviewRequest.css`;
 	return [{ rel: "stylesheet", href: stylesUrl }];
@@ -504,13 +511,13 @@ const ReviewRequestForm = () => {
 		setShowRecordVideoModal(false);
 		setRecordedBlob(null);
 		setIsRecording(false);
-		if(videoRef.current.srcObject){
+		if (videoRef.current.srcObject) {
 			videoRef.current.srcObject.getTracks().forEach(track => track.stop());
 			videoRef.current.srcObject = null;
 			videoRef.current.src = null;
 			videoRef.current.controls = false;
 		}
-		
+
 
 	}
 

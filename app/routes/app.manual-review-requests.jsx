@@ -272,7 +272,7 @@ const ManualReviewRequestsPage = () => {
 												/>
 
 											</div>
-											<InformationAlert alertKey="manual_review_request" alertClose/>
+											<InformationAlert alertKey="manual_review_request" alertType="email_appearance" pageSlug="/app/branding" alertClose/>
 
 											<div className="btnwrap emailbottom align-items-center">
 												<span>By sending this email, I confirm that the recipients have given consent</span>

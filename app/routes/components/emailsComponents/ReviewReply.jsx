@@ -89,7 +89,7 @@ const ReviewReply = ({ shopRecords, emailTemplateObj, generalAppearances, genera
                         [e.target.name]: e.target.value
                     }
                 }));
-                
+
 
 
                 // setEmailTemplateObjState({
@@ -115,7 +115,7 @@ const ReviewReply = ({ shopRecords, emailTemplateObj, generalAppearances, genera
     const viewSample = (e) => {
         e.preventDefault();
         var footerContent = "";
-        if(generalSettingsModel.email_footer_enabled) {
+        if (generalSettingsModel.email_footer_enabled) {
             footerContent = generalSettingsModel[currentLanguage] ? generalSettingsModel[currentLanguage].footerText : "";
         }
 
@@ -124,8 +124,8 @@ const ReviewReply = ({ shopRecords, emailTemplateObj, generalAppearances, genera
             body: body ? body : t('reviewReplyEmail.body'),
             banner: getUploadDocument(languageWiseEmailTemplate.banner, shopRecords.shop_id, 'banners'),
             getDefaultProductImage: getDefaultProductImage(),
-            footerContent : footerContent,
-            email_footer_enabled : generalSettingsModel.email_footer_enabled
+            footerContent: footerContent,
+            email_footer_enabled: generalSettingsModel.email_footer_enabled
         }
         setEmailContents(sampleEmailData);
         setShowViewSampleModal(true);
@@ -152,10 +152,17 @@ const ReviewReply = ({ shopRecords, emailTemplateObj, generalAppearances, genera
                                 <div className="form-group">
                                     <label htmlFor="">Banner</label>
                                     <div className='bannerverticalwrap'>
-                                        <div className='banneruploadimg'>
-                                            <ImageUploadMultiLang className="emailbannerimage" bannerType={bannerType} shopRecords={shopRecords} currentLanguage={currentLanguage} languageWiseEmailTemplate={languageWiseEmailTemplate} emailTemplateObjState={emailTemplateObjState} setEmailTemplateObjState={setEmailTemplateObjState} hasEdit />
-                                        </div>
-                                        <InformationAlert alertKey=""  />
+                                        {generalAppearances.enabledEmailBanner == true ? (
+                                            <div className='banneruploadimg'>
+                                                <ImageUploadMultiLang className="emailbannerimage" bannerType={bannerType} shopRecords={shopRecords} currentLanguage={currentLanguage} languageWiseEmailTemplate={languageWiseEmailTemplate} emailTemplateObjState={emailTemplateObjState} setEmailTemplateObjState={setEmailTemplateObjState} hasEdit />
+                                            </div>
+                                        ) : (
+                                            <InformationAlert alertType="email_appearance_banner" pageSlug="/app/branding" alertKey="email_review_reply_customize" alertClose />
+
+                                        )}
+
+                                        <InformationAlert alertType="email_appearance" pageSlug="/app/branding" alertKey="" />
+
                                     </div>
                                 </div>
                             </div>
@@ -196,7 +203,7 @@ const ReviewReply = ({ shopRecords, emailTemplateObj, generalAppearances, genera
                     <Modal.Title>Sample email</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <SampleReviewReplyEmail shopRecords={shopRecords} emailContents={emailContents} generalAppearancesObj={generalAppearances}/>
+                    <SampleReviewReplyEmail shopRecords={shopRecords} emailContents={emailContents} generalAppearancesObj={generalAppearances} />
 
                 </Modal.Body>
             </Modal>

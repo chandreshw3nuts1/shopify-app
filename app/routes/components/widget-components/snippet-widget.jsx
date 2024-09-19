@@ -7,7 +7,13 @@ const SnippetWidget = (props) => {
     const iconColor = (props.formParams.widget_icon_color != "rgba(0,0,0,0)" && props.formParams.widget_icon_color != "") ? props.formParams.widget_icon_color : props.generalAppearancesModel.starIconColor;
     const reviewerNameColor = (props.formParams.reviewer_name_color != "rgba(0,0,0,0)" && props.formParams.reviewer_name_color != "") ? props.formParams.reviewer_name_color : '#000000';
     const borderColor = (props.formParams.border_color != "rgba(0,0,0,0)" && props.formParams.border_color != "") ? props.formParams.border_color : '#000000';
-    const showBorder = props.formParams.show_border == "true" ? `border : ${props.formParams.border_width}px solid ${borderColor};` : "";
+    const showBorder = props.formParams.show_border == "true" ? `border : 1px solid ${borderColor};` : "";
+    const hideArrowOnMobile = props.formParams.hide_arrow_mobile == "true" ? "none" : "block";
+    const backgroundColor = (props.formParams.background_color != "rgba(0,0,0,0)" && props.formParams.background_color != "") ? props.formParams.background_color : '#ffffff';
+    const textColor = (props.formParams.text_color != "rgba(0,0,0,0)" && props.formParams.text_color != "") ? props.formParams.text_color : '#000000';
+
+
+    
     const fontSize = props.formParams.font_size;
     const iconSize = (props.formParams.font_size * 24) / 16;
     const iconMargin = (iconSize * 5) / 24;
@@ -53,6 +59,20 @@ const SnippetWidget = (props) => {
                     }
                     #snippet-widget-component${blockId} .w3-snippet-wrapper {
                         justify-content: ${alignmentMapping?.[widgetAlignment] || 'flex-start'} !important;
+                    }
+
+                    #snippet-widget-component${blockId} .w3-snippet-wrapper .itemwrap {
+                        background-color : ${backgroundColor} !important;
+                    }
+
+                    #snippet-widget-component${blockId} .w3-snippet-wrapper .itemwrap .bottom_meta .descriptionbox {
+                        color: ${textColor} !important;
+                    }
+
+                    @media (max-width: 767px) {
+                        #snippet-widget-component${blockId} .w3-snippet-wrapper .owl-carousel .owl-nav  {
+                            display: ${hideArrowOnMobile} !important;
+                        }
                     }
 
                 `}

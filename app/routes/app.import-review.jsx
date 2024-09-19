@@ -9,7 +9,6 @@ import settingsJson from './../utils/settings.json';
 import { json } from "@remix-run/node";
 const aliExpressImage = '/images/ali-express-bg.png';
 import InformationAlert from "./components/common/information-alert";
-import AlertInfo from "./components/AlertInfo";
 import DragIcon from "./components/icons/DragIcon";
 import HandIcon from "./components/icons/HandIcon";
 
@@ -341,7 +340,8 @@ export default function DisplayReviewWidget() {
 
                                                 </div>
                                             </div>
-                                            <AlertInfo colorTheme="primarybox mt-24" iconClass="twenty-Info_icon" alertContent="Need help migrating from other apps? You can always contact support" alertClose />
+                                            <InformationAlert alertType="import_from_other_app"  alertKey="import_from_other_app" colorTheme="primarybox mt-24" iconClass="twenty-Info_icon" alertClose />
+
                                         </div>
                                     </Collapsible>
                                 </LegacyStack>
@@ -406,7 +406,8 @@ export default function DisplayReviewWidget() {
                                                     onChange={(e) => handleFileUploadFromSpreadsheet(e)}
                                                 />
                                             </div>
-                                            <AlertInfo colorTheme="primarybox mt-24" iconClass="twenty-Info_icon" alertContent="Carefully review the Import Template Instructions and make sure that your file meets all requirements." alertClose />
+                                            <InformationAlert alertType="import_spreadsheet_instructions"  alertKey="import_spreadsheet_instructions" colorTheme="primarybox mt-24" iconClass="twenty-Info_icon" alertClose />
+
                                         </div>
                                     </Collapsible>
                                 </LegacyStack>

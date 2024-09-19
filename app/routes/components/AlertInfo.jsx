@@ -12,7 +12,7 @@ const AlertInfo = (props) => {
                 <div className="plaintext flxflexi">
                     <a href={props.conlink}>{props.alertContent}</a>
                 </div>
-            }
+            } 
             {/* {props.alertContent &&
                 <div className="plaintext flxflexi">{props.alertContent}</div>
             } */}

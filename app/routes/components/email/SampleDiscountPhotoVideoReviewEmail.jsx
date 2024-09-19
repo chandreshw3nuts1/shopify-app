@@ -25,7 +25,7 @@ const SampleDiscountPhotoVideoReviewEmail = ({ emailContents, generalAppearances
     var bannerHtml = "";
     var logoHtml = "";
     var footerContent = "";
-    if (emailContents.banner != null && emailContents.banner != "") {
+    if (emailContents.banner != null && emailContents.banner != "" && generalAppearancesObj.enabledEmailBanner == true) {
         bannerHtml = ` <tr>
                 <td align="center">
                     <img src="${emailContents.banner}" width="96" height="96" alt="" style="width: 100%; height: auto; border-radius: 10px;">

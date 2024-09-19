@@ -9,7 +9,7 @@ const SampleReviewRequestEmail = ({ emailContents, documentObj }) => {
     var buttonTitleColor = `#ffffff`;
     var fontSize = `14px`;
     var fontType = `Manrope`;
-    
+    console.log(documentObj);
     if (documentObj.emailAppearance == "modern") {
         emailBgColor = null;
     } else if(documentObj.emailAppearance == "custom") {
@@ -26,7 +26,7 @@ const SampleReviewRequestEmail = ({ emailContents, documentObj }) => {
     var logoHtml = "";
     var footerContent = "";
 
-    if (emailContents.banner != null && emailContents.banner != "") {
+    if (emailContents.banner != null && emailContents.banner != "" && documentObj.enabledEmailBanner == true) {
         bannerHtml = ` <tr>
                 <td align="center">
                     <img src="${emailContents.banner}" width="96" height="96" alt="" style="width: 100%; height: auto; border-radius: 10px;">

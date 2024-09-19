@@ -5,6 +5,8 @@ import emailReviewRequestSettings from './../routes/models/emailReviewRequestSet
 import emailReviewReplySettings from './../routes/models/emailReviewReplySettings';
 import emailDiscountPhotoVideoReviewSettings from './../routes/models/emailDiscountPhotoVideoReviewSettings';
 import reviewDiscountSettings from './../routes/models/reviewDiscountSettings';
+import generalSettings from './../routes/models/generalSettings';
+import marketingEmailSubscriptions from './../routes/models/marketingEmailSubscriptions';
 import settingJson from './../utils/settings.json';
 import { getCurrentDate, getCustomFormattedEndDateTime } from './dateFormat';
 import ffmpeg from 'fluent-ffmpeg';
@@ -613,8 +615,8 @@ export async function generateVideoThumbnail(videoPath, outputDir, thumbnailName
 
 		return new Promise((resolve, reject) => {
 			// First, get the video dimensions using ffprobe
-			ffmpeg.setFfprobePath(`C:\\ffmpeg\\bin\\ffprobe.exe`);
-			ffmpeg.setFfmpegPath(`C:\\ffmpeg\\bin\\ffmpeg.exe`);
+			// ffmpeg.setFfprobePath(`C:\\ffmpeg\\bin\\ffprobe.exe`);
+			// ffmpeg.setFfmpegPath(`C:\\ffmpeg\\bin\\ffmpeg.exe`);
 
 			ffmpeg.ffprobe(videoPath, (err, metadata) => {
 				if (err) {
@@ -807,4 +809,16 @@ export function decryptData(encryptedData, secretKey) {
 	let decrypted = decipher.update(Buffer.from(encrypted, 'hex'));
 	decrypted = Buffer.concat([decrypted, decipher.final()]);
 	return JSON.parse(decrypted.toString());
+}
+
+
+// check email to send user or not 
+export async function checkEmailToSendUser(email = "", shopRecords) {
+	const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
+	let sendEmailStatus = false;
+	if(generalSettingsModel.send_email_type == "everyone") {
+		sendEmailStatus = true;
+	}
+	const marketingEmailSubscriptionsModel = await marketingEmailSubscriptions.findOne({ shop_id: shopRecords._id, email : email });
+
 }

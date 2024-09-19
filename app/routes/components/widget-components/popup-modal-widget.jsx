@@ -4,18 +4,25 @@ import { getUploadDocument } from './../../../utils/documentPath';
 
 const PopupModalWidget = (props) => {
     const iconColor = props.generalAppearancesModel.starIconColor;
-    console.log(props.popupModalWidgetCustomizesModel);
+    let hideOnMobileClass = "";
+    if(props.popupModalWidgetCustomizesModel.hideOnMobile == true){
+        hideOnMobileClass = "hide-popup-widget-on-mobile";
+    }
     return (
         <>
             <style>
                 {`
-				
+                    @media (max-width: 767px) {
+                        #popup_modal_extension_widget .hide-popup-widget-on-mobile {
+                            display: none;
+                        }
+                    }
                     
 
 				`}
             </style>
             {props.reviewItems.length > 0 &&
-                <div className="w3-popup-modal-widget">
+                <div className={`w3-popup-modal-widget ${hideOnMobileClass} `}>
                     {props.reviewItems.map((review, i) => (
                         <div key={i} id={`w3-popup-modal-content-${i + 1}`} className="popup-modal">
                             <div className='itemwrap'>

@@ -121,11 +121,12 @@ $(document).on("click", ".widget_w3grid-review-item", function () {
 function loadModalReviews(page) {
     var filter_by_ratting = $("#widget_ratting_wise_filter").val();
     var sort_by = $("#widget_sort_by_filter").val();
+    var show_all_reviews = typeof widget_settings_vars?.show_all_reviews != "undefined" ? widget_settings_vars.show_all_reviews : true;
     $.ajax({
         type: 'POST',
         url: `/apps/w3-proxy/widget`,
         data: {
-            show_all_reviews: widget_settings_vars?.show_all_reviews || true,
+            show_all_reviews: show_all_reviews,
             filter_by_ratting: filter_by_ratting,
             sort_by: sort_by,
             page: page,

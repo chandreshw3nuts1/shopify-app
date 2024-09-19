@@ -576,8 +576,9 @@ export async function action({ request }) {
                 const reviewer_name_color = formData.get('reviewer_name_color');
                 const widget_icon_color = formData.get('widget_icon_color');
                 const border_color = formData.get('border_color');
+                const productId = formData.get('product_id');
 
-                const reviewItems = await getImageAndVideoForCarousel(shopRecords, no_display_reviews);
+                const reviewItems = await getImageAndVideoForCarousel(shopRecords, no_display_reviews, productId);
                 const formParams = {
                     widget_alignment,
                     widget_width,
@@ -1215,7 +1216,7 @@ export async function action({ request }) {
 
 }
 
-async function getImageAndVideoForCarousel(shopRecords, limit = null) {
+async function getImageAndVideoForCarousel(shopRecords, limit = null, productId = 0) {
     const sortOption = {
         createdAt: -1,
         _id: -1
@@ -1227,6 +1228,9 @@ async function getImageAndVideoForCarousel(shopRecords, limit = null) {
         add_to_carousel: true
     };
 
+    if (productId > 0) {
+        query['product_id'] = productId;
+    }
     const aggregationPipeline = [
         {
             $match: query

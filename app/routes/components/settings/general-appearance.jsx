@@ -124,6 +124,7 @@ export default function GeneralAppearance({ shopRecords, generalAppearances, gen
 	const handleCheckboxChange = async event => {
 		try {
 			const eventKey = event.target.name;
+			const eventVal = event.target.checked;
 
 			const updateData = {
 				field: event.target.name,
@@ -143,6 +144,11 @@ export default function GeneralAppearance({ shopRecords, generalAppearances, gen
 				shopify.toast.show(data.message, {
 					duration: settingsJson.toasterCloseTime
 				});
+				setDocumentObj({
+					...documentObj,
+					[eventKey]: eventVal
+				});
+
 			} else {
 				shopify.toast.show(data.message, {
 					duration: settingsJson.toasterCloseTime,

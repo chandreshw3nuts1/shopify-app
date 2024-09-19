@@ -5,7 +5,14 @@ import marketingEmailSubscriptions from './models/marketingEmailSubscriptions';
 import generalSettings from './models/generalSettings';
 import shopifySessions from './models/shopifySessions';
 import React from 'react';
+import settingsJson from './../utils/settings.json';
 
+
+export const meta = () => {
+	return [
+		{ title: `${settingsJson.app_name} Unsubscribed Successfully` },
+	];
+};
 export const loader = async ({ params, request }) => {
     try {
         const url = new URL(request.url);

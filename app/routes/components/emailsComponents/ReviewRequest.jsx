@@ -181,10 +181,16 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances, gene
                                 <div className="form-group">
                                     <label htmlFor="">Banner</label>
                                     <div className='bannerverticalwrap'>
-                                        <div className='banneruploadimg'>
-                                            <ImageUploadMultiLang className="emailbannerimage" bannerType={bannerType} shopRecords={shopRecords} currentLanguage={currentLanguage} languageWiseEmailTemplate={languageWiseEmailTemplate} emailTemplateObjState={emailTemplateObjState} setEmailTemplateObjState={setEmailTemplateObjState} hasEdit />
-                                        </div>
-                                        <InformationAlert alertKey="" />
+                                        {generalAppearances.enabledEmailBanner == true ? (
+                                            <div className='banneruploadimg'>
+                                                <ImageUploadMultiLang className="emailbannerimage" bannerType={bannerType} shopRecords={shopRecords} currentLanguage={currentLanguage} languageWiseEmailTemplate={languageWiseEmailTemplate} emailTemplateObjState={emailTemplateObjState} setEmailTemplateObjState={setEmailTemplateObjState} hasEdit />
+                                            </div>
+                                        ) : (
+                                            <InformationAlert alertType="email_appearance_banner" pageSlug="/app/branding" alertKey="email_review_reuqest_customize" alertClose />
+
+                                        )}
+
+                                        <InformationAlert alertType="email_appearance" pageSlug="/app/branding" alertKey="" />
 
                                     </div>
                                 </div>
