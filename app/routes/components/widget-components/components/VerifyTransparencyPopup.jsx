@@ -6,14 +6,27 @@ const VerifyTransparencyPopup = (props) => {
                     .verify-transparency-popup-icon {
                         position: absolute;
                         top: 50px;
-                        right: 0;
-                        background-color: white;
-                        border: 1px solid #ccc;
-                        padding: 10px;
-                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+                        right: 40px;
+                        background-color: #ffffff;
+                        border: 1px solid #E3E4E5;
+                        padding: 10px 12px;
+                        border-radius: 10px;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
                         z-index: 100;
                         width :50%;
                         display:none;
+                        max-width: 300px;
+                    }
+                    .verify-transparency-popup-icon p {
+                        font-size: 13px;
+                        color: #222222;
+                        letter-spacing: 0;
+                        margin: 0;
+                        padding: 0;
+                        font-weight: 500;
+                    }
+                    .verify-transparency-popup-icon p + p {
+                        margin-top: 5px;
                     }
 
 				`}

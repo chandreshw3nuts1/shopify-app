@@ -1,6 +1,7 @@
 import { displayNoOfCharacters } from './../../../utils/common';
 import VideoPlayIcon from '../icons/VideoPlayIcon';
 import { getUploadDocument } from './../../../utils/documentPath';
+import CloseIcon from '../icons/CloseIcon';
 
 const PopupModalWidget = (props) => {
     const iconColor = props.generalAppearancesModel.starIconColor;
@@ -22,9 +23,12 @@ const PopupModalWidget = (props) => {
 				`}
             </style>
             {props.reviewItems.length > 0 &&
-                <div className={`w3-popup-modal-widget ${hideOnMobileClass} `}>
+                <div className={`w3-popup-modal-widget ${hideOnMobileClass} ${props.popupModalWidgetCustomizesModel.widgetPosition}`}>
                     {props.reviewItems.map((review, i) => (
                         <div key={i} id={`w3-popup-modal-content-${i + 1}`} className="popup-modal">
+                            <a href='#' className='closebtn'>
+                                <CloseIcon />
+                            </a>
                             <div className='itemwrap'>
                                 {props.popupModalWidgetCustomizesModel.showProductThumb &&
                                     <div className="img-video-content">
