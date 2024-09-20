@@ -6,7 +6,6 @@ import ReviewVerifyIcon from '../icons/ReviewVerifyIcon';
 
 const CardCarouselWidget = (props) => {
     const blockId = props.formParams.blockId;
-    console.log(props.formParams);
     const iconColor = (props.formParams.widget_icon_color != "rgba(0,0,0,0)" && props.formParams.widget_icon_color != "") ? props.formParams.widget_icon_color : props.generalAppearancesModel.starIconColor;
 
     const reviewerNameColor = (props.formParams.reviewer_name_color != "rgba(0,0,0,0)" && props.formParams.reviewer_name_color != "") ? props.formParams.reviewer_name_color : '#000000';

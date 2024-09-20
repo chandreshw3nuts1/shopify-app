@@ -499,7 +499,7 @@
 		"hideOnMobile": "false"
 	},
 	"floatingWidgetCustomize": {
-		"backgroundColor": "#000000",
-		"textColor": "#ffffff"
+		"backgroundColor": "#ffffff",
+		"textColor": "#000000"
 	}
 }

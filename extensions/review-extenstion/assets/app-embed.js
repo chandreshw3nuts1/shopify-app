@@ -303,8 +303,8 @@ $(document).ready(function () {
 
                 // Function to show each modal in sequence
                 function showModal(index) {
-                    if (index >= modals.length) {
-                        return; // End the slideshow if all modals have been displayed
+                    if (index >= modals.length || index < 0) {
+                        return;
                     }
 
                     const modal = $(modals[index]);
@@ -340,8 +340,10 @@ $(document).ready(function () {
                 }
 
                 // Close modal when close button is clicked
-                $('.close-modal').on('click', function () {
+                $('.w3-close-popups-modal').on('click', function (e) {
+                    e.preventDefault();
                     hideAllModals();
+                    currentIndex = -1;
                 });
 
                 // Start the modal slideshow
@@ -373,19 +375,17 @@ $(document).ready(function () {
 
     }
 
-
     $(document).on("click", ".open-transparency-popup-modal", function () {
-        $(".verify-transparency-popup-icon").toggle();
+        $(".verify-transparency-popup-icon").toggleClass("visible");
     });
 
+    // Close the popup when clicking outside
     $(document).mouseup(function (e) {
         var popup = $(".verify-transparency-popup-icon");
-        // If the target of the click isn't the popup or the toggle button
-        if (!popup.is(e.target) && popup.has(e.target).length === 0) {
-            popup.hide();
+        if (!popup.is(e.target) && popup.has(e.target).length === 0 && !$(e.target).closest('.open-transparency-popup-modal').length) {
+            popup.removeClass("visible");
         }
     });
-
 });
 
 

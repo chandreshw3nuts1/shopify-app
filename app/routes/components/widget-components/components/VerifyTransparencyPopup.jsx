@@ -14,7 +14,7 @@ const VerifyTransparencyPopup = (props) => {
                         box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
                         z-index: 100;
                         width :50%;
-                        display:none;
+                        display:none  !important;
                         max-width: 300px;
                     }
                     .verify-transparency-popup-icon p {
@@ -28,6 +28,10 @@ const VerifyTransparencyPopup = (props) => {
                     .verify-transparency-popup-icon p + p {
                         margin-top: 5px;
                     }
+                    .verify-transparency-popup-icon.visible {
+                        display: block !important;
+                    }
+
 
 				`}
             </style>

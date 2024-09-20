@@ -13,6 +13,11 @@ const PopupModalWidget = (props) => {
         <>
             <style>
                 {`
+
+                    #popup_modal_extension_widget .w3-popup-modal-widget .itemwrap {
+                        border-radius: ${props.popupModalWidgetCustomizesModel.cornerRadius}px;
+                    }
+
                     @media (max-width: 767px) {
                         #popup_modal_extension_widget .hide-popup-widget-on-mobile {
                             display: none;
@@ -25,11 +30,11 @@ const PopupModalWidget = (props) => {
             {props.reviewItems.length > 0 &&
                 <div className={`w3-popup-modal-widget ${hideOnMobileClass} ${props.popupModalWidgetCustomizesModel.widgetPosition}`}>
                     {props.reviewItems.map((review, i) => (
-                        <div key={i} id={`w3-popup-modal-content-${i + 1}`} className="popup-modal">
-                            <a href='#' className='closebtn'>
+                        <div key={i} id={`w3-popup-modal-content-${i + 1}`} className="popup-modal" >
+                            <a href='#' className='closebtn w3-close-popups-modal'>
                                 <CloseIcon />
                             </a>
-                            <div className='itemwrap'>
+                            <div className='itemwrap widget_w3grid-review-item' data-reviewid={review._id}>
                                 {props.popupModalWidgetCustomizesModel.showProductThumb &&
                                     <div className="img-video-content">
                                         {review.reviewDocuments.type === 'image' ? (
@@ -59,7 +64,7 @@ const PopupModalWidget = (props) => {
                                         {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 4 ? iconColor : "currentColor"} /> : null}
                                         {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 5 ? iconColor : "currentColor"} /> : null}
                                     </div>
-                                    <div class="descriptionbox">{displayNoOfCharacters(50, review.description)}</div>
+                                    <div class="descriptionbox">{displayNoOfCharacters(40, review.description)}</div>
 
                                 </div>
                                 <div className='review_bottomwrap'>

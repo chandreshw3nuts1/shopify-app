@@ -822,6 +822,9 @@ export async function action({ request }) {
                     status: 'publish'
                 };
 
+                if (popupModalWidgetCustomizesModel.minimumRatingDisplay != "all") {
+                    query['rating'] = parseInt(popupModalWidgetCustomizesModel.minimumRatingDisplay);
+                }
                 const sortOption = {
                     createdAt: -1,
                     _id: -1
@@ -897,7 +900,6 @@ export async function action({ request }) {
                 ];
 
                 const reviewItems = await productReviews.aggregate(aggregationPipeline);
-
                 var mapProductDetails = {};
 
                 if (reviewItems.length > 0) {
