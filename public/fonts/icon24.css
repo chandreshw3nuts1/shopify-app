@@ -24,6 +24,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.twenty-video-slider:before {
+  content: "\e931";
+}
 .twenty-carousel:before {
   content: "\e930";
 }

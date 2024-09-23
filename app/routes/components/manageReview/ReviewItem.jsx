@@ -498,7 +498,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 											}
 											{result.video_slider == true &&
 												<div className="revbedge onlyicon darkcolor" title="Video slider">
-													<i className="twenty-video-player"></i>
+													<i className="twenty-video-slider"></i>
 												</div>
 											}
 										</div>
