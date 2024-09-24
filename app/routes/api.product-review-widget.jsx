@@ -9,7 +9,6 @@ import reviewDocuments from "./models/reviewDocuments";
 import productReviewQuestions from "./models/productReviewQuestions";
 import manualRequestProducts from './models/manualRequestProducts';
 import generalAppearances from './models/generalAppearances';
-import reviewDiscountSettings from './models/reviewDiscountSettings';
 import manualReviewRequests from './models/manualReviewRequests';
 import generalSettings from './models/generalSettings';
 
@@ -121,10 +120,158 @@ export async function action({ request }) {
 					}
 					return json({ success: true });
 
+				} else if (actionType == "addPhotoVideo") {
+
+					if (shop == null || formData.get('product_id') == null) {
+						return json({ success: false });
+					}
+					const productReviewsModel = await productReviews.findOne({ _id: formData.get('reviewId') });
+					if (productReviewsModel) {
+						const reviewId = formData.get('reviewId');
+
+						const generalAppearancesData = await generalAppearances.findOne({ shop_id: shopRecords._id });
+						const logo = getUploadDocument(generalAppearancesData.logo, shopRecords.shop_id, 'logo');
+
+						var customer_locale = productReviewsModel.customer_locale;
+
+						/* Fetch transation languge*/
+
+						const language = settingsJson.languages.find(language => language.code === customer_locale);
+						customer_locale = language ? language.code : generalSettingsModel.defaul_language;
+						const apiUrl = `${settingsJson.host_url}/locales/${customer_locale}/translation.json`;
+						const lang = await fetch(apiUrl, {
+							method: 'GET'
+						});
+						const translations = await lang.json();
+						const reviewFormSettingsModel = await reviewFormSettings.findOne({ shop_id: shopRecords._id });
+						const languageWiseReviewFormSettings = (reviewFormSettingsModel && reviewFormSettingsModel[customer_locale]) ? reviewFormSettingsModel[customer_locale] : {};
+						const otherProps = { translations };
+						otherProps['reviewFormSettingsModel'] = reviewFormSettingsModel;
+						otherProps['languageWiseReviewFormSettings'] = languageWiseReviewFormSettings;
+
+						/* Fetch transation languge End*/
+
+						// upload images/video
+
+						const file_objects = formData.get("file_objects");
+						let hasPhoto = false;
+						let hasVideo = false;
+						let discountText = "";
+						let discountCode = "";
+						if (file_objects != null && file_objects != "") {
+							let files = file_objects.split(',');
+							const uploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/`);
+
+							for (let i = 0; i < files.length; i++) {
+								const fileName = files[i];
+								var docType = 'image';
+
+								let thumbNailName = "";
+
+								const fileExtension = fileName.split('.').pop().toLowerCase();
+
+								if (validImageExtensions.includes(fileExtension)) {
+									var docType = "image";
+									hasPhoto = true;
+								} else if (validVideoExtensions.includes(fileExtension)) {
+									var docType = "video";
+									hasVideo = true;
+
+									thumbNailName = await generateRandomCode(10) + ".png";
+									const thumbnailUploadFilePath = path.join(uploadsDir, fileName);
+									await generateVideoThumbnail(thumbnailUploadFilePath, uploadsDir, thumbNailName); // Generate thumbnail
+								}
+								const isCover = i === 0; // index 0 will be true, others will be false
+								const reviewDocumentModel = new reviewDocuments({
+									review_id: new ObjectId(reviewId),
+									type: docType,
+									url: fileName,
+									is_approve: true,
+									is_cover: isCover,
+									thumbnail_name: thumbNailName
+								});
+
+								await reviewDocumentModel.save();
+							}
+
+							/* Create discount code and send email to reviewer when new photo/video reivew receive*/
+
+							const discountCodeResponse = await createShopifyDiscountCode(shopRecords, hasPhoto, hasVideo, productReviewsModel.is_review_request);
+							if (Object.keys(discountCodeResponse).length > 0) {
+								discountText = discountCodeResponse.value_type == 'percentage' ? `${discountCodeResponse.discount_value}%` : `${shopRecords.currency_symbol}${discountCodeResponse.discount_value}`;
+								const replaceVars = {
+									"discount": discountText,
+									"store": shopRecords.name,
+									"name": productReviewsModel.first_name,
+									"last_name": productReviewsModel.last_name,
+								}
+								discountCode = discountCodeResponse.code;
+								const emailContentsDiscount = await getLanguageWiseContents("discount_photo_video_review", replaceVars, shopRecords._id, customer_locale);
+								emailContentsDiscount.banner = getUploadDocument(emailContentsDiscount.banner, shopRecords.shop_id, 'banners');
+								emailContentsDiscount.logo = logo;
+								emailContentsDiscount.discountCode = discountCode;
+								emailContentsDiscount.expire_on_date = discountCodeResponse.expire_on_date != "" ? formatDate(discountCodeResponse.expire_on_date, shopRecords.timezone, "MM-DD-YYYY") : "";
+								var footerContent = "";
+								if (generalSettingsModel.email_footer_enabled) {
+									footerContent = generalSettingsModel[customer_locale] ? generalSettingsModel[customer_locale].footerText : "";
+								}
+								emailContentsDiscount.footerContent = footerContent;
+								emailContentsDiscount.email_footer_enabled = generalSettingsModel.email_footer_enabled;
+
+
+								const unsubscribeData = {
+									"shop_id": shopRecords.shop_id,
+									"email": productReviewsModel.email,
+								}
+								emailContentsDiscount.unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
+
+								var discountEmailHtmlContent = ReactDOMServer.renderToStaticMarkup(
+									<DiscountPhotoVideoReviewEmail emailContents={emailContentsDiscount} generalAppearancesObj={generalAppearancesData} shopRecords={shopRecords} />
+								);
+								const emailResponse = await sendEmail({
+									to: productReviewsModel.email,
+									subject: emailContentsDiscount.subject,
+									html: discountEmailHtmlContent,
+								});
+
+								if (discountCodeResponse?.id) {
+									// update product review 
+									await productReviews.updateOne(
+										{ _id: reviewId },
+										{
+											$set: { discount_code_id: discountCodeResponse.id, discount_price_rule_id: discountCodeResponse.price_rule_id }
+										}
+									);
+
+									await discountCodes.updateOne(
+										{ shop_id: shopRecords._id, email: productReviewsModel.email, code: discountCodeResponse.code },
+										{
+											$setOnInsert: {
+												shop_id: shopRecords._id,
+												email: productReviewsModel.email,
+												review_id: new ObjectId(reviewId),
+												code: discountCodeResponse.code,
+												value_type: discountCodeResponse.value_type,
+												discount_value: discountCodeResponse.discount_value,
+												expire_on_date: discountCodeResponse.expire_on_date,
+											}
+										},
+										{ upsert: true }
+									);
+
+								}
+							}
+
+							/* send email to reviewer when new photo/video reivew receive End*/
+
+						}
+
+						const dynamicComponent = <ThankYouPage shopRecords={shopRecords} discountText={discountText} discountCode={discountCode} otherProps={otherProps} />;
+						const htmlContent = ReactDOMServer.renderToString(dynamicComponent);
+
+						return json({ success: true, content: htmlContent });
+					}
 				} else {
-
-
-
 					if (shop == null || formData.get('product_id') == null) {
 						return json({ success: false });
 					}
@@ -170,7 +317,6 @@ export async function action({ request }) {
 					} else if (customer_locale == 'zh-CN') {
 						customer_locale = 'cn1';
 					}
-
 
 					/* Fetch transation languge*/
 
@@ -319,7 +465,7 @@ export async function action({ request }) {
 							emailContentsDiscount.email_footer_enabled = generalSettingsModel.email_footer_enabled;
 
 
-							const unsubscribeData = { 
+							const unsubscribeData = {
 								"shop_id": shopRecords.shop_id,
 								"email": formData.get('email'),
 							}
@@ -342,24 +488,28 @@ export async function action({ request }) {
 										$set: { discount_code_id: discountCodeResponse.id, discount_price_rule_id: discountCodeResponse.price_rule_id }
 									}
 								);
+
+								await discountCodes.updateOne(
+									{ shop_id: shopRecords._id, email: formData.get('email'), code: discountCodeResponse.code },
+									{
+										$setOnInsert: {
+											shop_id: shopRecords._id,
+											email: formData.get('email'),
+											review_id: new ObjectId(insertedId),
+											code: discountCodeResponse.code,
+											value_type: discountCodeResponse.value_type,
+											discount_value: discountCodeResponse.discount_value,
+											expire_on_date: discountCodeResponse.expire_on_date,
+										}
+									},
+									{ upsert: true }
+								);
+
 							}
-
-							if (!discountCodeResponse.is_custom_discount_code) {
-								// insert discount codes
-								const discountCodesModel = new discountCodes({
-									shop_id: shopRecords._id,
-									code: discountCodeResponse.code,
-								});
-								await discountCodesModel.save();
-							}
-
-
 						}
 
 						/* send email to reviewer when new photo/video reivew receive End*/
-
 					}
-
 
 					//insert questions and answers 
 					var questions = [];
@@ -394,7 +544,7 @@ export async function action({ request }) {
 								email: formData.get('email')
 							}
 						};
-						const url = `https://${shopRecords.shop}/admin/api/2024-01/customers.json`;
+						const url = `https://${shopRecords.shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/customers.json`;
 						const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shopRecords.shop });
 
 						const custResponse = await fetch(url, {
@@ -409,41 +559,43 @@ export async function action({ request }) {
 
 					/*Create new customer in shopify End */
 
-					/* send email to admin when new reivew receive*/
+					/* send email to store owner when new reivew receive*/
+					if (settings.reviewNotification) {
+						const email = settings.reviewNotificationEmail || shopRecords.email;
+						const emailContents = {
+							questions: questions,
+							first_name: formData.get('first_name'),
+							last_name: formData.get('last_name'),
+							display_name: display_name,
+							email: formData.get('email'),
+							description: formData.get('description'),
+							rating: reviewStarRating,
+							product_id: formData.get('product_id'),
+							product_title: productNodes.title,
+							product_url: productNodes.handle,
+							shopifyStoreUrl: shopifyStoreUrl,
+							logo: logo,
+							shop_domain: shopRecords.shop,
+							status: reviewStatus
+						};
+						const unsubscribeData = {
+							"shop_id": shopRecords.shop_id,
+							"email": email,
+						}
+						emailContents.unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
 
-					const email = settings.reviewNotificationEmail || shopRecords.email;
-					const emailContents = {
-						questions: questions,
-						first_name: formData.get('first_name'),
-						last_name: formData.get('last_name'),
-						display_name: display_name,
-						email: formData.get('email'),
-						description: formData.get('description'),
-						rating: reviewStarRating,
-						product_id: formData.get('product_id'),
-						product_title: productNodes.title,
-						product_url: productNodes.handle,
-						shopifyStoreUrl: shopifyStoreUrl,
-						logo: logo,
-						shop_domain: shopRecords.shop,
-						status: reviewStatus
-					};
-					const unsubscribeData = { 
-						"shop_id": shopRecords.shop_id,
-						"email": email,
+						const subject = `New review (${formData.get('rating')}★) of ${productNodes.title} ${display_name}`;
+						const emailHtml = ReactDOMServer.renderToStaticMarkup(
+							<EmailTemplate emailContents={emailContents} />
+						);
+
+						const response = await sendEmail({
+							to: email,
+							subject,
+							html: emailHtml,
+						});
 					}
-					emailContents.unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
 
-					const subject = `New review (${formData.get('rating')}★) of ${productNodes.title} ${display_name}`;
-					const emailHtml = ReactDOMServer.renderToStaticMarkup(
-						<EmailTemplate emailContents={emailContents} />
-					);
-
-					const response = await sendEmail({
-						to: email,
-						subject,
-						html: emailHtml,
-					});
 
 					const dynamicComponent = <ThankYouPage shopRecords={shopRecords} discountText={discountText} discountCode={discountCode} otherProps={otherProps} />;
 					const htmlContent = ReactDOMServer.renderToString(dynamicComponent);

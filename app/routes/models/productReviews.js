@@ -30,6 +30,7 @@ const productReviewsSchema = new mongoose.Schema({
     video_slider: { type: Boolean, default: false },
     discount_code_id : { type: String, default : null},
     discount_price_rule_id : { type: String, default : null},
+    is_reminder_sent: { type: Boolean, default: false },
 },{
     timestamps: true
 });

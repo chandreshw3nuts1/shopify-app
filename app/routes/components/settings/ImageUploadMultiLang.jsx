@@ -183,7 +183,7 @@ const ImageUploadMultiLang = (props) => {
 					{props.className
 						?
 						(<div className='btnwrap m-0'>
-							<a href="#" onClick={setDefaultBanner} className='revbtn regularbtn'>Use W3 Default</a>
+							<a href="#" onClick={setDefaultBanner} className='revbtn regularbtn'>Use {settingsJson.app_name} Default</a>
 						</div>)
 						:
 						''

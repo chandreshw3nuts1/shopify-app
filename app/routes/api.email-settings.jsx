@@ -1,6 +1,7 @@
 import { json } from "@remix-run/node";
 import settings from './models/settings';
 import emailReviewRequestSettings from './models/emailReviewRequestSettings';
+import emailReviewRequestReminderSettings from './models/emailReviewRequestReminderSettings';
 import emailReviewReplySettings from './models/emailReviewReplySettings';
 import generalAppearances from "./models/generalAppearances";
 import generalSettings from './models/generalSettings';
@@ -12,6 +13,8 @@ import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTem
 import { getUploadDocument } from './../utils/documentPath';
 import settingJson from './../utils/settings.json';
 import emailDiscountPhotoVideoReviewSettings from "./models/emailDiscountPhotoVideoReviewSettings";
+import emailPhotovideoReminderSettings from "./models/emailPhotovideoReminderSettings";
+import emailDiscountPhotoVideoReviewReminderSettings from "./models/emailDiscountPhotoVideoReviewReminderSettings";
 
 export async function loader() {
     return json({
@@ -66,17 +69,17 @@ export async function action({ params, request }) {
                     }
                     emailContents.footerContent = footerContent;
                     emailContents.email_footer_enabled = generalSettingsModel.email_footer_enabled;
-                    
+
                     var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
                         <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={[]} generalAppearancesObj={generalAppearancesObj} />
                     );
-                    
+
                     const settingsModel = await settings.findOne({
                         shop_id: shopRecords._id,
                     });
                     const email = settingsModel?.reviewNotificationEmail || shopRecords.email;
-                    
-                    const unsubscribeData = { 
+
+                    const unsubscribeData = {
                         "shop_id": shopRecords.shop_id,
                         "email": email,
                     }
@@ -117,8 +120,68 @@ export async function action({ params, request }) {
 
                     return json({ status: 200, message: "Setting saved" });
 
-                }
+                } else if (actionType == 'reviewRequestReminder') {
+                    const query = { shop_id: shopRecords._id };
+                    if (requestBody.field == 'isEnabled') {
+                        var update = {
+                            $set: {
+                                [requestBody.field]: requestBody.value
+                            }
+                        };
+                    } else {
+                        var update = {
+                            $set: {
+                                [`${language}.${requestBody.field}`]: requestBody.value
+                            }
+                        };
+                    }
+                    const options = { upsert: true, returnOriginal: false };
+                    await emailReviewRequestReminderSettings.findOneAndUpdate(query, update, options);
 
+                    return json({ status: 200, message: "Setting saved" });
+
+                } else if (actionType == 'photoVideoReminder') {
+                    const query = { shop_id: shopRecords._id };
+                    if (requestBody.field == 'sendReminderTo') {
+                        var update = {
+                            $set: {
+                                [requestBody.field]: requestBody.value
+                            }
+                        };
+                    } else {
+                        var update = {
+                            $set: {
+                                [`${language}.${requestBody.field}`]: requestBody.value
+                            }
+                        };
+                    }
+                    const options = { upsert: true, returnOriginal: false };
+                    await emailPhotovideoReminderSettings.findOneAndUpdate(query, update, options);
+
+                    return json({ status: 200, message: "Setting saved" });
+
+                } else if (actionType == 'discountPhotoVideoReviewReminder') {
+                    const query = { shop_id: shopRecords._id };
+                    if (requestBody.field == 'isEnabled') {
+                        var update = {
+                            $set: {
+                                [requestBody.field]: requestBody.value
+                            }
+                        };
+                    } else {
+                        var update = {
+                            $set: {
+                                [`${language}.${requestBody.field}`]: requestBody.value
+                            }
+                        };
+                    }
+                    const options = { upsert: true, returnOriginal: false };
+                    await emailDiscountPhotoVideoReviewReminderSettings.findOneAndUpdate(query, update, options);
+
+                    return json({ status: 200, message: "Setting saved" });
+
+                }
+                
             } catch (error) {
 
                 return json({ "status": 400, "message": "Failed to update record", error: error });

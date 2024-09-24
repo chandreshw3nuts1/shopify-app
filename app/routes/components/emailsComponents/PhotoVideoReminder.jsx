@@ -9,18 +9,21 @@ import settingsJson from './../../../utils/settings.json';
 import { getDefaultProductImage, getUploadDocument } from './../../../utils/documentPath';
 import SampleReviewRequestEmail from './../email/SampleReviewRequestEmail';
 
-const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances, generalSettingsModel }) => {
+const PhotoVideoReminder = ({ shopRecords, emailTemplateObj, generalAppearances, generalSettingsModel }) => {
     const { t, i18n } = useTranslation();
-    const bannerType = "reviewRequest";
+    const bannerType = "photoVideoReminder";
     const [emailTemplateObjState, setEmailTemplateObjState] = useState(emailTemplateObj);
     const [languageWiseEmailTemplate, setLanguageWiseEmailTemplate] = useState({});
     const [currentLanguage, setCurrentLanguage] = useState('en');
     const [subject, setSubject] = useState('');
     const [body, setBody] = useState('');
     const [buttonText, setButtonText] = useState('');
+    const [discountText, setDiscountText] = useState('');
+    
     const [initialData, setInitialData] = useState({});
     const [placeHolderLanguageData, setPlaceHolderLanguageData] = useState({});
     const [emailContents, setEmailContents] = useState({});
+    const [sendReminderTo, setSendReminderTo] = useState(emailTemplateObj?.sendReminderTo);
 
     const [showViewSampleModal, setShowViewSampleModal] = useState(false);
     const handleCloseViewSampleModal = () => setShowViewSampleModal(false);
@@ -33,31 +36,30 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances, gene
         setCurrentLanguage(language);
 
         const emailTemplateInfo = (emailTemplateObjState && emailTemplateObjState[currentLanguage]) ? emailTemplateObjState[currentLanguage] : {};
-        const { subject, body, buttonText } = emailTemplateInfo;
+        const { subject, body, discountText, buttonText } = emailTemplateInfo;
         setLanguageWiseEmailTemplate(emailTemplateInfo);
 
         setSubject(subject || '');
         setBody(body || '');
         setButtonText(buttonText || '');
+        setDiscountText(discountText || '');
 
 
         setInitialData({
             subject: subject || '',
             body: body || '',
-            buttonText: buttonText || ''
+            buttonText: buttonText || '',
+            discountText: discountText || ''
         });
 
         setPlaceHolderLanguageData({
-            subject: t('reviewRequestEmail.subject'),
-            body: t('reviewRequestEmail.body'),
-            buttonText: t('reviewRequestEmail.buttonText'),
+            subject: t('photoVideoReminderEmail.subject'),
+            body: t('photoVideoReminderEmail.body'),
+            discountText: t('photoVideoReminderEmail.discountText'),
+            buttonText: t('photoVideoReminderEmail.buttonText'),
         });
 
     }, [i18n, i18n.language, emailTemplateObjState, currentLanguage]);
-
-    // useEffect(() => {
-
-    // }, [emailTemplateObjState, currentLanguage]);
 
 
     const changeSubject = (e) => {
@@ -67,20 +69,24 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances, gene
     const changeBody = (event) => {
         setBody(event.target.value);
     };
-
+    const changeDiscountText = (event) => {
+        setDiscountText(event.target.value);
+    };
     const changeButtonText = (event) => {
         setButtonText(event.target.value);
     };
 
     const handleInputBlur = async (e) => {
         const language = localStorage.getItem('i18nextLng');
+        console.log(initialData);
+        console.log(e.target.value);
         if (initialData[e.target.name] != e.target.value) {
             const updateData = {
                 field: e.target.name,
                 value: e.target.value,
                 shop: shopRecords.shop,
                 language: language,
-                actionType: "reviewRequest"
+                actionType: "photoVideoReminder"
             };
             const response = await fetch('/api/email-settings', {
                 method: 'POST',
@@ -110,15 +116,38 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances, gene
             }
         }
 
-
     };
 
-    const sendReviewRequestEmail = async (e) => {
-        const language = localStorage.getItem('i18nextLng');
+    const viewSample = (e) => {
+        e.preventDefault();
+        var footerContent = "";
+        if (generalSettingsModel.email_footer_enabled) {
+            footerContent = generalSettingsModel[currentLanguage] ? generalSettingsModel[currentLanguage].footerText : "";
+        }
+        const sampleEmailData = {
+            logo: getUploadDocument(generalAppearances?.logo, shopRecords.shop_id, 'logo'),
+            body: body ? body : t('photoVideoReminderEmail.body'),
+            buttonText: buttonText ? buttonText : t('photoVideoReminderEmail.buttonText'),
+            discountText: discountText ? discountText : t('photoVideoReminderEmail.discountText'),
+            banner: getUploadDocument(languageWiseEmailTemplate.banner, shopRecords.shop_id, 'banners'),
+            getDefaultProductImage: getDefaultProductImage(),
+            footerContent: footerContent,
+            email_footer_enabled: generalSettingsModel.email_footer_enabled
+        }
+        setEmailContents(sampleEmailData);
+        setShowViewSampleModal(true);
+    }
+
+
+    const handleSelectChange = async (event) => {
+        const eventKey = event.target.name;
+        let eventVal = event.target.value;
+
         const updateData = {
+            field: event.target.name,
+            value: eventVal,
             shop: shopRecords.shop,
-            language: language,
-            actionType: "sendReviewRequestEmail"
+            actionType: "photoVideoReminder"
         };
         const response = await fetch('/api/email-settings', {
             method: 'POST',
@@ -132,44 +161,22 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances, gene
             shopify.toast.show(data.message, {
                 duration: settingsJson.toasterCloseTime
             });
+
         } else {
             shopify.toast.show(data.message, {
                 duration: settingsJson.toasterCloseTime,
                 isError: true
             });
         }
-
+        if (eventKey == 'sendReminderTo') {
+            setSendReminderTo(eventVal);
+        }
     };
-
-    const viewSample = (e) => {
-        e.preventDefault();
-        var footerContent = "";
-        if(generalSettingsModel.email_footer_enabled) {
-            footerContent = generalSettingsModel[currentLanguage] ? generalSettingsModel[currentLanguage].footerText : "";
-        }
-        const sampleEmailData = {
-            logo: getUploadDocument(generalAppearances?.logo, shopRecords.shop_id, 'logo'),
-            body: body ? body : t('reviewRequestEmail.body'),
-            buttonText: buttonText ? buttonText : t('reviewRequestEmail.buttonText'),
-            banner : getUploadDocument(languageWiseEmailTemplate.banner, shopRecords.shop_id, 'banners'),
-            getDefaultProductImage: getDefaultProductImage(),
-            footerContent : footerContent,
-            email_footer_enabled : generalSettingsModel.email_footer_enabled
-        }
-        setEmailContents(sampleEmailData);
-        setShowViewSampleModal(true);
-    }
-
 
     const showBrandingPage = (e) => {
         e.preventDefault();
         navigate('/app/branding');
     }
-    const alertContent = (
-        <>
-            You can upload a default banner to all emails in the <a href="#" onClick={showBrandingPage}>Branding Setting</a>
-        </>
-    );
 
     return (
         <>
@@ -186,7 +193,7 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances, gene
                                                 <ImageUploadMultiLang className="emailbannerimage" bannerType={bannerType} shopRecords={shopRecords} currentLanguage={currentLanguage} languageWiseEmailTemplate={languageWiseEmailTemplate} emailTemplateObjState={emailTemplateObjState} setEmailTemplateObjState={setEmailTemplateObjState} hasEdit />
                                             </div>
                                         ) : (
-                                            <InformationAlert alertType="email_appearance_banner" pageSlug="/app/branding" alertKey="email_review_request_customize" alertClose />
+                                            <InformationAlert alertType="email_appearance_banner" pageSlug="/app/branding" alertKey="email_photo_video_customize" alertClose />
 
                                         )}
 
@@ -197,11 +204,23 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances, gene
                             </div>
                             <div className="col-lg-7">
                                 <div className="form-group">
+                                    <label htmlFor="">Send photo/video reminder </label>
+                                    <select name="sendReminderTo" onChange={handleSelectChange} value={sendReminderTo} className='input_text'>
+                                        <option value="all">For all reviews </option>
+                                        <option value="star_2">For reviews with 2 stars and up</option>
+                                        <option value="star_3">For reviews with 3 stars and up</option>
+                                        <option value="star_4">For reviews with 4 stars and up</option>
+                                        <option value="star_5">For 5-star reviews only</option>
+                                        <option value="never">Never</option>
+                                    </select>
+                                </div>
+
+                                <div className="form-group">
                                     <label htmlFor="">Subject </label>
                                     <input type="text" onBlur={handleInputBlur} name="subject" value={subject} onChange={changeSubject} className="input_text" placeholder={placeHolderLanguageData.subject} />
                                     <div className='inputnote'>
                                         <div><strong>Notes:</strong></div>
-                                        <div>Use [order_number] for the customer's order number</div>
+                                        <div>Use [product] for the product name</div>
                                         <div>Use [name] or [last_name] as a placeholder for the user's first or last name</div>
                                     </div>
                                 </div>
@@ -217,13 +236,14 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances, gene
                                     ></textarea>
                                 </div>
                                 <div className="form-group">
+                                    <label htmlFor="">Discount text</label>
+                                    <input type="text" onBlur={handleInputBlur} name="discountText" value={discountText} onChange={changeDiscountText} className="input_text" placeholder={placeHolderLanguageData.discountText} />
+                                </div>
+                                <div className="form-group">
                                     <label htmlFor="">Button Text</label>
                                     <input type="text" onBlur={handleInputBlur} name="buttonText" value={buttonText} onChange={changeButtonText} className="input_text" placeholder={placeHolderLanguageData.buttonText} />
                                 </div>
-                                <div className='sentrowbanner flxrow'>
-                                    <p>Send review request to your self</p>
-                                    <button type='button' onClick={sendReviewRequestEmail} className='revbtn smbtn'>Sent</button>
-                                </div>
+
                                 <div className="btnwrap">
                                     <a href="#" onClick={viewSample} className='revbtn'>View sample</a>
                                     <a href="#" onClick={showBrandingPage} className='revbtn outline'>Customize email appearance</a>
@@ -238,7 +258,7 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances, gene
                     <Modal.Title>Sample email</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <SampleReviewRequestEmail  emailContents={emailContents} generalAppearancesObj={generalAppearances} />
+                    <SampleReviewRequestEmail emailContents={emailContents} generalAppearancesObj={generalAppearances} />
 
                 </Modal.Body>
             </Modal>
@@ -246,4 +266,4 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances, gene
     );
 };
 
-export default ReviewRequest;
+export default PhotoVideoReminder;

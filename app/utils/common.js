@@ -7,6 +7,10 @@ import emailDiscountPhotoVideoReviewSettings from './../routes/models/emailDisco
 import reviewDiscountSettings from './../routes/models/reviewDiscountSettings';
 import generalSettings from './../routes/models/generalSettings';
 import marketingEmailSubscriptions from './../routes/models/marketingEmailSubscriptions';
+import emailReviewRequestReminderSettings from './../routes/models/emailReviewRequestReminderSettings';
+import emailDiscountPhotoVideoReviewReminderSettings from './../routes/models/emailDiscountPhotoVideoReviewReminderSettings';
+import emailPhotovideoReminderSettings from './../routes/models/emailPhotovideoReminderSettings';
+
 import settingJson from './../utils/settings.json';
 import { getCurrentDate, getCustomFormattedEndDateTime } from './dateFormat';
 import ffmpeg from 'fluent-ffmpeg';
@@ -384,6 +388,30 @@ export async function getLanguageWiseContents(type, replaceVars, shop_id, locale
 		const transalationData = transalationContent.dicountPhotoVideoReviewEmail;
 		emailContents = await replaceEmailDiscountPhotoVideoReview(replaceVars, settingJsonData, transalationData);
 
+	} else if (type == 'review_request_reminder') {
+		const emailReviewRequestReminderSettingsModel = await emailReviewRequestReminderSettings.findOne({ shop_id: shop_id });
+		if (emailReviewRequestReminderSettingsModel && emailReviewRequestReminderSettingsModel[locale]) {
+			settingJsonData = emailReviewRequestReminderSettingsModel[locale];
+		}
+		const transalationData = transalationContent.reviewRequestReminderEmail;
+		emailContents = await replaceEmailReviewRequest(replaceVars, settingJsonData, transalationData);
+
+	} else if (type == 'discount_photo_video_review_reminder') {
+		const emailDiscountPhotoVideoReviewReminderSettingsModel = await emailDiscountPhotoVideoReviewReminderSettings.findOne({ shop_id: shop_id });
+		if (emailDiscountPhotoVideoReviewReminderSettingsModel && emailDiscountPhotoVideoReviewReminderSettingsModel[locale]) {
+			settingJsonData = emailDiscountPhotoVideoReviewReminderSettingsModel[locale];
+		}
+		const transalationData = transalationContent.discountPhotoVideoReviewReminderEmail;
+		emailContents = await replaceEmailDiscountPhotoVideoReview(replaceVars, settingJsonData, transalationData);
+
+	} else if (type == 'photo_video_review_reminder') {
+		const emailPhotovideoReminderSettingsModel = await emailPhotovideoReminderSettings.findOne({ shop_id: shop_id });
+		if (emailPhotovideoReminderSettingsModel && emailPhotovideoReminderSettingsModel[locale]) {
+			settingJsonData = emailPhotovideoReminderSettingsModel[locale];
+		}
+		const transalationData = transalationContent.photoVideoReminderEmail;
+		emailContents = await replaceEmailDiscountPhotoVideoReviewReminder(replaceVars, settingJsonData, transalationData);
+
 	}
 	emailContents.unsubscribeText = transalationContent.unsubscriptionText
 	return emailContents;
@@ -438,6 +466,29 @@ export async function replaceEmailDiscountPhotoVideoReview(replaceVars, settingJ
 	var banner = settingJsonData.banner || "";
 
 	return { subject, body, buttonText, banner };
+}
+
+export async function replaceEmailDiscountPhotoVideoReviewReminder(replaceVars, settingJsonData, transalationData) {
+
+	var subject = replacePlaceholders(settingJsonData.subject && settingJsonData.subject !== ""
+		? settingJsonData.subject
+		: transalationData.subject, replaceVars);
+
+	var body = replacePlaceholders(settingJsonData.body && settingJsonData.body !== ""
+		? settingJsonData.body
+		: transalationData.body, replaceVars);
+
+
+	var discountText = replacePlaceholders(settingJsonData.discountText && settingJsonData.discountText !== ""
+		? settingJsonData.discountText
+		: transalationData.discountText, replaceVars);
+
+	var buttonText = settingJsonData.buttonText && settingJsonData.buttonText !== ""
+		? settingJsonData.buttonText
+		: transalationData.buttonText;
+	var banner = settingJsonData.banner || "";
+
+	return { subject, body, discountText, buttonText, banner };
 }
 
 
@@ -650,8 +701,6 @@ export async function generateVideoThumbnail(videoPath, outputDir, thumbnailName
 							fs.unlink(tempThumbnailPath, (err) => {
 								if (err) {
 									console.error('Error deleting temporary thumbnail:', err);
-								} else {
-									console.log('Temporary thumbnail deleted:', tempThumbnailPath);
 								}
 							});
 
@@ -816,9 +865,9 @@ export function decryptData(encryptedData, secretKey) {
 export async function checkEmailToSendUser(email = "", shopRecords) {
 	const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
 	let sendEmailStatus = false;
-	if(generalSettingsModel.send_email_type == "everyone") {
+	if (generalSettingsModel.send_email_type == "everyone") {
 		sendEmailStatus = true;
 	}
-	const marketingEmailSubscriptionsModel = await marketingEmailSubscriptions.findOne({ shop_id: shopRecords._id, email : email });
+	const marketingEmailSubscriptionsModel = await marketingEmailSubscriptions.findOne({ shop_id: shopRecords._id, email: email });
 
 }

@@ -3,6 +3,7 @@
 	"page_limit": 20,
 	"character_limit": 400,
 	"app_name" : "Kritic App",
+	"reminderEmailDays" : 7,
 	"validImageExtensions": [
 		"jpg",
 		"jpeg",
@@ -451,7 +452,13 @@
 	"shopifyDiscount": {
 		"reviewDiscountTitle": "W3 Photo/Video Reviews :",
 		"reviewDiscountPrefix": "W3-",
-		"reviewDiscountCodeDigit": "10"
+		"reviewDiscountCodeDigit": "10",
+		"sameDiscountType" : "percentage", 
+		"sameDiscountValue" : 10,
+		"differentDiscountPhotoType" : "percentage", 
+		"differentDiscountPhotoValue" : 10, 
+		"differentDiscountVideoType" : "percentage", 
+		"differentDiscountVideoValue" : 20 
 	},
 	"defaultReviewRequestTiming": {
 		"isDifferentTiming": false,

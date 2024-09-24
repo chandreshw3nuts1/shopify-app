@@ -48,15 +48,42 @@ export async function action({ request }) {
 			const discountCodesModel = await discountCodes.findOne({ shop_id: shopRecords._id, code: discountCode });
 			if (discountCodesModel) {
 				totalOrderAmount = bodyObj.total_price;
+
+				/* update discount code used status as true for auto generated code*/
+				await discountCodes.updateOne(
+					{
+						shop_id: shopRecords._id,
+						code: discountCode,
+					},
+					{
+						$set: { code_used: true }
+					}
+				);
+
 			} else {
-				const reviewDiscountSettingsModel = await reviewDiscountSettings.findOne({ shop_id: shopRecords._id, discountCode : discountCode });
+				const reviewDiscountSettingsModel = await reviewDiscountSettings.findOne({ shop_id: shopRecords._id, discountCode: discountCode });
 				if (reviewDiscountSettingsModel) {
 					totalOrderAmount = bodyObj.total_price;
+
+					/* update discount code used status as true for auto generated code*/
+					await discountCodes.updateOne(
+						{
+							shop_id: shopRecords._id,
+							code: discountCode,
+							email: bodyObj.customer.email,
+						},
+						{
+							$set: { code_used: true }
+						}
+					);
 				}
 			}
+
+
+
 		}
 
-		
+
 		const manualReviewRequestsModel = await manualReviewRequests({
 			shop_id: shopRecords._id,
 			email: bodyObj.customer.email,
@@ -67,7 +94,7 @@ export async function action({ request }) {
 			order_id: bodyObj.id,
 			order_number: bodyObj.order_number,
 			request_status: "pending",
-			total_order_amount : totalOrderAmount
+			total_order_amount: totalOrderAmount
 		});
 		const savedManualReviewRequestsModel = await manualReviewRequestsModel.save();
 		const lastInsertedId = savedManualReviewRequestsModel._id;
@@ -92,6 +119,8 @@ export async function action({ request }) {
 			);
 
 		}
+
+
 
 	} else if (topic == 'orders/partially_fulfilled' || topic == 'orders/fulfilled') {
 		await Promise.all(bodyObj.fulfillments.map(async (fulfillment) => {

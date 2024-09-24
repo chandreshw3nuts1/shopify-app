@@ -105,6 +105,7 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, generalA
     var bannerHtml = "";
     var logoHtml = "";
     var footerContent = "";
+    var discountTextContent = "";
 
     if (emailContents.banner != null && emailContents.banner != "" && generalAppearancesObj.enabledEmailBanner == true) {
         bannerHtml = ` <tr>
@@ -147,6 +148,14 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, generalA
             </td>
         </tr>`;
     }
+
+    if (emailContents.discountText){
+        discountTextContent = `<tr>
+            <td style="font-family:'${fontType}', sans-serif, Roboto, arial,tahoma,verdana;font-size:${fontSize};color:${emailTextColor}; white-space:pre-line">
+            ${emailContents.discountText}
+            </td>
+        </tr>`;
+    }
     const emailHtml = `<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -180,6 +189,7 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, generalA
                                                         ${emailContents.body}
                                                     </td>
                                                 </tr>
+                                                ${discountTextContent}
                                                 <tr>
                                                     <td style="padding-top: 24px;"></td>
                                                 </tr>

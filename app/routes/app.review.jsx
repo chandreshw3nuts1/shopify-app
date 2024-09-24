@@ -350,6 +350,34 @@ const ReviewPage = () => {
 											</div>
 										</div>
 
+										<div className='insiderowacc' onClick={() => showEmailSettingsForm("review-request-reminder")}>
+											<div className='titledetail flxflexi'>
+												<h6>Review request reminder</h6>
+												<p>Send a second review request to customers who did not submit a review yet
+												</p>
+											</div>
+											<div className='flxfix btnwrap m-0'>
+												<a href="#" className='revbtn'>Learn More</a>
+											</div>
+											<div className='flxfix arrowicon'>
+												<i className="twenty-longarrow-right"></i>
+											</div>
+										</div>
+
+										<div className='insiderowacc' onClick={() => showEmailSettingsForm("photo-video-reminder")}>
+											<div className='titledetail flxflexi'>
+												<h6>Photo/video reminder</h6>
+												<p>Remind customers who submitted a text review to add a photo/video
+												</p>
+											</div>
+											<div className='flxfix btnwrap m-0'>
+												<a href="#" className='revbtn'>Learn More</a>
+											</div>
+											<div className='flxfix arrowicon'>
+												<i className="twenty-longarrow-right"></i>
+											</div>
+										</div>
+
 										<div className='insiderowacc' onClick={() => showEmailSettingsForm("review-reply")}>
 											<div className='titledetail flxflexi'>
 												<h6>Reply to review</h6>
@@ -372,8 +400,19 @@ const ReviewPage = () => {
 											</div>
 										</div>
 
+										<div className='insiderowacc' onClick={() => showEmailSettingsForm("discount-photo-video-review-reminder")}>
+											<div className='titledetail flxflexi'>
+												<h6>Discount reminder for photo/video review</h6>
+												<p>Remind your customers to use their next-purchase discount if they haven't used it yet</p>
+											</div>
+
+											<div className='flxfix arrowicon'>
+												<i className="twenty-longarrow-right"></i>
+											</div>
+										</div>
+
 										{/* Above DIV will be repeat */}
-										<InformationAlert alertKey="email_review" alertType="email_appearance" pageSlug="/app/branding" className="mt-24" alertClose/>
+										<InformationAlert alertKey="email_review" alertType="email_appearance" colorTheme="primarybox mt-24" pageSlug="/app/branding" className="mt-24" alertClose/>
 
 									</div>
 								</Collapsible>

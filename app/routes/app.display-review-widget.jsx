@@ -49,9 +49,8 @@ export async function loader({ request }) {
         const snippetWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/snippet-widget`);
 
 
-
         const shopifyProduct = await getShopifyLatestProducts(shopRecords.shop);
-        const productName = (shopifyProduct.products) ? encodeURIComponent(`/products/${shopifyProduct.products[0]['handle']}`) : "/products";
+        const productName = (shopifyProduct.products.length > 0 ) ? encodeURIComponent(`/products/${shopifyProduct.products[0]['handle']}`) : "/products";
         const cartPreviewPath = encodeURIComponent("/cart");
 
         const productReviewWidgetUrl = `https://${shopRecords.shop}/admin/themes/current/editor?previewPath=${productName}&addAppBlockId=${productWidgetExtenstionId}&target=sectionId`;

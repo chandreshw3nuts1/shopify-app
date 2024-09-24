@@ -2,33 +2,19 @@ import { useLoaderData } from "@remix-run/react";
 import settingsJson from './../utils/settings.json';
 import React, { useState, useEffect, useRef } from 'react';
 
-import { getCustomQuestions } from './../utils/common';
-import StarBigIcon from "./components/icons/StarBigIcon";
 import LongArrowRight from "./components/icons/LongArrowRight";
-import LongArrowLeft from "./components/icons/LongArrowLeft";
 import AddImageIcon from "./components/icons/AddImageIcon";
 import ImageFilledIcon from "./components/icons/ImageFilledIcon";
-import CheckArrowIcon from "./components/icons/CheckArrowIcon";
 import DeleteIcon from "./components/icons/DeleteIcon";
 import RecordVideoIcon from "./components/icons/RecordVideoIcon";
-
-import FaceStar1 from "./components/images/FaceStar1";
-import FaceStar2 from "./components/images/FaceStar2";
-import FaceStar3 from "./components/images/FaceStar3";
-import FaceStar4 from "./components/images/FaceStar4";
-import FaceStar5 from "./components/images/FaceStar5";
 import shopDetails from "./models/shopDetails";
-import manualReviewRequests from './models/manualReviewRequests';
-import manualRequestProducts from './models/manualRequestProducts';
+import productReviews from './models/productReviews';
 import generalAppearances from './models/generalAppearances';
 import generalSettings from './models/generalSettings';
 import reviewFormSettings from './models/reviewFormSettings';
-
-
-import { ratingbabycloth, ratingbasket, ratingbones, ratingcoffeecup, ratingcrisamascap, ratingdiamondfront, ratingdiamondtop, ratingdogsleg, ratingfireflame, ratingflight, ratingfood, ratinggraduationcap, ratingheartround, ratingheartsq, ratingleafcanada, ratingleafnormal, ratinglikenormal, ratinglikerays, ratingpethouse, ratingplant, ratingshirt, ratingshoppingbag1, ratingshoppingbag2, ratingshoppingbag3, ratingstarrays, ratingstarrounded, ratingstarsq, ratingsunglass, ratingteacup, ratingtrophy1, ratingtrophy2, ratingtrophy3, ratingtshirt, ratingwine } from './../routes/components/icons/CommonIcons';
+import reviewDocuments from './models/reviewDocuments';
 import { getDiscounts } from "./../utils/common";
 import { Modal } from 'react-bootstrap';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
@@ -46,23 +32,13 @@ export const links = () => {
 
 export const loader = async ({ params, request }) => {
 	try {
-		const { requestId } = params;
-		const url = new URL(request.url);
-		const requestIdQuery = url.searchParams.get("requestId");
-		const manualRequestProductsModel = await manualRequestProducts.findById(requestId);
-
-		let manualReviewRequestsModel, shopRecords = null;
-		let customQuestionsData = [];
+		const { reviewId } = params;
+		const productReviewsModel = await productReviews.findById(reviewId);
+		let shopRecords = null;
 		let StarIcon = "";
-		let discountObj, translations, reviewFormSettingsModel, languageWiseReviewFormSettings, generalAppearancesModel, generalSettingsModel = {};
-		if (manualRequestProductsModel) {
-			manualReviewRequestsModel = await manualReviewRequests.findById(manualRequestProductsModel.manual_request_id);
-
-			shopRecords = await shopDetails.findById(manualReviewRequestsModel.shop_id);
-
-			customQuestionsData = await getCustomQuestions({
-				shop_id: shopRecords._id,
-			});
+		let discountObj, translations, reviewDocumentsModel, reviewFormSettingsModel, languageWiseReviewFormSettings, generalAppearancesModel, generalSettingsModel = {};
+		if (productReviewsModel) {
+			shopRecords = await shopDetails.findById(productReviewsModel.shop_id);
 
 			generalAppearancesModel = await generalAppearances.findOne({
 				shop_id: shopRecords._id
@@ -72,8 +48,8 @@ export const loader = async ({ params, request }) => {
 			discountObj = await getDiscounts(shopRecords, true);
 
 			generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
-
-			const language = settingsJson.languages.find(language => language.code === manualReviewRequestsModel.customer_locale);
+			reviewDocumentsModel = await reviewDocuments.find({ review_id: productReviewsModel._id });
+			const language = settingsJson.languages.find(language => language.code === productReviewsModel.customer_locale);
 
 			const customer_locale = language ? language.code : generalSettingsModel.defaul_language;
 			const apiUrl = `${settingsJson.host_url}/locales/${customer_locale}/translation.json`;
@@ -84,32 +60,21 @@ export const loader = async ({ params, request }) => {
 			reviewFormSettingsModel = await reviewFormSettings.findOne({ shop_id: shopRecords._id });
 			languageWiseReviewFormSettings = reviewFormSettingsModel[customer_locale] ? reviewFormSettingsModel[customer_locale] : {};
 		}
-		return { requestId, requestIdQuery, shopRecords, generalAppearancesModel, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon, discountObj, translations, reviewFormSettingsModel, languageWiseReviewFormSettings, generalSettingsModel };
+		return { reviewId, shopRecords, reviewDocumentsModel, productReviewsModel, generalAppearancesModel, StarIcon, discountObj, translations, reviewFormSettingsModel, languageWiseReviewFormSettings, generalSettingsModel };
 	} catch (error) {
 		console.log(error);
 	}
 	return {};
 };
 
-const ReviewRequestForm = () => {
-	const { requestId, requestIdQuery, shopRecords, generalAppearancesModel, customQuestionsData, manualRequestProductsModel, manualReviewRequestsModel, StarIcon, discountObj, translations, reviewFormSettingsModel, languageWiseReviewFormSettings, generalSettingsModel } = useLoaderData();
-	if (!manualRequestProductsModel) {
+const PhotoVideoReviewRequestForm = () => {
+	const { reviewId, shopRecords, reviewDocumentsModel, productReviewsModel, generalAppearancesModel, StarIcon, discountObj, translations, reviewFormSettingsModel, languageWiseReviewFormSettings, generalSettingsModel } = useLoaderData();
+	if (!productReviewsModel) {
 		return 'Page Not Found';
 	}
 
-	const [faceStartValue, setFaceStartValue] = useState("");
-	const [rating, setRating] = useState(0);
 	const [currentStep, setCurrentStep] = useState(0);
-	const [reviewDescription, setReviewDescription] = useState('');
-	const [customQuestionsDataObj, setCustomQuestionsDataObj] = useState(customQuestionsData);
-
-	const [firstName, setFirstName] = useState('');
-	const [lastName, setLastName] = useState('');
-
-	const [email, setEmail] = useState(manualReviewRequestsModel?.email || "");
-	const [errors, setErrors] = useState({});
-	const [disableSubmitBtn, setDisableSubmitBtn] = useState(false);
-
+	const [disableSubmitBtn, setDisableSubmitBtn] = useState(true);
 	const [files, setFiles] = useState([]);
 	const [previews, setPreviews] = useState([]);
 	const [noOFfileUploadErr, setNoOFfileUploadErr] = useState(false);
@@ -123,16 +88,15 @@ const ReviewRequestForm = () => {
 	const fileInputRef = useRef(null); // Create a ref for the file input
 
 	const shopUrl = "https://" + shopRecords.shop;
-	const countTotalQuestions = customQuestionsData.length;
 
 	useEffect(() => {
-		if (manualRequestProductsModel.status == 'sent') {
-			setCurrentStep(1);
+		if (reviewDocumentsModel.length > 0) {
+			setCurrentStep(2);
 		} else {
-			setCurrentStep(countTotalQuestions + 5);
+			setCurrentStep(1);
 		}
 
-		//setCurrentStep(2);
+
 	}, []);
 
 	useEffect(() => {
@@ -183,81 +147,6 @@ const ReviewRequestForm = () => {
 			return translations.reviewFormSettings[type];
 		}
 	}
-	const [faceStarLable, setFaceStarLable] = useState(languageContent('ratingPageSubTitle'));
-
-	const iconComponents = {
-		ratingbabycloth, ratingbasket, ratingbones, ratingcoffeecup, ratingcrisamascap, ratingdiamondfront, ratingdiamondtop, ratingdogsleg, ratingfireflame, ratingflight, ratingfood, ratinggraduationcap, ratingheartround, ratingheartsq, ratingleafcanada, ratingleafnormal, ratinglikenormal, ratinglikerays, ratingpethouse, ratingplant, ratingshirt, ratingshoppingbag1, ratingshoppingbag2, ratingshoppingbag3, ratingstarrays, ratingstarrounded, ratingstarsq, ratingsunglass, ratingteacup, ratingtrophy1, ratingtrophy2, ratingtrophy3, ratingtshirt, ratingwine
-	};
-
-	const IconComponent = iconComponents[StarIcon] || ratingstarrounded;
-
-	const starRatingObj = [
-		{ "star": 1, "title": languageContent('oneStarsRatingText') },
-		{ "star": 2, "title": languageContent('twoStarsRatingText') },
-		{ "star": 3, "title": languageContent('threeStarsRatingText') },
-		{ "star": 4, "title": languageContent('fourStarsRatingText') },
-		{ "star": 5, "title": languageContent('fiveStarsRatingText') },
-	];
-
-	const starClicks = async (index, star) => {
-		setFaceStartValue("star-" + star);
-		setFaceStarLable(starRatingObj[index].title);
-		setRating(star);
-	}
-	const nextStep = (step) => {
-		setCurrentStep(step);
-	};
-
-	const prevStep = (step) => {
-		setCurrentStep(step);
-	};
-
-	const changeReviewDescription = (event) => {
-		setReviewDescription(event.target.value);
-	}
-
-	const changeFirstName = (event) => {
-		setFirstName(event.target.value);
-	}
-	const changeLastName = (event) => {
-		setLastName(event.target.value);
-	}
-	const changeEmail = (event) => {
-		setEmail(event.target.value);
-	}
-
-	const answerChecked = (answer, index) => {
-		const newProperties = {
-			answer: answer,
-		};
-		setCustomQuestionsDataObj(customQuestionsDataObj.map((item, idx) =>
-			idx === index
-				? { ...item, ...newProperties }
-				: item
-		));
-	}
-
-	const validate = () => {
-		const errors = {};
-		errors.firstName = "";
-		if (!firstName.trim()) {
-			errors.firstName = 'First name is required';
-		}
-		errors.lastName = "";
-		if (!lastName.trim()) {
-			errors.lastName = 'Last name is required';
-		}
-		errors.email = "";
-		if (!email) {
-			errors.email = 'Email is required';
-		} else if (!/^[\w+-.]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(email)) {
-			errors.email = 'Email is invalid';
-		}
-		return errors;
-	};
-
-
-
 	const handleFileChange = async (event) => {
 		const selectedFiles = Array.from(event.target.files);
 		const totalFiles = files.length + selectedFiles.length;
@@ -328,7 +217,7 @@ const ReviewRequestForm = () => {
 			setPreviews(prevPreviews => [...prevPreviews, ...newPreviews]);
 			setIsLoadingMedia(false);
 			fileInputRef.current.value = '';
-
+			setDisableSubmitBtn(false);
 		}
 	};
 
@@ -347,6 +236,11 @@ const ReviewRequestForm = () => {
 			setUploadedDocuments(uploadedDocuments.filter((item, i) => i !== index));
 			setPreviews(previews.filter((item, i) => i !== index));
 			setFiles(files.filter((item, i) => i !== index));
+			if (uploadedDocuments.length == 1) {
+				setDisableSubmitBtn(true);
+			}
+			setNoOFfileUploadErr(false);
+
 		} catch (error) {
 			console.error('Error uploading file:', error);
 		}
@@ -354,44 +248,24 @@ const ReviewRequestForm = () => {
 
 
 	const submitReview = async () => {
-		const validationErrors = validate();
 
-		if (validationErrors.firstName == '' && validationErrors.lastName == '' && validationErrors.email == '') {
-			const formData = new FormData();
-			formData.append('first_name', firstName);
-			formData.append('last_name', lastName);
-			formData.append('email', email);
-			formData.append('shop_domain', shopRecords.shop);
-			formData.append('product_id', manualRequestProductsModel.product_id);
-			formData.append('variant_title', manualRequestProductsModel.variant_title ?? '');
-			formData.append('rating', rating);
-			formData.append('file_objects', uploadedDocuments);
-			formData.append('description', reviewDescription);
-			formData.append('requestId', requestId);
-			formData.append('customer_locale', manualReviewRequestsModel?.customer_locale);
+		const formData = new FormData();
+		formData.append('shop_domain', shopRecords.shop);
+		formData.append('product_id', productReviewsModel.product_id);
+		formData.append('file_objects', uploadedDocuments);
+		formData.append('reviewId', reviewId);
+		formData.append('actionType', "addPhotoVideo");
 
-
-			customQuestionsDataObj.forEach((item, index) => {
-				if (item.answer != "" && typeof item.answer != 'undefined') {
-					formData.append(`questions[${index}][question_id]`, item._id);
-					formData.append(`questions[${index}][answer]`, item.answer);
-					formData.append(`questions[${index}][question_name]`, item.question);
-				}
-			});
-			setDisableSubmitBtn(true);
-			const response = await fetch('/api/product-review-widget', {
-				method: 'POST',
-				body: formData,
-			});
-			const submitResponse = await response.json();
-			if (submitResponse.success) {
-				setThankyouHtmlContent(submitResponse.content);
-			}
-			setCurrentStep(countTotalQuestions + 5);
-		} else {
-			setErrors(validationErrors);
+		setDisableSubmitBtn(true);
+		const response = await fetch('/api/product-review-widget', {
+			method: 'POST',
+			body: formData,
+		});
+		const submitResponse = await response.json();
+		if (submitResponse.success) {
+			setThankyouHtmlContent(submitResponse.content);
 		}
-
+		setCurrentStep(2);
 	}
 	let discountHtml = "";
 	if (discountObj && Object.keys(discountObj).length > 0) {
@@ -415,7 +289,6 @@ const ReviewRequestForm = () => {
 
 	// record video 
 	const [showRecordVideoModal, setShowRecordVideoModal] = useState(false);
-	const [mediaRecorder, setMediaRecorder] = useState(null);
 	const [isRecording, setIsRecording] = useState(false);
 	const [videoURL, setVideoURL] = useState(null);
 	const [recordedBlob, setRecordedBlob] = useState(null);
@@ -500,6 +373,7 @@ const ReviewRequestForm = () => {
 			setShowRecordVideoModal(false);
 			setSubmitRecLoader(false);
 			setRecordedBlob(null);
+			setDisableSubmitBtn(false);
 
 		} catch (error) {
 			console.error('Upload failed:', error);
@@ -522,12 +396,7 @@ const ReviewRequestForm = () => {
 			videoRef.current.src = null;
 			videoRef.current.controls = false;
 		}
-
-
 	}
-
-
-
 
 	return (
 		<>
@@ -546,58 +415,6 @@ const ReviewRequestForm = () => {
 				<div className="modal_step_wrap">
 					<form method="post" className="popupform" id="review_submit_btn_form">
 						{currentStep == 1 &&
-							<div className="reviewsteps step-1">
-								<div className="modal-header">
-									<div className="flxflexi">
-										<h1 className="modal-title">{languageContent('ratingPageTitle')}</h1>
-										<div className="subtextbox">
-											<div className="success-box-wrap">
-												<div className={`success-box ${faceStartValue}`}>
-													<div className="facewrap">
-														<div className="facebox facestar1"><FaceStar1 /></div>
-														<div className="facebox facestar2"><FaceStar2 /></div>
-														<div className="facebox facestar3"><FaceStar3 /></div>
-														<div className="facebox facestar4"><FaceStar4 /></div>
-														<div className="facebox facestar5"><FaceStar5 /></div>
-													</div>
-													<div className='text-message'>{faceStarLable}</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div className="modal-body">
-									<div className="form-group ratingformgroup">
-										<div className='rating-stars text-center'>
-											<ul id='stars' className={faceStartValue}>
-												{starRatingObj.map((star, sIndex) => (
-													<li
-														key={sIndex}
-														onClick={() => starClicks(sIndex, star.star)}
-														className={`star ${star.star <= rating ? 'selected' : ''}`}
-														title={star.title}
-														data-value={star.star}
-													>
-														{IconComponent ? <IconComponent /> : <StarBigIcon />}
-
-													</li>
-												))}
-												<input type='hidden' id='review_rating' name='rating' value={rating} />
-											</ul>
-
-										</div>
-									</div>
-								</div>
-								<div className="modal-footer">
-
-									<button onClick={(e) => nextStep(2)} disabled={rating == 0 ? true : false} type="button" className="revbtn outline lightbtn nextbtn">{translations.next_link} <LongArrowRight /></button>
-
-								</div>
-							</div>
-						}
-
-
-						{currentStep == 2 &&
 							<div className="reviewsteps step-2 ">
 								<div className="modal-header">
 									<div className="flxflexi">
@@ -634,9 +451,6 @@ const ReviewRequestForm = () => {
 															</div>
 														</span>
 													)}
-
-
-
 
 												</div>
 												<input ref={fileInputRef} onChange={handleFileChange} className="form__file" name="image_and_videos[]" id="upload-files" type="file" accept={generalSettingsModel.is_enabled_video_review ? 'image/*,video/mp4,video/x-m4v,video/*' : 'image/*'} multiple="multiple" />
@@ -689,141 +503,18 @@ const ReviewRequestForm = () => {
 									</div>
 								</div>
 								<div className="modal-footer">
-									<a onClick={(e) => prevStep(1)} className="revbtn outline lightbtn backbtn"><LongArrowLeft /> {translations.back_link}</a>
-									<a onClick={(e) => nextStep(3)} className="revbtn outline lightbtn nextbtn">{translations.next_link} <LongArrowRight /></a>
-								</div>
-							</div>
-						}
-
-
-						{customQuestionsDataObj.map((customQuestionItem, qIndex) => (
-							currentStep === qIndex + 3 && (
-
-								<div className={`reviewsteps step-${qIndex + 3} `} key={qIndex}>
-									<div className="modal-header">
-										<div className="flxflexi">
-											<h1 className="modal-title">{languageContent('questionTitle')}</h1>
-											<div className="subtextbox">{languageContent('questionSubTitle')}</div>
-										</div>
-									</div>
-									<div className="modal-body">
-										<div className="popupquestionswrap">
-											<h4>{customQuestionItem.question}</h4>
-											<input type="hidden" name={"questions[" + qIndex + "][question_id]"} value={customQuestionItem._id} />
-											<input type="hidden" name={"questions[" + qIndex + "][question_name]"} value={customQuestionItem.question} />
-											<div className="answers_wrap">
-												{customQuestionItem.answers.map((answerItems, aIndex) =>
-													<div className="anserbox" key={aIndex} >
-														<input type="radio" checked={customQuestionItem.answer == answerItems.val ? "checked" : ""} onChange={(e) => answerChecked(answerItems.val, qIndex)} className="check-answer" id={"answer" + qIndex + "_" + aIndex} value={answerItems.val} name={"questions[" + qIndex + "][answer]"} />
-														<label htmlFor={"answer" + qIndex + "_" + aIndex} >
-															<strong>{answerItems.val}</strong>
-															<span className="flxfix"><CheckArrowIcon /></span>
-														</label>
-													</div>
-												)}
-
-											</div>
-										</div>
-									</div>
-									<div className="modal-footer">
-										<a onClick={(e) => prevStep(2 + qIndex)} className="revbtn outline lightbtn backbtn"><LongArrowLeft /> {translations.back_link}</a>
-										{(customQuestionItem.isMakeRequireQuestion == false || customQuestionItem.answer) &&
-											<a onClick={(e) => nextStep(qIndex + 4)} className={`revbtn outline lightbtn nextbtn ${customQuestionItem.isMakeRequireQuestion ? '' : ''}`} >{translations.next_link} <LongArrowRight /></a>
-										}
-									</div>
-								</div>
-							)
-						))}
-
-						{currentStep == (countTotalQuestions + 3) &&
-							<div className={`reviewsteps step-${countTotalQuestions + 3} `}>
-								<div className="modal-header">
-									<div className="flxflexi">
-										<h1 className="modal-title">{languageContent('reviewTextPageTitle')}</h1>
-										<div className="subtextbox">{languageContent('reviewTextPageSubTitle')}</div>
-									</div>
-								</div>
-								<div className="modal-body">
-									<div className="tellusmorepopup_wrap">
-										<div className="form-group">
-											<textarea
-												onChange={changeReviewDescription}
-												className="form-control review-description"
-												name="description"
-												placeholder={languageContent('reviewTextPagePlaceholder')}
-												value={reviewDescription}
-											></textarea>
-
-										</div>
-
-									</div>
-								</div>
-								<div className="modal-footer">
-									<a onClick={(e) => prevStep(countTotalQuestions + 2)} className="revbtn outline lightbtn backbtn"><LongArrowLeft /> {translations.back_link}</a>
-
-									<button onClick={(e) => nextStep(countTotalQuestions + 4)} disabled={reviewDescription ? false : true} type="button" className="revbtn outline lightbtn nextbtn">{translations.next_link} <LongArrowRight /></button>
+									<button onClick={submitReview} disabled={disableSubmitBtn} type="button" className="revbtn  submitBtn nextbtn">{languageContent('submitButtonTitle')} <LongArrowRight /></button>
 
 								</div>
 							</div>
 						}
-						{currentStep == (countTotalQuestions + 4) &&
-							<div className={`reviewsteps step-${countTotalQuestions + 4}`}>
-								<div className="modal-header">
-									<div className="flxflexi">
-										<h1 className="modal-title">{languageContent('reviewFormTitle')}</h1>
-										<div className="subtextbox">{languageContent('reviewFormSubTitle')}</div>
-									</div>
-								</div>
-								<div className="modal-body">
-									<div className="tellmeaboutyou_wrap">
-										<div className="row">
-											<div className="col-lg-6">
-												<div className="form-group">
 
-													<label htmlFor="">{translations.first_name}<span className="text-danger" >*</span> </label>
-													<input type="text" onChange={changeFirstName} className="form-control" name="first_name" id="first_name" placeholder={translations.first_name_placeholder} value={firstName} />
-
-													{errors.firstName && <div className="error text-danger">{errors.firstName}</div>}
-
-												</div>
-											</div>
-											<div className="col-lg-6">
-												<div className="form-group">
-													<label htmlFor="">{translations.last_name} <span className="text-danger" >*</span></label>
-													<input type="text" onChange={changeLastName} className="form-control" name="last_name" id="last_name" placeholder={translations.last_name_placeholder} value={lastName} />
-													{errors.lastName && <div className="error text-danger">{errors.lastName}</div>}
-
-
-												</div>
-											</div>
-											<div className="col-lg-12">
-												<div className="form-group">
-													<label htmlFor="">{translations.email_address} <span className="text-danger" >*</span></label>
-													<input type="email" readOnly onChange={changeEmail} className="form-control" name="email" id="emailfield" placeholder={translations.email_address_placeholder} value={email} />
-													{errors.email && <div className="error text-danger">{errors.email}</div>}
-
-												</div>
-											</div>
-											<div className="col-lg-12">
-												<div className="formnote" dangerouslySetInnerHTML={{ __html: termsAndConditionHtml }}>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div className="modal-footer">
-									<a onClick={(e) => prevStep(countTotalQuestions + 3)} className="revbtn lightbtn outline backbtn"><LongArrowLeft /> {translations.back_link}</a>
-									<button onClick={submitReview} disabled={disableSubmitBtn} type="button" className="revbtn submitBtn">{languageContent('submitButtonTitle')} <LongArrowRight /></button>
-								</div>
-							</div>
-						}
-
-						{(currentStep == (countTotalQuestions + 5)) &&
+						{(currentStep == 2) &&
 							<>
 								{thankyouHtmlContent ? (
 									<div className="reviewsteps" dangerouslySetInnerHTML={{ __html: thankyouHtmlContent }} />
 								) : (
-									<div className={`reviewsteps step-${countTotalQuestions + 5}  thankyou-page`}>
+									<div className={`reviewsteps step-2  thankyou-page`}>
 										<div className="modal-header">
 											<div className="flxflexi">
 												<h1 className="modal-title">{languageContent('thankyouTitle')}</h1>
@@ -880,4 +571,4 @@ const ReviewRequestForm = () => {
 	);
 };
 
-export default ReviewRequestForm;
+export default PhotoVideoReviewRequestForm;

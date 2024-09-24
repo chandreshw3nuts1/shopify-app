@@ -9,6 +9,10 @@ import reviewDiscountSettings from './../routes/models/reviewDiscountSettings';
 import sidebarReviewWidgetCustomizes from './../routes/models/sidebarReviewWidgetCustomizes';
 import reviewFormSettings from './../routes/models/reviewFormSettings';
 import floatingWidgetCustomizes from './../routes/models/floatingWidgetCustomizes';
+import emailPhotovideoReminderSettings from './../routes/models/emailPhotovideoReminderSettings';
+import emailDiscountPhotoVideoReviewReminderSettings from './../routes/models/emailDiscountPhotoVideoReviewReminderSettings';
+import emailReviewRequestReminderSettings from './../routes/models/emailReviewRequestReminderSettings';
+import popupModalWidgetCustomizes from './../routes/models/popupModalWidgetCustomizes';
 
 import settingsJson from './../utils/settings.json';
 
@@ -176,6 +180,13 @@ export async function storeShopDetails(session) {
 				{
 					$setOnInsert: {
 						shop_id: shopRecords._id,
+						sameDiscountType: settingsJson.shopifyDiscount.sameDiscountType,
+						sameDiscountValue: settingsJson.shopifyDiscount.sameDiscountValue,
+						differentDiscountPhotoType: settingsJson.shopifyDiscount.differentDiscountPhotoType,
+						differentDiscountPhotoValue: settingsJson.shopifyDiscount.differentDiscountPhotoValue,
+						differentDiscountVideoType: settingsJson.shopifyDiscount.differentDiscountVideoType,
+						differentDiscountVideoValue: settingsJson.shopifyDiscount.differentDiscountVideoValue
+
 					}
 				},
 				{ upsert: true }
@@ -224,6 +235,48 @@ export async function storeShopDetails(session) {
 				{ upsert: true }
 			);
 
+
+			await emailPhotovideoReminderSettings.updateOne(
+				{ shop_id: shopRecords._id },
+				{
+					$setOnInsert: {
+						shop_id: shopRecords._id,
+					}
+				},
+				{ upsert: true }
+			);
+
+			await emailDiscountPhotoVideoReviewReminderSettings.updateOne(
+				{ shop_id: shopRecords._id },
+				{
+					$setOnInsert: {
+						shop_id: shopRecords._id,
+					}
+				},
+				{ upsert: true }
+			);
+
+			await emailReviewRequestReminderSettings.updateOne(
+				{ shop_id: shopRecords._id },
+				{
+					$setOnInsert: {
+						shop_id: shopRecords._id,
+					}
+				},
+				{ upsert: true }
+			);
+
+			await popupModalWidgetCustomizes.updateOne(
+				{ shop_id: shopRecords._id },
+				{
+					$setOnInsert: {
+						shop_id: shopRecords._id,
+					}
+				},
+				{ upsert: true }
+			);
+
+			
 			/* add install app log */
 			const appInstallLogsModel = new appInstallLogs({
 

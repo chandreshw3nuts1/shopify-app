@@ -59,35 +59,36 @@ export async function action({ params, request }) {
                     }
                     emailContents.footerContent = footerContent;
                     emailContents.email_footer_enabled = generalSettingsModel.email_footer_enabled;
-                    
-                    
+
+
                     const updateEmailsAndSendRequests = async () => {
                         const emailPromises = emails.map(async (email, index) => {
                             var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
                                 <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} />
                             );
-                            const query = { email: email };
+                            const query = {
+                                shop_id: shopRecords._id,
+                                email: email,
+                                $or: [{ order_id: { $exists: false } }, { order_id: "" }]  // Check if order_id doesn't exist or is an empty string
+                            };
                             const update = {
                                 $set: {
                                     email: email,
                                     shop_id: shopRecords._id,
+                                    request_status : "sent"
                                 }
                             };
                             const options = { upsert: true, returnOriginal: false };
                             const manualRequestModel = await manualReviewRequests.findOneAndUpdate(query, update, options);
-
                             await Promise.all(selectedProducts.map(async (product, index) => {
 
-                                const query = { manual_request_id: manualRequestModel._id, product_id: product };
-                                const update = {
-                                    $set: {
-                                        manual_request_id: manualRequestModel._id,
-                                        product_id: product,
-                                        status: "sent"
-                                    }
-                                };
-                                const options = { upsert: true, returnOriginal: false };
-                                const requestProductsModel = await manualRequestProducts.findOneAndUpdate(query, update, options);
+                                const productReviewModel = new manualRequestProducts({
+                                    manual_request_id: manualRequestModel._id,
+                                    product_id: product,
+                                    status: "sent"
+                                });
+                                const requestProductsModel = await productReviewModel.save();
+
                                 const lastInsertedId = requestProductsModel._id;
 
                                 const reviewLink = `${settingJson.host_url}/review-request/${lastInsertedId}/review-form`;
@@ -98,7 +99,7 @@ export async function action({ params, request }) {
                             }));
 
                             /* create unscubscribe link*/
-                            const unsubscribeData = { 
+                            const unsubscribeData = {
                                 "shop_id": shopRecords.shop_id,
                                 "email": email,
                             }

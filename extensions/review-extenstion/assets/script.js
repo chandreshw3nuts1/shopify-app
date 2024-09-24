@@ -58,19 +58,6 @@ if (typeof jQuery !== 'undefined') {
             jQuery(parentDiv).find(".nextbtn").removeAttr('disabled');
         });
 
-
-        // let starLink = jQuery('.rating-stars ul > li.star');
-        // jQuery(starLink).each(function(){
-        //     alert('dsads');
-        //     jQuery(this).on('click', function(){
-        //         let parentDiv = jQuery(this).parents('.reviewsteps');
-        //         console.log(parentDiv);
-        //         jQuery(parentDiv).removeClass('activestep');
-        //         jQuery(parentDiv).addClass('d-none');
-        //         jQuery(parentDiv).next().removeClass('d-none');
-        //     });
-        // });
-
         let popNextBtn = jQuery('.modal .reviewsteps .nextbtn');
         let popBackBtn = jQuery('.modal .reviewsteps .backbtn');
 
@@ -108,7 +95,7 @@ if (typeof jQuery !== 'undefined') {
 
                     var content = '<div class="listbox"><div class="form__image-container js-remove-image" data-index="' + index + '">';
                     if (addedFile.type.match("video/")) {
-                        content += '<video><source src="' + addedFile.url + '" type="video/mp4"></video>';
+                        content += '<video controls><source src="' + addedFile.url + '" type="video/mp4"></video>';
                     } else {
                         content += '<img class="form__image" src="' + addedFile.url + '" alt="' + addedFile.name + '">';
                     }
@@ -497,6 +484,13 @@ if (typeof jQuery !== 'undefined') {
     }
     $(document).on("click", "#show_create_review_modal", function (e) {
         e.preventDefault();
+        var $this = $(this);
+
+        if ($this.data('requestRunning')) {
+            return;
+        }
+        $this.data('requestRunning', true);
+
         $.ajax({
             type: 'POST',
             url: `/apps/w3-proxy/widget`,
@@ -524,6 +518,9 @@ if (typeof jQuery !== 'undefined') {
             error: function (xhr, status, error) {
                 // Handle errors
                 console.error(xhr.responseText);
+            },
+            complete: function() {
+                $this.data('requestRunning', false);
             }
         });
 

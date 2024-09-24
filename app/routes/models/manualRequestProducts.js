@@ -11,6 +11,7 @@ const manualRequestProductsSchema = new mongoose.Schema({
     line_item_id: {type: String },
     variant_title: {type: String },
     status: {type: String, required: true },
+    is_reminder_sent: {type: Boolean, default: false},
     tracking_number: {type: String},
     fulfillment_date: {type: Date },
     delivered_date: {type: Date }

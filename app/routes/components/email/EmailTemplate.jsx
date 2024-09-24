@@ -141,7 +141,7 @@ const EmailTemplate = ({ emailContents }) => {
                                                 </tr>
                                                 <tr>
                                                     <td align="center" style="font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana;text-align:center;font-size:16px;color:#222222; font-weight: 600;">
-                                                        From ${emailContents.first_name} ${emailContents.first_name} (<strong>${emailContents.email}</strong>)
+                                                        From ${emailContents.first_name} ${emailContents.last_name} (<strong>${emailContents.email}</strong>)
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -153,7 +153,7 @@ const EmailTemplate = ({ emailContents }) => {
                                                     <td style="padding: 20px;">
                                                         <table cellpadding="0" cellspacing="0" border="0" width="100%">
                                                             <tr>
-                                                                <td style="font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana;font-size:16px;color:#222222; font-weight: 600;">${emailContents.first_name} ${emailContents.first_name} </td>
+                                                                <td style="font-family:'Manrope', sans-serif, Roboto, arial,tahoma,verdana;font-size:16px;color:#222222; font-weight: 600;">${emailContents.first_name} ${emailContents.last_name} </td>
                                                             </tr>
                                                             <tr>
                                                                 <td style="padding-top: 8px;"></td>

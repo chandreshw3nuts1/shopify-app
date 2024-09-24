@@ -3,15 +3,21 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from '@remix-run/react';
 import LanguageSelector from "./components/language-selector";
 import ReviewRequest from './components/emailsComponents/ReviewRequest';
+import ReviewRequestReminder from './components/emailsComponents/ReviewRequestReminder';
+import DiscountPhotoVideoReviewReminder from './components/emailsComponents/DiscountPhotoVideoReviewReminder';
 import ReviewReply from './components/emailsComponents/ReviewReply';
 import DiscountPhotoVideoReview from './components/emailsComponents/DiscountPhotoVideoReview';
+import PhotoVideoReminder from './components/emailsComponents/PhotoVideoReminder';
 
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from './components/Breadcrumb';
 import { getShopDetails } from './../utils/getShopDetails';
 import emailReviewRequestSettings from './models/emailReviewRequestSettings';
+import emailReviewRequestReminderSettings from './models/emailReviewRequestReminderSettings';
 import emailReviewReplySettings from './models/emailReviewReplySettings';
+import emailPhotovideoReminderSettings from './models/emailPhotovideoReminderSettings';
 import emailDiscountPhotoVideoReviewSettings from './models/emailDiscountPhotoVideoReviewSettings';
+import emailDiscountPhotoVideoReviewReminderSettings from './models/emailDiscountPhotoVideoReviewReminderSettings';
 import generalAppearances from './models/generalAppearances';
 import generalSettings from './models/generalSettings';
 import { useTranslation } from "react-i18next";
@@ -42,7 +48,22 @@ export const loader = async ({ request, params }) => {
 			JsonData['emailTemplateObj'] = await emailDiscountPhotoVideoReviewSettings.findOne({
 				shop_id: shopRecords._id,
 			});
+			break;
 
+		case 'review-request-reminder':
+			JsonData['emailTemplateObj'] = await emailReviewRequestReminderSettings.findOne({
+				shop_id: shopRecords._id,
+			});
+			break;
+		case 'photo-video-reminder':
+			JsonData['emailTemplateObj'] = await emailPhotovideoReminderSettings.findOne({
+				shop_id: shopRecords._id,
+			});
+			break;
+		case 'discount-photo-video-review-reminder':
+			JsonData['emailTemplateObj'] = await emailDiscountPhotoVideoReviewReminderSettings.findOne({
+				shop_id: shopRecords._id,
+			});
 			break;
 		default:
 			content = <h4>404 - Page Not Found</h4>;
@@ -82,14 +103,28 @@ export default function EmailTemplateSettings() {
 			emailTemplateName = "Review request"
 			break;
 		case 'review-reply':
-			content = <ReviewReply shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} generalSettingsModel={generalSettingsModel}  />;
+			content = <ReviewReply shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} generalSettingsModel={generalSettingsModel} />;
 			emailTemplateName = "Reply to review"
 
 			break;
 		case 'discount-photo-video-review':
-			content = <DiscountPhotoVideoReview shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} generalSettingsModel={generalSettingsModel}  />;
+			content = <DiscountPhotoVideoReview shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} generalSettingsModel={generalSettingsModel} />;
 			emailTemplateName = "Discount for photo/video review"
 
+			break;
+		case 'review-request-reminder':
+			content = <ReviewRequestReminder shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} generalSettingsModel={generalSettingsModel} />;
+			emailTemplateName = "Review request reminder"
+
+			break;
+		case 'photo-video-reminder':
+			content = <PhotoVideoReminder shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} generalSettingsModel={generalSettingsModel} />;
+			emailTemplateName = "Photo/video reminder"
+
+			break;
+		case 'discount-photo-video-review-reminder':
+			content = <DiscountPhotoVideoReviewReminder shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} generalSettingsModel={generalSettingsModel} />;
+			emailTemplateName = "Discount reminder for photo/video review"
 			break;
 		default:
 			content = <h4>404 - Page Not Found</h4>;

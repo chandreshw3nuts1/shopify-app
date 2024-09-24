@@ -86,5 +86,21 @@
         "continueButtonTitle": "Continue",
         "uploadingFiles" : "Uploading media...",
         "uploadMediaSizeError" : "Videos are limited to 250 MB. Please upload a smaller video."
+    },
+    "reviewRequestReminderEmail": {
+        "subject": "Reminder: Order [order_number], how did it go?",
+        "body": "Hello [name], \n \nWe would be grateful if you shared how things look and feel. Your review helps us and the community that supports us, and it only takes a few seconds.",
+        "buttonText": "Write a review"
+    },
+    "photoVideoReminderEmail": {
+        "subject": "Reminder: Add a photo or a video to your review of [product]",
+        "body": "Hello [name], \n \nWe wanted to thank you again for your review of [product].\nPlease add your photo or video to the review and help our community of shoppers!",
+        "discountText": "Add a photo or a video to the review and get a discount off your next purchase",
+        "buttonText": "Add photo or video"
+    },
+    "discountPhotoVideoReviewReminderEmail": {
+        "subject": "Reminder: Your discount code at [store]",
+        "body": "Hello [name],\n\nThank you for sharing your experience!\n\nUse the following discount code for [discount] off your next purchase at [store]",
+        "buttonText": "Shop now"
     }
 }
