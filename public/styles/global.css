@@ -259,7 +259,7 @@ body .form-group.has-date-value .react-date-picker__calendar-button { display: n
 .reviewbunch .reviewrowbox .imagebox::before { content: ''; display: block; padding-top: 100%; margin: 0 15px 0 0;}
 /* .reviewbunch .reviewrowbox .slider_imagebox img { width: 100%; height: 100%; position: absolute; left: 0; top: 0; object-fit: cover;} */
 .reviewbunch .reviewrowbox .rightinfo { margin: 0; padding: 0 20px 0 0;}
-.reviewbunch .reviewrowbox .rightinfo .topbadges { margin: 0 0 14px 0; display: flex; flex-wrap: wrap; column-gap: 12px;}
+.reviewbunch .reviewrowbox .rightinfo .topbadges { margin: 0 0 14px 0; display: flex; flex-wrap: wrap; column-gap: 6px;}
 .reviewbunch .reviewrowbox .rightinfo .titlebox { width: 100%; display: flex; align-items: flex-start;}
 .reviewbunch .reviewrowbox .rightinfo .checkmark { margin: 0 10px 0 0; display: flex; width: 24px; height: 24px; color: var(--whiteText); background: var(--blueColor); align-items: center; justify-content: center; font-size: 22px; border-radius: 50px;}
 .reviewbunch .reviewrowbox .rightinfo .checkmark.unpublish { background: var(--lightGreyColor);}
