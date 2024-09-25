@@ -212,10 +212,6 @@ $(document).on("click", ".common_widget_review_item", function () {
 
 $(document).ready(function () {
 
-
-
-
-
     $(document).on('click', '.carousel-inner .mainVideoPlayButton', function () {
         const video = $(this).closest('.videowrap').find('.mainVideoPlayer')[0];
 
