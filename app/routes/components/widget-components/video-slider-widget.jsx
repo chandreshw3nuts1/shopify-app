@@ -1,9 +1,7 @@
 import { getUploadDocument } from './../../../utils/documentPath';
 import VideoPlayIcon from '../icons/VideoPlayIcon';
 import StarBigIcon from '../icons/StarBigIcon';
-import PlayNewIcon from '../icons/PlayNewIcon';
 import PauseNewIcon from '../icons/PauseNewIcon';
-import MutedNewIcon from '../icons/MutedNewIcon';
 import UnmutedNewIcon from '../icons/UnmutedNewIcon';
 import { reviewersNameFormat } from './../../../utils/dateFormat';
 import ReviewVerifyIcon from '../icons/ReviewVerifyIcon';
@@ -69,7 +67,7 @@ const VideoSliderWidget = (props) => {
                                                 </div>
                                             </div>
                                             <div className='mainbtnplay'>
-                                                <button class="play-pause">
+                                                <button className="play-pause">
                                                     <VideoPlayIcon />
                                                 </button>
                                             </div>
@@ -81,7 +79,7 @@ const VideoSliderWidget = (props) => {
                                     <div className='bottom_meta'>
                                         <div className='nameandverifywrap'>
                                             {props.formParams.show_name == "true" &&
-                                                <div class="reviewer_name">{reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}</div>
+                                                <div className="reviewer_name">{reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}</div>
                                             }
                                             {review.verify_badge &&
                                                 <div className='verifiedreview'>

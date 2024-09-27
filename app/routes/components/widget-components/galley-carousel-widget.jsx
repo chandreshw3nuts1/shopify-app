@@ -52,7 +52,7 @@ const GalleyCarouselWidget = (props) => {
                                             <img style={{ width: '100%' }} src={getUploadDocument(review.reviewDocuments.thumbnail_name, props.shopRecords.shop_id)} />
 
                                             <div className='mainbtnplay'>
-                                                <button class="play-pausess">
+                                                <button className="play-pausess">
                                                     <VideoPlayIcon />
                                                 </button>
                                             </div>
@@ -62,7 +62,7 @@ const GalleyCarouselWidget = (props) => {
 
                                     <div className='bottom_meta'>
                                         <div className='nameandverifywrap'>
-                                            <div class="reviewer_name">{reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}</div>
+                                            <div className="reviewer_name">{reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}</div>
                                             {review.verify_badge &&
                                                 <div className='verifiedreview'>
                                                     <ReviewVerifyIcon />

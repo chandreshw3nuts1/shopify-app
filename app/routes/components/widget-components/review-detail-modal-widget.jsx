@@ -33,7 +33,7 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
 
                                             <div className="carousel-indicators">
                                                 {reviewDetails.reviewDocuments.map((media, i) => (
-                                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to={i} className={i == 0 ? "active" : ""} aria-current={i == 0 ? "true" : ""} aria-label="Slide 1">
+                                                    <button key={i} type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to={i} className={i == 0 ? "active" : ""} aria-current={i == 0 ? "true" : ""} aria-label="Slide 1">
                                                         {media.type === 'image' ? (
                                                             <Image src={getUploadDocument(media.url, shopRecords.shop_id)} alt="" />
                                                         ) : (

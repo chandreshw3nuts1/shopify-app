@@ -173,7 +173,7 @@ const ProductReviewWidget = ({ shopRecords, reviewItems, formParams, generalAppe
 											<div className="processbar"><div className="activebar" style={{ width: `${one_start_percent}%` }}></div></div>
 											<div className="reviewgiven">({one_start_count})</div>
 										</div>
-										<input type="hidden" id="ratting_wise_filter" value={formParams.filterByRatting} />
+										<input type="hidden" id="ratting_wise_filter" value={isNaN(formParams.filterByRatting) ? "" : formParams.filterByRatting} />
 									</div>
 								}
 								{minimalHeader &&

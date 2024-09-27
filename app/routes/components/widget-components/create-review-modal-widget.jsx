@@ -351,7 +351,7 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                     <div className="recordvideo_wrap">
                                         <div className="form-group">
                                             <div className="recvideobox">
-                                                <video id="record_video_el" autoplay="true"></video>
+                                                <video id="record_video_el" autoPlay={true}></video>
                                             </div>
                                             <div className="btnwrap justify-content-center">
                                                 <button type="button" className="revbtn" id="stopVideoRecording" >{translations.stopRecordingBtnText}</button>

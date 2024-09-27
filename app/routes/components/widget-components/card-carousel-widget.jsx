@@ -68,7 +68,7 @@ const CardCarouselWidget = (props) => {
                                             <img style={{ width: '100%' }} src={getUploadDocument(review.reviewDocuments.thumbnail_name, props.shopRecords.shop_id)} />
 
                                             <div className='mainbtnplay'>
-                                                <button class="play-pausess">
+                                                <button className="play-pausess">
                                                     <VideoPlayIcon />
                                                 </button>
                                             </div>
@@ -85,14 +85,14 @@ const CardCarouselWidget = (props) => {
                                             </div>
                                         </div>
                                         <div className='nameandverifywrap'>
-                                            <div class="reviewer_name">{reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}</div>
+                                            <div className="reviewer_name">{reviewersNameFormat(review.first_name, review.last_name, props.shopRecords.reviewers_name_format)}</div>
                                             {review.verify_badge &&
                                                 <div className='verifiedreview'>
                                                     <ReviewVerifyIcon />
                                                 </div>
                                             }    
                                         </div>
-                                        <div class="review_description">{displayNoOfCharacters(props.formParams.no_of_chars, review.description)}</div>
+                                        <div className="review_description">{displayNoOfCharacters(props.formParams.no_of_chars, review.description)}</div>
 
                                         
                                     </div>

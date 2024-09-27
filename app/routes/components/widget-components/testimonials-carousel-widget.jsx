@@ -84,7 +84,7 @@ const TestimonialsCarouselWidget = (props) => {
                 <div className="w3-testimonial-slider-wrapper">
                     <div className="owl-carousel">
                         {props.reviewItems.map((review, i) => (
-                            <div className="itemwrap widget_w3grid-review-item" data-reviewid={review._id}>
+                            <div key={i} className="itemwrap widget_w3grid-review-item" data-reviewid={review._id}>
                                 <div className="quote_class">
                                     {QuoteMarksIconComponent && <QuoteMarksIconComponent />}
                                 </div>

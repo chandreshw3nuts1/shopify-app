@@ -103,31 +103,38 @@ export async function action({ request }) {
 
 
         if (actionType == "openModal") {
-            const customQuestionsData = await getCustomQuestions({
-                shop_id: shopRecords._id,
-            });
+            try {
+                const customQuestionsData = await getCustomQuestions({
+                    shop_id: shopRecords._id,
+                });
 
 
 
-            const reviewFormSettingsModel = await reviewFormSettings.findOne({ shop_id: shopRecords._id });
-            if (reviewFormSettingsModel) {
-                const languageWiseReviewFormSettings = reviewFormSettingsModel[customer_locale] ? reviewFormSettingsModel[customer_locale] : {};
-                otherProps['reviewFormSettingsModel'] = reviewFormSettingsModel;
-                otherProps['languageWiseReviewFormSettings'] = languageWiseReviewFormSettings;
+                const reviewFormSettingsModel = await reviewFormSettings.findOne({ shop_id: shopRecords._id });
+                if (reviewFormSettingsModel) {
+                    const languageWiseReviewFormSettings = reviewFormSettingsModel[customer_locale] ? reviewFormSettingsModel[customer_locale] : {};
+                    otherProps['reviewFormSettingsModel'] = reviewFormSettingsModel;
+                    otherProps['languageWiseReviewFormSettings'] = languageWiseReviewFormSettings;
+                }
+
+                const discountObj = await getDiscounts(shopRecords);
+                const paramObj = {
+                    cust_first_name: formData.get('cust_first_name'),
+                    cust_last_name: formData.get('cust_last_name'),
+                    cust_email: formData.get('cust_email'),
+                    discountObj: discountObj
+                }
+                const dynamicModalComponent = <CreateReviewModalWidget shopRecords={shopRecords} customQuestionsData={customQuestionsData} paramObj={paramObj} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} otherProps={otherProps} />;
+                const htmlModalContent = ReactDOMServer.renderToString(dynamicModalComponent);
+                return json({
+                    htmlModalContent: htmlModalContent
+                });
+            } catch (error) {
+                console.log(error);
+                return json({
+                    error
+                });
             }
-
-            const discountObj = await getDiscounts(shopRecords);
-            const paramObj = {
-                cust_first_name: formData.get('cust_first_name'),
-                cust_last_name: formData.get('cust_last_name'),
-                cust_email: formData.get('cust_email'),
-                discountObj: discountObj
-            }
-            const dynamicModalComponent = <CreateReviewModalWidget shopRecords={shopRecords} customQuestionsData={customQuestionsData} paramObj={paramObj} generalAppearancesModel={generalAppearancesModel} CommonRatingComponent={IconComponent} otherProps={otherProps} />;
-            const htmlModalContent = ReactDOMServer.renderToString(dynamicModalComponent);
-            return json({
-                htmlModalContent: htmlModalContent
-            });
         } else if (actionType == "openReviewDetailModal") {
             try {
 
@@ -895,7 +902,7 @@ export async function action({ request }) {
                         }
                     },
                     {
-                        $limit: parseInt(popupModalWidgetCustomizesModel.maximumPerPage > 0 ? popupModalWidgetCustomizesModel.maximumPerPage : settingsJson.page_limit )
+                        $limit: parseInt(popupModalWidgetCustomizesModel.maximumPerPage > 0 ? popupModalWidgetCustomizesModel.maximumPerPage : settingsJson.page_limit)
                     }
                 ];
 

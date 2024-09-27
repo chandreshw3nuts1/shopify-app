@@ -715,7 +715,7 @@ export async function generateVideoThumbnail(videoPath, outputDir, thumbnailName
 						reject(err);
 					})
 					.screenshots({
-						timestamps: ['00:00:02'], // Take thumbnail at 2 seconds
+						timestamps: ['00:00:00'], // Take thumbnail at 2 seconds
 						count: 1,
 						folder: outputDir,
 						filename: tempThumbnailName, // Use dynamic name for the initial thumbnail

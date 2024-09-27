@@ -247,7 +247,7 @@ export default function GeneralAppearance({ shopRecords, generalAppearances, gen
 							</select>
 						</div>
 						<div className='form-group m-0'>
-							<label htmlFor="">w3review branding</label>
+							<label htmlFor="">{settingsJson.app_name} branding</label>
 							<select
 								value={appBranding}
 								name="appBranding"

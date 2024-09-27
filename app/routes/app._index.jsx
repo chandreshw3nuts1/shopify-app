@@ -108,6 +108,16 @@ export default function Index() {
 		e.preventDefault();
 		navigate('/app/manage-review/');
 	}
+	
+	
+    const redirectToCustomizePage = (e, type = "") => {
+        e.preventDefault();
+        if (type == 'popupWidget') {
+            navigate('/app/widget-customize/popup-widget');
+        }
+
+    }
+
 	return (
 		<>
 			<div className="dashboardwrap max1048 mx-auto">
@@ -122,7 +132,7 @@ export default function Index() {
 						<h2>Ensure your best reviews get seen</h2>
 						<p>Use the pop-up widget to build trust faster by making sure your reviews are never missed</p>
 						<div className="btnwrap">
-							<a href="#" className="revbtn smbtn">Add a pop-up</a>
+							<a href="#" onClick={(e) => redirectToCustomizePage(e, "popupWidget")} className="revbtn smbtn">Add a pop-up</a>
 						</div>
 					</div>
 					<div className="imagebox flxfix">

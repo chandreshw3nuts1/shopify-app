@@ -346,48 +346,44 @@ if (typeof jQuery !== 'undefined') {
         });
 
 
-
-    });
-
-    function responseMessage(msg) {
-        jQuery(".success-box").fadeIn(200);
-        jQuery(".success-box div.text-message").html("<span>" + msg + "</span>");
-    }
-
-
-    $(document).on('click', '.check-answer', function () {
-        $(this).parents(".reviewsteps").find('.nextbtn').removeClass('d-none');
-    });
-
-    $(document).on('keyup', '.review-description', function () {
-        if (typeof $(this).val() == 'undefined' || $.trim($(this).val()) == "") {
-            $(this).parents(".reviewsteps").find('.nextbtn').attr('disabled', 'disabled');
-        } else {
-            $(this).parents(".reviewsteps").find('.nextbtn').removeAttr('disabled');
+        function responseMessage(msg) {
+            jQuery(".success-box").fadeIn(200);
+            jQuery(".success-box div.text-message").html("<span>" + msg + "</span>");
         }
-    });
 
 
-    $(document).on('click', '.continueBtn', function () {
-        window.location.reload();
-    });
+        $(document).on('click', '.check-answer', function () {
+            $(this).parents(".reviewsteps").find('.nextbtn').removeClass('d-none');
+        });
 
-    var page = 1;
-    var settings_vars = $("#display-widget-component").data('product-settings');
-    const product_id = $("#display-widget-component").data('product-id');
-    const shop_domain = $("#display-widget-component").data('shop-domain');
-    const product_url = $("#display-widget-component").data('product-url');
-    const product_title = $("#display-widget-component").data('product-title');
-    const cust_first_name = $("#display-widget-component").data('cust-first_name');
-    const cust_last_name = $("#display-widget-component").data('cust-last_name');
-    const cust_email = $("#display-widget-component").data('cust-email');
-    const customer_locale = $("#display-widget-component").data('customer-locale');
-    const cart_count = $("#display-widget-component").data('cust-cart-count');
+        $(document).on('keyup', '.review-description', function () {
+            if (typeof $(this).val() == 'undefined' || $.trim($(this).val()) == "") {
+                $(this).parents(".reviewsteps").find('.nextbtn').attr('disabled', 'disabled');
+            } else {
+                $(this).parents(".reviewsteps").find('.nextbtn').removeAttr('disabled');
+            }
+        });
 
-    var masonryObj;
-    $(document).ready(function () {
+
+        $(document).on('click', '.continueBtn', function () {
+            window.location.reload();
+        });
+
+        var page = 1;
+        var settings_vars = $("#display-widget-component").data('product-settings') || {};
+        const product_id = $("#display-widget-component").data('product-id');
+        const shop_domain = $("#display-widget-component").data('shop-domain');
+        const product_url = $("#display-widget-component").data('product-url');
+        const product_title = $("#display-widget-component").data('product-title');
+        const cust_first_name = $("#display-widget-component").data('cust-first_name');
+        const cust_last_name = $("#display-widget-component").data('cust-last_name');
+        const cust_email = $("#display-widget-component").data('cust-email');
+        const customer_locale = $("#display-widget-component").data('customer-locale');
+        const cart_count = $("#display-widget-component").data('cust-cart-count');
+
+        var masonryObj;
         let hideProductWidget = false;
-        if (typeof settings_vars.hide_when_empty != "undefined" && settings_vars.hide_when_empty == true) {
+        if (settings_vars && typeof settings_vars.hide_when_empty !== "undefined" && settings_vars.hide_when_empty == true) {
             if (typeof cart_count != "undefined" && cart_count == 0) {
                 hideProductWidget = true;
             }
@@ -395,230 +391,231 @@ if (typeof jQuery !== 'undefined') {
         if (!hideProductWidget) {
             loadReviews(page);
         }
-    });
 
 
-    function loadReviews(page) {
-        var filter_by_ratting = $("#ratting_wise_filter").val();
-        var sort_by = $("#sort_by_filter").val();
-        $.ajax({
-            type: 'POST',
-            url: `/apps/w3-proxy/widget`,
-            data: {
-                no_of_review: settings_vars.no_of_review_per_page,
-                show_image_reviews: settings_vars.show_image_reviews,
-                hide_product_thumbnails: settings_vars.hide_product_thumbnails,
-                show_all_reviews: settings_vars.show_all_reviews,
-                filter_by_ratting: filter_by_ratting,
-                sort_by: sort_by,
-                page: page,
-                product_id: product_id,
-                shop_domain: shop_domain,
-                customer_locale: customer_locale
-            },
-            dataType: "json",
-            beforeSend: function () {
-                $('#load_more_review').hide();
-                $('#w3loadingmorerws').show();
-            },
-            success: function (response) {
-                if (page == 1) {
-                    $("#display-widget-component").html(response.body);
-                    var $initialItems = $('.main_review_block');
-                    $initialItems.imagesLoaded(function () {
-                        masonryObj = $initialItems.masonry({
-                            itemSelector: '.w3grid-review-item',
-                            columnWidth: '.w3grid-review-item',
-                            percentPosition: true
-                        });
-                    });
-
-                } else {
-                    var $newItems = $(response.body);
-                    $(".main_review_block").append($newItems);
-
-                    $newItems.imagesLoaded(function () {
-                        $('.main_review_block').masonry('appended', $newItems).masonry('layout');
-                    });
-                }
-                $('#load_more_review').show();
-                $('#w3loadingmorerws').hide();
-                if (response.hasMore == 0) {
-                    $("#load_more_review").hide();
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-        });
-    }
-    $(document).on("click", "#show_create_review_modal", function (e) {
-        e.preventDefault();
-        var $this = $(this);
-
-        if ($this.data('requestRunning')) {
-            return;
-        }
-        $this.data('requestRunning', true);
-
-        $.ajax({
-            type: 'POST',
-            url: `/apps/w3-proxy/widget`,
-            data: {
-                product_id: product_id,
-                shop_domain: shop_domain,
-                cust_first_name: cust_first_name,
-                cust_last_name: cust_last_name,
-                cust_email: cust_email,
-                customer_locale: customer_locale,
-                actionType: 'openModal'
-            },
-            dataType: "json",
-            success: function (response) {
-                imageAndVideoFiles = [];
-                FILE_LIST = [];
-
-                $("#createReviewModal").remove();
-
-                var modal_html = response.htmlModalContent;
-                $("body").append(modal_html);
-
-                $("#createReviewModal").modal("show");
-            },
-            error: function (xhr, status, error) {
-                console.error(xhr.responseText);
-            },
-            complete: function() {
-                $this.data('requestRunning', false);
-            }
-        });
-
-    });
-
-
-    $(document).on("click", ".product_widget_w3grid-review-item", function () {
-        var $this = $(this);
-
-        if ($this.data('requestRunning')) {
-            return;
-        }
-        $this.data('requestRunning', true);
-
-        reviewId = $(this).data('reviewid');
-        $.ajax({
-            type: 'POST',
-            url: `/apps/w3-proxy/widget`,
-            data: {
-                reviewId: reviewId,
-                actionType: 'openReviewDetailModal',
-                shop_domain: shop_domain,
-                hide_product_thumbnails: settings_vars.hide_product_thumbnails,
-                customer_locale: customer_locale
-            },
-            dataType: "json",
-            success: function (response) {
-
-                $("#staticBackdrop").remove();
-                var modal_html = response.body;
-                $("body").append(modal_html);
-
-                $("#staticBackdrop").modal("show");
-            },
-            error: function (xhr, status, error) {
-                console.error(xhr.responseText);
-            },
-            complete: function() {
-                $this.data('requestRunning', false);
-            }
-        });
-    });
-    $(document).on("click", "#load_more_review", function (e) {
-        e.preventDefault();
-        page = page + 1;
-        loadReviews(page);
-    });
-    $(document).on("submit", "#review_submit_btn_form", function (e) {
-        e.preventDefault();
-        var _this = $(this);
-        $('.error').text('');
-        var firstName = $.trim($('#first_name').val());
-        var lastName = $.trim($('#last_name').val());
-        var emailfield = $.trim($('#emailfield').val());
-        var isValid = true;
-        if (firstName === '') {
-            $('#firstNameError').text('First name is required.');
-            isValid = false;
-        }
-        if (lastName === '') {
-            $('#lastNameError').text('Last name is required.');
-            isValid = false;
-        }
-        if (emailfield === '') {
-            $('#emailError').text('Email is required.');
-            isValid = false;
-        } else if (!validateEmail(emailfield)) {
-            $('#emailError').text('Please enter a valid email address.');
-            isValid = false;
-        }
-        if (isValid) {
-            var formData = new FormData($(this)[0]);
-            if (formData.get('description') == "") {
-                formData.delete('description');
-                formData.append('description', 'N/A');
-            }
-            formData.append('shop_domain', shop_domain);
-            formData.append('product_id', product_id);
-            formData.append('product_title', product_title);
-            formData.append('product_url', product_url);
-            formData.append('customer_locale', customer_locale);
-            var reviewUrl = $(this).attr('action');
+        function loadReviews(page) {
+            var filter_by_ratting = $("#ratting_wise_filter").val();
+            var sort_by = $("#sort_by_filter").val();
             $.ajax({
                 type: 'POST',
-                url: reviewUrl,
-                data: formData,
-                contentType: false,
-                processData: false,
+                url: `/apps/w3-proxy/widget`,
+                data: {
+                    no_of_review: settings_vars.no_of_review_per_page,
+                    show_image_reviews: settings_vars.show_image_reviews,
+                    hide_product_thumbnails: settings_vars.hide_product_thumbnails,
+                    show_all_reviews: settings_vars.show_all_reviews,
+                    filter_by_ratting: filter_by_ratting,
+                    sort_by: sort_by,
+                    page: page,
+                    product_id: product_id,
+                    shop_domain: shop_domain,
+                    customer_locale: customer_locale
+                },
+                dataType: "json",
                 beforeSend: function () {
-                    _this.find('.submitBtn').attr('disabled', 'disabled');
+                    $('#load_more_review').hide();
+                    $('#w3loadingmorerws').show();
                 },
                 success: function (response) {
-                    $(".reviewsteps").addClass('d-none');
-                    $("#thankyou-page-content").removeClass('d-none');
-                    $("#thankyou-page-content").html(response.content);
+                    if (page == 1) {
+                        $("#display-widget-component").html(response.body);
+                        var $initialItems = $('.main_review_block');
+                        $initialItems.imagesLoaded(function () {
+                            masonryObj = $initialItems.masonry({
+                                itemSelector: '.w3grid-review-item',
+                                columnWidth: '.w3grid-review-item',
+                                percentPosition: true
+                            });
+                        });
+
+                    } else {
+                        var $newItems = $(response.body);
+                        $(".main_review_block").append($newItems);
+
+                        $newItems.imagesLoaded(function () {
+                            $('.main_review_block').masonry('appended', $newItems).masonry('layout');
+                        });
+                    }
+                    $('#load_more_review').show();
+                    $('#w3loadingmorerws').hide();
+                    if (response.hasMore == 0) {
+                        $("#load_more_review").hide();
+                    }
                 },
                 error: function (xhr, status, error) {
                     console.error(xhr.responseText);
                 }
             });
         }
-    });
-    function validateEmail(email) {
-        var re = /^[\w+-.]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
-        return re.test(email);
-    }
-    $(document).on("click", ".dropdown-menu .product_widget_stardetailrow,.stardetaildd .product_widget_stardetailrow", function (e) {
+        $(document).on("click", "#show_create_review_modal", function (e) {
+            e.preventDefault();
+            var $this = $(this);
 
-        var ratingNumber = $(this).find('.sratnumber').text();
-        var haveReview = $(this).find('.sratnumber').data('review');
-        if (parseInt(haveReview) > 0) {
-            $("#ratting_wise_filter").val(ratingNumber);
+            if ($this.data('requestRunning')) {
+                return;
+            }
+            $this.data('requestRunning', true);
+
+            $.ajax({
+                type: 'POST',
+                url: `/apps/w3-proxy/widget`,
+                data: {
+                    product_id: product_id,
+                    shop_domain: shop_domain,
+                    cust_first_name: cust_first_name,
+                    cust_last_name: cust_last_name,
+                    cust_email: cust_email,
+                    customer_locale: customer_locale,
+                    actionType: 'openModal'
+                },
+                dataType: "json",
+                success: function (response) {
+                    imageAndVideoFiles = [];
+                    FILE_LIST = [];
+
+                    $("#createReviewModal").remove();
+
+                    var modal_html = response.htmlModalContent;
+                    $("body").append(modal_html);
+
+                    $("#createReviewModal").modal("show");
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                },
+                complete: function () {
+                    $this.data('requestRunning', false);
+                }
+            });
+
+        });
+
+
+        $(document).on("click", ".product_widget_w3grid-review-item", function () {
+            var $this = $(this);
+
+            if ($this.data('requestRunning')) {
+                return;
+            }
+            $this.data('requestRunning', true);
+
+            reviewId = $(this).data('reviewid');
+            $.ajax({
+                type: 'POST',
+                url: `/apps/w3-proxy/widget`,
+                data: {
+                    reviewId: reviewId,
+                    actionType: 'openReviewDetailModal',
+                    shop_domain: shop_domain,
+                    hide_product_thumbnails: settings_vars.hide_product_thumbnails,
+                    customer_locale: customer_locale
+                },
+                dataType: "json",
+                success: function (response) {
+
+                    $("#staticBackdrop").remove();
+                    var modal_html = response.body;
+                    $("body").append(modal_html);
+
+                    $("#staticBackdrop").modal("show");
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                },
+                complete: function () {
+                    $this.data('requestRunning', false);
+                }
+            });
+        });
+        $(document).on("click", "#load_more_review", function (e) {
+            e.preventDefault();
+            page = page + 1;
+            loadReviews(page);
+        });
+        $(document).on("submit", "#review_submit_btn_form", function (e) {
+            e.preventDefault();
+            var _this = $(this);
+            $('.error').text('');
+            var firstName = $.trim($('#first_name').val());
+            var lastName = $.trim($('#last_name').val());
+            var emailfield = $.trim($('#emailfield').val());
+            var isValid = true;
+            if (firstName === '') {
+                $('#firstNameError').text('First name is required.');
+                isValid = false;
+            }
+            if (lastName === '') {
+                $('#lastNameError').text('Last name is required.');
+                isValid = false;
+            }
+            if (emailfield === '') {
+                $('#emailError').text('Email is required.');
+                isValid = false;
+            } else if (!validateEmail(emailfield)) {
+                $('#emailError').text('Please enter a valid email address.');
+                isValid = false;
+            }
+            if (isValid) {
+                var formData = new FormData($(this)[0]);
+                if (formData.get('description') == "") {
+                    formData.delete('description');
+                    formData.append('description', 'N/A');
+                }
+                formData.append('shop_domain', shop_domain);
+                formData.append('product_id', product_id);
+                formData.append('product_title', product_title);
+                formData.append('product_url', product_url);
+                formData.append('customer_locale', customer_locale);
+                var reviewUrl = $(this).attr('action');
+                $.ajax({
+                    type: 'POST',
+                    url: reviewUrl,
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function () {
+                        _this.find('.submitBtn').attr('disabled', 'disabled');
+                    },
+                    success: function (response) {
+                        $(".reviewsteps").addClass('d-none');
+                        $("#thankyou-page-content").removeClass('d-none');
+                        $("#thankyou-page-content").html(response.content);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+        });
+        function validateEmail(email) {
+            var re = /^[\w+-.]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
+            return re.test(email);
+        }
+        $(document).on("click", ".dropdown-menu .product_widget_stardetailrow,.stardetaildd .product_widget_stardetailrow", function (e) {
+
+            var ratingNumber = $(this).find('.sratnumber').text();
+            var haveReview = $(this).find('.sratnumber').data('review');
+            if (parseInt(haveReview) > 0) {
+                $("#ratting_wise_filter").val(ratingNumber);
+                page = 1;
+                loadReviews(page);
+            }
+        });
+        $(document).on("click", ".dropdown-menu .sort_by_filter", function (e) {
+            e.preventDefault();
+            var sortType = $(this).data('sort');
+            $("#sort_by_filter").val(sortType);
             page = 1;
             loadReviews(page);
-        }
-    });
-    $(document).on("click", ".dropdown-menu .sort_by_filter", function (e) {
-        e.preventDefault();
-        var sortType = $(this).data('sort');
-        $("#sort_by_filter").val(sortType);
-        page = 1;
-        loadReviews(page);
-    });
-    $(document).on("click", "#copy-button", function () {
-        var discountCode = $('#discount-code').text();
-        navigator.clipboard.writeText(discountCode).then(function () {
-            $('#copy-message').fadeIn().delay(1000).fadeOut();
-        }).catch(function (error) {
-            console.error('Failed to copy text: ', error);
+        });
+        $(document).on("click", "#copy-button", function () {
+            var discountCode = $('#discount-code').text();
+            navigator.clipboard.writeText(discountCode).then(function () {
+                $('#copy-message').fadeIn().delay(1000).fadeOut();
+            }).catch(function (error) {
+                console.error('Failed to copy text: ', error);
+            });
         });
     });
+
 }
