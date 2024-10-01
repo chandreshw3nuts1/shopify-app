@@ -1,0 +1,34 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "177ac2a00973ba8fc0c323f490150da3"
+name = "kritic-app"
+handle = "kritic-app"
+application_url = "https://sue-resist-first-differential.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "chandstest.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_customers,read_fulfillments,read_locations,read_orders,read_products,read_themes,write_customers,write_discounts,write_orders,write_price_rules,write_products,write_themes"
+
+[auth]
+redirect_urls = [
+  "https://sue-resist-first-differential.trycloudflare.com/auth/callback",
+  "https://sue-resist-first-differential.trycloudflare.com/auth/shopify/callback",
+  "https://sue-resist-first-differential.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-07"
+
+[app_proxy]
+url = "https://sue-resist-first-differential.trycloudflare.com/api"
+subpath = "w3-proxy"
+prefix = "apps"
+
+[pos]
+embedded = false
