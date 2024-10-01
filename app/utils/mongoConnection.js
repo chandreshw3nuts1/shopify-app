@@ -7,10 +7,7 @@ export async function mongoConnection() {
   try {
 
     mongoose.connect(`${process.env.MONGO_CONNECTION_STRING}/${process.env.MONGO_CONNECTION_DATABASE}`, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000,
-      ssl: true, 
+      
     });
     
     const db = mongoose.connection;
