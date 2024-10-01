@@ -1218,6 +1218,7 @@ export async function action({ request }) {
         }
 
     } catch (error) {
+        console.log(error);
         return json({
             error
         });

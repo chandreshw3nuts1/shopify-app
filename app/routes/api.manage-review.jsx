@@ -10,6 +10,9 @@ import productReviewQuestions from "./models/productReviewQuestions";
 import reviewDocuments from "./models/reviewDocuments";
 import generalAppearances from "./models/generalAppearances";
 import generalSettings from './models/generalSettings';
+import shopDetails from './models/shopDetails';
+import settingJson from './../utils/settings.json';
+import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTemplate';
 
 import { getUploadDocument } from "./../utils/documentPath";
 export async function loader() {
@@ -52,8 +55,6 @@ export async function action({ request }) {
 						var msg = "Your reply deleted!";
 					} else {
 
-						/* send email to admin when new reivew receive*/
-
 						const productReviewsItem = await productReviews.findOne({ _id: requestBody.review_id });
 						const shopRecords = await findOneRecord("shop_details", { "_id": productReviewsItem.shop_id });
 						const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
@@ -79,7 +80,7 @@ export async function action({ request }) {
 						emailContents.footerContent = footerContent;
 						emailContents.email_footer_enabled = generalSettingsModel.email_footer_enabled;
 
-						const unsubscribeData = { 
+						const unsubscribeData = {
 							"shop_id": shopRecords.shop_id,
 							"email": productReviewsItem.email,
 						}
@@ -339,6 +340,83 @@ export async function action({ request }) {
 						);
 
 						var msg = "Review removed";
+					} else if (subActionType == 'resend-review-request') {
+
+
+						const productReviewsModel = await productReviews.findOne({ _id: reviewId });
+						if (productReviewsModel) {
+							const shopRecords = await shopDetails.findOne({ _id: productReviewsModel.shop_id });
+							const generalAppearancesObj = await generalAppearances.findOne({ shop_id: shopRecords._id });
+							const logo = getUploadDocument(generalAppearancesObj.logo, shopRecords.shop_id, 'logo');
+							const customer_locale = productReviewsModel.customer_locale;
+
+							const productIds = [`"gid://shopify/Product/${productReviewsModel.product_id}"`];
+							var mapProductDetails = await getShopifyProducts(shopRecords.shop, productIds, 200);
+							const productName = mapProductDetails?.[0]?.title;
+							const replaceVars = {
+								"product": productName,
+								"name": productReviewsModel.first_name,
+								"last_name": productReviewsModel.last_name,
+							}
+
+							const emailContents = await getLanguageWiseContents("resend_review_request", replaceVars, shopRecords._id, customer_locale);
+							
+							emailContents.banner = getUploadDocument(emailContents.banner, shopRecords.shop_id, 'banners');
+							emailContents.logo = logo;
+
+							const defaultProductImg = settingJson.host_url + '/images/product-default.png';
+							emailContents.defaultProductImg = defaultProductImg;
+
+							var generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
+
+							var footerContent = "";
+							if (generalSettingsModel.email_footer_enabled) {
+								footerContent = generalSettingsModel[customer_locale] ? generalSettingsModel[customer_locale].footerText : "";
+							}
+							emailContents.footerContent = footerContent;
+							emailContents.email_footer_enabled = generalSettingsModel.email_footer_enabled;
+
+							
+							var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
+								<ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} />
+							);
+
+							const reviewLink = `${settingJson.host_url}/resend-review-request/${productReviewsModel._id}/review-form`;
+							emailHtmlContent = emailHtmlContent.replace(`{{review_link_${productReviewsModel.product_id}}}`, reviewLink);
+							const variantTitle = productReviewsModel.variant_title ? productReviewsModel.variant_title : "";
+							emailHtmlContent = emailHtmlContent.replace(`{{variant_title_${productReviewsModel.product_id}}}`, variantTitle);
+							
+							const email = productReviewsModel.email;
+
+							const unsubscribeData = {
+								"shop_id": shopRecords._id,
+								"email": email,
+							}
+							const unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
+							emailHtmlContent = emailHtmlContent.replace(`{{unsubscriptionLink}}`, unsubscriptionLink);
+
+							// Send request email
+							const subject = emailContents.subject;
+							const response = await sendEmail({
+								to: email,
+								subject,
+								html: emailHtmlContent,
+							});
+
+							await productReviews.updateOne(
+								{ _id: productReviewsModel._id },
+								{
+									$set: {
+										is_resend_review_submitted: false,
+									}
+								}
+							);
+
+
+							return json({ status: 200, message: "Resend review request sent" });
+
+						}
+
 					}
 
 					return json({ "status": 200, "message": msg });

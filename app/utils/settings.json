@@ -1,9 +1,10 @@
 {
-	"host_url": "https://heard-kill-luxury-mailman.trycloudflare.com",
+	"host_url": "https://adverse-unsubscribe-complimentary-admin.trycloudflare.com",
 	"page_limit": 20,
 	"character_limit": 400,
 	"app_name" : "Kritic App",
 	"reminderEmailDays" : 7,
+	"autoPublishAfterDays" : 14,
 	"validImageExtensions": [
 		"jpg",
 		"jpeg",

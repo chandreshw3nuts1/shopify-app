@@ -178,7 +178,11 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                         <div className="bottom_detail flxfix">
                                             <div className="productbox">
                                                 <div className="imgbox flxfix">
-                                                    <Image src={productsDetails[0].images.edges[0].node.transformedSrc} alt={productsDetails[0].title} />
+
+                                                    {productsDetails[0]?.images?.edges?.[0]?.node?.transformedSrc &&
+                                                        <Image src={productsDetails[0].images.edges[0].node.transformedSrc} alt={productsDetails[0].title} />
+                                                    }
+                                                    
                                                 </div>
                                                 <div className="detailbox flxflexi">
                                                     <h6>{productsDetails[0].title}</h6>

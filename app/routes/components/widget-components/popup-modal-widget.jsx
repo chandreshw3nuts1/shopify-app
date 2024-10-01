@@ -6,7 +6,7 @@ import CloseIcon from '../icons/CloseIcon';
 const PopupModalWidget = (props) => {
     const iconColor = props.generalAppearancesModel.starIconColor;
     let hideOnMobileClass = "";
-    if(props.popupModalWidgetCustomizesModel.hideOnMobile == true){
+    if (props.popupModalWidgetCustomizesModel.hideOnMobile == true) {
         hideOnMobileClass = "hide-popup-widget-on-mobile";
     }
     return (
@@ -47,7 +47,7 @@ const PopupModalWidget = (props) => {
                                                 <img src={getUploadDocument(review.reviewDocuments.thumbnail_name, props.shopRecords.shop_id)} />
 
                                                 <div className='mainbtnplay'>
-                                                    <button class="play-pausess">
+                                                    <button className="play-pausess">
                                                         <VideoPlayIcon />
                                                     </button>
                                                 </div>
@@ -56,7 +56,7 @@ const PopupModalWidget = (props) => {
                                     </div>
                                 }
                                 <div className='bottom_meta'>
-                                    <div class="reviewer_name">{review.display_name}</div>
+                                    <div className="reviewer_name">{review.display_name}</div>
                                     <div className={`ratingstars flxrow star-${review.rating}`}>
                                         {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 1 ? iconColor : "currentColor"} /> : null}
                                         {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 2 ? iconColor : "currentColor"} /> : null}
@@ -64,13 +64,15 @@ const PopupModalWidget = (props) => {
                                         {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 4 ? iconColor : "currentColor"} /> : null}
                                         {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 5 ? iconColor : "currentColor"} /> : null}
                                     </div>
-                                    <div class="descriptionbox">{displayNoOfCharacters(40, review.description)}</div>
+                                    <div className="descriptionbox">{displayNoOfCharacters(40, review.description)}</div>
 
                                 </div>
                                 <div className='review_bottomwrap'>
                                     <div className="product-container product-thumb-detail">
                                         <div className="imagepro flxfix">
-                                            <img src={review.productDetails.images.edges[0].node.transformedSrc} />
+                                            {review.productDetails?.images?.edges?.[0]?.node?.transformedSrc &&
+                                                <img src={review.productDetails.images.edges[0].node.transformedSrc} alt="Product" />
+                                            }
                                         </div>
                                         <div className="textpro flxflexi">
                                             {review.productDetails.title}

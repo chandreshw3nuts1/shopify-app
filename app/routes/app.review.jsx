@@ -57,7 +57,6 @@ export async function loader({ request }) {
 
 		return json({ settings: settingsModel, shopRecords: shopRecords, customQuestionsData: customQuestionsData, reviewRequestTimingSettings: reviewRequestTimingSettingsModel, reviewDiscountSettings: reviewDiscountSettingsModel, generalSettingsModel: generalSettingsModel });
 	} catch (error) {
-		console.error('Error fetching records from MongoDB:', error);
 		return json(
 			{ error: 'Failed to fetch records from MongoDB' },
 			{ status: 500 }
@@ -404,6 +403,17 @@ const ReviewPage = () => {
 											<div className='titledetail flxflexi'>
 												<h6>Discount reminder for photo/video review</h6>
 												<p>Remind your customers to use their next-purchase discount if they haven't used it yet</p>
+											</div>
+
+											<div className='flxfix arrowicon'>
+												<i className="twenty-longarrow-right"></i>
+											</div>
+										</div>
+
+										<div className='insiderowacc' onClick={() => showEmailSettingsForm("resend-review-request")}>
+											<div className='titledetail flxflexi'>
+												<h6>Resend review request email </h6>
+												<p>Resend review request email to your customers.</p>
 											</div>
 
 											<div className='flxfix arrowicon'>

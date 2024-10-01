@@ -10,6 +10,7 @@ import emailDiscountPhotoVideoReviewSettings from './../routes/models/emailDisco
 import emailReviewRequestReminderSettings from './../routes/models/emailReviewRequestReminderSettings';
 import emailPhotovideoReminderSettings from './../routes/models/emailPhotovideoReminderSettings';
 import emailDiscountPhotoVideoReviewReminderSettings from './../routes/models/emailDiscountPhotoVideoReviewReminderSettings';
+import emailResendReviewRequestSettings from './../routes/models/emailResendReviewRequestSettings';
 import productReviewWidgetCustomizes from './../routes/models/productReviewWidgetCustomizes';
 import reviewFormSettings from './../routes/models/reviewFormSettings';
 import sidebarReviewWidgetCustomizes from './../routes/models/sidebarReviewWidgetCustomizes';
@@ -229,6 +230,29 @@ export async function action({ params, request }) {
                             const options = { upsert: true };
                             await emailDiscountPhotoVideoReviewReminderSettings.findOneAndUpdate(query, update, options);
 
+                        } else if (actionSubType == "resendReviewRequestReminder") {
+                            const query = { shop_id: shopRecords._id };
+                            const OldBannerModel = await emailResendReviewRequestSettings.findOne(query).select(`shop_id ${language}`);
+                            if (OldBannerModel && OldBannerModel[language] && OldBannerModel[language].banner) {
+                                const deleteFileName = OldBannerModel[language].banner;
+
+                                const deleteFilePath = uploadsDir + "/" + deleteFileName;
+                                if (fs.existsSync(deleteFilePath)) {
+                                    try {
+                                        fs.unlinkSync(deleteFilePath);
+                                    } catch (error) {
+                                        console.error('Error deleting file:', error);
+                                    }
+                                }
+                            }
+                            const update = {
+                                $set: {
+                                    [`${language}.banner`]: fileName
+                                }
+                            };
+                            const options = { upsert: true };
+                            await emailResendReviewRequestSettings.findOneAndUpdate(query, update, options);
+
                         }
 
 
@@ -305,7 +329,19 @@ export async function action({ params, request }) {
                         const options = { upsert: true };
                         await emailDiscountPhotoVideoReviewReminderSettings.findOneAndUpdate(query, update, options);
 
+                    } else if (actionSubType == "resendReviewRequestReminder") {
+                        const query = { shop_id: shopRecords._id };
+
+                        const update = {
+                            $set: {
+                                [`${language}.banner`]: fileName
+                            }
+                        };
+                        const options = { upsert: true };
+                        await emailResendReviewRequestSettings.findOneAndUpdate(query, update, options);
+
                     }
+                    
 
                     return json({ "status": 200, "message": 'Banner saved', 'fileName': fileName });
 
@@ -599,6 +635,29 @@ export async function action({ params, request }) {
                         }
 
                         await emailDiscountPhotoVideoReviewReminderSettings.updateOne(
+                            query,
+                            {
+                                $set: {
+                                    [`${language}.banner`]: ""
+                                }
+                            }
+                        );
+                    } else if (actionSubType == "resendReviewRequestReminder") {
+                        const OldBannerModel = await emailResendReviewRequestSettings.findOne(query).select(`shop_id ${language}`);
+                        if (OldBannerModel && OldBannerModel[language] && OldBannerModel[language].banner) {
+                            const deleteFileName = OldBannerModel[language].banner;
+
+                            const deleteFilePath = deletePath + deleteFileName;
+                            if (fs.existsSync(deleteFilePath)) {
+                                try {
+                                    fs.unlinkSync(deleteFilePath);
+                                } catch (error) {
+                                    console.error('Error deleting file:', error);
+                                }
+                            }
+                        }
+
+                        await emailResendReviewRequestSettings.updateOne(
                             query,
                             {
                                 $set: {

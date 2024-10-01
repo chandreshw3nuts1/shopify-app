@@ -8,6 +8,7 @@ import DiscountPhotoVideoReviewReminder from './components/emailsComponents/Disc
 import ReviewReply from './components/emailsComponents/ReviewReply';
 import DiscountPhotoVideoReview from './components/emailsComponents/DiscountPhotoVideoReview';
 import PhotoVideoReminder from './components/emailsComponents/PhotoVideoReminder';
+import ResendReviewRequestReminder from './components/emailsComponents/ResendReviewRequestReminder';
 
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from './components/Breadcrumb';
@@ -20,6 +21,8 @@ import emailDiscountPhotoVideoReviewSettings from './models/emailDiscountPhotoVi
 import emailDiscountPhotoVideoReviewReminderSettings from './models/emailDiscountPhotoVideoReviewReminderSettings';
 import generalAppearances from './models/generalAppearances';
 import generalSettings from './models/generalSettings';
+import emailResendReviewRequestSettings from './models/emailResendReviewRequestSettings';
+
 import { useTranslation } from "react-i18next";
 
 import {
@@ -62,6 +65,11 @@ export const loader = async ({ request, params }) => {
 			break;
 		case 'discount-photo-video-review-reminder':
 			JsonData['emailTemplateObj'] = await emailDiscountPhotoVideoReviewReminderSettings.findOne({
+				shop_id: shopRecords._id,
+			});
+			break;
+		case 'resend-review-request':
+			JsonData['emailTemplateObj'] = await emailResendReviewRequestSettings.findOne({
 				shop_id: shopRecords._id,
 			});
 			break;
@@ -125,6 +133,10 @@ export default function EmailTemplateSettings() {
 		case 'discount-photo-video-review-reminder':
 			content = <DiscountPhotoVideoReviewReminder shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} generalSettingsModel={generalSettingsModel} />;
 			emailTemplateName = "Discount reminder for photo/video review"
+			break;
+		case 'resend-review-request':
+			content = <ResendReviewRequestReminder shopRecords={shopRecords} emailTemplateObj={emailTemplateObj} generalAppearances={generalAppearances} generalSettingsModel={generalSettingsModel} />;
+			emailTemplateName = "Resend Review request"
 			break;
 		default:
 			content = <h4>404 - Page Not Found</h4>;

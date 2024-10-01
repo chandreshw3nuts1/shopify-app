@@ -31,6 +31,7 @@ const productReviewsSchema = new mongoose.Schema({
     discount_code_id : { type: String, default : null},
     discount_price_rule_id : { type: String, default : null},
     is_reminder_sent: { type: Boolean, default: false },
+    is_resend_review_submitted: { type: Boolean, default: false },
 },{
     timestamps: true
 });

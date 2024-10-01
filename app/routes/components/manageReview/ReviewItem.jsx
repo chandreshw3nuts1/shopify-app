@@ -610,7 +610,8 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 													{result.video_slider == true && <Dropdown.Item eventKey="remove-video-slider" className="custom-dropdown-item">Remove from Video Slider</Dropdown.Item>}
 												</>
 											}
-
+											
+											<Dropdown.Item eventKey="resend-review-request" className="custom-dropdown-item">Resend review request </Dropdown.Item>
 											<Dropdown.Item eventKey="delete" className="custom-dropdown-item">Delete</Dropdown.Item>
 										</DropdownButton>
 

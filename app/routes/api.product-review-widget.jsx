@@ -279,12 +279,14 @@ export async function action({ request }) {
 					const settings = await findOneRecord('settings', {
 						shop_id: shopRecords._id,
 					});
-
 					const productId = `"gid://shopify/Product/${formData.get('product_id')}"`;
 					var productsDetails = await getShopifyProducts(shop, productId);
 					if (!productsDetails[0]) {
 						return json({ success: false });
 					}
+					const is_review_request = formData.get('requestId') ? true : false;
+					const is_resubmit_review_request = formData.get('reviewId') ? true : false;
+
 					const productNodes = productsDetails[0];
 
 					const generalAppearancesData = await generalAppearances.findOne({ shop_id: shopRecords._id });
@@ -333,58 +335,79 @@ export async function action({ request }) {
 					const otherProps = { translations };
 					otherProps['reviewFormSettingsModel'] = reviewFormSettingsModel;
 					otherProps['languageWiseReviewFormSettings'] = languageWiseReviewFormSettings;
-
 					/* Fetch transation languge End*/
-
-
-					/*Check if you have purchase product , if so then mark review as verified*/
-					const pipeline = [
-						{
-							$match: { email: formData.get('email') }
-						},
-						{
-							$project: { product_ids: 1 }
-						},
-						{
-							$unwind: "$product_ids"
-						},
-						{
-							$match: { product_ids: parseInt(formData.get('product_id')) }
-						},
-						{
-							$group: {
-								_id: null,
-								exists: { $sum: 1 }
+					var orderExists = false;
+					if (is_review_request) {
+						/*Check if you have purchase product , if so then mark review as verified*/
+						const pipeline = [
+							{
+								$match: { email: formData.get('email') }
+							},
+							{
+								$project: { product_ids: 1 }
+							},
+							{
+								$unwind: "$product_ids"
+							},
+							{
+								$match: { product_ids: parseInt(formData.get('product_id')) }
+							},
+							{
+								$group: {
+									_id: null,
+									exists: { $sum: 1 }
+								}
 							}
-						}
-					];
+						];
 
-					const manualReviewRequestsResult = await manualReviewRequests.aggregate(pipeline);
+						const manualReviewRequestsResult = await manualReviewRequests.aggregate(pipeline);
 
-					const orderExists = manualReviewRequestsResult.length > 0 && manualReviewRequestsResult[0].exists > 0;
+						orderExists = manualReviewRequestsResult.length > 0 && manualReviewRequestsResult[0].exists > 0;
 
-					/*Check if you have purchase product , if so then mark review as verified End*/
+						/*Check if you have purchase product , if so then mark review as verified End*/
 
+					}
 					const display_name = formData.get('first_name') + " " + formData.get('last_name').charAt(0);
-					const is_review_request = formData.get('requestId') ? true : false;
-					const productReviewModel = new productReviews({
-						shop_id: shopRecords._id,
-						first_name: formData.get('first_name'),
-						last_name: formData.get('last_name'),
-						display_name: display_name,
-						email: formData.get('email'),
-						description: formData.get('description'),
-						customer_locale: customer_locale,
-						rating: reviewStarRating,
-						product_id: formData.get('product_id'),
-						variant_title: formData.get('variant_title'),
-						product_title: productNodes.title,
-						product_url: productNodes.handle,
-						status: reviewStatus,
-						is_review_request: is_review_request,
-						verify_badge: orderExists
-					});
-					const result = await productReviewModel.save();
+					var result;
+					if (is_resubmit_review_request) {
+
+						result = await productReviews.findOneAndUpdate(
+							{ _id: formData.get('reviewId') }, // Query to find the document
+							{
+								$set: {
+									first_name: formData.get('first_name'),
+									last_name: formData.get('last_name'),
+									display_name: display_name,
+									email: formData.get('email'),
+									description: formData.get('description'),
+									customer_locale: customer_locale,
+									rating: reviewStarRating,
+									is_resend_review_submitted : true,
+								},
+							},
+							{ upsert: true } // upsert option and return updated document
+						);
+
+					} else {
+						const productReviewModel = new productReviews({
+							shop_id: shopRecords._id,
+							first_name: formData.get('first_name'),
+							last_name: formData.get('last_name'),
+							display_name: display_name,
+							email: formData.get('email'),
+							description: formData.get('description'),
+							customer_locale: customer_locale,
+							rating: reviewStarRating,
+							product_id: formData.get('product_id'),
+							variant_title: formData.get('variant_title'),
+							product_title: productNodes.title,
+							product_url: productNodes.handle,
+							status: reviewStatus,
+							is_review_request: is_review_request,
+							verify_badge: orderExists
+						});
+						result = await productReviewModel.save();
+					}
 
 					const insertedId = result._id;
 					if (is_review_request) {
@@ -404,6 +427,10 @@ export async function action({ request }) {
 					let discountText = "";
 					let discountCode = "";
 					if (file_objects != null && file_objects != "") {
+
+						if (is_resubmit_review_request) {
+							await reviewDocuments.deleteMany({ review_id: formData.get('reviewId') });
+						}
 						let files = file_objects.split(',');
 						const uploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/`);
 
@@ -438,7 +465,6 @@ export async function action({ request }) {
 
 							await reviewDocumentModel.save();
 						}
-
 						/* Create discount code and send email to reviewer when new photo/video reivew receive*/
 
 						const discountCodeResponse = await createShopifyDiscountCode(shopRecords, hasPhoto, hasVideo, is_review_request);
@@ -521,6 +547,9 @@ export async function action({ request }) {
 						questions.push({ question_id, answer, question_name });
 					}
 					if (questions.length > 0) {
+						if (is_resubmit_review_request) {
+							await productReviewQuestions.deleteMany({ review_id: formData.get('reviewId') });
+						}
 						questions.map(async (question, index) => {
 							if (question.answer != null) {
 								const productReviewQuestionModel = new productReviewQuestions({

@@ -22,6 +22,7 @@ import { getShopifyProducts, getLanguageWiseContents, generateUnsubscriptionLink
 import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTemplate';
 import DiscountPhotoVideoReviewEmail from './components/email/DiscountPhotoVideoReviewEmail';
 import productReviews from "./models/productReviews";
+import settings from "./models/settings";
 
 export async function loader() {
     return json({});
@@ -563,7 +564,7 @@ export async function action({ request, params }) {
                         if (emailPhotovideoReminderSettingsModel && emailPhotovideoReminderSettingsModel.sendReminderTo != 'never') {
                             const requestQuery = {
                                 shop_id: shop._id,
-                                is_reminder_sent : false
+                                is_reminder_sent: false
                             };
                             const sendReminderTo = emailPhotovideoReminderSettingsModel.sendReminderTo;
                             let ratingStars = 0;
@@ -613,7 +614,7 @@ export async function action({ request, params }) {
                                         createdAt: 1,
                                         product_id: 1,
                                         customer_locale: 1,
-                                        variant_title  :1,
+                                        variant_title: 1,
                                         reviewDocuments: 1
                                     }
                                 },
@@ -655,7 +656,7 @@ export async function action({ request, params }) {
                                     var mapProductDetails = await getShopifyProducts(shop.shop, productIds, 200);
                                     if (mapProductDetails.length > 0) {
                                         const replaceVars = {
-                                            "product":  mapProductDetails[0]['title'],
+                                            "product": mapProductDetails[0]['title'],
                                             "name": singleReview.first_name,
                                             "last_name": singleReview.last_name,
                                         }
@@ -710,6 +711,36 @@ export async function action({ request, params }) {
                                 }
                             }
                         }
+                    }
+                    return json({ "status": 200, "message": "success" });
+                } else if (actionType == 'update-pending-reviews') {
+                    const shopDetailsModel = await shopDetails.find({});
+
+                    const fourteenDaysAgo = new Date();
+                    console.log(fourteenDaysAgo);
+                    fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - settingsJson.autoPublishAfterDays);
+                    console.log(fourteenDaysAgo);
+                    for (const shop of shopDetailsModel) {
+
+                        const settingModel = await settings.findOne({
+                            shop_id: shop._id,
+                        });
+                        if (settingModel.autoPublishReview) {
+                            await productReviews.updateMany(
+                                {
+                                    shop_id: shop._id,
+                                    status: 'pending',
+                                    createdAt: { $lte: fourteenDaysAgo }
+                                },
+                                {
+                                    $set: { status: "publish" } 
+                                }
+                            );
+                            console.log(settingModel.autoPublishReview);
+
+                        }
+                        
+
                     }
                     return json({ "status": 200, "message": "success" });
                 }

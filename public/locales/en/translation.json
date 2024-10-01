@@ -102,5 +102,10 @@
         "subject": "Reminder: Your discount code at [store]",
         "body": "Hello [name],\n\nThank you for sharing your experience!\n\nUse the following discount code for [discount] off your next purchase at [store]",
         "buttonText": "Shop now"
+    },
+    "resendReviewRequestReminderEmail": {
+        "subject": "Thank you for your review, We'd love to hear more from You",
+        "body": "Hello [name],\n \nWe wanted to take a moment to say thank you for sharing your thoughts and leaving a review of [product]! Your feedback helps us improve and serve customers like you better every day.\n \nWe’re always looking for more ways to enhance our products and service, and we’d love to hear more from you. If you have any additional thoughts, experiences, or photos to share, we’d be thrilled to see them!",
+        "buttonText": "Write a review"
     }
 }

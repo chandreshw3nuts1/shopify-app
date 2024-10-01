@@ -273,8 +273,8 @@ export default function DisplayReviewWidget() {
                                                 Import reviews from Loox, Judge.me, Yotpo, Junip or Okendo
                                             </Text>
                                         </div>
-                                        <div class="flxfix btnwrap m-0">
-                                            <a href="#" class="revbtn">Learn More</a>
+                                        <div className="flxfix btnwrap m-0">
+                                            <a href="#" className="revbtn">Learn More</a>
                                         </div>
                                         <div className='flxfix arrowicon'>
                                             <i className='twenty-arrow-down'></i>
@@ -369,8 +369,8 @@ export default function DisplayReviewWidget() {
                                                 Follow these instructions to import reviews from a spreadsheet
                                             </Text>
                                         </div>
-                                        <div class="flxfix btnwrap m-0">
-                                            <a href="#" class="revbtn">Learn More</a>
+                                        <div className="flxfix btnwrap m-0">
+                                            <a href="#" className="revbtn">Learn More</a>
                                         </div>
                                         <div className='flxfix arrowicon'>
                                             <i className='twenty-arrow-down'></i>

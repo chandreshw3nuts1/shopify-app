@@ -52,6 +52,10 @@ export async function action({ request }) {
 				var customer_locale = generalSettingsModel.defaul_language;
 				const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shop });
 
+				const uploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/`);
+				fs.mkdirSync(uploadsDir, { recursive: true });
+
+
 				if (actionType == 'exportReviews') {
 					const query = {
 						"shop_id": shopRecords._id
@@ -194,8 +198,8 @@ export async function action({ request }) {
 										status: item.status,
 										is_imported: true,
 										verify_badge: item.verified_purchase == "TRUE" ? true : false,
-										replyText : item.reply_text,
-										replied_at : isValidDateFormat(item.reply_date),
+										replyText: item.reply_text,
+										replied_at: isValidDateFormat(item.reply_date),
 										createdAt: isValidDateFormat(item.date)
 									});
 									const result = await productReviewModel.save();
@@ -230,7 +234,7 @@ export async function action({ request }) {
 					});
 					const metaFields = results.meta.fields;
 					const csvData = results.data;
-					
+
 					let handleName = "";
 					let requiredFields = [];
 					if (subActionType == 'loox') {
@@ -269,7 +273,7 @@ export async function action({ request }) {
 										const userNames = item.nickname.split(/[\s*]{3}|\s+/);
 
 										const status = item.status == "Active" ? "publish" : "unpublish";
-										const productReviewModel = new productReviews({
+										const existingReview = await productReviews.findOne({
 											shop_id: shopRecords._id,
 											first_name: userNames[0] || " ",
 											last_name: userNames[1] || " ",
@@ -282,24 +286,44 @@ export async function action({ request }) {
 											product_title: productItem.title,
 											product_url: productItem.handle,
 											status: status,
-											is_imported: true,
-											imported_app: subActionType,
-											verify_badge: item.verified_purchase == "TRUE" ? true : false,
-											createdAt: item.date,
-											replyText: item.reply,
-											replied_at: item.replied_at
+
 										});
-										const result = await productReviewModel.save();
+										if (!existingReview) {
 
-										const insertedId = result._id;
+											const productReviewModel = new productReviews({
+												shop_id: shopRecords._id,
+												first_name: userNames[0] || " ",
+												last_name: userNames[1] || " ",
+												display_name: item.nickname,
+												email: item.email || " ",
+												description: item.review,
+												customer_locale: customer_locale,
+												rating: item.rating,
+												product_id: productItem.id,
+												product_title: productItem.title,
+												product_url: productItem.handle,
+												status: status,
+												is_imported: true,
+												imported_app: subActionType,
+												verify_badge: item.verified_purchase == "TRUE" ? true : false,
+												createdAt: item.date,
+												replyText: item.reply,
+												replied_at: item.replied_at
+											});
+											const result = await productReviewModel.save();
 
-										if (item.img) {
-											await insertProductReviewDocuments(item.img, uploadsDir, insertedId);
+											const insertedId = result._id;
+
+											if (item.img) {
+												await insertProductReviewDocuments(item.img, uploadsDir, insertedId);
+											}
+										} else {
+											console.log("Duplicate review exists, skipping insertion.");
 										}
-									} else {
 									}
 
 								}));
+
 							} else if (subActionType == 'judgeme') {
 								await Promise.all(csvData.map(async (item, index) => {
 
@@ -308,7 +332,7 @@ export async function action({ request }) {
 										const userNames = item.reviewer_name.split(/[\s*]{3}|\s+/);
 
 										const status = item.curated == "ok" ? "publish" : "unpublish";
-										const productReviewModel = new productReviews({
+										const existingReview = await productReviews.findOne({
 											shop_id: shopRecords._id,
 											first_name: userNames[0] || " ",
 											last_name: userNames[1] || " ",
@@ -321,21 +345,37 @@ export async function action({ request }) {
 											product_title: productItem.title,
 											product_url: productItem.handle,
 											status: status,
-											is_imported: true,
-											imported_app: subActionType,
-											verify_badge: true,
-											createdAt: item.review_date,
-											replyText: item.reply,
-											replied_at: item.reply_date
 										});
-										const result = await productReviewModel.save();
+										if (!existingReview) {
 
-										const insertedId = result._id;
+											const productReviewModel = new productReviews({
+												shop_id: shopRecords._id,
+												first_name: userNames[0] || " ",
+												last_name: userNames[1] || " ",
+												display_name: item.reviewer_name,
+												email: item.reviewer_email || " ",
+												description: item.body,
+												customer_locale: customer_locale,
+												rating: item.rating,
+												product_id: productItem.id,
+												product_title: productItem.title,
+												product_url: productItem.handle,
+												status: status,
+												is_imported: true,
+												imported_app: subActionType,
+												verify_badge: true,
+												createdAt: item.review_date,
+												replyText: item.reply,
+												replied_at: item.reply_date
+											});
+											const result = await productReviewModel.save();
 
-										if (item.picture_urls) {
-											await insertProductReviewDocuments(item.picture_urls, uploadsDir, insertedId);
+											const insertedId = result._id;
+
+											if (item.picture_urls) {
+												await insertProductReviewDocuments(item.picture_urls, uploadsDir, insertedId);
+											}
 										}
-									} else {
 									}
 
 								}));
@@ -347,7 +387,7 @@ export async function action({ request }) {
 										const userNames = item.name.split(/[\s*]{3}|\s+/);
 
 										const status = item.status == "approved" ? "publish" : "unpublish";
-										const productReviewModel = new productReviews({
+										const existingReview = await productReviews.findOne({
 											shop_id: shopRecords._id,
 											first_name: userNames[0] || " ",
 											last_name: userNames[1] || " ",
@@ -360,25 +400,40 @@ export async function action({ request }) {
 											product_title: productItem.title,
 											product_url: productItem.handle,
 											status: status,
-											is_imported: true,
-											imported_app: subActionType,
-											verify_badge: item.isVerifiedBuyer == "TRUE" ? true : false,
-											createdAt: item.dateCreated,
-											replyText: item.reply,
-											replied_at: item.replyDateCreated
 										});
-										const result = await productReviewModel.save();
+										if (!existingReview) {
+											const productReviewModel = new productReviews({
+												shop_id: shopRecords._id,
+												first_name: userNames[0] || " ",
+												last_name: userNames[1] || " ",
+												display_name: item.name,
+												email: item.email || " ",
+												description: item.body,
+												customer_locale: customer_locale,
+												rating: item.rating,
+												product_id: productItem.id,
+												product_title: productItem.title,
+												product_url: productItem.handle,
+												status: status,
+												is_imported: true,
+												imported_app: subActionType,
+												verify_badge: item.isVerifiedBuyer == "TRUE" ? true : false,
+												createdAt: item.dateCreated,
+												replyText: item.reply,
+												replied_at: item.replyDateCreated
+											});
+											const result = await productReviewModel.save();
 
-										const insertedId = result._id;
+											const insertedId = result._id;
 
-										if (item.imageUrls) {
-											await insertProductReviewDocuments(item.imageUrls, uploadsDir, insertedId);
+											if (item.imageUrls) {
+												await insertProductReviewDocuments(item.imageUrls, uploadsDir, insertedId);
+											}
+
+											if (item.videoUrls) {
+												await insertProductReviewDocuments(item.videoUrls, uploadsDir, insertedId);
+											}
 										}
-
-										if (item.videoUrls) {
-											await insertProductReviewDocuments(item.videoUrls, uploadsDir, insertedId);
-										}
-									} else {
 									}
 
 								}));
@@ -389,7 +444,7 @@ export async function action({ request }) {
 										const productItem = productDetails[item.product_handle];
 
 										const status = item.state == "approved" ? "publish" : "unpublish";
-										const productReviewModel = new productReviews({
+										const existingReview = await productReviews.findOne({
 											shop_id: shopRecords._id,
 											first_name: item.first_name,
 											last_name: item.last_name || " ",
@@ -402,23 +457,38 @@ export async function action({ request }) {
 											product_title: productItem.title,
 											product_url: productItem.handle,
 											status: status,
-											is_imported: true,
-											imported_app: subActionType,
-											verify_badge: item.verified_buyer == "TRUE" ? true : false,
-											createdAt: item.created_at
 										});
-										const result = await productReviewModel.save();
+										if (!existingReview) {
+											const productReviewModel = new productReviews({
+												shop_id: shopRecords._id,
+												first_name: item.first_name,
+												last_name: item.last_name || " ",
+												display_name: `${item.first_name || ""} ${item.last_name || ""}`.trim(),
+												email: item.email || " ",
+												description: item.body,
+												customer_locale: customer_locale,
+												rating: item.rating,
+												product_id: productItem.id,
+												product_title: productItem.title,
+												product_url: productItem.handle,
+												status: status,
+												is_imported: true,
+												imported_app: subActionType,
+												verify_badge: item.verified_buyer == "TRUE" ? true : false,
+												createdAt: item.created_at
+											});
+											const result = await productReviewModel.save();
 
-										const insertedId = result._id;
+											const insertedId = result._id;
 
-										if (item.photo_urls) {
-											await insertProductReviewDocuments(item.photo_urls, uploadsDir, insertedId, subActionType, 'img');
+											if (item.photo_urls) {
+												await insertProductReviewDocuments(item.photo_urls, uploadsDir, insertedId, subActionType, 'img');
+											}
+
+											if (item.video_urls) {
+												await insertProductReviewDocuments(item.video_urls, uploadsDir, insertedId, subActionType, 'video');
+											}
 										}
-
-										if (item.video_urls) {
-											await insertProductReviewDocuments(item.video_urls, uploadsDir, insertedId, subActionType, 'video');
-										}
-									} else {
 									}
 
 								}));
@@ -429,12 +499,9 @@ export async function action({ request }) {
 									}
 									if (productDetails && productDetails[item['Product Handle']] && item['Review Score'] && item['Review Content'] && item['Review Creation Date'] && item['Reviewer Display Name'] && item['Reviewer Email']) {
 										const productItem = productDetails[item['Product Handle']];
-
 										const status = item['Review Status'] == "Published" ? "publish" : "unpublish";
-
 										const userNames = item['Reviewer Display Name'].split(/[\s*]{3}|\s+/);
-
-										const productReviewModel = new productReviews({
+										const existingReview = await productReviews.findOne({
 											shop_id: shopRecords._id,
 											first_name: userNames[0],
 											last_name: userNames[1] || " ",
@@ -447,27 +514,42 @@ export async function action({ request }) {
 											product_title: productItem.title,
 											product_url: productItem.handle,
 											status: status,
-											is_imported: true,
-											imported_app: subActionType,
-											verify_badge: true,
-											createdAt: isValidDateFormat(item['Review Creation Date']),
-											replyText: item['Comment Content'],
-											replied_at: item['Comment Date'] ? isValidDateFormat(item['Comment Date']) : null
 										});
-										const result = await productReviewModel.save();
+										if (!existingReview) {
 
-										const insertedId = result._id;
+											const productReviewModel = new productReviews({
+												shop_id: shopRecords._id,
+												first_name: userNames[0],
+												last_name: userNames[1] || " ",
+												display_name: item['Reviewer Display Name'],
+												email: item['Reviewer Email'] || " ",
+												description: item['Review Content'],
+												customer_locale: customer_locale,
+												rating: item['Review Score'],
+												product_id: productItem.id,
+												product_title: productItem.title,
+												product_url: productItem.handle,
+												status: status,
+												is_imported: true,
+												imported_app: subActionType,
+												verify_badge: true,
+												createdAt: isValidDateFormat(item['Review Creation Date']),
+												replyText: item['Comment Content'],
+												replied_at: item['Comment Date'] ? isValidDateFormat(item['Comment Date']) : null
+											});
+											const result = await productReviewModel.save();
 
-										if (item['Published Image URLs']) {
-											await insertProductReviewDocuments(item['Published Image URLs'], uploadsDir, insertedId, subActionType);
+											const insertedId = result._id;
+
+											if (item['Published Image URLs']) {
+												await insertProductReviewDocuments(item['Published Image URLs'], uploadsDir, insertedId, subActionType);
+											}
+
+											if (item['Published Video URLs']) {
+												await insertProductReviewDocuments(item['Published Video URLs'], uploadsDir, insertedId, subActionType);
+											}
 										}
-
-										if (item['Published Video URLs']) {
-											await insertProductReviewDocuments(item['Published Video URLs'], uploadsDir, insertedId, subActionType);
-										}
-									} else {
 									}
-
 								}));
 							}
 						};
@@ -517,7 +599,7 @@ function convertToCSV(data) {
 async function insertProductReviewDocuments(photo_url, uploads_dir, review_id, subActionType = "", type = "") {
 	try {
 		let urls = "";
-		if(subActionType == 'yotpo') {
+		if (subActionType == 'yotpo') {
 			urls = photo_url.split(';');
 		} else {
 			urls = photo_url.split(',');
@@ -575,7 +657,7 @@ async function uploadDocuments(photo_url, uploads_dir, subActionType = "", type 
 		fileName = fileName.split('?')[0];
 
 		const savePath = path.resolve(uploads_dir, fileName);
-		
+
 		const url = photo_url;
 		const response = await axios({
 			url,

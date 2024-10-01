@@ -15,6 +15,7 @@ import settingJson from './../utils/settings.json';
 import emailDiscountPhotoVideoReviewSettings from "./models/emailDiscountPhotoVideoReviewSettings";
 import emailPhotovideoReminderSettings from "./models/emailPhotovideoReminderSettings";
 import emailDiscountPhotoVideoReviewReminderSettings from "./models/emailDiscountPhotoVideoReviewReminderSettings";
+import emailResendReviewRequestSettings from "./models/emailResendReviewRequestSettings";
 
 export async function loader() {
     return json({
@@ -180,7 +181,22 @@ export async function action({ params, request }) {
 
                     return json({ status: 200, message: "Setting saved" });
 
+                } else if (actionType == 'resendReviewRequestReminder') {
+                    const query = { shop_id: shopRecords._id };
+                    const update = {
+                        $set: {
+                            [`${language}.${requestBody.field}`]: requestBody.value
+                        }
+                    };
+                    const options = { upsert: true, returnOriginal: false };
+                    await emailResendReviewRequestSettings.findOneAndUpdate(query, update, options);
+
+                    return json({ status: 200, message: "Setting saved" });
+
                 }
+
+
+                
                 
             } catch (error) {
 

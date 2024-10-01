@@ -10,6 +10,7 @@ import marketingEmailSubscriptions from './../routes/models/marketingEmailSubscr
 import emailReviewRequestReminderSettings from './../routes/models/emailReviewRequestReminderSettings';
 import emailDiscountPhotoVideoReviewReminderSettings from './../routes/models/emailDiscountPhotoVideoReviewReminderSettings';
 import emailPhotovideoReminderSettings from './../routes/models/emailPhotovideoReminderSettings';
+import emailResendReviewRequestSettings from './../routes/models/emailResendReviewRequestSettings';
 
 import settingJson from './../utils/settings.json';
 import { getCurrentDate, getCustomFormattedEndDateTime } from './dateFormat';
@@ -412,7 +413,17 @@ export async function getLanguageWiseContents(type, replaceVars, shop_id, locale
 		const transalationData = transalationContent.photoVideoReminderEmail;
 		emailContents = await replaceEmailDiscountPhotoVideoReviewReminder(replaceVars, settingJsonData, transalationData);
 
+	} else if (type == 'resend_review_request') {
+		const emailResendReviewRequestSettingsModel = await emailResendReviewRequestSettings.findOne({ shop_id: shop_id });
+		if (emailResendReviewRequestSettingsModel && emailResendReviewRequestSettingsModel[locale]) {
+			settingJsonData = emailResendReviewRequestSettingsModel[locale];
+		}
+		const transalationData = transalationContent.resendReviewRequestReminderEmail;
+		emailContents = await replaceEmailReviewRequest(replaceVars, settingJsonData, transalationData);
+
 	}
+
+	
 	emailContents.unsubscribeText = transalationContent.unsubscriptionText
 	return emailContents;
 
