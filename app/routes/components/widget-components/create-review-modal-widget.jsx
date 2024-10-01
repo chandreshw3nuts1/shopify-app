@@ -16,6 +16,8 @@ import FaceStar2 from "../images/FaceStar2";
 import FaceStar3 from "../images/FaceStar3";
 import FaceStar4 from "../images/FaceStar4";
 import FaceStar5 from "../images/FaceStar5";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import settingsJson from './../../../utils/settings.json';
 
@@ -153,7 +155,7 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                                         </span>
                                                         <span className="revbtn w3loadingblock d-none">
                                                             <div id="loading-icon" class="loading-icon">
-                                                                <i class="fas fa-spinner fa-spin"></i> {translations.reviewFormSettings.uploadingFiles}
+                                                                <FontAwesomeIcon icon={faSpinner} spin /> {translations.reviewFormSettings.uploadingFiles}
                                                             </div>
                                                         </span>
                                                     </div>
@@ -168,7 +170,7 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                             </div>
 
                                             <div className="discountrow uploadDocSizeError d-none">
-                                                <div className="discountbox"><strong>{ translations.reviewFormSettings.uploadMediaSizeError}</strong></div>
+                                                <div className="discountbox"><strong>{translations.reviewFormSettings.uploadMediaSizeError}</strong></div>
                                             </div>
 
 

@@ -57,8 +57,10 @@ export async function action({ request }) {
 						if (files[i].name != "" && files[i].name != null) {
 							const randomName = await generateRandomCode(10);
 							const fileSize = files[i].size;
-							const fileName = randomName + "-" + files[i].name;
-							const fileExtension = fileName.split('.').pop().toLowerCase();
+							const originalFileName = files[i].name;
+							const fileExtension = originalFileName.split('.').pop().toLowerCase();
+							const fileName = randomName + "." + fileExtension;
+
 							if ((generalSettingsModel.is_enabled_video_review && (validImageExtensions.includes(fileExtension) || validVideoExtensions.includes(fileExtension))) || (generalSettingsModel.is_enabled_video_review == false && validImageExtensions.includes(fileExtension))) {
 								const filePath = path.join(uploadsDir, fileName);
 								const buffer = Buffer.from(await files[i].arrayBuffer());

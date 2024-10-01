@@ -649,3 +649,10 @@ form textarea.input_text { height: 80px; padding-top: 8px; padding-bottom: 8px;}
 .w3-popup-modal-widget .itemwrap .product-container .textpro { font-size: 14px; color: var(--darkColor); font-weight: 600; margin: 0; padding: 0;}
 
 .pagination-wrapper .pagination { display: block;}
+
+.w3loadingblock .loading-icon svg {
+    display: var(--fa-display, inline-block);
+    height: 1em;
+    overflow: visible;
+    vertical-align: -0.125em;
+}
