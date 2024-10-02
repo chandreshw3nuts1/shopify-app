@@ -3,11 +3,11 @@
 client_id = "177ac2a00973ba8fc0c323f490150da3"
 name = "kritic-app"
 handle = "kritic-app"
-application_url = "https://shopify-app-git-devchandres-a15ed6-chandreshs-projects-d1cee0ac.vercel.app"
+application_url = "https://shopify-app-nu-five.vercel.app"
 embedded = true
 
 [build]
-automatically_update_urls_on_dev = true
+automatically_update_urls_on_dev = false
 dev_store_url = "chandstest.myshopify.com"
 include_config_on_deploy = true
 
@@ -17,16 +17,16 @@ scopes = "read_customers,read_fulfillments,read_locations,read_orders,read_produ
 
 [auth]
 redirect_urls = [
-  "https://shopify-app-git-devchandres-a15ed6-chandreshs-projects-d1cee0ac.vercel.app/auth/callback",
-  "https://shopify-app-git-devchandres-a15ed6-chandreshs-projects-d1cee0ac.vercel.app/auth/shopify/callback",
-  "https://shopify-app-git-devchandres-a15ed6-chandreshs-projects-d1cee0ac.vercel.app/api/auth/callback"
+  "https://shopify-app-nu-five.vercel.app/auth/callback",
+  "https://shopify-app-nu-five.vercel.app/auth/shopify/callback",
+  "https://shopify-app-nu-five.vercel.app/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2024-07"
 
 [app_proxy]
-url = "https://shopify-app-git-devchandres-a15ed6-chandreshs-projects-d1cee0ac.vercel.app/api"
+url = "https://shopify-app-nu-five.vercel.app/api"
 subpath = "w3-proxy"
 prefix = "apps"
 

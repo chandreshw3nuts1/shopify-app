@@ -1,4 +1,4 @@
-import "@shopify/shopify-app-remix/adapters/node";
+import "@shopify/shopify-app-remix/adapters/vercel";
 import {storeShopDetails} from './utils/shopifyInstallApp';
 
 import {
