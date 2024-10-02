@@ -1,5 +1,4 @@
 import { json } from "@remix-run/node";
-import { GraphQLClient } from 'graphql-request';
 import { ObjectId } from 'mongodb';
 import ReactDOMServer from 'react-dom/server';
 import ProductReviewWidget from './components/widget-components/product-review-widget';

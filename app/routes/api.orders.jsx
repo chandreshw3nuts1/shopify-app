@@ -1,10 +1,7 @@
 import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
-import { GraphQLClient } from "graphql-request";
 import { findOneRecord, getShopifyProducts, getLanguageWiseContents, generateUnsubscriptionLink } from "./../utils/common";
-import ReplyEmailTemplate from './components/email/ReplyEmailTemplate';
 import ReactDOMServer from 'react-dom/server';
-import { ObjectId } from 'mongodb';
 import manualReviewRequests from "./models/manualReviewRequests";
 import manualRequestProducts from "./models/manualRequestProducts";
 import generalAppearances from "./models/generalAppearances";
