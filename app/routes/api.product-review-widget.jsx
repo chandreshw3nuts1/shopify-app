@@ -230,10 +230,14 @@ export async function action({ request }) {
 								var discountEmailHtmlContent = ReactDOMServer.renderToStaticMarkup(
 									<DiscountPhotoVideoReviewEmail emailContents={emailContentsDiscount} generalAppearancesObj={generalAppearancesData} shopRecords={shopRecords} />
 								);
+								const fromName = shopRecords.name;
+								const replyTo = generalSettingsModel.reply_email || shopRecords.email;
 								const emailResponse = await sendEmail({
 									to: productReviewsModel.email,
 									subject: emailContentsDiscount.subject,
 									html: discountEmailHtmlContent,
+									fromName,
+									replyTo
 								});
 
 								if (discountCodeResponse?.id) {
@@ -290,7 +294,6 @@ export async function action({ request }) {
 					const is_resubmit_review_request = formData.get('reviewId') ? true : false;
 
 					const productNodes = productsDetails[0];
-
 					const generalAppearancesData = await generalAppearances.findOne({ shop_id: shopRecords._id });
 					const logo = getUploadDocument(generalAppearancesData.logo, shopRecords.shop_id, 'logo');
 
@@ -384,7 +387,7 @@ export async function action({ request }) {
 									description: formData.get('description'),
 									customer_locale: customer_locale,
 									rating: reviewStarRating,
-									is_resend_review_submitted : true,
+									is_resend_review_submitted: true,
 								},
 							},
 							{ upsert: true } // upsert option and return updated document
@@ -502,10 +505,14 @@ export async function action({ request }) {
 							var discountEmailHtmlContent = ReactDOMServer.renderToStaticMarkup(
 								<DiscountPhotoVideoReviewEmail emailContents={emailContentsDiscount} generalAppearancesObj={generalAppearancesData} shopRecords={shopRecords} />
 							);
+							const fromName = shopRecords.name;
+							const replyTo = generalSettingsModel.reply_email || shopRecords.email;
 							const emailResponse = await sendEmail({
 								to: formData.get('email'),
 								subject: emailContentsDiscount.subject,
 								html: discountEmailHtmlContent,
+								fromName,
+								replyTo
 							});
 
 							if (discountCodeResponse?.id) {
@@ -619,11 +626,12 @@ export async function action({ request }) {
 						const emailHtml = ReactDOMServer.renderToStaticMarkup(
 							<EmailTemplate emailContents={emailContents} />
 						);
-
+						const fromName = process.env.SHOPIFY_APP_NAME;
 						const response = await sendEmail({
 							to: email,
 							subject,
 							html: emailHtml,
+							fromName
 						});
 					}
 

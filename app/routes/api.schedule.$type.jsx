@@ -190,10 +190,15 @@ export async function action({ request, params }) {
 
                                         // Send request email
                                         const subject = emailContents.subject;
+                                        const fromName = shop.name;
+                                        const replyTo = generalSettingsModel.reply_email || shopRecords.email;
+
                                         const response = await sendEmail({
                                             to: singleOrder.email,
                                             subject,
                                             html: emailHtmlContent,
+                                            fromName,
+                                            replyTo
                                         });
 
                                         if (singleOrder.manualRequestProducts.length == productIdList.length) {
@@ -383,10 +388,15 @@ export async function action({ request, params }) {
 
                                         // Send request email
                                         const subject = emailContents.subject;
+                                        const fromName = shop.name;
+                                        const replyTo = generalSettingsModel.reply_email || shopRecords.email;
+
                                         const response = await sendEmail({
                                             to: singleOrder.email,
                                             subject,
                                             html: emailHtmlContent,
+                                            fromName,
+                                            replyTo
                                         });
 
 
@@ -528,10 +538,16 @@ export async function action({ request, params }) {
                                     var discountEmailHtmlContent = ReactDOMServer.renderToStaticMarkup(
                                         <DiscountPhotoVideoReviewEmail emailContents={emailContentsDiscount} generalAppearancesObj={generalAppearancesObj} shopRecords={shop} />
                                     );
+
+                                    const fromName = shop.name;
+                                    const replyTo = generalSettingsModel.reply_email || shopRecords.email;
+
                                     const emailResponse = await sendEmail({
                                         to: singleDiscountItem.email,
                                         subject: emailContentsDiscount.subject,
                                         html: discountEmailHtmlContent,
+                                        fromName,
+                                        replyTo
                                     });
 
                                     /* Update reminder sent status*/
@@ -689,11 +705,15 @@ export async function action({ request, params }) {
 
                                         // Send request email
                                         const subject = emailContents.subject;
+                                        const fromName = shop.name;
+                                        const replyTo = generalSettingsModel.reply_email || shopRecords.email;
 
                                         const response = await sendEmail({
                                             to: singleReview.email,
                                             subject,
                                             html: emailHtmlContent,
+                                            fromName,
+                                            replyTo
                                         });
 
                                         /*Update reminder sent status */
@@ -717,9 +737,7 @@ export async function action({ request, params }) {
                     const shopDetailsModel = await shopDetails.find({});
 
                     const fourteenDaysAgo = new Date();
-                    console.log(fourteenDaysAgo);
                     fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - settingsJson.autoPublishAfterDays);
-                    console.log(fourteenDaysAgo);
                     for (const shop of shopDetailsModel) {
 
                         const settingModel = await settings.findOne({
@@ -733,13 +751,11 @@ export async function action({ request, params }) {
                                     createdAt: { $lte: fourteenDaysAgo }
                                 },
                                 {
-                                    $set: { status: "publish" } 
+                                    $set: { status: "publish" }
                                 }
                             );
-                            console.log(settingModel.autoPublishReview);
 
                         }
-                        
 
                     }
                     return json({ "status": 200, "message": "success" });

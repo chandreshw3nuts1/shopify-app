@@ -145,7 +145,7 @@ const ReviewItem = (props) => {
                                                     }
                                                 </div>
                                                 <div className='review_bottomwrap'>
-                                                    {(props.formParams.hideProductThumbnails != 'true') &&
+                                                    {(props.formParams.hideProductThumbnails != 'true' && review.productDetails) &&
                                                         <div className="product-container product-thumb-detail">
                                                             <div className="image flxfix">
                                                                 {review.productDetails?.images?.edges?.[0]?.node?.transformedSrc &&
@@ -245,7 +245,7 @@ const ReviewItem = (props) => {
                                                     </div>
                                                 </div>
                                                 <div className='review_bottomwrap'>
-                                                    {(props.formParams.hideProductThumbnails != 'true') &&
+                                                    {(props.formParams.hideProductThumbnails != 'true' && review.productDetails) &&
                                                         <div className="product-container product-thumb-detail">
                                                             <div className="image flxfix">
                                                                 {review.productDetails?.images?.edges?.[0]?.node?.transformedSrc &&

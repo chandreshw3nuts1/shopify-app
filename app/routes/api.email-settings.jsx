@@ -6,7 +6,7 @@ import emailReviewReplySettings from './models/emailReviewReplySettings';
 import generalAppearances from "./models/generalAppearances";
 import generalSettings from './models/generalSettings';
 
-import { getShopDetailsByShop, getLanguageWiseContents, generateUnsubscriptionLink } from './../utils/common';
+import { getShopDetailsByShop, getLanguageWiseContents } from './../utils/common';
 import { sendEmail } from "./../utils/email.server";
 import ReactDOMServer from 'react-dom/server';
 import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTemplate';
@@ -80,19 +80,19 @@ export async function action({ params, request }) {
                     });
                     const email = settingsModel?.reviewNotificationEmail || shopRecords.email;
 
-                    const unsubscribeData = {
-                        "shop_id": shopRecords.shop_id,
-                        "email": email,
-                    }
-                    const unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
-                    emailHtmlContent = emailHtmlContent.replace(`{{unsubscriptionLink}}`, unsubscriptionLink);
+                    emailHtmlContent = emailHtmlContent.replace(`{{unsubscriptionLink}}`, '#');
 
                     // Send request email
                     const subject = emailContents.subject;
+                    const fromName = shopRecords.name;
+                    const replyTo = generalSettingsModel.reply_email || shopRecords.email;
+
                     const response = await sendEmail({
                         to: email,
                         subject,
                         html: emailHtmlContent,
+                        fromName,
+                        replyTo
                     });
 
                     return json({ status: 200, message: "Sample review request email sent" });
@@ -196,8 +196,8 @@ export async function action({ params, request }) {
                 }
 
 
-                
-                
+
+
             } catch (error) {
 
                 return json({ "status": 400, "message": "Failed to update record", error: error });

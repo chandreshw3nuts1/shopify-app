@@ -154,7 +154,7 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                                             {generalSettingsModel.is_enabled_video_review ? languageContent('addPhotoVideoButtonText') : languageContent('addPhotoButtonText')}
                                                         </span>
                                                         <span className="revbtn w3loadingblock d-none">
-                                                            <div id="loading-icon" class="loading-icon">
+                                                            <div id="loading-icon" className="loading-icon">
                                                                 <FontAwesomeIcon icon={faSpinner} spin /> {translations.reviewFormSettings.uploadingFiles}
                                                             </div>
                                                         </span>

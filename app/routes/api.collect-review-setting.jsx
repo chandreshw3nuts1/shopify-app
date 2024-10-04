@@ -108,10 +108,15 @@ export async function action({ params, request }) {
 
                             // Send request email
                             const subject = requestBody.requestEmailSubject != "" ? requestBody.requestEmailSubject : emailContents.subject;
+                            
+                            const fromName = shopRecords.name;
+                            const replyTo = generalSettingsModel.reply_email || shopRecords.email;
                             const response = await sendEmail({
                                 to: email,
                                 subject,
                                 html: emailHtmlContent,
+                                fromName,
+                                replyTo
                             });
                         });
 

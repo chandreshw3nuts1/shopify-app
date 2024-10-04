@@ -1,7 +1,7 @@
 import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
 import { GraphQLClient } from "graphql-request";
-import { findOneRecord, getShopifyProducts, getLanguageWiseContents, generateUnsubscriptionLink } from "./../utils/common";
+import { findOneRecord, getShopifyProducts, getLanguageWiseContents, generateUnsubscriptionLink, checkEmailToSendUser } from "./../utils/common";
 import ReplyEmailTemplate from './components/email/ReplyEmailTemplate';
 import ReactDOMServer from 'react-dom/server';
 import { ObjectId } from 'mongodb';
@@ -57,43 +57,49 @@ export async function action({ request }) {
 
 						const productReviewsItem = await productReviews.findOne({ _id: requestBody.review_id });
 						const shopRecords = await findOneRecord("shop_details", { "_id": productReviewsItem.shop_id });
-						const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
-						const replaceVars = {
-							"name": productReviewsItem.display_name,
-							"product": productReviewsItem.product_title,
-							"reply_content": requestBody.reply,
+						if (await checkEmailToSendUser(productReviewsItem.email, shopRecords)) {
+							const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
+							const replaceVars = {
+								"name": productReviewsItem.display_name,
+								"product": productReviewsItem.product_title,
+								"reply_content": requestBody.reply,
+							}
+							const customer_locale = productReviewsItem.customer_locale ? productReviewsItem.customer_locale : "en";
+							const emailContents = await getLanguageWiseContents("review_reply", replaceVars, productReviewsItem.shop_id, productReviewsItem.customer_locale);
+							emailContents.banner = getUploadDocument(emailContents.banner, shopRecords.shop_id, 'banners');
+
+							const generalAppearancesObj = await generalAppearances.findOne({ shop_id: productReviewsItem.shop_id });
+							const logo = getUploadDocument(generalAppearancesObj.logo, shopRecords.shop_id, 'logo');
+							emailContents.logo = logo;
+
+							const subject = emailContents.subject;
+
+							var footerContent = "";
+							if (generalSettingsModel.email_footer_enabled) {
+								footerContent = generalSettingsModel[customer_locale] ? generalSettingsModel[customer_locale].footerText : "";
+							}
+							emailContents.footerContent = footerContent;
+							emailContents.email_footer_enabled = generalSettingsModel.email_footer_enabled;
+
+							const unsubscribeData = {
+								"shop_id": shopRecords.shop_id,
+								"email": productReviewsItem.email,
+							}
+							emailContents.unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
+
+							const emailHtml = ReactDOMServer.renderToStaticMarkup(
+								<ReplyEmailTemplate emailContents={emailContents} generalAppearancesObj={generalAppearancesObj} />
+							);
+							const fromName = shopRecords.name;
+							const replyTo = generalSettingsModel.reply_email || shopRecords.email;
+							const response = await sendEmail({
+								to: productReviewsItem.email,
+								subject,
+								html: emailHtml,
+								fromName,
+								replyTo
+							});
 						}
-						const customer_locale = productReviewsItem.customer_locale ? productReviewsItem.customer_locale : "en";
-						const emailContents = await getLanguageWiseContents("review_reply", replaceVars, productReviewsItem.shop_id, productReviewsItem.customer_locale);
-						emailContents.banner = getUploadDocument(emailContents.banner, shopRecords.shop_id, 'banners');
-
-						const generalAppearancesObj = await generalAppearances.findOne({ shop_id: productReviewsItem.shop_id });
-						const logo = getUploadDocument(generalAppearancesObj.logo, shopRecords.shop_id, 'logo');
-						emailContents.logo = logo;
-
-						const subject = emailContents.subject;
-
-						var footerContent = "";
-						if (generalSettingsModel.email_footer_enabled) {
-							footerContent = generalSettingsModel[customer_locale] ? generalSettingsModel[customer_locale].footerText : "";
-						}
-						emailContents.footerContent = footerContent;
-						emailContents.email_footer_enabled = generalSettingsModel.email_footer_enabled;
-
-						const unsubscribeData = {
-							"shop_id": shopRecords.shop_id,
-							"email": productReviewsItem.email,
-						}
-						emailContents.unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
-
-						const emailHtml = ReactDOMServer.renderToStaticMarkup(
-							<ReplyEmailTemplate emailContents={emailContents} generalAppearancesObj={generalAppearancesObj} />
-						);
-						const response = await sendEmail({
-							to: productReviewsItem.email,
-							subject,
-							html: emailHtml,
-						});
 
 						var msg = "Your reply added!";
 					}
@@ -360,7 +366,7 @@ export async function action({ request }) {
 							}
 
 							const emailContents = await getLanguageWiseContents("resend_review_request", replaceVars, shopRecords._id, customer_locale);
-							
+
 							emailContents.banner = getUploadDocument(emailContents.banner, shopRecords.shop_id, 'banners');
 							emailContents.logo = logo;
 
@@ -376,7 +382,7 @@ export async function action({ request }) {
 							emailContents.footerContent = footerContent;
 							emailContents.email_footer_enabled = generalSettingsModel.email_footer_enabled;
 
-							
+
 							var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
 								<ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} />
 							);
@@ -385,7 +391,7 @@ export async function action({ request }) {
 							emailHtmlContent = emailHtmlContent.replace(`{{review_link_${productReviewsModel.product_id}}}`, reviewLink);
 							const variantTitle = productReviewsModel.variant_title ? productReviewsModel.variant_title : "";
 							emailHtmlContent = emailHtmlContent.replace(`{{variant_title_${productReviewsModel.product_id}}}`, variantTitle);
-							
+
 							const email = productReviewsModel.email;
 
 							const unsubscribeData = {
@@ -447,7 +453,7 @@ export async function action({ request }) {
 						if (data.productByHandle != null) {
 							const newProductData = data.productByHandle;
 							const newProductId = newProductData.id.split('/').pop();
-							const newProductUrl = `/products/${newProductData.handle}`;
+							const newProductUrl = `${newProductData.handle}`;
 
 
 							await productReviews.updateOne(
@@ -604,6 +610,8 @@ export async function action({ request }) {
 								status: { $first: "$status" },
 								replyText: { $first: "$replyText" },
 								product_id: { $first: "$product_id" },
+								product_title: { $first: "$product_title" },
+								product_url: { $first: "$product_url" },
 								is_review_request: { $first: "$is_review_request" },
 								tag_as_feature: { $first: "$tag_as_feature" },
 								verify_badge: { $first: "$verify_badge" },
@@ -654,6 +662,8 @@ export async function action({ request }) {
 								images: 1,
 								replyText: 1,
 								product_id: 1,
+								product_title: 1,
+								product_url: 1,
 								is_review_request: 1,
 								tag_as_feature: 1,
 								verify_badge: 1,
@@ -673,34 +683,11 @@ export async function action({ request }) {
 					]);
 
 
-					//return reviewItems;
 					var hasMore = 0;
 					var mapProductDetails = {};
 					if (reviewItems.length > 0) {
-						// const shopSessionRecords = await findOneRecord("shopify_sessions", {"shop" : shop});
-
 						var hasMore = 1;
-						const uniqueProductIds = [...new Set(reviewItems.map(item => item.product_id))];
-
-						const productIds = uniqueProductIds.map((item) => `"gid://shopify/Product/${item}"`);
-						var productsDetails = await getShopifyProducts(shop, productIds);
-
-						if (productsDetails.length > 0) {
-							productsDetails.forEach(node => {
-								if (node) {
-									const id = node.id.split('/').pop();
-									mapProductDetails[id] = node;
-								}
-
-							});
-						}
 					}
-
-					reviewItems.map(items => {
-						items.productDetails = mapProductDetails[items.product_id];
-						return items;
-					});
-
 					return json({ reviewItems, totalReviewItems, hasMore });
 				}
 

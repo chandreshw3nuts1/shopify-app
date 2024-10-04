@@ -871,14 +871,21 @@ export function decryptData(encryptedData, secretKey) {
 	return JSON.parse(decrypted.toString());
 }
 
-
-// check email to send user or not 
+// check email to send user or not
 export async function checkEmailToSendUser(email = "", shopRecords) {
 	const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
+	const marketingEmailSubscriptionsModel = await marketingEmailSubscriptions.findOne({ shop_id: shopRecords._id, email: email });
 	let sendEmailStatus = false;
-	if (generalSettingsModel.send_email_type == "everyone") {
+	if (generalSettingsModel.send_email_type == "everyone" || (marketingEmailSubscriptionsModel && marketingEmailSubscriptionsModel?.isEmailConcent == true) ) {
 		sendEmailStatus = true;
 	}
-	const marketingEmailSubscriptionsModel = await marketingEmailSubscriptions.findOne({ shop_id: shopRecords._id, email: email });
+	var isSubscribed = true;
+	if (marketingEmailSubscriptionsModel && marketingEmailSubscriptionsModel?.isSubscribed == false) {
+		isSubscribed = false;
+	}
+	if (isSubscribed && sendEmailStatus) {
+		return true;
+	}
 
+	return false;
 }

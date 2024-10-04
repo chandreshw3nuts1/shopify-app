@@ -80,6 +80,8 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 			actionType: "addReviewReply",
 			subActionType: isUpdatingReply && "editReview"
 		};
+		setReplyValueError(true);
+
 		const response = await fetch(`/api/manage-review`, {
 			method: 'POST',
 			headers: {
@@ -98,7 +100,6 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 				isError: true
 			});
 		}
-		setReplyValueError(true);
 		setReplyText('');
 		setShowReplayModal(false);
 		setFilteredReviews(filteredReviews.map((item, idx) =>
@@ -516,7 +517,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 										}
 										<h4 className="fleflexi">
 											<strong>{result.first_name} {result.last_name}</strong> about <strong>
-												{result.productDetails ? <a href={`https://${shopRecords.shop}/products/${result.productDetails.handle}`} target="_blank"> {result.productDetails.title} </a> : ''}</strong>
+												{result.product_id ? <a href={`https://${shopRecords.shop}/products/${result.product_url}`} target="_blank"> {result.product_title} </a> : ''}</strong>
 										</h4>
 									</div>
 									<div className="displayname">Display name: {reviewersNameFormat(result.first_name, result.last_name, shopRecords.reviewers_name_format)}</div>

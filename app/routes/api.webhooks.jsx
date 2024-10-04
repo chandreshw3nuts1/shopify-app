@@ -8,6 +8,7 @@ import manualRequestProducts from './../routes/models/manualRequestProducts';
 import shopDetails from './../routes/models/shopDetails';
 import discountCodes from './../routes/models/discountCodes';
 import reviewDiscountSettings from './../routes/models/reviewDiscountSettings';
+import marketingEmailSubscriptions from './../routes/models/marketingEmailSubscriptions';
 
 export async function action({ request }) {
 	const hmacHeader = request.headers.get('X-Shopify-Hmac-Sha256');
@@ -82,7 +83,16 @@ export async function action({ request }) {
 
 
 		}
-
+		
+		var country_code = "";
+		// Check if shipping_address exists and if country_code is available, otherwise use the customer's default address country_code
+		if (bodyObj?.shipping_address?.country_code) {
+			country_code = bodyObj.shipping_address.country_code;
+		} else if (bodyObj?.customer?.default_address?.country_code) {
+			country_code = bodyObj.customer.default_address.country_code;
+		} else {
+			country_code = "";  // Fallback to empty string if neither exist
+		}
 
 		const manualReviewRequestsModel = await manualReviewRequests({
 			shop_id: shopRecords._id,
@@ -90,7 +100,7 @@ export async function action({ request }) {
 			first_name: bodyObj.customer.first_name,
 			last_name: bodyObj.customer.last_name,
 			customer_locale: language,
-			country_code: bodyObj.shipping_address.country_code,
+			country_code: country_code,
 			order_id: bodyObj.id,
 			order_number: bodyObj.order_number,
 			request_status: "pending",
@@ -120,6 +130,18 @@ export async function action({ request }) {
 
 		}
 
+
+		/*update email marketing consert*/
+		await marketingEmailSubscriptions.updateOne(
+			{
+				shop_id: shopRecords._id,
+				email: bodyObj.customer.email,
+			},
+			{
+				$set: { isEmailConcent: bodyObj.buyer_accepts_marketing }
+			},
+			{ upsert: true }
+		);
 
 
 	} else if (topic == 'orders/partially_fulfilled' || topic == 'orders/fulfilled') {

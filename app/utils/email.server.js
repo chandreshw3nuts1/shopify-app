@@ -1,8 +1,7 @@
 import nodemailer from "nodemailer";
 
-
 const transporter = nodemailer.createTransport({
-  host: 'smtp.ethereal.email',
+  host: process.env.EMAIL_HOST,
   port: 587,
   auth: {
     user: process.env.EMAIL_USER,
@@ -10,12 +9,14 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-export async function sendEmail({ to, subject, html }) {
+export async function sendEmail({to, subject, html, fromName, replyTo="" }) {
+
   const mailOptions = {
-    from: `"Your Name" <${process.env.EMAIL_USER}>`, // Custom name and email
+    from: `${fromName} <${process.env.EMAIL_USER}>`, // Custom name and email
     to,
     subject,
     html,
+    replyTo 
   };
 
   try {
