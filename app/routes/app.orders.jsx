@@ -32,7 +32,7 @@ export async function loader({ request }) {
         const limit = settingsJson.page_limit;
 
         const defaultSearchParams = {
-            "shop": shopRecords.shop,
+            "shop": shopRecords.myshopify_domain,
             "page": 1,
             "limit": limit,
             "search_keyword": "",
@@ -194,7 +194,7 @@ export default function Orders() {
             const updateData = {
                 actionType: "sendRequest",
                 requestId: requestId,
-                shop: shopRecords.shop,
+                shop: shopRecords.myshopify_domain,
             };
             const response = await fetch('/api/orders', {
                 method: 'POST',
@@ -243,7 +243,7 @@ export default function Orders() {
         const updateData = {
             actionType: "cancelRequest",
             requestId: requestId,
-            shop: shopRecords.shop,
+            shop: shopRecords.myshopify_domain,
         };
         const response = await fetch('/api/orders', {
             method: 'POST',
@@ -482,7 +482,7 @@ export default function Orders() {
                                         <div className="actionbox">
                                             {result.order_id &&
                                                 <>
-                                                    <a href={`${orderUrl}${shopRecords.name}/orders/${result.order_id}`} target="_blank" className="revbtn lightbtn">
+                                                    <a href={`${orderUrl}${shopRecords.myshopify_domain.replace(".myshopify.com", "")}/orders/${result.order_id}`} target="_blank" className="revbtn lightbtn">
                                                         <i className="twenty-carticon"></i>
                                                         Go to order
                                                     </a>

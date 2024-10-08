@@ -16,6 +16,8 @@ export default function App() {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <link rel="preconnect" href="https://cdn.shopify.com/" />
+        <link rel="icon" href="/images/favicon.png" type="image/x-icon" />
+
         <link rel="stylesheet" href={`${settings.host_url}/fonts/icon24.css`} />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />

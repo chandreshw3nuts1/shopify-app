@@ -96,7 +96,7 @@ const SnippetWidget = (props) => {
                                                     <div className='video-div'>
                                                         <img style={{ width: '100%' }} src={getUploadDocument(review.reviewDocuments.thumbnail_name, props.shopRecords.shop_id)} />
                                                         <div className='mainbtnplay'>
-                                                            <button class="play-pausess">
+                                                            <button className="play-pausess">
                                                                 <VideoPlayIcon />
                                                             </button>
                                                         </div>
@@ -106,7 +106,7 @@ const SnippetWidget = (props) => {
                                         }
                                         <div className='bottom_meta flxflexi'>
                                             <div className='topflexbox'>
-                                                <div class="reviewer_name">{review.display_name}</div>
+                                                <div className="reviewer_name">{review.display_name}</div>
                                                 {props.formParams.show_rating_icon == "true" &&
                                                     <div className={`ratingstars flxrow star-${review.rating}`}>
                                                         {props.CommonRatingComponent ? <props.CommonRatingComponent color={review.rating >= 1 ? iconColor : "currentColor"} /> : null}
@@ -117,7 +117,7 @@ const SnippetWidget = (props) => {
                                                     </div>
                                                 }
                                             </div>
-                                            <div class="descriptionbox">{displayNoOfCharacters(props.formParams.no_of_chars, review.description)}</div>
+                                            <div className="descriptionbox">{displayNoOfCharacters(props.formParams.no_of_chars, review.description)}</div>
                                             
                                         </div>
                                     </div>

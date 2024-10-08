@@ -1,7 +1,7 @@
 import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
 import { GraphQLClient } from "graphql-request";
-import { findOneRecord, getShopifyProducts, getLanguageWiseContents, generateUnsubscriptionLink, checkEmailToSendUser } from "./../utils/common";
+import { findOneRecord, getShopifyProducts, getLanguageWiseContents, generateUnsubscriptionLink, checkEmailToSendUser, getShopDetailsByShop, updateTotalAndAverageSeoRating } from "./../utils/common";
 import ReplyEmailTemplate from './components/email/ReplyEmailTemplate';
 import ReactDOMServer from 'react-dom/server';
 import { ObjectId } from 'mongodb';
@@ -39,7 +39,17 @@ export async function action({ request }) {
 							$set: { status: requestBody.value }
 						}
 					);
-					return json({ "status": 200, "message": "Status updated!" });
+
+					const productReviewData = await productReviews.findOne({ _id: requestBody.oid });
+					if (productReviewData) {
+						const shopRecords = await findOneRecord("shop_details", { "_id": productReviewData.shop_id });
+
+						await updateTotalAndAverageSeoRating(shopRecords);
+						
+						return json({ "status": 200, "message": "Status updated!" });
+					}
+					return json({ "status": 400, "message": "Status not updated!" });
+					
 
 				} else if (actionType == 'addReviewReply') {
 					await productReviews.updateOne(
@@ -108,7 +118,7 @@ export async function action({ request }) {
 				} else if (actionType == 'bulkRatingStatus') {
 					const { shop, filter_status, filter_stars, search_keyword, filter_options } = requestBody.searchFormData;
 
-					const shopRecords = await findOneRecord("shop_details", { "shop": shop });
+					const shopRecords = await getShopDetailsByShop(shop);
 					const query = {
 						"shop_id": shopRecords._id, "status": filter_status, "rating": parseInt(filter_stars),
 						$or: [
@@ -173,7 +183,6 @@ export async function action({ request }) {
 						{ $match: matchFilterOption },
 						{ $project: { _id: 1 } }
 					];
-
 					const reviewModels = await productReviews.aggregate([
 						reviewBulkItemsPipeline
 					]);
@@ -184,7 +193,8 @@ export async function action({ request }) {
 
 						await productReviewQuestions.deleteMany({ review_id: { $in: reviewIds } });
 						await reviewDocuments.deleteMany({ review_id: { $in: reviewIds } });
-						await productReviews.deleteMany(query);
+						await productReviews.deleteMany({ _id: { $in: reviewIds } });
+						await updateTotalAndAverageSeoRating(shopRecords);
 
 						var msg = "Review deleted";
 					} else {
@@ -357,7 +367,7 @@ export async function action({ request }) {
 							const customer_locale = productReviewsModel.customer_locale;
 
 							const productIds = [`"gid://shopify/Product/${productReviewsModel.product_id}"`];
-							var mapProductDetails = await getShopifyProducts(shopRecords.shop, productIds, 200);
+							var mapProductDetails = await getShopifyProducts(shopRecords.myshopify_domain, productIds, 200);
 							const productName = mapProductDetails?.[0]?.title;
 							const replaceVars = {
 								"product": productName,
@@ -430,8 +440,13 @@ export async function action({ request }) {
 					const { review_id, changeProductHandle } = requestBody;
 					var updatedProductData = "";
 					if (changeProductHandle != "" && review_id != "") {
-						const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shop });
-						const client = new GraphQLClient(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
+						const shopSessionRecords = await findOneRecord("shopify_sessions", {
+							$or: [
+								{ shop: shop },
+								{ myshopify_domain: shop }
+							]
+						});
+						const client = new GraphQLClient(`https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
 							headers: {
 								'X-Shopify-Access-Token': shopSessionRecords.accessToken,
 							},
@@ -485,7 +500,7 @@ export async function action({ request }) {
 					return json({ "status": status, "message": msg, "updatedProductData": updatedProductData });
 
 				} else {
-					const shopRecords = await findOneRecord("shop_details", { "shop": shop });
+					const shopRecords = await getShopDetailsByShop(shop);
 					const query = {
 						"shop_id": shopRecords._id, "status": filter_status, "rating": parseInt(filter_stars),
 						$or: [
@@ -691,7 +706,6 @@ export async function action({ request }) {
 					return json({ reviewItems, totalReviewItems, hasMore });
 				}
 
-
 			} catch (error) {
 				console.log(error);
 				return json({ "status": 400, "message": "Operation failed" });
@@ -699,7 +713,6 @@ export async function action({ request }) {
 		case "DELETE":
 			try {
 				var { review_id } = requestBody;
-				const objectId = new ObjectId(review_id);
 				deleteReview(review_id);
 				return json({ "status": 200, "message": "Review deleted successfully!" });
 			} catch (error) {
@@ -716,9 +729,23 @@ export async function action({ request }) {
 
 
 async function deleteReview(review_id) {
-	await productReviews.findOneAndDelete({ _id: review_id });
+	try {
+		
+		const productReviewData = await productReviews.findOne({ _id: review_id });
+	
+		const shopRecords = await findOneRecord("shop_details", { "_id": productReviewData.shop_id });
+		
+		await productReviews.findOneAndDelete({ _id: review_id });
 
-	await productReviewQuestions.deleteMany({ review_id: review_id });
-	await reviewDocuments.deleteMany({ review_id: review_id });
+		await productReviewQuestions.deleteMany({ review_id: review_id });
+		await reviewDocuments.deleteMany({ review_id: review_id });
+
+		await updateTotalAndAverageSeoRating(shopRecords);
+		
+	} catch (error) {
+	}
+	
+	
+	
 }
 

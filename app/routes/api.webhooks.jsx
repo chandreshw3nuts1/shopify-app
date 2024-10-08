@@ -190,7 +190,7 @@ export async function action({ request }) {
 
 				const updateResult = await shopDetails.updateOne(
 					{ _id: shopRecords._id },
-					{ $set: { primary_location_id: bodyObj.primary_location_id, currency: bodyObj.currency, currency_symbol: currency_symbol, timezone: bodyObj.iana_timezone } }
+					{ $set: { shop: bodyObj.shop, primary_location_id: bodyObj.primary_location_id, currency: bodyObj.currency, currency_symbol: currency_symbol, timezone: bodyObj.iana_timezone } }
 				);
 
 			} else {

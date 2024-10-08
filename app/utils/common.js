@@ -11,6 +11,7 @@ import emailReviewRequestReminderSettings from './../routes/models/emailReviewRe
 import emailDiscountPhotoVideoReviewReminderSettings from './../routes/models/emailDiscountPhotoVideoReviewReminderSettings';
 import emailPhotovideoReminderSettings from './../routes/models/emailPhotovideoReminderSettings';
 import emailResendReviewRequestSettings from './../routes/models/emailResendReviewRequestSettings';
+import productReviews from './../routes/models/productReviews';
 
 import settingJson from './../utils/settings.json';
 import { getCurrentDate, getCustomFormattedEndDateTime } from './dateFormat';
@@ -39,7 +40,15 @@ export async function findOneRecord(collection = "", params = {}) {
 
 export async function getShopDetailsByShop(shop) {
 	try {
-		return await findOneRecord("shop_details", { "shop": shop });
+
+		return await findOneRecord("shop_details", {
+			$or: [
+				{ shop: shop },
+				{ myshopify_domain: shop }
+			]
+		});
+
+
 	} catch (error) {
 		console.error('Error fetching shop record by shop:', error);
 	}
@@ -58,7 +67,12 @@ export async function getCustomQuestions(params = {}) {
 
 export async function getShopifyProducts(shop, productIds = [], imageSize = 60) {
 	try {
-		const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shop });
+		const shopSessionRecords = await findOneRecord("shopify_sessions", {
+			$or: [
+				{ shop: shop },
+				{ myshopify_domain: shop }
+			]
+		});
 		const client = new GraphQLClient(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
 			headers: {
 				'X-Shopify-Access-Token': shopSessionRecords.accessToken,
@@ -107,7 +121,12 @@ export async function getShopifyProducts(shop, productIds = [], imageSize = 60) 
 
 export async function getShopifyLatestProducts(shop) {
 	try {
-		const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shop });
+		const shopSessionRecords = await findOneRecord("shopify_sessions", {
+			$or: [
+				{ shop: shop },
+				{ myshopify_domain: shop }
+			]
+		});
 
 		const apiUrl = `https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/products.json?limit=1&order=created_at desc`;
 		const response = await fetch(apiUrl, {
@@ -122,7 +141,7 @@ export async function getShopifyLatestProducts(shop) {
 		return [];
 
 	} catch (error) {
-		console.error('Error fetching product record :', error);
+		console.error('Error fetching latest product record :', error);
 	}
 }
 export async function createShopifyDiscountCode(shopRecords, hasPhoto = false, hasVideo = false, isReviewRequest = false) {
@@ -140,8 +159,12 @@ export async function createShopifyDiscountCode(shopRecords, hasPhoto = false, h
 			let discountPrefix = "";
 			let discountTitle = "";
 			let expireOnDate = "";
-			const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shopRecords.shop });
-
+			const shopSessionRecords = await findOneRecord("shopify_sessions", {
+				$or: [
+					{ shop: shopRecords.shop },
+					{ myshopify_domain: shopRecords.shop }
+				]
+			});
 			if (reviewDiscountSettingsModel.isSameDiscount) {
 
 				valueType = reviewDiscountSettingsModel.sameDiscountType;
@@ -177,7 +200,7 @@ export async function createShopifyDiscountCode(shopRecords, hasPhoto = false, h
 					expireOnDate = getCustomFormattedEndDateTime(reviewDiscountSettingsModel.expiredAfter, shopRecords.timezone);
 					priceRuleParams.price_rule.ends_at = expireOnDate;
 				}
-				const priceRuleApiUrl = `https://${shopRecords.shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/price_rules.json`;
+				const priceRuleApiUrl = `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/price_rules.json`;
 
 				const priceRuleResponse = await fetch(priceRuleApiUrl, {
 					method: 'POST',
@@ -192,7 +215,7 @@ export async function createShopifyDiscountCode(shopRecords, hasPhoto = false, h
 					const priceRuleObj = await priceRuleResponse.json();
 					const priceRuleId = priceRuleObj.price_rule.id;
 
-					const discountApiUrl = `https://${shopRecords.shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/price_rules/${priceRuleId}/discount_codes.json`;
+					const discountApiUrl = `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/price_rules/${priceRuleId}/discount_codes.json`;
 					const discountParams = {
 						"discount_code": {
 							"code": `${discountPrefix}${generatedDiscountCode}`
@@ -226,7 +249,7 @@ export async function createShopifyDiscountCode(shopRecords, hasPhoto = false, h
 				}
 			} else if (reviewDiscountSettingsModel.discountCode != "") {
 
-				const discountLookupApiUrl = `https://${shopRecords.shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/discount_codes/lookup.json?code=${reviewDiscountSettingsModel.discountCode}`;
+				const discountLookupApiUrl = `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/discount_codes/lookup.json?code=${reviewDiscountSettingsModel.discountCode}`;
 				const discountLookupResponse = await fetch(discountLookupApiUrl, {
 					method: 'GET',
 					headers: {
@@ -423,7 +446,7 @@ export async function getLanguageWiseContents(type, replaceVars, shop_id, locale
 
 	}
 
-	
+
 	emailContents.unsubscribeText = transalationContent.unsubscriptionText
 	return emailContents;
 
@@ -606,45 +629,97 @@ async function fetchProductsByBatch(batch, shop, accessToken) {
 
 /* createMetafields it use to create meta fields in shopify store*/
 
-export async function createMetafields(shop, metafields, widgetType = "") {
 
+export async function createMetafields(shopRecords, metafields, widgetType) {
 	try {
+		const shopSessionRecords = await findOneRecord("shopify_sessions", {
+			$or: [
+				{ shop: shopRecords.shop },
+				{ myshopify_domain: shopRecords.shop }
+			]
+		});
+		const metafieldApiUrl = `https://${shopRecords.shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`;
 
-		const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shop });
-		const metafieldApiUrl = `https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/metafields.json`;
-
-		const jsonMetafieldsString = JSON.stringify(metafields);
-		let metafieldData = {};
-		if (widgetType == "floatingWidgetCustomize") {
-			metafieldData = {
-				"metafield": {
-					"namespace": "extension_floating_modal",
-					"key": "modal_review_data",
-					"value": jsonMetafieldsString,
-					"type": "json"
-				}
+		// Construct the GraphQL mutation
+		const mutationQuery = `
+		mutation MetafieldsSet($metafields: [MetafieldsSetInput!]!) {
+		  metafieldsSet(metafields: $metafields) {
+			metafields {
+			  key
+			  namespace
+			  value
+			  createdAt
+			  updatedAt
 			}
+			userErrors {
+			  field
+			  message
+			  code
+			}
+		  }
+		}
+	  `;
 
+
+		let variables;
+		const jsonMetafieldsString = JSON.stringify(metafields);
+
+		if (widgetType == "floatingWidgetCustomize") {
+			variables = {
+				metafields: {
+					"namespace": "seo_rich_snippets_namespace",
+					"key": "enabled_seo_rich_snippets",
+					"ownerId": `gid://shopify/Shop/${shopRecords.shop_id}`,
+					"type": "json",
+					"value": jsonMetafieldsString
+				}
+			};
 		} else if (widgetType == "sidebarReviewCustomize") {
-			metafieldData = {
-				"metafield": {
+			variables = {
+				metafields: {
 					"namespace": "extension_status",
 					"key": "sidebar_widget_data",
-					"value": jsonMetafieldsString,
-					"type": "json"
+					"ownerId": `gid://shopify/Shop/${shopRecords.shop_id}`,
+					"type": "json",
+					"value": jsonMetafieldsString
 				}
-			}
+			};
 
 		} else if (widgetType == "popupModalReviewCustomize") {
-			metafieldData = {
-				"metafield": {
+
+			variables = {
+				metafields: {
 					"namespace": "extension_popup_modal",
 					"key": "popup_modal_data",
-					"value": jsonMetafieldsString,
-					"type": "json"
+					"ownerId": `gid://shopify/Shop/${shopRecords.shop_id}`,
+					"type": "json",
+					"value": jsonMetafieldsString
 				}
-			}
+			};
+
+		} else if (widgetType == "seoRichSnippet") {
+			variables = {
+				metafields: {
+					"namespace": "seo_rich_snippets_namespace",
+					"key": "enabled_seo_rich_snippets",
+					"ownerId": `gid://shopify/Shop/${shopRecords.shop_id}`,
+					"type": "json",
+					"value": jsonMetafieldsString
+				}
+			};
+		} else if (widgetType == "seoProductReviews") {
+
+			variables = {
+				metafields: {
+					"namespace": "seo_rich_snippets_namespace",
+					"key": "product_reviews",
+					"ownerId": `gid://shopify/Shop/${shopRecords.shop_id}`,
+					"type": "json",
+					"value": jsonMetafieldsString
+				}
+			};
 		}
+
 
 		const metafieldResponse = await fetch(metafieldApiUrl, {
 			method: 'POST',
@@ -652,14 +727,32 @@ export async function createMetafields(shop, metafields, widgetType = "") {
 				'Content-Type': 'application/json',
 				'X-Shopify-Access-Token': shopSessionRecords.accessToken,
 			},
-			body: JSON.stringify(metafieldData),
+			body: JSON.stringify({
+				query: mutationQuery,
+				variables: variables,
+			}),
 		});
 
+		const data = await metafieldResponse.json();
+
+		if (metafieldResponse.ok) {
+
+			return data.data.metafieldsSet; // Accessing metafieldsSet only if response is okay
+		} else {
+			if (data.errors) {
+				console.error('GraphQL Error:', data.errors);
+			} else {
+				console.error('Unexpected Response Structure:', data);
+			}
+			return null;
+		}
+
 	} catch (error) {
-		console.error('Error fetching product details:', error);
+		console.error('Error fetching shop metafields:', error);
 		return null;
 	}
 }
+
 
 /* return sub string based on specified length */
 
@@ -773,7 +866,12 @@ export async function resizeImages(imagePath, outputDir, thumbnailName) {
 export async function getAllThemes(shop, activeTheme = false) {
 
 	try {
-		const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shop });
+		const shopSessionRecords = await findOneRecord("shopify_sessions", {
+			$or: [
+				{ shop: shop },
+				{ myshopify_domain: shop }
+			]
+		});
 
 		const response = await fetch(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/themes.json`, {
 			method: 'GET',
@@ -804,7 +902,12 @@ export async function checkAppEmbedAppStatus(shop, themeId) {
 	try {
 		const reviewExtensionId = process.env.SHOPIFY_ALL_REVIEW_EXTENSION_ID;
 
-		const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shop });
+		const shopSessionRecords = await findOneRecord("shopify_sessions", {
+			$or: [
+				{ shop: shop },
+				{ myshopify_domain: shop }
+			]
+		});
 
 		const url = `https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/themes/${themeId}/assets.json`;
 		const params = new URLSearchParams({
@@ -876,7 +979,7 @@ export async function checkEmailToSendUser(email = "", shopRecords) {
 	const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
 	const marketingEmailSubscriptionsModel = await marketingEmailSubscriptions.findOne({ shop_id: shopRecords._id, email: email });
 	let sendEmailStatus = false;
-	if (generalSettingsModel.send_email_type == "everyone" || (marketingEmailSubscriptionsModel && marketingEmailSubscriptionsModel?.isEmailConcent == true) ) {
+	if (generalSettingsModel.send_email_type == "everyone" || (marketingEmailSubscriptionsModel && marketingEmailSubscriptionsModel?.isEmailConcent == true)) {
 		sendEmailStatus = true;
 	}
 	var isSubscribed = true;
@@ -888,4 +991,43 @@ export async function checkEmailToSendUser(email = "", shopRecords) {
 	}
 
 	return false;
+}
+
+export async function getTotalAndAverageRattings(shopRecords) {
+
+	const query = {
+		shop_id: shopRecords._id,
+		status: 'publish',
+	};
+
+	const countRating = await productReviews.aggregate([
+		{ $match: query },
+		{ $group: { _id: "$rating", count: { $sum: 1 } } }
+	])
+	var mapRatting = countRating.map(item => ({
+		stars: item._id,
+		count: item.count
+	}));
+
+	const totalReviews = mapRatting.reduce((acc, item) => acc + item.count, 0);
+	var averageRating = (mapRatting.reduce((acc, item) => acc + item.stars * item.count, 0) / totalReviews).toFixed(1);
+	if (isNaN(averageRating)) {
+		averageRating = 0;
+	}
+
+	return {
+		totalReviews: totalReviews,
+		averageRating: averageRating
+	}
+}
+
+export async function updateTotalAndAverageSeoRating(shopRecords) {
+
+	const totalAndAverage = await getTotalAndAverageRattings(shopRecords);
+	const metafields = {
+		"num_reviews": totalAndAverage.totalReviews,
+		"avg_rating": totalAndAverage.averageRating,
+	};
+	await createMetafields(shopRecords, metafields, 'seoProductReviews');
+
 }

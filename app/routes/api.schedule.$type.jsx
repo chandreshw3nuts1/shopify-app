@@ -143,7 +143,7 @@ export async function action({ request, params }) {
                                     if (productIdList.length > 0) {
 
                                         const productIds = productIdList.map((item) => `"gid://shopify/Product/${item}"`);
-                                        var mapProductDetails = await getShopifyProducts(shop.shop, productIds, 200);
+                                        var mapProductDetails = await getShopifyProducts(shop.myshopify_domain, productIds, 200);
                                         const customer_locale = singleOrder.customer_locale;
 
                                         const replaceVars = {
@@ -341,7 +341,7 @@ export async function action({ request, params }) {
                                     if (productIdList.length > 0) {
 
                                         const productIds = productIdList.map((item) => `"gid://shopify/Product/${item}"`);
-                                        var mapProductDetails = await getShopifyProducts(shop.shop, productIds, 200);
+                                        var mapProductDetails = await getShopifyProducts(shop.myshopify_domain, productIds, 200);
                                         const customer_locale = singleOrder.customer_locale;
 
                                         const replaceVars = {
@@ -669,7 +669,7 @@ export async function action({ request, params }) {
                                     const customer_locale = singleReview.customer_locale;
                                     const productIdList = [singleReview.product_id];
                                     const productIds = productIdList.map((item) => `"gid://shopify/Product/${item}"`);
-                                    var mapProductDetails = await getShopifyProducts(shop.shop, productIds, 200);
+                                    var mapProductDetails = await getShopifyProducts(shop.myshopify_domain, productIds, 200);
                                     if (mapProductDetails.length > 0) {
                                         const replaceVars = {
                                             "product": mapProductDetails[0]['title'],

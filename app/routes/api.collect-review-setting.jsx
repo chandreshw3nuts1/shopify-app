@@ -43,7 +43,7 @@ export async function action({ params, request }) {
                     const logo = getUploadDocument(generalAppearancesObj.logo, shopRecords.shop_id, 'logo');
 
                     const productIds = selectedProducts.map((item) => `"gid://shopify/Product/${item}"`);
-                    var mapProductDetails = await getShopifyProducts(shop, productIds, 200);
+                    var mapProductDetails = await getShopifyProducts(shopRecords.myshopify_domain, productIds, 200);
                     const customer_locale = generalSettingsModel.defaul_language || 'en';
 
                     const replaceVars = {
@@ -176,8 +176,14 @@ export async function action({ params, request }) {
 
                 } else if (actionType == 'validateDiscountCode') {
 
-                    const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shopRecords.shop });
-                    const discountLookupApiUrl = `https://${shopRecords.shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/discount_codes/lookup.json?code=${requestBody.code}`;
+                    
+                    const shopSessionRecords = await findOneRecord("shopify_sessions", {
+                        $or: [
+                            { shop: shopRecords.shop },
+                            { myshopify_domain: shopRecords.shop }
+                        ]
+                    });
+                    const discountLookupApiUrl = `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/discount_codes/lookup.json?code=${requestBody.code}`;
                     const discountLookupResponse = await fetch(discountLookupApiUrl, {
                         method: 'GET',
                         headers: {
@@ -188,7 +194,7 @@ export async function action({ params, request }) {
                     if (discountLookupResponse.ok) {
                         const discountResponse = await discountLookupResponse.json();
 
-                        const priceRuleApiUrl = `https://${shopRecords.shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/price_rules/${discountResponse.discount_code.price_rule_id}.json`;
+                        const priceRuleApiUrl = `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/price_rules/${discountResponse.discount_code.price_rule_id}.json`;
                         const priceRuleResponse = await fetch(priceRuleApiUrl, {
                             method: 'GET',
                             headers: {

@@ -48,7 +48,7 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                             </div>
                                             <div className="carousel-inner">
                                                 {reviewDetails.reviewDocuments.map((media, i) => (
-                                                    <div className={`carousel-item ${i == 0 ? "active" : ""}`}>
+                                                    <div key={i} className={`carousel-item ${i == 0 ? "active" : ""}`}>
                                                         <div className="imagewrap">
                                                             {media.type === 'image' ? (
                                                                 <Image src={getUploadDocument(media.url, shopRecords.shop_id)} alt="" />

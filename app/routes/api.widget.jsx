@@ -273,7 +273,7 @@ export async function action({ request }) {
 
                 const reviewDetails = reviewItems[0];
                 const productId = `"gid://shopify/Product/${reviewDetails.product_id}"`;
-                var productsDetails = await getShopifyProducts(shop, productId);
+                var productsDetails = await getShopifyProducts(shopRecords.myshopify_domain, productId);
 
                 const hideProductThumbnails = formData.get('hide_product_thumbnails') || 'false';
 
@@ -835,7 +835,6 @@ export async function action({ request }) {
                     createdAt: -1,
                     _id: -1
                 };
-
                 const aggregationPipeline = [
                     {
                         $match: query
@@ -912,7 +911,7 @@ export async function action({ request }) {
                     const uniqueProductIds = [...new Set(reviewItems.map(item => item.product_id))];
 
                     const productIds = uniqueProductIds.map((item) => `"gid://shopify/Product/${item}"`);
-                    var productsDetails = await getShopifyProducts(shop, productIds);
+                    var productsDetails = await getShopifyProducts(shopRecords.myshopify_domain, productIds);
 
                     if (productsDetails.length > 0) {
                         productsDetails.forEach(node => {
@@ -1163,7 +1162,7 @@ export async function action({ request }) {
                 const uniqueProductIds = [...new Set(reviewItems.map(item => item.product_id))];
 
                 const productIds = uniqueProductIds.map((item) => `"gid://shopify/Product/${item}"`);
-                var productsDetails = await getShopifyProducts(shop, productIds);
+                var productsDetails = await getShopifyProducts(shopRecords.myshopify_domain, productIds);
 
                 if (productsDetails.length > 0) {
                     productsDetails.forEach(node => {

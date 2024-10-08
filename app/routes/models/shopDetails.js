@@ -16,6 +16,7 @@ const shopDetailsSchema = new mongoose.Schema({
     timezone: { type: String , required: true },
     primary_location_id: { type: Number },
     shop_owner: { type: String,required: true  },
+    myshopify_domain: {type: String, required: true },
     name: { type: String, required: true },
 },{
     timestamps: true

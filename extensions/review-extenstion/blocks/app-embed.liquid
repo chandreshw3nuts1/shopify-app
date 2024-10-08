@@ -96,6 +96,21 @@
 		
 	</div>
 {% endif %}
+{% if shop.metafields.seo_rich_snippets_namespace.enabled_seo_rich_snippets.value.isActive == true and shop.metafields.seo_rich_snippets_namespace.product_reviews.value.num_reviews > 0 %}
+	<script type="application/ld+json">
+	{
+		"@context": "http://schema.org",
+		"@type": "Product",   
+		"@id": {{ canonical_url | json }},
+		"aggregateRating": { 
+			"@type": "AggregateRating",      
+			"ratingValue": "{{ shop.metafields.seo_rich_snippets_namespace.product_reviews.value.avg_rating }}",      
+			"reviewCount": "{{ shop.metafields.seo_rich_snippets_namespace.product_reviews.value.num_reviews }}"   
+		},   
+		"name": {{ product.title | json }}
+	}
+	</script>
+{% endif %}
 
 
 {% schema %}

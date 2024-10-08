@@ -38,7 +38,7 @@ export const loader = async ({ params, request }) => {
                 let customerId = 0;
                 const shopSessionRecords = await shopifySessions.findOne({ shop: shopRecords.shop });
 
-                const customerApiUrl = `https://${shopRecords.shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/customers/search.json?query=email:${email}`;
+                const customerApiUrl = `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/customers/search.json?query=email:${email}`;
                 const response = await fetch(customerApiUrl, {
                     method: 'GET',
                     headers: {
@@ -52,7 +52,7 @@ export const loader = async ({ params, request }) => {
                     customerId = customerResponse.customers[0].id;
                 }
                 if (customerId) {
-                    const customerApiUrl = `https://${shopRecords.shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/customers/${customerId}.json`;
+                    const customerApiUrl = `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/customers/${customerId}.json`;
                     const response = await fetch(customerApiUrl, {
                         method: 'PUT',
                         headers: {

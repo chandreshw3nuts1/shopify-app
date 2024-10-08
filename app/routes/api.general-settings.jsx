@@ -1,7 +1,7 @@
 import { json } from "@remix-run/node";
 import { mongoConnection } from './../utils/mongoConnection';
 import generalSettings from './models/generalSettings';
-import { getShopDetailsByShop } from './../utils/common';
+import { getShopDetailsByShop, createMetafields } from './../utils/common';
 
 export async function loader() {
     return json({
@@ -28,6 +28,14 @@ export async function action({ params, request }) {
                     };
                     const options = { upsert: true, returnOriginal: false };
                     await generalSettings.findOneAndUpdate(query, update, options);
+
+                    if (requestBody.field == 'is_enable_seo_rich_snippet') {
+                        const metafields = {
+                            "isActive": requestBody.value,
+                        };
+                        await createMetafields(shopRecords, metafields, 'seoRichSnippet');
+                    }
+
                     return json({ "status": 200, "message": "Settings saved" });
 
                 } else if (actionType == 'generalSettingsFooterText') {
@@ -41,13 +49,11 @@ export async function action({ params, request }) {
                     };
                     const options = { upsert: true, returnOriginal: false };
                     await generalSettings.findOneAndUpdate(query, update, options);
-                    
+
                     return json({ "status": 200, "message": "Settings saved" });
 
                 }
 
-
-                emailFooterTextEnable
 
             } catch (error) {
                 return json({ "status": 400, "message": "Failed to update record", error: error });

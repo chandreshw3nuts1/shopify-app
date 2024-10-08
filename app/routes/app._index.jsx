@@ -31,10 +31,9 @@ export const loader = async ({ request }) => {
 	try {
 
 		const shopRecords = await getShopDetails(request);
-		const activeThemes = await getAllThemes(shopRecords.shop, true);
-		const isEnabledAppEmbed = await checkAppEmbedAppStatus(shopRecords.shop, activeThemes.id);
+		const activeThemes = await getAllThemes(shopRecords.myshopify_domain, true);
+		const isEnabledAppEmbed = await checkAppEmbedAppStatus(shopRecords.myshopify_domain, activeThemes.id);
         const reviewExtensionId = process.env.SHOPIFY_ALL_REVIEW_EXTENSION_ID;
-
 		return json({ shopRecords, isEnabledAppEmbed, reviewExtensionId, activeThemes });
 
 	} catch (error) {
@@ -97,7 +96,9 @@ export default function Index() {
 	}, [selectedDays]);
 
 	useEffect(() => {
-		Cookies.set('storeName', shopRecords.name, {
+		const storeName = shopRecords.myshopify_domain.replace(".myshopify.com", "");
+
+		Cookies.set('storeName', storeName, {
 			expires: 365,
 			secure: true,
 			sameSite: 'None'
@@ -124,7 +125,7 @@ export default function Index() {
 				{/* <HomeInformationAlert alertKey="home_header_info" /> */}
 
 				{!isEnabledAppEmbed && 
-					<EnableAppEmbedAlert alertKey="home_header_info" shopRecords={shopRecords} reviewExtensionId={reviewExtensionId} activeThemeId={activeThemes.id} />
+					<EnableAppEmbedAlert alertKey="home_header_info" shopRecords={shopRecords} reviewExtensionId={reviewExtensionId} activeThemeId={activeThemes.id} page="index" />
 				}
 
 				<div className="dashbbanner">

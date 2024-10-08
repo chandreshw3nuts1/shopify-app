@@ -7,7 +7,7 @@ import sidebarReviewWidgetCustomizes from "./models/sidebarReviewWidgetCustomize
 import popupModalWidgetCustomizes from "./models/popupModalWidgetCustomizes";
 import floatingWidgetCustomizes from "./models/floatingWidgetCustomizes";
 import reviewFormSettings from "./models/reviewFormSettings";
-import { findOneRecord, createMetafields } from './../utils/common';
+import { createMetafields } from './../utils/common';
 
 export async function loader() {
     return json({});
@@ -88,7 +88,7 @@ export async function action({ request }) {
                             "isProductPage" : sidebarWidgetModel.isProductPage,
                             "isOtherPages" : sidebarWidgetModel.isOtherPages
                         };
-                        await createMetafields(shopRecords.shop, metafields, actionType);
+                        await createMetafields(shopRecords, metafields, actionType);
                     }
                     return json({ "status": 200, "message": "Settings saved" });
                 } else if (actionType == 'floatingWidgetCustomize') {
@@ -109,7 +109,7 @@ export async function action({ request }) {
                             "backgroundColor" : floatingWidgetModel.backgroundColor,
                             "textColor" : floatingWidgetModel.textColor
                         };
-                        await createMetafields(shopRecords.shop, metafields, actionType);
+                        await createMetafields(shopRecords, metafields, actionType);
                     }
                     return json({ "status": 200, "message": "Settings saved" });
                 } else if (actionType == 'popupModalReviewCustomize') {
@@ -138,7 +138,7 @@ export async function action({ request }) {
                             "maximumPerPage" : popupWidgetModel.maximumPerPage,
                             
                         };
-                        await createMetafields(shopRecords.shop, metafields, actionType);
+                        await createMetafields(shopRecords, metafields, actionType);
                     }
                     return json({ "status": 200, "message": "Settings saved" });
                 }

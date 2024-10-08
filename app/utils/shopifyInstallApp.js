@@ -55,6 +55,7 @@ export async function storeShopDetails(session) {
 					timezone: data.shop.iana_timezone,
 					shop_owner: data.shop.shop_owner,
 					primary_location_id: data.shop.primary_location_id,
+					myshopify_domain: data.shop.myshopify_domain,
 					name: data.shop.name,
 					email: data.shop.email
 				}

@@ -9,6 +9,7 @@ const PopupModalWidget = (props) => {
     if (props.popupModalWidgetCustomizesModel.hideOnMobile == true) {
         hideOnMobileClass = "hide-popup-widget-on-mobile";
     }
+
     return (
         <>
             <style>
@@ -67,18 +68,20 @@ const PopupModalWidget = (props) => {
                                     <div className="descriptionbox">{displayNoOfCharacters(40, review.description)}</div>
 
                                 </div>
-                                <div className='review_bottomwrap'>
-                                    <div className="product-container product-thumb-detail">
-                                        <div className="imagepro flxfix">
-                                            {review.productDetails?.images?.edges?.[0]?.node?.transformedSrc &&
-                                                <img src={review.productDetails.images.edges[0].node.transformedSrc} alt="Product" />
-                                            }
-                                        </div>
-                                        <div className="textpro flxflexi">
-                                            {review.productDetails.title}
+                                {review.productDetails &&
+                                    <div className='review_bottomwrap'>
+                                        <div className="product-container product-thumb-detail">
+                                            <div className="imagepro flxfix">
+                                                {review.productDetails?.images?.edges?.[0]?.node?.transformedSrc &&
+                                                    <img src={review.productDetails.images.edges[0].node.transformedSrc} alt="Product" />
+                                                }
+                                            </div>
+                                            <div className="textpro flxflexi">
+                                                {review.productDetails.title}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                }
                             </div>
                         </div>
                     ))}

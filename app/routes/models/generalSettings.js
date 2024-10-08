@@ -21,6 +21,7 @@ const generalSettingsSchema = new mongoose.Schema({
     is_enable_future_purchase_discount: { type: Boolean, default : false },
     send_email_type: { type: String, default : "everyone" },
     unsubscribing_type: { type: String, default : "not_unsubscribe_marking_email" },
+    is_enable_seo_rich_snippet: { type: Boolean, default : false },
     
     en: { "type": "Object" },
     fr: { "type": "Object" },

@@ -4,6 +4,7 @@ import { findOneRecord } from "./common";
 export async function getShopDetails(request) {
     try {
         const { session } = await authenticate.admin(request);
+
         if (!session) {
             throw new Error('Session not found');
         }
@@ -13,7 +14,13 @@ export async function getShopDetails(request) {
             throw new Error('Shop not found in session');
         }
 
-        const shopDetails = await findOneRecord("shop_details", { "shop": shop });
+        const shopDetails = await findOneRecord("shop_details", {
+            $or: [
+                { shop: shop },
+                { myshopify_domain: shop }
+            ]
+        });
+
         if (!shopDetails) {
             throw new Error('Shop details not found in the database');
         }

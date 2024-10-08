@@ -1,5 +1,5 @@
 import { json } from "@remix-run/node";
-import { findOneRecord, createMetafields } from "./../utils/common";
+import { findOneRecord, getShopDetailsByShop, createMetafields } from "./../utils/common";
 
 import fs from "fs";
 import path from "path";
@@ -43,7 +43,7 @@ export async function action({ params, request }) {
     }
 
     const method = request.method;
-    const shopRecords = await findOneRecord("shop_details", { "shop": shop });
+    const shopRecords = await getShopDetailsByShop(shop);
     switch (method) {
         case "POST":
             try {
@@ -434,7 +434,7 @@ export async function action({ params, request }) {
                             "backgroundColor": floatingWidgetModel.backgroundColor,
                             "textColor": floatingWidgetModel.textColor
                         };
-                        await createMetafields(shopRecords.shop, metafields, subActionType);
+                        await createMetafields(shopRecords, metafields, subActionType);
                     }
 
                     return json({ "status": 200, "message": "Settings saved " });

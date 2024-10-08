@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
-import { findOneRecord, getShopifyProducts, getLanguageWiseContents, generateUnsubscriptionLink } from "./../utils/common";
+import { getShopDetailsByShop, getShopifyProducts, getLanguageWiseContents, generateUnsubscriptionLink } from "./../utils/common";
 import ReactDOMServer from 'react-dom/server';
 import manualReviewRequests from "./models/manualReviewRequests";
 import manualRequestProducts from "./models/manualRequestProducts";
@@ -26,7 +26,7 @@ export async function action({ request }) {
 			var { shop, page, limit, filter_status, filter_time, start_date, end_date, search_keyword, actionType } = requestBody;
 			page = page == 0 ? 1 : page;
 			try {
-				const shopRecords = await findOneRecord("shop_details", { "shop": shop });
+				const shopRecords = await getShopDetailsByShop(shop)
 
 				if (actionType == 'orderListing') {
 
@@ -155,7 +155,7 @@ export async function action({ request }) {
 						);
 						const productIds = uniqueProductIds.map((item) => `"gid://shopify/Product/${item}"`);
 
-						var productsDetails = await getShopifyProducts(shop, productIds);
+						var productsDetails = await getShopifyProducts(shopRecords.myshopify_domain, productIds);
 						if (productsDetails.length > 0) {
 							productsDetails.forEach(node => {
 								if (node) {
@@ -184,7 +184,7 @@ export async function action({ request }) {
 
 
 						const productIds = uniqueProductIds.map((item) => `"gid://shopify/Product/${item}"`);
-						var mapProductDetails = await getShopifyProducts(shop, productIds, 200);
+						var mapProductDetails = await getShopifyProducts(shopRecords.myshopify_domain, productIds, 200);
 
 						const customer_locale = manualRequestModel.customer_locale;
 

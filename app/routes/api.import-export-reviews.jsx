@@ -1,5 +1,5 @@
 import { json } from '@remix-run/node';
-import { findOneRecord, fetchAllProductsByHandles, generateRandomCode } from "./../utils/common";
+import { findOneRecord, getShopDetailsByShop, fetchAllProductsByHandles, generateRandomCode, updateTotalAndAverageSeoRating } from "./../utils/common";
 import { isValidDateFormat } from "./../utils/dateFormat";
 
 
@@ -47,10 +47,16 @@ export async function action({ request }) {
 	switch (method) {
 		case "POST":
 			try {
-				const shopRecords = await findOneRecord("shop_details", { "shop": shop });
+				const shopRecords = await getShopDetailsByShop(shop);
 				const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
 				var customer_locale = generalSettingsModel.defaul_language;
-				const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shop });
+
+				const shopSessionRecords = await findOneRecord("shopify_sessions", {
+					$or: [
+						{ shop: shopRecords.shop },
+						{ myshopify_domain: shopRecords.shop }
+					]
+				});
 
 				const uploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/`);
 				fs.mkdirSync(uploadsDir, { recursive: true });
@@ -171,7 +177,7 @@ export async function action({ request }) {
 
 					if (csvData.length > 0) {
 
-						const productDetails = await fetchAllProductsByHandles(csvData, 'product_handle', shopRecords.shop, shopSessionRecords.accessToken)
+						const productDetails = await fetchAllProductsByHandles(csvData, 'product_handle', shopRecords.myshopify_domain, shopSessionRecords.accessToken)
 						const processCsvData = async () => {
 							const uploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/`);
 
@@ -220,6 +226,8 @@ export async function action({ request }) {
 							console.log('Error processing reviews:', err);
 						});
 
+						await updateTotalAndAverageSeoRating(shopRecords);
+
 
 					}
 					return json({ "status": 200, "message": "CSV file uploaded successfully." });
@@ -262,7 +270,7 @@ export async function action({ request }) {
 						return json({ "status": 400, "message": "Invalid CSV file format." });
 					}
 					if (csvData.length > 0) {
-						const productDetails = await fetchAllProductsByHandles(csvData, handleName, shopRecords.shop, shopSessionRecords.accessToken)
+						const productDetails = await fetchAllProductsByHandles(csvData, handleName, shopRecords.myshopify_domain, shopSessionRecords.accessToken)
 						const processCsvData = async () => {
 							const uploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/`);
 							if (subActionType == 'loox') {
@@ -560,6 +568,7 @@ export async function action({ request }) {
 							console.log('Error processing reviews:', err);
 						});
 
+						await updateTotalAndAverageSeoRating(shopRecords);
 
 					}
 					return json({ "status": 200, "message": "CSV file uploaded successfully." });

@@ -4,11 +4,12 @@ import Breadcrumb from "./components/Breadcrumb";
 import SettingPageSidebar from "./components/headerMenu/SettingPageSidebar";
 import { getShopDetails } from './../utils/getShopDetails';
 import generalSettings from './models/generalSettings';
-import { getAllThemes } from './../utils/common';
+import { getAllThemes, checkAppEmbedAppStatus } from './../utils/common';
 const CrownIcon = '/images/crown-icon.svg'
 import { Image } from "react-bootstrap";
 import AlertInfo from "./components/AlertInfo";
 import settingsJson from './../utils/settings.json';
+import EnableAppEmbedAlert from './components/common/enable-app-embed-alert';
 
 
 import { json } from "@remix-run/node";
@@ -23,7 +24,13 @@ export async function loader({ request }) {
 
 		const shopRecords = await getShopDetails(request);
 
-		const allThemes = await getAllThemes(shopRecords.shop);
+		const allThemes = await getAllThemes(shopRecords.myshopify_domain);
+		let activeTheme;
+		let isEnabledAppEmbed = false;
+		if (allThemes) {
+			activeTheme = allThemes.find(theme => theme.role === 'main');
+			isEnabledAppEmbed = await checkAppEmbedAppStatus(shopRecords.myshopify_domain, activeTheme.id);
+		}
 
 		const generalSettingsModel = await generalSettings.findOne({
 			shop_id: shopRecords._id
@@ -31,7 +38,7 @@ export async function loader({ request }) {
 
 		const reviewExtensionId = process.env.SHOPIFY_ALL_REVIEW_EXTENSION_ID;
 
-		return json({ shopRecords, generalSettingsModel, allThemes, reviewExtensionId });
+		return json({ shopRecords, generalSettingsModel, allThemes,activeTheme, isEnabledAppEmbed, reviewExtensionId });
 
 	} catch (error) {
 		console.error('Error fetching records:', error);
@@ -46,7 +53,8 @@ export default function GeneralSettings() {
 	const [generalSettings, setGeneralSettings] = useState(loaderData.generalSettingsModel);
 	const reviewExtensionId = loaderData.reviewExtensionId;
 	const allThemes = loaderData.allThemes;
-
+	const isEnabledAppEmbed = loaderData.isEnabledAppEmbed;
+	const activeTheme = loaderData.activeTheme;
 	const [selectedTheme, setSelectedTheme] = useState('');
 	const [addAppThemeButton, setAddAppThemeButton] = useState(false);
 
@@ -76,6 +84,11 @@ export default function GeneralSettings() {
 	const [isEnableMarkedVerifiedByStoreOwner, setIsEnableMarkedVerifiedByStoreOwner] = useState(
 		generalSettings?.is_enable_marked_verified_by_store_owner || false
 	);
+
+	const [isEnableSeoRichSnippetChecked, setIsEnableSeoRichSnippetChecked] = useState(
+		generalSettings?.is_enable_seo_rich_snippet || false
+	);
+
 
 	const [currentLanguage, setCurrentLanguage] = useState(generalSettings?.defaul_language || '');
 	const [footerText, setFooterText] = useState('');
@@ -254,6 +267,8 @@ export default function GeneralSettings() {
 				setIsEnableReviewNotVerified(!event.target.checked);
 			} else if (eventKey == 'is_enable_future_purchase_discount') {
 				setIsEnableFuturePurchaseDiscount(!event.target.checked);
+			} else if (eventKey == 'is_enable_seo_rich_snippet') {
+				setIsEnableSeoRichSnippetChecked(!event.target.checked);
 			}
 		} catch (error) {
 			console.error('Error updating record:', error);
@@ -312,7 +327,7 @@ export default function GeneralSettings() {
 	};
 
 	const addAppEmbedToTheme = async () => {
-		const appEmbedUrl = `https://admin.shopify.com/store/${shopRecords.name}/themes/${selectedTheme}/editor?context=apps&activateAppId=${reviewExtensionId}%2Fapp-embed`;
+		const appEmbedUrl = `https://admin.shopify.com/store/${shopRecords.myshopify_domain.replace(".myshopify.com", "")}/themes/${selectedTheme}/editor?context=apps&activateAppId=${reviewExtensionId}%2Fapp-embed`;
 		window.open(appEmbedUrl, '_blank');
 	}
 
@@ -559,7 +574,7 @@ export default function GeneralSettings() {
 													value={generalSettings?.send_email_type}
 												/>
 
- 
+
 											</div>
 										</div>
 										<div className="col-lg-12">
@@ -807,22 +822,37 @@ export default function GeneralSettings() {
 								<div className="formrow">
 									<div className="form-group m-0">
 										<div className="form-check form-switch">
-											<input className="form-check-input" type="checkbox" role="switch" name="ratingongooglesearch" id="ratingongooglesearch" />
-											<label className="form-check-label" for="ratingongooglesearch">Show product ratings in Google search results</label>
+											<input
+												checked={
+													isEnableSeoRichSnippetChecked
+												}
+												onChange={
+													handleCheckboxEnableChange
+												}
+												className="form-check-input"
+												type="checkbox"
+												role="switch"
+												name="is_enable_seo_rich_snippet"
+												id="ratingongooglesearch"
+											/>
+											<label
+												className="form-check-label"
+												htmlFor="ratingongooglesearch"
+											>
+												Show product ratings in Google search results
+											</label>
+
 										</div>
 									</div>
 								</div>
 								<div className="formrow">
-									<AlertInfo
-										alertContent={`To activate the feature, <a href="#">enable</a> the W3 Core Script. <a href="#">Learn more</a>`}
-										alertClose
-										// conlink="/"
-										colorTheme="primarybox"
-									/>
+									{!isEnabledAppEmbed &&
+										<EnableAppEmbedAlert alertKey="general_seo_snippet" shopRecords={shopRecords} reviewExtensionId={reviewExtensionId} activeThemeId={activeTheme.id} page="general" alertClose/>
+									}
 								</div>
 								<div className="formrow">
 									<AlertInfo
-										alertContent={`W3 will add the relevant rich snippets code to your store's theme. <a href="#">Click here to test search result</a>`}
+										alertContent={`${settingsJson.app_name} will add the relevant rich snippets code to your store's theme. <a href="https://search.google.com/test/rich-results" target=_blank>Click here to test search result</a>`}
 										// alertClose
 										// conlink="/"
 										colorTheme=""

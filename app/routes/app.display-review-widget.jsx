@@ -49,7 +49,7 @@ export async function loader({ request }) {
         const snippetWidgetExtenstionId = encodeURIComponent(`${reviewExtensionId}/snippet-widget`);
 
 
-        const shopifyProduct = await getShopifyLatestProducts(shopRecords.shop);
+        const shopifyProduct = await getShopifyLatestProducts(shopRecords.myshopify_domain);
         const productName = (shopifyProduct.products.length > 0 ) ? encodeURIComponent(`/products/${shopifyProduct.products[0]['handle']}`) : "/products";
         const cartPreviewPath = encodeURIComponent("/cart");
 

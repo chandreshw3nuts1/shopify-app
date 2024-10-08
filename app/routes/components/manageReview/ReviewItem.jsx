@@ -342,7 +342,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 		} else if (statusValue == 'change-product') {
 			handleShowChangeProductModal(review_id, index);
 		} else if (statusValue === 'discount') {
-			const discountDetailsUrl = `https://admin.shopify.com/store/${shopRecords.name}/discounts/${result.discount_price_rule_id}`;
+			const discountDetailsUrl = `https://admin.shopify.com/store/${shopRecords.myshopify_domain.replace(".myshopify.com", "")}/discounts/${result.discount_price_rule_id}`;
 			window.open(discountDetailsUrl, "_blank");
 		} else {
 			const updateData = {

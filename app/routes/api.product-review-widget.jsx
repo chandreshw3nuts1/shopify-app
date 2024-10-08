@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
-import { findOneRecord, getShopifyProducts, getLanguageWiseContents, createShopifyDiscountCode, generateRandomCode, generateVideoThumbnail, resizeImages, generateUnsubscriptionLink } from "./../utils/common";
+import { findOneRecord, getShopDetailsByShop, getShopifyProducts, getLanguageWiseContents, createShopifyDiscountCode, generateRandomCode, generateVideoThumbnail, resizeImages, generateUnsubscriptionLink, updateTotalAndAverageSeoRating } from "./../utils/common";
 import EmailTemplate from './components/email/EmailTemplate';
 import ReactDOMServer from 'react-dom/server';
 import { ObjectId } from 'mongodb';
@@ -45,7 +45,7 @@ export async function action({ request }) {
 	switch (method) {
 		case "POST":
 			try {
-				const shopRecords = await findOneRecord("shop_details", { "shop": shop });
+				const shopRecords = await getShopDetailsByShop(shop);
 				const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
 
 				if (actionType == "uploadDocuments") {
@@ -281,12 +281,11 @@ export async function action({ request }) {
 					if (shop == null || formData.get('product_id') == null) {
 						return json({ success: false });
 					}
-
 					const settings = await findOneRecord('settings', {
 						shop_id: shopRecords._id,
 					});
 					const productId = `"gid://shopify/Product/${formData.get('product_id')}"`;
-					var productsDetails = await getShopifyProducts(shop, productId);
+					var productsDetails = await getShopifyProducts(shopRecords.myshopify_domain, productId);
 					if (!productsDetails[0]) {
 						return json({ success: false });
 					}
@@ -297,7 +296,7 @@ export async function action({ request }) {
 					const generalAppearancesData = await generalAppearances.findOne({ shop_id: shopRecords._id });
 					const logo = getUploadDocument(generalAppearancesData.logo, shopRecords.shop_id, 'logo');
 
-					const shopifyStoreUrl = `${process.env.SHOPIFY_ADMIN_STORE_URL}/${shopRecords.name}/apps/${process.env.SHOPIFY_APP_NAME}/app/manage-review`;
+					const shopifyStoreUrl = `${process.env.SHOPIFY_ADMIN_STORE_URL}/${shopRecords.myshopify_domain.replace(".myshopify.com", "")}/apps/${process.env.SHOPIFY_APP_NAME}/app/manage-review`;
 
 					var reviewStatus = 'publish';
 					const reviewStarRating = parseInt(formData.get('rating'));
@@ -582,9 +581,13 @@ export async function action({ request }) {
 								email: formData.get('email')
 							}
 						};
-						const url = `https://${shopRecords.shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/customers.json`;
-						const shopSessionRecords = await findOneRecord("shopify_sessions", { "shop": shopRecords.shop });
-
+						const url = `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/customers.json`;
+						const shopSessionRecords = await findOneRecord("shopify_sessions", {
+							$or: [
+								{ shop: shopRecords.shop },
+								{ myshopify_domain: shopRecords.shop }
+							]
+						});
 						const custResponse = await fetch(url, {
 							method: 'POST',
 							headers: {
@@ -634,6 +637,12 @@ export async function action({ request }) {
 							fromName
 						});
 					}
+
+					/* update metafield for SEO rich snippet*/
+
+					await updateTotalAndAverageSeoRating(shopRecords);
+				
+					/* End update metafield for SEO rich snippet*/
 
 
 					const dynamicComponent = <ThankYouPage shopRecords={shopRecords} discountText={discountText} discountCode={discountCode} otherProps={otherProps} />;
