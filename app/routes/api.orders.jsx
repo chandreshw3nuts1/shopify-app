@@ -23,7 +23,7 @@ export async function action({ request }) {
 	const method = request.method;
 	switch (method) {
 		case "POST":
-			var { shop, page, limit, filter_status, filter_time, start_date, end_date, search_keyword, actionType } = requestBody;
+			var { shop, page, limit, filter_status, filter_time, date_range, search_keyword, actionType } = requestBody;
 			page = page == 0 ? 1 : page;
 			try {
 				const shopRecords = await getShopDetailsByShop(shop)
@@ -38,11 +38,15 @@ export async function action({ request }) {
 
 						]
 					};
-					if (filter_time == "custom" && start_date && end_date && start_date != 'Invalid date') {
+					if (filter_time == "custom" && date_range) {
+						const dateArray = date_range.split(' - ');
+						console.log(dateArray);
 						query.createdAt = {
-							$gte: new Date(start_date),
-							$lt: new Date(end_date + " 23:59:59")
+							$gte: new Date(dateArray[0]),
+							$lt: new Date(dateArray[1] + " 23:59:59")
 						};
+						console.log(query);
+
 					}
 					if (filter_status == 'all') {
 						delete query['manualRequestProducts.status'];

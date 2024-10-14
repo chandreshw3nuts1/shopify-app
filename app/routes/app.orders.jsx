@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { mongoConnection } from './../utils/mongoConnection';
 import { useLoaderData } from '@remix-run/react';
 import Breadcrumb from "./components/Breadcrumb";
@@ -6,21 +6,14 @@ import SettingPageSidebar from "./components/headerMenu/SettingPageSidebar";
 import { getShopDetails } from './../utils/getShopDetails';
 import settingsJson from './../utils/settings.json';
 import { formatTimeAgo, formatDate, addDaysToDate } from './../utils/dateFormat';
-import DatePicker from 'react-date-picker';
-import 'react-date-picker/dist/DatePicker.css';
-import 'react-calendar/dist/Calendar.css';
-import CalenderIcon from "../images/CalenderIcon";
-import CloseIcon from "../images/CloseIcon";
 
 import { json } from "@remix-run/node";
 
 import {
-    Layout,
     Page,
-    LegacyCard,
+    Popover,
     Spinner,
-    Text,
-    Card, LegacyStack, TextField, Button, FormLayout, Collapsible
+    DatePicker, TextField, Button
 } from "@shopify/polaris";
 
 export async function loader({ request }) {
@@ -38,7 +31,7 @@ export async function loader({ request }) {
             "search_keyword": "",
             "filter_status": "all",
             "filter_time": "all",
-            "start_date": "",
+            "date_range": "",
             "end_date": "",
             "actionType": "orderListing"
         }
@@ -89,8 +82,8 @@ export default function Orders() {
 
     const orderUrl = "https://admin.shopify.com/store/";
 
-    const handleKeywordChange = (e) => {
-        setSearchFormData({ ...searchFormData, [e.target.name]: e.target.value });
+    const handleKeywordChange = (value) => {
+        setSearchFormData({ ...searchFormData, search_keyword: value });
     };
 
     const handleSelectStatusChange = (e) => {
@@ -103,21 +96,6 @@ export default function Orders() {
         setSearchFormData({ ...searchFormData, filter_time: e.target.value });
         setIsAllTime(!isAllTime);
     };
-
-
-    const handleStartDateChange = (date) => {
-
-        setStartDate(date);
-        setSearchFormData({ ...searchFormData, start_date: formatDate(date) });
-
-    };
-
-    const handleEndDateChange = (date) => {
-        setEndDate(date);
-        setSearchFormData({ ...searchFormData, end_date: formatDate(date) });
-
-    };
-
 
 
     const observer = useRef();
@@ -408,6 +386,53 @@ export default function Orders() {
                 return <span>{`Status: ${products.status}`}</span>;
         }
     }
+
+
+    const currentDate = new Date();
+
+    // Initialize the state for month and year dynamically
+    const [{ month, year }, setDate] = useState({
+        month: currentDate.getMonth(), // current month (0 = January, 11 = December)
+        year: currentDate.getFullYear(), // current year
+    });
+
+    // Initialize selectedDates with the current date for both start and end
+    const [selectedDates, setSelectedDates] = useState({
+        start: currentDate,
+        end: currentDate, // Initialize end as same as start
+    });
+
+    const [popoverActive, setPopoverActive] = useState(false); // Control Popover visibility
+    const [inputValue, setInputValue] = useState(""); // Show current date initially in input
+
+    const handleMonthChange = useCallback((month, year) => setDate({ month, year }), []);
+
+    const handleInputClick = () => {
+        setPopoverActive(!popoverActive); // Toggle Popover when input is clicked
+    };
+
+    const handleDateChange = (newDates) => {
+        setSelectedDates(newDates);
+
+        // Format the selected date and set it in the input box
+        const startDate = newDates.start.toLocaleDateString();
+        const endDate = newDates.end ? newDates.end.toLocaleDateString() : startDate;
+
+        setInputValue(`${startDate} - ${endDate}`);
+        setSearchFormData({ ...searchFormData, date_range: `${formatDate(newDates.start)} - ${formatDate(newDates.end)}` });
+        // setSearchFormData({ ...searchFormData, end_date: endDate });
+
+        // Only close the Popover after the user selects both start and end dates
+    };
+
+    const handleApplyClick = () => {
+        // Close the Popover when Apply button is clicked
+        if (selectedDates.start && selectedDates.end) {
+            setPopoverActive(false);
+        }
+    };
+
+
     const crumbs = [
         { "title": "Settings", "link": "./../branding" },
         { "title": "Orders", "link": "" }
@@ -427,7 +452,14 @@ export default function Orders() {
                             <div className="row">
                                 <div className="col-lg-6">
                                     <div className="form-group">
-                                        <input type="text" name="search_keyword" className="form-control" value={searchFormData.search_keyword} onChange={handleKeywordChange} placeholder="Search by email" />
+                                        <TextField
+                                            name="search_keyword"
+                                            placeholder="Search by email"
+                                            value={searchFormData.search_keyword}
+                                            onChange={handleKeywordChange} // No action needed, just to comply with TextField component requirements
+                                        />
+
+                                        {/* <input type="text" name="search_keyword" className="form-control" value={searchFormData.search_keyword} onChange={handleKeywordChange} placeholder="Search by email" /> */}
                                     </div>
                                 </div>
                                 <div className="col-lg-3">
@@ -451,17 +483,38 @@ export default function Orders() {
                                 </div>
                                 {!isAllTime &&
                                     <>
-                                        <div className="col-lg-3">
-                                            <div className={`form-group ${startDate ? 'has-date-value' : ''}`}>
-                                                <DatePicker className="form-control" maxDate={new Date()} format="y-MM-dd" onChange={handleStartDateChange} value={startDate} clearIcon={<CloseIcon />} calendarIcon={<CalenderIcon />} />
-                                            </div>
+                                        <div className="col-lg-6">
+                                            <Popover
+                                                active={popoverActive} // Controls if Popover is visible
+                                                activator={
+                                                    <TextField
+                                                        placeholder="Select date range"
+                                                        value={inputValue}
+                                                        onFocus={handleInputClick} // Show Popover when input is focused
+                                                        onChange={() => { }} // No action needed, just to comply with TextField component requirements
+                                                        readOnly
+                                                    />
+                                                }
+                                                onClose={() => setPopoverActive(false)} // Close popover when user clicks outside
+                                                preferredAlignment="left" // Optional: Align the popover to the left
+                                            >
+                                                <div style={{ padding: '10px', width: '600px', maxHeight: '400px', overflow: 'hidden' }}>
+                                                    <DatePicker
+                                                        month={month}
+                                                        year={year}
+                                                        onChange={handleDateChange}
+                                                        onMonthChange={handleMonthChange}
+                                                        selected={selectedDates}
+                                                        multiMonth
+                                                        allowRange
+                                                    />
+                                                    <Button onClick={handleApplyClick} primary style={{ marginTop: '10px' }}>
+                                                        Apply
+                                                    </Button>
+                                                </div>
+                                            </Popover>
                                         </div>
-                                        <div className="col-lg-3">
-                                            <div className={`form-group ${endDate ? 'has-date-value' : ''}`}>
-                                                <DatePicker className="form-control" maxDate={new Date()} format="y-MM-dd" onChange={handleEndDateChange} value={endDate} clearIcon={<CloseIcon />} calendarIcon={<CalenderIcon />} />
 
-                                            </div>
-                                        </div>
                                     </>
                                 }
 
@@ -512,7 +565,7 @@ export default function Orders() {
                                             }
                                             <span className="revbtn lightbtn">
                                                 <i className="twenty-timericon"></i>
-                                                {formatTimeAgo(result.createdAt, shopRecords.timezone , 'MM-DD-YYYY')}
+                                                {formatTimeAgo(result.createdAt, shopRecords.timezone, 'MM-DD-YYYY')}
                                             </span>
                                         </div>
                                     </div>

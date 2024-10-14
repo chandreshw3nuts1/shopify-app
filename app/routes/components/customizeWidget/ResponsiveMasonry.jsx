@@ -17,21 +17,36 @@ export default function MasonryLayout(props) {
     } else if (props.documentObj.widgetColor == 'white') {
 
     }
-
+    let reviewWidgetLayoutWidth = "100%";
+    let gridClassName = 'full-grid';
+    if (props.documentObj.widgetLayout == 'grid') {
+        reviewWidgetLayoutWidth = "33.33%";
+        gridClassName = 'grid-four-column';
+    } else if (props.documentObj.widgetLayout == 'compact') {
+        reviewWidgetLayoutWidth = "50%";
+        gridClassName = 'grid-two-column';
+    }
     useEffect(() => {
         const script = document.createElement('script');
         script.src = "https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js";
         script.async = true;
 
         script.onload = () => {
-            new window.Masonry(masonryContainerRef.current, {
-
+            // Initialize Masonry after the script is loaded
+            const masonryInstance = new window.Masonry(masonryContainerRef.current, {
+                itemSelector: '.w3grid-review-item', // Your grid item selector
+                columnWidth: '.w3grid-review-item', // Define column width to match grid items
+                percentPosition: true
             });
+
+            setTimeout(() => {
+                masonryInstance.layout();
+            }, 5000);
+
         };
 
         document.body.appendChild(script);
 
-        // Cleanup: remove the script when the component is unmounted
         return () => {
             document.body.removeChild(script);
         };
@@ -47,7 +62,14 @@ export default function MasonryLayout(props) {
                     .custombg:hover {
                         background-color: ${reviewsBackgroundOnHover} !important;
                     }
-                    
+                    .w3grid-review-item {
+						width: ${reviewWidgetLayoutWidth} !important;
+						margin : 24px 0 0 0;
+						padding: 0;
+						box-sizing: border-box;
+					}
+					.w3grid-review-item.grid-two-column,
+					.w3grid-review-item.grid-four-column { padding: 0 12px;}    
                 `}
             </style>
 

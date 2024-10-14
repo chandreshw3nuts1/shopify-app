@@ -4,12 +4,14 @@ import Breadcrumb from "./components/Breadcrumb";
 import SettingPageSidebar from "./components/headerMenu/SettingPageSidebar";
 import { getShopDetails } from './../utils/getShopDetails';
 import generalSettings from './models/generalSettings';
-import { getAllThemes, checkAppEmbedAppStatus } from './../utils/common';
+import { getAllThemes, checkAppEmbedAppStatus, findOneRecord } from './../utils/common';
 const CrownIcon = '/images/crown-icon.svg'
 import { Image } from "react-bootstrap";
 import AlertInfo from "./components/AlertInfo";
 import settingsJson from './../utils/settings.json';
 import EnableAppEmbedAlert from './components/common/enable-app-embed-alert';
+import ProductGroupsComponent from './components/generalSettings/ProductGroups';
+// import productGroups from './models/productGroups';
 
 
 import { json } from "@remix-run/node";
@@ -24,6 +26,12 @@ export async function loader({ request }) {
 
 		const shopRecords = await getShopDetails(request);
 
+		const shopSessionRecords = await findOneRecord("shopify_sessions", {
+			$or: [
+				{ shop: shopRecords.shop },
+				{ myshopify_domain: shopRecords.shop }
+			]
+		});
 		const allThemes = await getAllThemes(shopRecords.myshopify_domain);
 		let activeTheme;
 		let isEnabledAppEmbed = false;
@@ -38,7 +46,7 @@ export async function loader({ request }) {
 
 		const reviewExtensionId = process.env.SHOPIFY_ALL_REVIEW_EXTENSION_ID;
 
-		return json({ shopRecords, generalSettingsModel, allThemes,activeTheme, isEnabledAppEmbed, reviewExtensionId });
+		return json({ shopRecords, shopSessionRecords, generalSettingsModel, allThemes,activeTheme, isEnabledAppEmbed, reviewExtensionId });
 
 	} catch (error) {
 		console.error('Error fetching records:', error);
@@ -50,6 +58,8 @@ export async function loader({ request }) {
 export default function GeneralSettings() {
 	const loaderData = useLoaderData();
 	const shopRecords = loaderData.shopRecords;
+	const shopSessionRecords = loaderData.shopSessionRecords;
+	
 	const [generalSettings, setGeneralSettings] = useState(loaderData.generalSettingsModel);
 	const reviewExtensionId = loaderData.reviewExtensionId;
 	const allThemes = loaderData.allThemes;
@@ -811,6 +821,8 @@ export default function GeneralSettings() {
 								</div>
 							</div>
 						</div>
+						<ProductGroupsComponent shopRecords={shopRecords} shopSessionRecords={shopSessionRecords} />
+						
 						<div className="whitebox">
 							<div className="general_row">
 								<div className="row_title">

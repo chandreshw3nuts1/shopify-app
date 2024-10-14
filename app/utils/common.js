@@ -638,7 +638,7 @@ export async function createMetafields(shopRecords, metafields, widgetType) {
 				{ myshopify_domain: shopRecords.shop }
 			]
 		});
-		const metafieldApiUrl = `https://${shopRecords.shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`;
+		const metafieldApiUrl = `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`;
 
 		// Construct the GraphQL mutation
 		const mutationQuery = `

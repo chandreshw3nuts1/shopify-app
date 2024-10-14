@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; // Assuming you're using React Router for routing
-import {Card, Breadcrumbs, Button} from '@shopify/polaris';
 import styles from "./breadcrumb.module.css";
-import HomeImage from './home.png';
 
 const Breadcrumb = (props) => {
   

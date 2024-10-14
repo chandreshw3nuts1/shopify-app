@@ -12,7 +12,7 @@ const productReviewsSchema = new mongoose.Schema({
     display_name: { type: String, required: true },
     email: { type: String, required: true },
     rating: { type: Number, required: true },
-    product_id: { type: String, required: true },
+    product_id: { type: Number, required: true },
     variant_title: { type: String },
     product_title: { type: String },
     product_url: { type: String },

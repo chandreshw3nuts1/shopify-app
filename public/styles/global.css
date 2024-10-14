@@ -590,12 +590,12 @@ body .dropdown-toggle::after { content: "\e902"; font-family: 'icon24' !importan
 .custwidtitle h3 { color: var(--darkColor); font-size: 18px; font-weight: 700; margin: 0; padding: 0;}
 
 .lightdarkwrap { display: flex; margin: 0 0 0 10px;}
-.lightdarkwrap a { display: flex; align-items: center; justify-content: center; padding: 8px; border-radius: 8px; background: var(--borderColor);}
-.lightdarkwrap a i { display: flex; width: 18px; height: 18px; background: var(--whiteBg); position: relative; overflow: hidden; border-radius: 20px;}
-.lightdarkwrap a i:before { content: ''; display: block; width: 9px; height: 18px; background: var(--darkColor); border-radius: 0; position: absolute; left: 0; top: 0;}
-.lightdarkwrap a.darkbg { background: var(--darkColor);}
-.lightdarkwrap a.darkbg i { background: var(--lightGreyColor);}
-.lightdarkwrap a.darkbg i::before { background: var(--whiteBg);}
+.lightdarkwrap button { display: flex; align-items: center; justify-content: center; padding: 8px; border-radius: 8px; background: var(--borderColor);}
+.lightdarkwrap button i { display: flex; width: 18px; height: 18px; background: var(--whiteBg); position: relative; overflow: hidden; border-radius: 20px;}
+.lightdarkwrap button i:before { content: ''; display: block; width: 9px; height: 18px; background: var(--darkColor); border-radius: 0; position: absolute; left: 0; top: 0;}
+.lightdarkwrap button.darkbg { background: var(--darkColor);}
+.lightdarkwrap button.darkbg i { background: var(--lightGreyColor);}
+.lightdarkwrap button.darkbg i::before { background: var(--whiteBg);}
 
 
 .whitebox.p-0 .insidewhitecard.darkpreview { background: var(--darkColor); border-radius: 0 0 10px 10px;}

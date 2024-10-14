@@ -791,24 +791,13 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                             <div className="custwidtitle">
                                 <h3>Preview</h3>
                                 <div className='lightdarkwrap'>
-                                    <a href='#' onClick={changeLightDarkModel} className={`${lightDarkModel ? 'darkbg' : ''}`}><i></i></a>
+                                    <button href='#' onClick={changeLightDarkModel} className={`${lightDarkModel ? 'darkbg' : ''}`}><i></i></button>
                                 </div>
 
                                 <div className='btnbox ms-auto'>
                                     <a href="#" onClick={(e) => handleShowPreviewModal()} className='revbtn tinybtn'>Preview</a>
                                 </div>
-                                <ProductReviewWidgetModal
-                                    show={showPreviewModal}
-                                    handleClose={handleClosePreviewModal}
-                                    documentObj={documentObj}
-                                    shopRecords={shopRecords}
-                                    getPreviewText={getPreviewText}
-                                    currentLanguage={currentLanguage}
-                                    translator={t}
-                                    lightDarkModel={lightDarkModel}
-                                    changeLightDarkModel={changeLightDarkModel}
-
-                                />
+                                
                             </div>
                             <style>
                                 {`
@@ -1156,7 +1145,19 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                 </div>
             </div>
 
+            {showPreviewModal &&
+                <ProductReviewWidgetModal
+                    show={showPreviewModal}
+                    handleClose={handleClosePreviewModal}
+                    documentObj={documentObj}
+                    shopRecords={shopRecords}
+                    getPreviewText={getPreviewText}
+                    currentLanguage={currentLanguage}
+                    translator={t}
+                    lightDarkModel={lightDarkModel}
+                    changeLightDarkModel={changeLightDarkModel}
 
+                />}
 
 
         </>

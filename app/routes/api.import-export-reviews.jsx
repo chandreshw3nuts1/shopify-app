@@ -226,8 +226,12 @@ export async function action({ request }) {
 							console.log('Error processing reviews:', err);
 						});
 
-						await updateTotalAndAverageSeoRating(shopRecords);
 
+						/* update metafield for SEO rich snippet*/
+						if (generalSettingsModel.is_enable_seo_rich_snippet == true) {
+							await updateTotalAndAverageSeoRating(shopRecords);
+						}
+						/* End update metafield for SEO rich snippet*/
 
 					}
 					return json({ "status": 200, "message": "CSV file uploaded successfully." });
@@ -568,7 +572,11 @@ export async function action({ request }) {
 							console.log('Error processing reviews:', err);
 						});
 
-						await updateTotalAndAverageSeoRating(shopRecords);
+						/* update metafield for SEO rich snippet*/
+						if (generalSettingsModel.is_enable_seo_rich_snippet == true) {
+							await updateTotalAndAverageSeoRating(shopRecords);
+						}
+						/* End update metafield for SEO rich snippet*/
 
 					}
 					return json({ "status": 200, "message": "CSV file uploaded successfully." });

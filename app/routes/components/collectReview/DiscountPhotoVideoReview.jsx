@@ -341,7 +341,7 @@ export default function DiscountPhotoVideoReview(props) {
                                                 </div>
                                                 <div className='radiocolumn'>
                                                     <input type="radio" disabled={!isEnableDiscountChecked} name='sameDiscountType' onChange={changeRadioButtons} value="fixed_amount" id='amountdoller' checked={selectedSameDiscountType === 'fixed_amount'} />
-                                                    <label htmlFor="amountdoller">$</label>
+                                                    <label htmlFor="amountdoller">{props.shopRecords.currency_symbol}</label>
                                                 </div>
                                             </div>
                                             <div className='inputwrap'>
@@ -363,7 +363,7 @@ export default function DiscountPhotoVideoReview(props) {
                                                     </div>
                                                     <div className='radiocolumn'>
                                                         <input type="radio" disabled={!isEnableDiscountChecked} name='differentDiscountPhotoType' onChange={changeRadioButtons} value="fixed_amount" id='diffamountdoller' checked={selectedDifferentDiscountPhotoType === 'fixed_amount'} />
-                                                        <label htmlFor="diffamountdoller">$</label>
+                                                        <label htmlFor="diffamountdoller">{props.shopRecords.currency_symbol}</label>
                                                     </div>
                                                 </div>
                                                 <div className='inputwrap'>
@@ -382,7 +382,7 @@ export default function DiscountPhotoVideoReview(props) {
                                                     </div>
                                                     <div className='radiocolumn'>
                                                         <input type="radio" disabled={!isEnableDiscountChecked} name='differentDiscountVideoType' onChange={changeRadioButtons} value="fixed_amount" id='diffvideoamountdoller' checked={selectedDifferentDiscountVideoType === 'fixed_amount'} />
-                                                        <label htmlFor="diffvideoamountdoller">$</label>
+                                                        <label htmlFor="diffvideoamountdoller">{props.shopRecords.currency_symbol}</label>
                                                     </div>
                                                 </div>
                                                 <div className='inputwrap'>

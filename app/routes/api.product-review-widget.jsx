@@ -402,7 +402,7 @@ export async function action({ request }) {
 							description: formData.get('description'),
 							customer_locale: customer_locale,
 							rating: reviewStarRating,
-							product_id: formData.get('product_id'),
+							product_id: parseInt(formData.get('product_id')),
 							variant_title: formData.get('variant_title'),
 							product_title: productNodes.title,
 							product_url: productNodes.handle,
@@ -639,9 +639,9 @@ export async function action({ request }) {
 					}
 
 					/* update metafield for SEO rich snippet*/
-
-					await updateTotalAndAverageSeoRating(shopRecords);
-				
+					if (generalSettingsModel.is_enable_seo_rich_snippet == true) {
+						await updateTotalAndAverageSeoRating(shopRecords);
+					}
 					/* End update metafield for SEO rich snippet*/
 
 

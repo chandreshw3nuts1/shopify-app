@@ -16,8 +16,6 @@ import TestimonialsCarouselWidget from './components/widget-components/testimoni
 import CardCarouselWidget from './components/widget-components/card-carousel-widget';
 import SnippetWidget from './components/widget-components/snippet-widget';
 
-
-
 import { getShopDetailsByShop, findOneRecord, getCustomQuestions } from './../utils/common';
 import { mongoConnection } from './../utils/mongoConnection';
 import productReviews from "./models/productReviews";
@@ -28,6 +26,7 @@ import reviewFormSettings from "./models/reviewFormSettings";
 import sidebarReviewWidgetCustomizes from "./models/sidebarReviewWidgetCustomizes";
 import floatingWidgetCustomizes from "./models/floatingWidgetCustomizes";
 import popupModalWidgetCustomizes from "./models/popupModalWidgetCustomizes";
+import productGroups from './models/productGroups';
 
 
 import { getShopifyProducts, getDiscounts } from "./../utils/common";
@@ -295,7 +294,7 @@ export async function action({ request }) {
             }
         } else if (actionType == "reviewRatingWidget") {
             try {
-                const product_id = formData.get('product_id');
+                const product_id = parseInt(formData.get('product_id'));
                 const font_size = formData.get('font_size');
                 const widget_text_color = formData.get('widget_text_color');
                 const widget_icon_color = formData.get('widget_icon_color');
@@ -357,7 +356,7 @@ export async function action({ request }) {
             }
         } else if (actionType == "allReviewCounterWidget") {
             try {
-                const product_id = formData.get('product_id');
+                const product_id = parseInt(formData.get('product_id'));
                 const font_size = formData.get('font_size');
                 const widget_text_color = formData.get('widget_text_color');
                 const widget_icon_color = formData.get('widget_icon_color');
@@ -582,9 +581,10 @@ export async function action({ request }) {
                 const reviewer_name_color = formData.get('reviewer_name_color');
                 const widget_icon_color = formData.get('widget_icon_color');
                 const border_color = formData.get('border_color');
-                const productId = formData.get('product_id');
+                const productId = parseInt(formData.get('product_id'));
 
                 const reviewItems = await getImageAndVideoForCarousel(shopRecords, no_display_reviews, productId);
+                console.log(reviewItems);
                 const formParams = {
                     widget_alignment,
                     widget_width,
@@ -949,7 +949,7 @@ export async function action({ request }) {
             const page = parseInt(formData.get('page'));
             const sortBy = formData.get('sort_by') != null ? formData.get('sort_by') : productReviewWidgetCustomizesModel.defaultSorting;
             const filterByRatting = parseInt(formData.get('filter_by_ratting'));
-            const productId = formData.get('product_id');
+            const productId = parseInt(formData.get('product_id'));
             const showImageReviews = formData.get('show_image_reviews');
             const showAllReviews = formData.get('show_all_reviews');
             const hideProductThumbnails = formData.get('hide_product_thumbnails');
@@ -979,9 +979,35 @@ export async function action({ request }) {
                 status: 'publish',
             };
             if (showAllReviews == 'false' && productId != "") {
-                query['product_id'] = productId;
-            }
+                let uniqProductIds = [productId];
+                if (is_modal_reviews == null) {
 
+                    const productGroupsResult = await productGroups.aggregate([
+                        {
+                            $match: {
+                                shop_id: shopRecords._id,
+                                product_ids: productId
+                            }
+                        },
+                        {
+                            $unwind: "$product_ids"
+                        },
+                        {
+                            $group: {
+                                _id: null,
+                                uniqueProductIds: { $addToSet: "$product_ids" }
+                            }
+                        }
+                    ]);
+
+                    console.log(productGroupsResult);
+                    if (productGroupsResult.length > 0 && productGroupsResult[0].uniqueProductIds) {
+                        uniqProductIds = productGroupsResult[0].uniqueProductIds;
+                    }
+                }
+                query['product_id'] = { $in: uniqProductIds };
+
+            }
 
             let matchFilterOption = {};
             if (showImageReviews == 'true') {
@@ -1012,6 +1038,7 @@ export async function action({ request }) {
                 count: item.count
             }));
             const totalReviews = mapRatting.reduce((acc, item) => acc + item.count, 0);
+
             var averageRating = Math.round((mapRatting.reduce((acc, item) => acc + item.stars * item.count, 0) / totalReviews).toFixed(1));
             if (isNaN(averageRating)) {
                 averageRating = 0;
@@ -1145,8 +1172,6 @@ export async function action({ request }) {
                     }
                 }
             ]);
-
-            //  return reviewItems;
 
             var mapProductDetails = {};
 
