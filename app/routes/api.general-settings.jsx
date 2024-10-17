@@ -38,7 +38,7 @@ export async function action({ params, request }) {
                         await createMetafields(shopRecords, metafields, 'seoRichSnippet');
 
                         /* update metafield for SEO rich snippet*/
-                        await updateTotalAndAverageSeoRating(shopRecords);
+                        updateTotalAndAverageSeoRating(shopRecords);
                         /* End update metafield for SEO rich snippet*/
                     }
 

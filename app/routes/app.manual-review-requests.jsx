@@ -31,13 +31,8 @@ import {
 export async function loader({ request }) {
 	const db = await mongoConnection();
 	const shopRecords = await getShopDetails(request);
+	const shopSessionRecords = await findOneRecord("shopify_sessions", { shop: shopRecords.myshopify_domain });
 
-	const shopSessionRecords = await findOneRecord("shopify_sessions", {
-		$or: [
-			{ shop: shopRecords.shop },
-			{ myshopify_domain: shopRecords.shop }
-		]
-	});
 	return json({ shopRecords: shopRecords, shopSessionRecords });
 }
 const getShopifyProducts = async (storeName, accessToken, searchTitle) => {

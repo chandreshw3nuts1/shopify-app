@@ -61,7 +61,6 @@ export async function action({ request }) {
         shopRecords.is_enable_future_purchase_discount = generalSettingsModel.is_enable_future_purchase_discount;
 
         var customer_locale = formData.get('customer_locale') || generalSettingsModel.defaul_language;
-        const shopSessionRecords = await findOneRecord("shopify_sessions", { shop: shop });
         const generalAppearancesModel = await generalAppearances.findOne({
             shop_id: shopRecords._id
         });
@@ -584,7 +583,6 @@ export async function action({ request }) {
                 const productId = parseInt(formData.get('product_id'));
 
                 const reviewItems = await getImageAndVideoForCarousel(shopRecords, no_display_reviews, productId);
-                console.log(reviewItems);
                 const formParams = {
                     widget_alignment,
                     widget_width,
@@ -1000,7 +998,6 @@ export async function action({ request }) {
                         }
                     ]);
 
-                    console.log(productGroupsResult);
                     if (productGroupsResult.length > 0 && productGroupsResult[0].uniqueProductIds) {
                         uniqProductIds = productGroupsResult[0].uniqueProductIds;
                     }

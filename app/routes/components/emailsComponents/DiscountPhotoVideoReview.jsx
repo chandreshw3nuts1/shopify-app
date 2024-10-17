@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import ImageUploadMultiLang from '../settings/ImageUploadMultiLang';
 import InformationAlert from './../common/information-alert';
 import { useNavigate } from 'react-router-dom';
-import { Modal } from 'react-bootstrap';
+import { Modal, TitleBar } from '@shopify/app-bridge-react';
+import { Box } from "@shopify/polaris";
 import settingsJson from './../../../utils/settings.json';
 import { getUploadDocument } from './../../../utils/documentPath';
 import SampleDiscountPhotoVideoReviewEmail from './../email/SampleDiscountPhotoVideoReviewEmail';
@@ -117,16 +118,16 @@ const DiscountPhotoVideoReview = ({ shopRecords, emailTemplateObj, generalAppear
     const viewSample = (e) => {
         e.preventDefault();
         var footerContent = "";
-        if(generalSettingsModel.email_footer_enabled) {
+        if (generalSettingsModel.email_footer_enabled) {
             footerContent = generalSettingsModel[currentLanguage] ? generalSettingsModel[currentLanguage].footerText : "";
         }
         const sampleEmailData = {
             logo: getUploadDocument(generalAppearances?.logo, shopRecords.shop_id, 'logo'),
             body: body ? body : t('dicountPhotoVideoReviewEmail.body'),
             buttonText: buttonText ? buttonText : t('dicountPhotoVideoReviewEmail.buttonText'),
-            banner : getUploadDocument(languageWiseEmailTemplate.banner, shopRecords.shop_id, 'banners'),
-            footerContent : footerContent,
-            email_footer_enabled : generalSettingsModel.email_footer_enabled
+            banner: getUploadDocument(languageWiseEmailTemplate.banner, shopRecords.shop_id, 'banners'),
+            footerContent: footerContent,
+            email_footer_enabled: generalSettingsModel.email_footer_enabled
         }
         setEmailContents(sampleEmailData);
         setShowViewSampleModal(true);
@@ -196,7 +197,7 @@ const DiscountPhotoVideoReview = ({ shopRecords, emailTemplateObj, generalAppear
                                     <label htmlFor="">Button Text</label>
                                     <input type="text" onBlur={handleInputBlur} name="buttonText" value={buttonText} onChange={changeButtonText} className="input_text" placeholder={placeHolderLanguageData.buttonText} />
                                 </div>
-                               
+
                                 <div className="btnwrap">
                                     <a href="#" onClick={viewSample} className='revbtn'>View sample</a>
                                     <a href="#" onClick={showBrandingPage} className='revbtn outline'>Customize email appearance</a>
@@ -206,15 +207,21 @@ const DiscountPhotoVideoReview = ({ shopRecords, emailTemplateObj, generalAppear
                     </form>
                 </div>
             </div>
-            <Modal show={showViewSampleModal} className='reviewimagepopup' onHide={handleCloseViewSampleModal} size="lg" backdrop="static">
-                <Modal.Header closeButton>
-                    <Modal.Title>Sample email</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <SampleDiscountPhotoVideoReviewEmail  emailContents={emailContents} generalAppearancesObj={generalAppearances} />
 
-                </Modal.Body>
-            </Modal>
+            {showViewSampleModal && (
+                <Modal
+                    variant="large"
+                    open={showViewSampleModal}
+                    onHide={handleCloseViewSampleModal}
+                >
+                    <TitleBar title="Sample email">
+                        <button onClick={handleCloseViewSampleModal}>Close</button>
+                    </TitleBar>
+                    <Box padding="500">
+                        <SampleDiscountPhotoVideoReviewEmail emailContents={emailContents} generalAppearancesObj={generalAppearances} />
+                    </Box>
+                </Modal>
+            )}
         </>
     );
 };

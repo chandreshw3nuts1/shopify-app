@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import MasonryLayout from './ResponsiveMasonry';
 import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 import settingsJson from './../../../utils/settings.json';
@@ -61,7 +61,6 @@ const ProductReviewWidgetModal = ({ show, handleClose, documentObj, shopRecords,
     const toggleDropdownDisct = () => {
         setIsOpenDisct((prev) => !prev);
     };
-
     return (
         <>
             <style>
@@ -163,14 +162,13 @@ const ProductReviewWidgetModal = ({ show, handleClose, documentObj, shopRecords,
             </style>
 
 
-            <Modal variant="large" id="product-review-modal" open={show} onHide={handleClose}>
+            <Modal variant="max" id="product-review-modal" open={show} onHide={handleClose}>
                 <TitleBar title={`${settingsJson.app_name} preview`}>
-
-                    <button onClick={() => shopify.modal.hide('product-review-modal')}>Close</button>
                 </TitleBar>
                 <div className='lightdarkwrap'>
                     <button className={`${lightDarkModel ? 'darkbg' : ''}`} onClick={changeLightDarkModel}><i></i></button>
                 </div>
+
                 <div style={{ background: lightDarkModel ? '#222222' : '' }}>
                     
                     <Box padding="500">
@@ -355,8 +353,9 @@ const ProductReviewWidgetModal = ({ show, handleClose, documentObj, shopRecords,
                             <div className="right_actions btnwrap flxflexi flxrow justify-content-end">
                                 {documentObj.showSortingOptions &&
                                     <div className="dropdown">
+                                        
 
-                                        <button className="dropbtn" onClick={toggleDropdown}>
+                                        <button className="dropbtn custombtn" onClick={toggleDropdown} style={{ border: buttonBorderColor, color: buttonTitleColor, backgroundColor: buttonBackground }}>
                                             <i className="twenty-filtericon"></i> {translator('sort_by')} {isOpen ? <Icon source={ChevronUpIcon} tone="base" /> : <Icon source={ChevronDownIcon} tone="base" />} {/* Up and Down arrows */}
                                         </button>
                                         {isOpen && (

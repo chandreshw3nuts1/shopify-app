@@ -1,5 +1,6 @@
 import { json } from "@remix-run/node";
 import { mongoConnection } from './../utils/mongoConnection';
+import { GraphQLClient } from "graphql-request";
 
 import settings from './models/settings';
 import manualRequestProducts from './models/manualRequestProducts';
@@ -75,7 +76,7 @@ export async function action({ params, request }) {
                                 $set: {
                                     email: email,
                                     shop_id: shopRecords._id,
-                                    request_status : "sent"
+                                    request_status: "sent"
                                 }
                             };
                             const options = { upsert: true, returnOriginal: false };
@@ -108,7 +109,7 @@ export async function action({ params, request }) {
 
                             // Send request email
                             const subject = requestBody.requestEmailSubject != "" ? requestBody.requestEmailSubject : emailContents.subject;
-                            
+
                             const fromName = shopRecords.name;
                             const replyTo = generalSettingsModel.reply_email || shopRecords.email;
                             const response = await sendEmail({
@@ -176,44 +177,104 @@ export async function action({ params, request }) {
 
                 } else if (actionType == 'validateDiscountCode') {
 
-                    
-                    const shopSessionRecords = await findOneRecord("shopify_sessions", {
-                        $or: [
-                            { shop: shopRecords.shop },
-                            { myshopify_domain: shopRecords.shop }
-                        ]
-                    });
-                    const discountLookupApiUrl = `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/discount_codes/lookup.json?code=${requestBody.code}`;
-                    const discountLookupResponse = await fetch(discountLookupApiUrl, {
-                        method: 'GET',
-                        headers: {
-                            'X-Shopify-Access-Token': shopSessionRecords.accessToken,
-                        }
-                    });
-                    var msg = "";
-                    if (discountLookupResponse.ok) {
-                        const discountResponse = await discountLookupResponse.json();
+                    const shopSessionRecords = await findOneRecord("shopify_sessions", { shop: shopRecords.myshopify_domain });
 
-                        const priceRuleApiUrl = `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/price_rules/${discountResponse.discount_code.price_rule_id}.json`;
-                        const priceRuleResponse = await fetch(priceRuleApiUrl, {
-                            method: 'GET',
-                            headers: {
-                                'X-Shopify-Access-Token': shopSessionRecords.accessToken,
+                    const query = `
+                        query GetDiscountByCode($discountCode: String!) {
+                            discountNodes(first: 1, query: $discountCode) {
+                            edges {
+                                    node {
+                                        id
+                                        discount {
+                                        ... on DiscountCodeBasic {
+                                            title
+                                            appliesOncePerCustomer
+                                            endsAt
+                                            customerGets {
+                                            appliesOnOneTimePurchase
+                                            appliesOnSubscription
+                                            value {
+                                                ... on DiscountAmount {
+                                                __typename
+                                                appliesOnEachItem
+                                                amount {
+                                                    amount
+                                                }
+                                                }
+                                                
+                                                ... on DiscountPercentage {
+                                                __typename
+                                                percentage
+                                                }
+                                            }
+                                            }
+                                        }
+                                        }
+                        
+                                    }
+                                }
                             }
-                        });
-                        const priceRuleResponseObj = await priceRuleResponse.json();
-                        if (priceRuleResponseObj && priceRuleResponseObj.price_rule && priceRuleResponseObj.price_rule.value_type) {
+                        }
+                    `;
 
-                            const amountText = priceRuleResponseObj.price_rule.value_type == "fixed_amount" ? `${shopRecords.currency_symbol}${Math.abs(priceRuleResponseObj.price_rule.value)}` : `${Math.abs(priceRuleResponseObj.price_rule.value)}%`;
+                    try {
+
+                        const client = new GraphQLClient(
+                            `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`,
+                            {
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-Shopify-Access-Token': shopSessionRecords.accessToken,
+                                }
+                            }
+                        );
+
+                        const discountCode = requestBody.code;
+                        const variables = { discountCode };
+                        const discountResponse = await client.request(query, variables);
+                        let discountType = "percentage";
+                        let discountValue = 0;
+                        let msg;
+                        if (discountResponse && discountResponse?.discountNodes && discountResponse?.discountNodes?.edges && discountResponse?.discountNodes?.edges.length > 0) {
+                            const discountNode = discountResponse?.discountNodes?.edges[0].node;
+                            const discountId = discountNode?.id.split('/').pop();
+                            const expireAt = discountNode?.discount?.endsAt;
+                            console.log(discountNode?.discount?.customerGets?.value?.__typename);
+                            if (discountNode?.discount?.customerGets?.value?.__typename == "DiscountAmount") {
+                                discountType = "fixed_amount";
+                                discountValue = discountNode?.discount?.customerGets?.value?.amount?.amount;
+                            } else {
+                                discountValue = discountNode?.discount?.customerGets?.value?.percentage * 100;
+                            }
+
+                            const query = { shop_id: shopRecords._id };
+
+                            var update = {
+                                $set: {
+                                    discountId: discountId,
+                                    defaultDiscountType: discountType,
+                                    defaultDiscountValue: discountValue,
+                                    defaultDiscountExpiredAt: expireAt,
+                                    discountCode: discountCode,
+                                }
+                            };
+                            const options = { upsert: true, returnOriginal: false };
+                            await reviewDiscountSettings.findOneAndUpdate(query, update, options);
+                            const amountText = discountType == "fixed_amount" ? `${shopRecords.currency_symbol}${Math.abs(discountValue)}` : `${Math.abs(discountValue)}%`;
+
                             msg = `Code defined as ${amountText}`;
 
+                        } else {
+                            msg = "Code not found";
                         }
-                    } else {
 
-                        msg = "Code not found";
+                        return json({ "status": 200, "message": msg });
+
+                    } catch (error) {
+                        console.error("Error fetching discount details:", error);
+                        return json({ "status": 400, "message": "Failed to fetch discount details" });
                     }
 
-                    return json({ "status": 200, "message": msg });
                 } else {
 
                     const query = { shop_id: shopRecords._id };

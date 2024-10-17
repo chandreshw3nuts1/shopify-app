@@ -25,13 +25,8 @@ export async function loader({ request }) {
 	try {
 
 		const shopRecords = await getShopDetails(request);
+		const shopSessionRecords = await findOneRecord("shopify_sessions", { shop: shopRecords.myshopify_domain });
 
-		const shopSessionRecords = await findOneRecord("shopify_sessions", {
-			$or: [
-				{ shop: shopRecords.shop },
-				{ myshopify_domain: shopRecords.shop }
-			]
-		});
 		const allThemes = await getAllThemes(shopRecords.myshopify_domain);
 		let activeTheme;
 		let isEnabledAppEmbed = false;

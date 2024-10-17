@@ -47,7 +47,7 @@ export async function action({ request }) {
 
 						/* update metafield for SEO rich snippet*/
 						if (generalSettingsModel.is_enable_seo_rich_snippet == true) {
-							await updateTotalAndAverageSeoRating(shopRecords);
+							updateTotalAndAverageSeoRating(shopRecords);
 						}
 						/* End update metafield for SEO rich snippet*/
 
@@ -221,7 +221,7 @@ export async function action({ request }) {
 
 					/* update metafield for SEO rich snippet*/
 					if (generalSettingsModel.is_enable_seo_rich_snippet == true) {
-						await updateTotalAndAverageSeoRating(shopRecords);
+						updateTotalAndAverageSeoRating(shopRecords);
 					}
 					/* End update metafield for SEO rich snippet*/
 					return json({ "status": 200, "message": msg });
@@ -463,12 +463,9 @@ export async function action({ request }) {
 						const productReviewData = await productReviews.findOne({ _id: review_id });
 						if (productReviewData) {
 							const shopRecords = await findOneRecord("shop_details", { "_id": productReviewData.shop_id });
-							const shopSessionRecords = await findOneRecord("shopify_sessions", {
-								$or: [
-									{ shop: shop },
-									{ myshopify_domain: shop }
-								]
-							});
+							const shopSessionRecords = await findOneRecord("shopify_sessions", { shop: shop });
+
+
 							const client = new GraphQLClient(`https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
 								headers: {
 									'X-Shopify-Access-Token': shopSessionRecords.accessToken,
@@ -659,7 +656,7 @@ export async function action({ request }) {
 								verify_badge: { $first: "$verify_badge" },
 								add_to_carousel: { $first: "$add_to_carousel" },
 								video_slider: { $first: "$video_slider" },
-								discount_price_rule_id: { $first: "$discount_price_rule_id" },
+								discount_code_id: { $first: "$discount_code_id" },
 								reviewDocuments: { $first: "$reviewDocuments" }, // Use $first to avoid duplicates
 								reviewQuestionsAnswer: {
 									$push: {
@@ -711,7 +708,7 @@ export async function action({ request }) {
 								verify_badge: 1,
 								add_to_carousel: 1,
 								video_slider: 1,
-								discount_price_rule_id: 1,
+								discount_code_id: 1,
 								reviewDocuments: 1,
 								reviewQuestionsAnswer: {
 									$filter: {
@@ -770,7 +767,7 @@ async function deleteReview(review_id) {
 
 			/* update metafield for SEO rich snippet*/
 			if (generalSettingsModel.is_enable_seo_rich_snippet == true) {
-				await updateTotalAndAverageSeoRating(shopRecords);
+				updateTotalAndAverageSeoRating(shopRecords);
 			}
 			/* End update metafield for SEO rich snippet*/
 		}

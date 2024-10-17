@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
-import { findOneRecord, getShopDetailsByShop, getShopifyProducts, getLanguageWiseContents, createShopifyDiscountCode, generateRandomCode, generateVideoThumbnail, resizeImages, generateUnsubscriptionLink, updateTotalAndAverageSeoRating } from "./../utils/common";
+import { findOneRecord, getShopDetailsByShop, getShopifyProducts, getLanguageWiseContents, createShopifyDiscountCode, generateRandomCode, generateVideoThumbnail, resizeImages, generateUnsubscriptionLink, updateTotalAndAverageSeoRating, createCustomerInShipify } from "./../utils/common";
 import EmailTemplate from './components/email/EmailTemplate';
 import ReactDOMServer from 'react-dom/server';
 import { ObjectId } from 'mongodb';
@@ -232,7 +232,7 @@ export async function action({ request }) {
 								);
 								const fromName = shopRecords.name;
 								const replyTo = generalSettingsModel.reply_email || shopRecords.email;
-								const emailResponse = await sendEmail({
+								const emailResponse = sendEmail({
 									to: productReviewsModel.email,
 									subject: emailContentsDiscount.subject,
 									html: discountEmailHtmlContent,
@@ -245,7 +245,7 @@ export async function action({ request }) {
 									await productReviews.updateOne(
 										{ _id: reviewId },
 										{
-											$set: { discount_code_id: discountCodeResponse.id, discount_price_rule_id: discountCodeResponse.price_rule_id }
+											$set: { discount_code_id: discountCodeResponse.id}
 										}
 									);
 
@@ -455,7 +455,7 @@ export async function action({ request }) {
 
 								thumbNailName = await generateRandomCode(10) + ".png";
 								const thumbnailUploadFilePath = path.join(uploadsDir, fileName);
-								await generateVideoThumbnail(thumbnailUploadFilePath, uploadsDir, thumbNailName); // Generate thumbnail
+								generateVideoThumbnail(thumbnailUploadFilePath, uploadsDir, thumbNailName); // Generate thumbnail
 							}
 							const isCover = i === 0; // index 0 will be true, others will be false
 							const reviewDocumentModel = new reviewDocuments({
@@ -506,7 +506,7 @@ export async function action({ request }) {
 							);
 							const fromName = shopRecords.name;
 							const replyTo = generalSettingsModel.reply_email || shopRecords.email;
-							const emailResponse = await sendEmail({
+							const emailResponse = sendEmail({
 								to: formData.get('email'),
 								subject: emailContentsDiscount.subject,
 								html: discountEmailHtmlContent,
@@ -519,7 +519,7 @@ export async function action({ request }) {
 								await productReviews.updateOne(
 									{ _id: insertedId },
 									{
-										$set: { discount_code_id: discountCodeResponse.id, discount_price_rule_id: discountCodeResponse.price_rule_id }
+										$set: { discount_code_id: discountCodeResponse.id }
 									}
 								);
 
@@ -575,27 +575,11 @@ export async function action({ request }) {
 					/*Create new customer in shopify Start */
 					if (settings.addOnsiteReview == true) {
 						const customerData = {
-							customer: {
-								first_name: formData.get('first_name'),
-								last_name: formData.get('last_name'),
-								email: formData.get('email')
-							}
+							firstName: formData.get('first_name'),
+							lastName: formData.get('last_name'),
+							email: formData.get('email'),
 						};
-						const url = `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/customers.json`;
-						const shopSessionRecords = await findOneRecord("shopify_sessions", {
-							$or: [
-								{ shop: shopRecords.shop },
-								{ myshopify_domain: shopRecords.shop }
-							]
-						});
-						const custResponse = await fetch(url, {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-								'X-Shopify-Access-Token': shopSessionRecords.accessToken,
-							},
-							body: JSON.stringify(customerData),
-						});
+						createCustomerInShipify(shopRecords.myshopify_domain,customerData);
 					}
 
 					/*Create new customer in shopify End */
@@ -630,7 +614,7 @@ export async function action({ request }) {
 							<EmailTemplate emailContents={emailContents} />
 						);
 						const fromName = process.env.SHOPIFY_APP_NAME;
-						const response = await sendEmail({
+						const response = sendEmail({
 							to: email,
 							subject,
 							html: emailHtml,
@@ -640,7 +624,7 @@ export async function action({ request }) {
 
 					/* update metafield for SEO rich snippet*/
 					if (generalSettingsModel.is_enable_seo_rich_snippet == true) {
-						await updateTotalAndAverageSeoRating(shopRecords);
+						updateTotalAndAverageSeoRating(shopRecords);
 					}
 					/* End update metafield for SEO rich snippet*/
 

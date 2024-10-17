@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { formatTimeAgo, reviewersNameFormat } from './../../../utils/dateFormat';
 import Swal from 'sweetalert2';
 import settingsJson from './../../../utils/settings.json';
@@ -11,15 +11,16 @@ import ReplyIcon from "../../../images/ReplyIcon";
 const facebookSocial = "/images/Facebook-Original.svg";
 const twitterxicon = "/images/twitter-x-icon.svg";
 const pinterestSocial = "/images/Pinterest-Original.svg";
-import { Dropdown, DropdownButton, Modal, Button } from 'react-bootstrap';
+import { Dropdown, DropdownButton, Button } from 'react-bootstrap';
 import ImageSlider from './ImageSlider';
+import { Modal, TitleBar } from '@shopify/app-bridge-react';
 
 
 import {
-	Image
+	Image, Box, TextField
 } from "@shopify/polaris";
 
-export default function ReviewItem({ filteredReviews, setFilteredReviews, filteredReviewsTotal, setFilteredReviewsTotal, shopRecords, searchFormData, setSubmitHandle, submitHandle, setSearchFormData }) {
+export default function ReviewItem({ filteredReviews, setFilteredReviews, filteredReviewsTotal, setFilteredReviewsTotal, shopRecords, searchFormData, setSubmitHandle, submitHandle, setSearchFormData, onImageClick }) {
 	const [showReplayModal, setShowReplayModal] = useState(false);
 	const [replyText, setReplyText] = useState('');
 	const [replyReviewId, setReplyReviewId] = useState('');
@@ -28,7 +29,10 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 	const [isUpdatingReply, setIsUpdatingReply] = useState(false);
 	const [replyButtonText, setReplyButtonText] = useState('');
 	const [replyHelpText, setReplyHelpText] = useState('');
-	const handleCloseReplyModal = () => setShowReplayModal(false);
+	const handleCloseReplyModal = () => {
+		setReplyText('');
+		setShowReplayModal(false)
+	}
 
 	const handleShowReplyModal = (review_id, index) => {
 		setShowReplayModal(true);
@@ -38,11 +42,15 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 		setReplyHelpText('This reply is public and will appear on reviews widget. We will send the reviewer a notification email.');
 		setIsUpdatingReply(false);
 	}
-	
+
 	const [showChangeProductModal, setShowChangeProductModal] = useState(false);
 	const [changeProductIndex, setChangeProductIndex] = useState('');
 
-	const handleCloseChangeProductModal = () => setShowChangeProductModal(false);
+	const handleCloseChangeProductModal = () => {
+		setShowChangeProductModal(false);
+		setChangeProductHandle('');
+
+	};
 	const [changeProductReviewId, setChangeProductReviewId] = useState('');
 
 	const handleShowChangeProductModal = (review_id, index) => {
@@ -53,14 +61,15 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 	const [changeProductValueError, setChangeProductValueError] = useState(true);
 	const [changeProductHandle, setChangeProductHandle] = useState('');
 
-	const handleShowChangeProduct = (event) => {
-		const val = (event.target.value);
-		setChangeProductHandle(val);
-		setChangeProductValueError(false);
-		if (val.trim() == "") {
-			setChangeProductValueError(true);
+
+	const handleShowChangeProduct = useCallback((value) => {
+		setChangeProductHandle(value); // Update the state with the input value
+		setChangeProductValueError(false); // Clear the error flag
+		if (value.trim() === "") {
+			setChangeProductValueError(true); // Set the error flag if input is empty
 		}
-	};
+	}, []);
+
 
 	const handleReplyTextChange = (event) => {
 		const val = (event.target.value);
@@ -109,6 +118,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 
 
 	const submitChangeProduct = async () => {
+		setChangeProductValueError(true);
 
 		const customParams = {
 			review_id: changeProductReviewId,
@@ -148,6 +158,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 				isError: true
 			});
 		}
+		setChangeProductValueError(false);
 
 	};
 
@@ -342,7 +353,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 		} else if (statusValue == 'change-product') {
 			handleShowChangeProductModal(review_id, index);
 		} else if (statusValue === 'discount') {
-			const discountDetailsUrl = `https://admin.shopify.com/store/${shopRecords.myshopify_domain.replace(".myshopify.com", "")}/discounts/${result.discount_price_rule_id}`;
+			const discountDetailsUrl = `https://admin.shopify.com/store/${shopRecords.myshopify_domain.replace(".myshopify.com", "")}/discounts/${result.discount_code_id}`;
 			window.open(discountDetailsUrl, "_blank");
 		} else {
 			const updateData = {
@@ -475,7 +486,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 							<div className="topline">
 								{result.reviewDocuments.length > 0 &&
 									<div className="slider_imagebox flxfix">
-										<ImageSlider reviewDocuments={result.reviewDocuments} shopRecords={shopRecords} autoPlay={false} interval={500} />
+										<ImageSlider reviewDocuments={result.reviewDocuments} shopRecords={shopRecords} onImageClick={onImageClick} autoPlay={false} interval={500} />
 									</div>
 								}
 
@@ -593,7 +604,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 										<DropdownButton id="dropdown-basic-button" onSelect={(e) => handleMoreReviewChange(e, result, index)} title="More" align={'end'}>
 											<Dropdown.Item eventKey="change-product" className="custom-dropdown-item">Change Product</Dropdown.Item>
 
-											{result.discount_price_rule_id != null && <Dropdown.Item eventKey="discount" className="custom-dropdown-item">See discount details</Dropdown.Item>}
+											{result.discount_code_id != null && <Dropdown.Item eventKey="discount" className="custom-dropdown-item">See discount details</Dropdown.Item>}
 
 
 											{result.tag_as_feature == false && <Dropdown.Item eventKey="feature" className="custom-dropdown-item">Tag as Feature</Dropdown.Item>}
@@ -611,7 +622,7 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 													{result.video_slider == true && <Dropdown.Item eventKey="remove-video-slider" className="custom-dropdown-item">Remove from Video Slider</Dropdown.Item>}
 												</>
 											}
-											
+
 											<Dropdown.Item eventKey="resend-review-request" className="custom-dropdown-item">Resend review request </Dropdown.Item>
 											<Dropdown.Item eventKey="delete" className="custom-dropdown-item">Delete</Dropdown.Item>
 										</DropdownButton>
@@ -647,50 +658,63 @@ export default function ReviewItem({ filteredReviews, setFilteredReviews, filter
 					</div>
 				))}
 
-				<Modal show={showReplayModal} onHide={handleCloseReplyModal} size="lg" backdrop="static">
-					<Modal.Header closeButton>
-						<Modal.Title>Your Reply</Modal.Title>
-					</Modal.Header>
-
-					<Modal.Body>
-
-						<textarea className="form-control" value={replyText}
-							onChange={(e) => handleReplyTextChange(e)}
-							rows="6"
-							autoComplete="off"
-						></textarea>
-						<div className="inputnote">{replyHelpText}</div>
-
-					</Modal.Body>
-					<Modal.Footer>
-						<button variant="primary" className="revbtn" onClick={submitReply} disabled={replyValueError}>
-							{replyButtonText}
-						</button>
-						<button variant="secondary" className="revbtn lightbtn" onClick={handleCloseReplyModal}>
-							Close
-						</button>
-					</Modal.Footer>
-				</Modal>
 
 
-				<Modal show={showChangeProductModal} onHide={handleCloseChangeProductModal} size="lg" backdrop="static">
+				{showReplayModal && (
+					<Modal
+						variant="base"
+						open={showReplayModal}
+						onHide={handleCloseReplyModal}
+					>
+						<TitleBar title="Your Reply">
 
-					<Modal.Body>
-						<h4>Change Product</h4>
-						<input className="form-control" value={changeProductHandle} onChange={(e) => handleShowChangeProduct(e)} placeholder="Product handle on Shopify (e.g. blue-t-shirt)" />
-						<span>A product handle is the last part of the product URL. For example, for this product:&nbsp;</span>
-						<span style={{ textDecoration: "underline" }}> http://www.store.com/products/</span>
-						<b style={{ textDecoration: "underline" }}>blue-t-shirt</b> the handle is <b>blue-t-shirt</b>
-					</Modal.Body>
-					<Modal.Footer>
-						<Button variant="secondary" onClick={handleCloseChangeProductModal}>
-							Close
-						</Button>
-						<Button variant="primary" onClick={submitChangeProduct} disabled={changeProductValueError}>
-							Change
-						</Button>
-					</Modal.Footer>
-				</Modal>
+							<button variant="primary" onClick={submitReply} disabled={replyValueError}>
+								{replyButtonText}
+							</button>
+							<button onClick={handleCloseReplyModal}>Close</button>
+
+						</TitleBar>
+						<Box padding="500">
+
+							<textarea className="form-control" value={replyText}
+								onChange={(e) => handleReplyTextChange(e)}
+								rows="6"
+								autoComplete="off"
+							></textarea>
+							<div className="inputnote">{replyHelpText}</div>
+						</Box>
+					</Modal>
+				)}
+
+				{showChangeProductModal && (
+					<Modal
+						variant="base"
+						open={showChangeProductModal}
+						onHide={handleCloseChangeProductModal}
+					>
+						<TitleBar title="Change Product">
+
+							<button variant="primary" onClick={submitChangeProduct} disabled={changeProductValueError}>
+								Change
+							</button>
+							<button onClick={handleCloseChangeProductModal}>Close</button>
+						</TitleBar>
+						<Box padding="500">
+
+							<TextField
+								onChange={handleShowChangeProduct}
+								autoComplete="off"
+								value={changeProductHandle}
+								placeholder="Product handle on Shopify (e.g. blue-t-shirt)"
+							/>
+
+							<span>A product handle is the last part of the product URL. For example, for this product:&nbsp;</span>
+							<span style={{ textDecoration: "underline" }}> http://www.store.com/products/</span>
+							<b style={{ textDecoration: "underline" }}>blue-t-shirt</b> the handle is <b>blue-t-shirt</b>
+						</Box>
+					</Modal>
+				)}
+
 			</div>
 		</>
 	)

@@ -2,12 +2,14 @@ import { useState, useCallback } from 'react';
 import UploadLogo from './UploadLogo';
 
 import { getDefaultProductImage, getUploadDocument } from '../../../utils/documentPath';
-import { Dropdown, DropdownButton, Modal, Button } from 'react-bootstrap';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 import settingsJson from './../../../utils/settings.json';
 import SingleImageUpload from "./ImageUpload";
 import ColorPicker from "./ColorPicker";
 import SampleAppearanceEmailTemplate from './../email/SampleAppearanceEmailTemplate';
+import { Modal, TitleBar } from '@shopify/app-bridge-react';
 
+import { Box } from "@shopify/polaris";
 
 export default function GeneralAppearance({ shopRecords, generalAppearances, generalSettingsModel }) {
 	const [starIcon, setStarIcon] = useState(generalAppearances?.starIcon);
@@ -168,16 +170,16 @@ export default function GeneralAppearance({ shopRecords, generalAppearances, gen
 	const viewSample = (e) => {
 		e.preventDefault();
 		var footerContent = "";
-        if(generalSettingsModel.email_footer_enabled) {
+		if (generalSettingsModel.email_footer_enabled) {
 			const defaultLang = generalSettingsModel.defaul_language;
-            footerContent = generalSettingsModel[defaultLang] ? generalSettingsModel[defaultLang].footerText : "";
-        }
+			footerContent = generalSettingsModel[defaultLang] ? generalSettingsModel[defaultLang].footerText : "";
+		}
 		const sampleEmailData = {
 			logo: getUploadDocument(documentObj?.logo, shopRecords.shop_id, 'logo'),
 			body: settingsJson.defaultSampleEmailBody,
 			banner: getUploadDocument(documentObj?.banner, shopRecords.shop_id, 'banners'),
 			getDefaultProductImage: getDefaultProductImage(),
-			email_footer_enabled : generalSettingsModel.email_footer_enabled,
+			email_footer_enabled: generalSettingsModel.email_footer_enabled,
 			footerContent: footerContent,
 		}
 
@@ -384,15 +386,25 @@ export default function GeneralAppearance({ shopRecords, generalAppearances, gen
 
 			</div >
 
-			<Modal show={showViewSampleModal} className='reviewimagepopup' onHide={handleCloseViewSampleModal} size="lg" backdrop="static">
-				<Modal.Header closeButton>
-					<Modal.Title>Sample email</Modal.Title>
-				</Modal.Header>
-				<Modal.Body>
-					<SampleAppearanceEmailTemplate emailContents={emailContents} documentObj={documentObj} />
 
-				</Modal.Body>
-			</Modal>
+			{showViewSampleModal && (
+				<Modal
+					variant="large"
+					open={showViewSampleModal}
+					onHide={handleCloseViewSampleModal}
+				>
+					<TitleBar title="Sample email">
+
+						<button onClick={handleCloseViewSampleModal}>Close</button>
+					</TitleBar>
+					<Box padding="500">
+
+						<SampleAppearanceEmailTemplate emailContents={emailContents} documentObj={documentObj} />
+
+					</Box>
+				</Modal>
+			)}
+
 		</>
 
 	);
