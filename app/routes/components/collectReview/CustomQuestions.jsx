@@ -1,13 +1,18 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { formatDate, formatTimeAgo } from './../../../utils/dateFormat';
 import Swal from 'sweetalert2';
-import { Modal, Button, Dropdown, DropdownButton } from 'react-bootstrap';
+import {  Dropdown, DropdownButton } from 'react-bootstrap';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import update from 'immutability-helper';
 import MoreIcon from '../../../images/MoreIcon';
 import settingsJson from './../../../utils/settings.json';
-
+import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
+import {
+    Button,
+    Box
+} from '@shopify/polaris';
+import { PlusIcon } from '@shopify/polaris-icons';
 
 const QuestionItemType = 'icon';
 const DraggableQuestion = ({ id, index, questionItem, shopRecords, customQuestionsAnswer, deleteQuestion, editQuestion, moveInputQuestion }) => {
@@ -105,6 +110,8 @@ const DraggableQuestion = ({ id, index, questionItem, shopRecords, customQuestio
 };
 
 export default function CustomQuestions({ customQuestionsData, shopRecords }) {
+    const shopify = useAppBridge();
+
     const defualtQuestionAndAns = [
         { "name": "ans1", "val": "" },
         { "name": "ans2", "val": "" },
@@ -124,13 +131,14 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
     const handleMakeRequireQuestion = () => setIsMakeRequireQuestion(!isMakeRequireQuestion);;
     const [isHideAnswers, setIsHideAnswers] = useState(false);
     const handleHideAnswers = () => setIsHideAnswers(!isHideAnswers);;
+    const [countsAnswers, setCountsAnswers] = useState(2);
 
 
     const handleCloseModal = () => {
-        setShow(false);
+        shopify.modal.hide('select-product-modal');
     }
     const handleShowModal = () => {
-        setShow(true);
+        shopify.modal.show('select-product-modal');
         setQuestionTitle('');
         setCustomAnswer(defualtQuestionAndAns);
         setIsUpdatingQuestion(false);
@@ -139,6 +147,7 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
         setAllowDeleteAns(false);
         setIsMakeRequireQuestion(false);
         setIsHideAnswers(false);
+        setCountsAnswers(2);
 
     }
     const handleInputChange = useCallback((event) => {
@@ -173,17 +182,20 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
 
     // Function to add more input fields
     const addAnswerInput = () => {
-        const totalAns = parseInt(document.getElementsByClassName('modalAnswerItems').length) + 1;
+
+        const totalAns = countsAnswers + 1;
         if (totalAns >= 5) {
             setIsAddMoreButtonVisible(false);
         }
         setAllowDeleteAns(true);
 
         setCustomAnswer([...customAnswer, { name: "ans" + totalAns, val: '' }]);
+        setCountsAnswers(totalAns);
     };
 
     const deleteAnswerInput = (index, event) => {
-        const totalAns = parseInt(document.getElementsByClassName('modalAnswerItems').length);
+        const totalAns = countsAnswers;
+        
         if (totalAns <= 5) {
             setIsAddMoreButtonVisible(true);
         }
@@ -192,6 +204,7 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
             setAllowDeleteAns(false);
         }
         setCustomAnswer(customAnswer.filter((item, i) => i !== index));
+        setCountsAnswers(totalAns - 1);
 
     };
 
@@ -253,7 +266,8 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
                 isError: true
             });
         }
-        setShow(false);
+        shopify.modal.hide('select-product-modal');
+
     };
 
 
@@ -279,8 +293,7 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
             if (result.isConfirmed) {
                 try {
                     const customParams = {
-                        id: id,
-                        shopRecords: shopRecords
+                        id: id
                     };
                     const response = await fetch(`/api/custom-question`, {
                         method: 'DELETE',
@@ -315,13 +328,15 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
         });
 
     }
+
     const editQuestion = (index) => {
-        setShow(true);
+        shopify.modal.show('select-product-modal');
         const editSingleQuestion = customQuestionsAnswer[index];
         setQuestionTitle(editSingleQuestion.question);
         setCustomAnswer(editSingleQuestion.answers);
         setIsAddMoreButtonVisible(true);
         const totalAns = parseInt(editSingleQuestion.answers.length);
+        setCountsAnswers(totalAns);
         if (totalAns >= 5) {
             setIsAddMoreButtonVisible(false);
         }
@@ -362,17 +377,19 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
 
 
             <div className='btnwrap'>
-                <Button variant="primary revbtn" onClick={handleShowModal}>
-                    <i className='twenty-addicon'></i> New Question
+                <Button variant="primary" icon={PlusIcon} onClick={handleShowModal}>
+                    New Question
                 </Button>
             </div>
 
-            <Modal show={show} onHide={handleCloseModal} className='smallmodal' size="lg" backdrop="static">
-                <Modal.Header closeButton>
-                    <Modal.Title>Custom Questions</Modal.Title>
-                </Modal.Header>
-
-                <Modal.Body>
+            <Modal onHide={handleCloseModal} id="select-product-modal">
+                <TitleBar title="Custom Questions">
+                    <button variant="primary" onClick={submitAnswers} disabled={inputValueError}>
+                        Save
+                    </button>
+                    <button onClick={() => shopify.modal.hide('select-product-modal')}>Close</button>
+                </TitleBar>
+                <Box padding="500">
                     <div className='form-group'>
                         <label className="">Question text</label>
                         <input className="form-control"
@@ -386,7 +403,7 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
                         <label className="">Answers</label>
 
                         {customAnswer.map((input, index) => (
-                            <div className='modalAnswerItems ' key={index}>
+                            <div className='modalAnswerItems' key={index}>
                                 <div className='draggable'>
                                     <div className='inputandlatter flxflexi'>
                                         <input
@@ -464,18 +481,7 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
                             </label>
                         </div>
                     </div>
-
-
-
-                </Modal.Body>
-                <Modal.Footer className='blabla'>
-                    <Button variant="" onClick={handleCloseModal} className='revbtn lightbtn outline'>
-                        Close
-                    </Button>
-                    <Button variant="" onClick={submitAnswers} className='revbtn' disabled={inputValueError}>
-                        Save
-                    </Button>
-                </Modal.Footer>
+                </Box>
             </Modal>
         </>
     );

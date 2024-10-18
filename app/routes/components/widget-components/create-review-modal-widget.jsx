@@ -161,9 +161,11 @@ const CreateReviewModalWidget = ({ shopRecords, customQuestionsData, paramObj, g
                                                     </div>
                                                     <input className="form__file" name="image_and_videos[]" id="upload-files" type="file" accept={generalSettingsModel.is_enabled_video_review ? 'image/*,video/mp4,video/x-m4v,video/*' : 'image/*'} multiple="multiple" />
                                                 </label>
-                                                <div className="record_video" id="showRecordVideoModal">
-                                                    <RecordVideoIcon /> Rec
-                                                </div>
+                                                {generalSettingsModel?.is_enabled_video_review == true &&
+                                                    <div className="record_video" id="showRecordVideoModal">
+                                                        <RecordVideoIcon /> Rec
+                                                    </div>
+                                                }
                                             </div>
                                             <div className="discountrow uploadDocError d-none">
                                                 <div className="discountbox"><strong>{generalSettingsModel.is_enabled_video_review ? translations.reviewFormSettings.maxFivePhotoVideoError : translations.reviewFormSettings.maxFivePhotoError}</strong></div>

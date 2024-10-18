@@ -1,21 +1,18 @@
 // src/components/ImageSlider.js
 import React, { useState, useEffect } from 'react';
 import styles from './imageSlider.module.css';
-import { Modal, DropdownButton, Dropdown } from 'react-bootstrap';
-import { FaEllipsisV } from 'react-icons/fa';  // Import the three dots icon
+import { DropdownButton, Dropdown } from 'react-bootstrap';
 import settingsJson from './../../../utils/settings.json';
 import { getUploadDocument } from './../../../utils/documentPath';
 import MoreIcon from '../../../images/MoreIcon';
 
 import UnPublishedIcon from '../../../images/UnPublishedIcon';
 
-const ImageSlider = ({ reviewDocuments, shopRecords, autoPlay, interval }) => {
+const ImageSlider = ({ reviewDocuments, shopRecords, onImageClick, autoPlay, interval }) => {
 
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [preArrow, setPreArrow] = useState(false);
 	const [nextArrow, setNextArrow] = useState(true);
-	const [showImageModal, setShowImageModal] = useState(false);
-	const [documentType, setDocumentType] = useState('image');
 	const [images, setImages] = useState(reviewDocuments);
 
 	useEffect(() => {
@@ -205,7 +202,8 @@ const ImageSlider = ({ reviewDocuments, shopRecords, autoPlay, interval }) => {
 							className={`${styles.slide} ${index === currentIndex ? styles.active : ''}`}
 						>
 
-							<img onClick={(e) => handleShowImageModal(e, image.type)} className={styles.img} src={getUploadDocument(image.thumbnail_name || image.url, shopRecords.shop_id)} alt={`Slide ${index}`} />
+							<img onClick={() => onImageClick(image, image.type, index)} className={styles.img} src={getUploadDocument(image.thumbnail_name || image.url, shopRecords.shop_id)} alt={`Slide ${index}`} />
+							 
 
 							{/* {image.type === 'image' ? (
 							) : (
@@ -255,23 +253,7 @@ const ImageSlider = ({ reviewDocuments, shopRecords, autoPlay, interval }) => {
 					: ""
 				}
 			</div>
-
-			<Modal show={showImageModal} className='reviewimagepopup' onHide={handleCloseImageModal} size="lg" backdrop="static">
-				<Modal.Header closeButton>
-				</Modal.Header>
-				<Modal.Body>
-					{documentType === 'image' && images[currentIndex] && images[currentIndex].url ? (
-						<img src={getUploadDocument(images[currentIndex].url, shopRecords.shop_id)} alt={`Slide ${currentIndex}`} style={{ width: '100%' }} />
-					) : documentType === 'video' && images[currentIndex] && images[currentIndex].url ? (
-						<video controls className={styles.videoWidth}>
-							<source src={getUploadDocument(images[currentIndex].url, shopRecords.shop_id)} type="video/mp4" />
-						</video>
-					) : (
-						<p>No content to display</p>
-					)}
-
-				</Modal.Body>
-			</Modal>
+			
 		</>
 
 	);

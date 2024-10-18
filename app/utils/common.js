@@ -67,12 +67,8 @@ export async function getCustomQuestions(params = {}) {
 
 export async function getShopifyProducts(shop, productIds = [], imageSize = 60) {
 	try {
-		const shopSessionRecords = await findOneRecord("shopify_sessions", {
-			$or: [
-				{ shop: shop },
-				{ myshopify_domain: shop }
-			]
-		});
+		const shopSessionRecords = await findOneRecord("shopify_sessions", { shop: shop });
+
 		const client = new GraphQLClient(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
 			headers: {
 				'X-Shopify-Access-Token': shopSessionRecords.accessToken,
@@ -121,29 +117,44 @@ export async function getShopifyProducts(shop, productIds = [], imageSize = 60) 
 
 export async function getShopifyLatestProducts(shop) {
 	try {
-		const shopSessionRecords = await findOneRecord("shopify_sessions", {
-			$or: [
-				{ shop: shop },
-				{ myshopify_domain: shop }
-			]
-		});
+		// Fetch Shopify session for the shop
+		const shopSessionRecords = await findOneRecord("shopify_sessions", { shop });
 
-		const apiUrl = `https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/products.json?limit=1&order=created_at desc`;
-		const response = await fetch(apiUrl, {
-			method: 'GET',
+		// Create the GraphQLClient
+		const client = new GraphQLClient(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
 			headers: {
 				'X-Shopify-Access-Token': shopSessionRecords.accessToken,
-			}
+			},
 		});
-		if (response.ok) {
-			return await response.json();
+
+		// GraphQL query to fetch the latest product ordered by created_at
+		const query = `
+		query getDefaultProduct($first: Int!) {
+		  products(first: $first, sortKey: CREATED_AT, reverse: false) {
+			edges {
+			  node {
+				id
+				title
+				createdAt
+				handle
+			  }
+			}
+		  }
 		}
-		return [];
+	  `;
+
+		const variables = {
+			first: 1,
+		};
+
+		const response = await client.request(query, variables);
+		return response.products.edges.map(edge => edge.node);
 
 	} catch (error) {
-		console.error('Error fetching latest product record :', error);
+		console.error('Error fetching latest product record:', error);
 	}
 }
+
 export async function createShopifyDiscountCode(shopRecords, hasPhoto = false, hasVideo = false, isReviewRequest = false) {
 	try {
 
@@ -152,19 +163,14 @@ export async function createShopifyDiscountCode(shopRecords, hasPhoto = false, h
 			shop_id: shopRecords._id
 		});
 		if (reviewDiscountSettingsModel.isDiscountEnabled && (reviewDiscountSettingsModel.reviewType == 'both' || isReviewRequest)) {
-
 			let valueType = "";
 			let discountValue = 0;
 			let generatedDiscountCode = "";
 			let discountPrefix = "";
 			let discountTitle = "";
 			let expireOnDate = "";
-			const shopSessionRecords = await findOneRecord("shopify_sessions", {
-				$or: [
-					{ shop: shopRecords.shop },
-					{ myshopify_domain: shopRecords.shop }
-				]
-			});
+			const shopSessionRecords = await findOneRecord("shopify_sessions", { shop: shopRecords.myshopify_domain });
+
 			if (reviewDiscountSettingsModel.isSameDiscount) {
 
 				valueType = reviewDiscountSettingsModel.sameDiscountType;
@@ -182,91 +188,97 @@ export async function createShopifyDiscountCode(shopRecords, hasPhoto = false, h
 				generatedDiscountCode = await generateRandomCode(settingJson.shopifyDiscount.reviewDiscountCodeDigit);
 				discountPrefix = settingJson.shopifyDiscount.reviewDiscountPrefix;
 				discountTitle = `${settingJson.shopifyDiscount.reviewDiscountTitle}${discountPrefix}${generatedDiscountCode}`;
-				let priceRuleParams = {
-					"price_rule": {
-						"title": discountTitle,
-						"value_type": valueType,
-						"value": `-${discountValue}`,
-						"customer_selection": "all",
-						"allocation_method": "across",
-						"starts_at": getCurrentDate(shopRecords.timezone),
-						"once_per_customer": true,
-						"target_type": "line_item",
-						"target_selection": "all"
+
+				// Variables for mutation
+				let discountVariables = {
+					basicCodeDiscount: {
+						title: discountTitle,
+						code: `${discountPrefix}${generatedDiscountCode}`,
+						startsAt: getCurrentDate(shopRecords.timezone),
+						endsAt: null,
+						customerSelection: {
+							all: true
+						},
+						customerGets: {
+							value: {
+							},
+							items: {
+								all: true
+							}
+						},
+						appliesOncePerCustomer: true
 					}
 				};
-
-				if (reviewDiscountSettingsModel.expiredAfter != "never") {
-					expireOnDate = getCustomFormattedEndDateTime(reviewDiscountSettingsModel.expiredAfter, shopRecords.timezone);
-					priceRuleParams.price_rule.ends_at = expireOnDate;
+				if (valueType == 'fixed_amount') {
+					discountVariables.basicCodeDiscount.customerGets.value = {
+						discountAmount: { amount: discountValue, appliesOnEachItem: false }
+					}
+				} else {
+					discountVariables.basicCodeDiscount.customerGets.value = {
+						percentage: discountValue / 100
+					}
 				}
-				const priceRuleApiUrl = `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/price_rules.json`;
+				if (reviewDiscountSettingsModel.expiredAfter != "") {
+					expireOnDate = getCustomFormattedEndDateTime(reviewDiscountSettingsModel.expiredAfter, shopRecords.timezone);
+					discountVariables.basicCodeDiscount.endsAt = expireOnDate;
+				}
 
-				const priceRuleResponse = await fetch(priceRuleApiUrl, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						'X-Shopify-Access-Token': shopSessionRecords.accessToken,
-					},
-					body: JSON.stringify(priceRuleParams),
-				});
-
-				if (priceRuleResponse.ok) {
-					const priceRuleObj = await priceRuleResponse.json();
-					const priceRuleId = priceRuleObj.price_rule.id;
-
-					const discountApiUrl = `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/price_rules/${priceRuleId}/discount_codes.json`;
-					const discountParams = {
-						"discount_code": {
-							"code": `${discountPrefix}${generatedDiscountCode}`
+				// GraphQL mutation
+				const mutation = `
+					mutation discountCodeBasicCreate($basicCodeDiscount: DiscountCodeBasicInput!) {
+					discountCodeBasicCreate(basicCodeDiscount: $basicCodeDiscount) {
+						codeDiscountNode {
+						id
+						codeDiscount {
+							... on DiscountCodeBasic {
+							title
+							codes(first: 10) {
+								nodes {
+								code
+								}
+							}
+							startsAt
+							endsAt
+							appliesOncePerCustomer
+							}
 						}
-					};
+						}
+						userErrors {
+						field
+						code
+						message
+						}
+					}
+					}
+				`;
 
-					const discountResponse = await fetch(discountApiUrl, {
-						method: 'POST',
+				// GraphQL Client
+				const client = new GraphQLClient(
+					`https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`,
+					{
 						headers: {
 							'Content-Type': 'application/json',
 							'X-Shopify-Access-Token': shopSessionRecords.accessToken,
-						},
-						body: JSON.stringify(discountParams),
-					});
-
-					if (discountResponse.ok) {
-						const lookUpResponse = await discountResponse.json();
-						response.id = lookUpResponse.discount_code.id;
-						response.price_rule_id = lookUpResponse.discount_code.price_rule_id;
-						response.code = lookUpResponse.discount_code.code;
-					} else {
-						const errorResponse = await discountResponse.json();
-						console.error('Error creating discount code:', errorResponse);
-						return {};
+						}
 					}
+				);
+				const discountResponse = await client.request(mutation, discountVariables);
+				if (discountResponse && discountResponse?.discountCodeBasicCreate && discountResponse?.discountCodeBasicCreate?.codeDiscountNode) {
+					const discountIdString = discountResponse.discountCodeBasicCreate.codeDiscountNode.id; // Get the ID string
+					response.id = discountIdString.split('/').pop(); // Split and get the last part
+					response.code = `${discountPrefix}${generatedDiscountCode}`;
 
 				} else {
-					const errorResponse = await priceRuleResponse.json();
-					console.error('Error creating price rule:', errorResponse);
+					console.error('Error creating discount code:', discountResponse);
 					return {};
 				}
 			} else if (reviewDiscountSettingsModel.discountCode != "") {
 
-				const discountLookupApiUrl = `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/discount_codes/lookup.json?code=${reviewDiscountSettingsModel.discountCode}`;
-				const discountLookupResponse = await fetch(discountLookupApiUrl, {
-					method: 'GET',
-					headers: {
-						'X-Shopify-Access-Token': shopSessionRecords.accessToken,
-					}
-				});
-				// return await discountLookupResponse.json();
-				if (discountLookupResponse.ok) {
-					const lookUpResponse = await discountLookupResponse.json();
-					response.id = lookUpResponse.discount_code.id;
-					response.price_rule_id = lookUpResponse.discount_code.price_rule_id;
-
-				} else {
-					const errorResponse = await discountLookupResponse.json();
-				}
 				response.is_custom_discount_code = true;
 				response.code = reviewDiscountSettingsModel.discountCode;
+				discountValue = reviewDiscountSettingsModel.defaultDiscountValue
+				valueType = reviewDiscountSettingsModel.defaultDiscountType
+				expireOnDate = reviewDiscountSettingsModel.defaultDiscountExpiredAt
 			}
 			if (response) {
 				response.discount_value = discountValue;
@@ -534,8 +546,12 @@ export async function getDiscounts(shopRecords, isReviewRequest = false) {
 		let response = {};
 		if (reviewDiscountSettingsModel.isDiscountEnabled && (reviewDiscountSettingsModel.reviewType == 'both' || isReviewRequest)) {
 			if (reviewDiscountSettingsModel.isSameDiscount) {
-
-				response.discount = reviewDiscountSettingsModel.sameDiscountType == 'percentage' ? `${reviewDiscountSettingsModel.sameDiscountValue}%` : `${shopRecords.currency_symbol}${reviewDiscountSettingsModel.sameDiscountValue}`;
+				if (reviewDiscountSettingsModel.isAutoGeneratedDiscount) {
+					response.discount = reviewDiscountSettingsModel.sameDiscountType == 'percentage' ? `${reviewDiscountSettingsModel.sameDiscountValue}%` : `${shopRecords.currency_symbol}${reviewDiscountSettingsModel.sameDiscountValue}`;
+				} else {
+					response.discount = reviewDiscountSettingsModel.defaultDiscountType == 'percentage' ? `${reviewDiscountSettingsModel.defaultDiscountValue}%` : `${shopRecords.currency_symbol}${reviewDiscountSettingsModel.defaultDiscountValue}`;
+					
+				}
 
 			} else {
 				response.photoDiscount = reviewDiscountSettingsModel.differentDiscountPhotoType == 'percentage' ? `${reviewDiscountSettingsModel.differentDiscountPhotoValue}%` : `${shopRecords.currency_symbol}${reviewDiscountSettingsModel.differentDiscountPhotoValue}`;
@@ -632,13 +648,9 @@ async function fetchProductsByBatch(batch, shop, accessToken) {
 
 export async function createMetafields(shopRecords, metafields, widgetType) {
 	try {
-		const shopSessionRecords = await findOneRecord("shopify_sessions", {
-			$or: [
-				{ shop: shopRecords.shop },
-				{ myshopify_domain: shopRecords.shop }
-			]
-		});
-		const metafieldApiUrl = `https://${shopRecords.shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`;
+		const shopSessionRecords = await findOneRecord("shopify_sessions", { shop: shopRecords.myshopify_domain });
+
+		const metafieldApiUrl = `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`;
 
 		// Construct the GraphQL mutation
 		const mutationQuery = `
@@ -866,12 +878,7 @@ export async function resizeImages(imagePath, outputDir, thumbnailName) {
 export async function getAllThemes(shop, activeTheme = false) {
 
 	try {
-		const shopSessionRecords = await findOneRecord("shopify_sessions", {
-			$or: [
-				{ shop: shop },
-				{ myshopify_domain: shop }
-			]
-		});
+		const shopSessionRecords = await findOneRecord("shopify_sessions", { shop: shop });
 
 		const response = await fetch(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/themes.json`, {
 			method: 'GET',
@@ -902,12 +909,7 @@ export async function checkAppEmbedAppStatus(shop, themeId) {
 	try {
 		const reviewExtensionId = process.env.SHOPIFY_ALL_REVIEW_EXTENSION_ID;
 
-		const shopSessionRecords = await findOneRecord("shopify_sessions", {
-			$or: [
-				{ shop: shop },
-				{ myshopify_domain: shop }
-			]
-		});
+		const shopSessionRecords = await findOneRecord("shopify_sessions", { shop: shop });
 
 		const url = `https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/themes/${themeId}/assets.json`;
 		const params = new URLSearchParams({
@@ -1029,5 +1031,45 @@ export async function updateTotalAndAverageSeoRating(shopRecords) {
 		"avg_rating": totalAndAverage.averageRating,
 	};
 	await createMetafields(shopRecords, metafields, 'seoProductReviews');
+
+}
+
+export async function createCustomerInShipify(shop, data) {
+
+	try {
+		const shopSessionRecords = await findOneRecord("shopify_sessions", { shop: shop });
+		const client = new GraphQLClient(`https://${shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
+			headers: {
+				'X-Shopify-Access-Token': shopSessionRecords.accessToken,
+			},
+		});
+
+		const mutation = `
+		mutation customerCreate($input: CustomerInput!) {
+		  customerCreate(input: $input) {
+			customer {
+			  id
+			  firstName
+			  lastName
+			  email
+			}
+			userErrors {
+			  field
+			  message
+			}
+		  }
+		}
+	  `;
+		const customerData = {
+			input: {
+				firstName: data.firstName,
+				lastName: data.lastName,
+				email: data.email
+			}
+		};
+		await client.request(mutation, customerData);
+	} catch (error) {
+		console.error('GraphQL error:', error);
+	}
 
 }

@@ -12,7 +12,7 @@ const productReviewsSchema = new mongoose.Schema({
     display_name: { type: String, required: true },
     email: { type: String, required: true },
     rating: { type: Number, required: true },
-    product_id: { type: String, required: true },
+    product_id: { type: Number, required: true },
     variant_title: { type: String },
     product_title: { type: String },
     product_url: { type: String },
@@ -29,7 +29,6 @@ const productReviewsSchema = new mongoose.Schema({
     add_to_carousel: { type: Boolean, default: false },
     video_slider: { type: Boolean, default: false },
     discount_code_id : { type: String, default : null},
-    discount_price_rule_id : { type: String, default : null},
     is_reminder_sent: { type: Boolean, default: false },
     is_resend_review_submitted: { type: Boolean, default: false },
 },{

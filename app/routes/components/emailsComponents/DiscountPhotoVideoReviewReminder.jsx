@@ -4,7 +4,8 @@ import ImageUploadMultiLang from '../settings/ImageUploadMultiLang';
 import InformationAlert from './../common/information-alert';
 
 import { useNavigate } from 'react-router-dom';
-import { Modal } from 'react-bootstrap';
+import { Modal, TitleBar } from '@shopify/app-bridge-react';
+import { Box } from "@shopify/polaris";
 import settingsJson from './../../../utils/settings.json';
 import { getDefaultProductImage, getUploadDocument } from './../../../utils/documentPath';
 import SampleDiscountPhotoVideoReviewEmail from './../email/SampleDiscountPhotoVideoReviewEmail';
@@ -262,15 +263,21 @@ const DiscountPhotoVideoReviewReminder = ({ shopRecords, emailTemplateObj, gener
                     </form>
                 </div>
             </div>
-            <Modal show={showViewSampleModal} className='reviewimagepopup' onHide={handleCloseViewSampleModal} size="lg" backdrop="static">
-                <Modal.Header closeButton>
-                    <Modal.Title>Sample email</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <SampleDiscountPhotoVideoReviewEmail emailContents={emailContents} generalAppearancesObj={generalAppearances} />
 
-                </Modal.Body>
-            </Modal>
+            {showViewSampleModal && (
+                <Modal
+                    variant="large"
+                    open={showViewSampleModal}
+                    onHide={handleCloseViewSampleModal}
+                >
+                    <TitleBar title="Sample email">
+                        <button onClick={handleCloseViewSampleModal}>Close</button>
+                    </TitleBar>
+                    <Box padding="500">
+                        <SampleDiscountPhotoVideoReviewEmail emailContents={emailContents} generalAppearancesObj={generalAppearances} />
+                    </Box>
+                </Modal>
+            )}
         </>
     );
 };

@@ -4,7 +4,8 @@ import ImageUploadMultiLang from '../settings/ImageUploadMultiLang';
 import InformationAlert from './../common/information-alert';
 
 import { useNavigate } from 'react-router-dom';
-import { Modal } from 'react-bootstrap';
+import { Modal, TitleBar } from '@shopify/app-bridge-react';
+import { Box } from "@shopify/polaris";
 import settingsJson from './../../../utils/settings.json';
 import { getDefaultProductImage, getUploadDocument } from './../../../utils/documentPath';
 import SampleReviewRequestEmail from './../email/SampleReviewRequestEmail';
@@ -19,7 +20,7 @@ const PhotoVideoReminder = ({ shopRecords, emailTemplateObj, generalAppearances,
     const [body, setBody] = useState('');
     const [buttonText, setButtonText] = useState('');
     const [discountText, setDiscountText] = useState('');
-    
+
     const [initialData, setInitialData] = useState({});
     const [placeHolderLanguageData, setPlaceHolderLanguageData] = useState({});
     const [emailContents, setEmailContents] = useState({});
@@ -253,15 +254,21 @@ const PhotoVideoReminder = ({ shopRecords, emailTemplateObj, generalAppearances,
                     </form>
                 </div>
             </div>
-            <Modal show={showViewSampleModal} className='reviewimagepopup' onHide={handleCloseViewSampleModal} size="lg" backdrop="static">
-                <Modal.Header closeButton>
-                    <Modal.Title>Sample email</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <SampleReviewRequestEmail emailContents={emailContents} generalAppearancesObj={generalAppearances} />
 
-                </Modal.Body>
-            </Modal>
+            {showViewSampleModal && (
+                <Modal
+                    variant="large"
+                    open={showViewSampleModal}
+                    onHide={handleCloseViewSampleModal}
+                >
+                    <TitleBar title="Sample email">
+                        <button onClick={handleCloseViewSampleModal}>Close</button>
+                    </TitleBar>
+                    <Box padding="500">
+                        <SampleReviewRequestEmail emailContents={emailContents} generalAppearancesObj={generalAppearances} />
+                    </Box>
+                </Modal>
+            )}
         </>
     );
 };

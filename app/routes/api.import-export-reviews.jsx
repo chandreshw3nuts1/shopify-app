@@ -50,13 +50,7 @@ export async function action({ request }) {
 				const shopRecords = await getShopDetailsByShop(shop);
 				const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
 				var customer_locale = generalSettingsModel.defaul_language;
-
-				const shopSessionRecords = await findOneRecord("shopify_sessions", {
-					$or: [
-						{ shop: shopRecords.shop },
-						{ myshopify_domain: shopRecords.shop }
-					]
-				});
+				const shopSessionRecords = await findOneRecord("shopify_sessions", { shop: shopRecords.myshopify_domain });
 
 				const uploadsDir = path.join(process.cwd(), `public/uploads/${shopRecords.shop_id}/`);
 				fs.mkdirSync(uploadsDir, { recursive: true });
@@ -226,8 +220,12 @@ export async function action({ request }) {
 							console.log('Error processing reviews:', err);
 						});
 
-						await updateTotalAndAverageSeoRating(shopRecords);
 
+						/* update metafield for SEO rich snippet*/
+						if (generalSettingsModel.is_enable_seo_rich_snippet == true) {
+							updateTotalAndAverageSeoRating(shopRecords);
+						}
+						/* End update metafield for SEO rich snippet*/
 
 					}
 					return json({ "status": 200, "message": "CSV file uploaded successfully." });
@@ -568,7 +566,11 @@ export async function action({ request }) {
 							console.log('Error processing reviews:', err);
 						});
 
-						await updateTotalAndAverageSeoRating(shopRecords);
+						/* update metafield for SEO rich snippet*/
+						if (generalSettingsModel.is_enable_seo_rich_snippet == true) {
+							updateTotalAndAverageSeoRating(shopRecords);
+						}
+						/* End update metafield for SEO rich snippet*/
 
 					}
 					return json({ "status": 200, "message": "CSV file uploaded successfully." });

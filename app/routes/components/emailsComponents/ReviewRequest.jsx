@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import ImageUploadMultiLang from '../settings/ImageUploadMultiLang';
 import InformationAlert from './../common/information-alert';
+import { Modal, TitleBar } from '@shopify/app-bridge-react';
+import { Box } from "@shopify/polaris";
 
 import { useNavigate } from 'react-router-dom';
-import { Modal } from 'react-bootstrap';
 import settingsJson from './../../../utils/settings.json';
 import { getDefaultProductImage, getUploadDocument } from './../../../utils/documentPath';
 import SampleReviewRequestEmail from './../email/SampleReviewRequestEmail';
@@ -144,17 +145,17 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances, gene
     const viewSample = (e) => {
         e.preventDefault();
         var footerContent = "";
-        if(generalSettingsModel.email_footer_enabled) {
+        if (generalSettingsModel.email_footer_enabled) {
             footerContent = generalSettingsModel[currentLanguage] ? generalSettingsModel[currentLanguage].footerText : "";
         }
         const sampleEmailData = {
             logo: getUploadDocument(generalAppearances?.logo, shopRecords.shop_id, 'logo'),
             body: body ? body : t('reviewRequestEmail.body'),
             buttonText: buttonText ? buttonText : t('reviewRequestEmail.buttonText'),
-            banner : getUploadDocument(languageWiseEmailTemplate.banner, shopRecords.shop_id, 'banners'),
+            banner: getUploadDocument(languageWiseEmailTemplate.banner, shopRecords.shop_id, 'banners'),
             getDefaultProductImage: getDefaultProductImage(),
-            footerContent : footerContent,
-            email_footer_enabled : generalSettingsModel.email_footer_enabled
+            footerContent: footerContent,
+            email_footer_enabled: generalSettingsModel.email_footer_enabled
         }
         setEmailContents(sampleEmailData);
         setShowViewSampleModal(true);
@@ -233,15 +234,23 @@ const ReviewRequest = ({ shopRecords, emailTemplateObj, generalAppearances, gene
                     </form>
                 </div>
             </div>
-            <Modal show={showViewSampleModal} className='reviewimagepopup' onHide={handleCloseViewSampleModal} size="lg" backdrop="static">
-                <Modal.Header closeButton>
-                    <Modal.Title>Sample email</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <SampleReviewRequestEmail  emailContents={emailContents} generalAppearancesObj={generalAppearances} />
 
-                </Modal.Body>
-            </Modal>
+
+            {showViewSampleModal && (
+                <Modal
+                    variant="large"
+                    open={showViewSampleModal}
+                    onHide={handleCloseViewSampleModal}
+                >
+                    <TitleBar title="Sample email">
+                        <button onClick={handleCloseViewSampleModal}>Close</button>
+                    </TitleBar>
+                    <Box padding="500">
+                        <SampleReviewRequestEmail emailContents={emailContents} generalAppearancesObj={generalAppearances} />
+                    </Box>
+                </Modal>
+            )}
+
         </>
     );
 };

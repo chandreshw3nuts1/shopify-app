@@ -1,15 +1,16 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { mongoConnection } from "./../utils/mongoConnection";
+import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 
 import { ReactMultiEmail, isEmail } from 'react-multi-email';
 import 'react-multi-email/dist/style.css';
 import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import Breadcrumb from './components/Breadcrumb';
-import { Modal, Button } from 'react-bootstrap';
 import { getShopDetails } from './../utils/getShopDetails';
 import { findOneRecord } from './../utils/common';
 import InformationAlert from './components/common/information-alert';
+import { SearchIcon } from '@shopify/polaris-icons';
 
 import { useNavigate } from 'react-router-dom';
 import settingsJson from './../utils/settings.json';
@@ -18,18 +19,20 @@ import {
 	Page,
 	Card,
 	Spinner,
+	Button,
+	ResourceList,
+	ResourceItem,
 	TextField,
+	Thumbnail,
+	Checkbox,
+	Box,
+	Icon
 } from '@shopify/polaris';
 export async function loader({ request }) {
 	const db = await mongoConnection();
 	const shopRecords = await getShopDetails(request);
+	const shopSessionRecords = await findOneRecord("shopify_sessions", { shop: shopRecords.myshopify_domain });
 
-	const shopSessionRecords = await findOneRecord("shopify_sessions", {
-		$or: [
-			{ shop: shopRecords.shop },
-			{ myshopify_domain: shopRecords.shop }
-		]
-	});
 	return json({ shopRecords: shopRecords, shopSessionRecords });
 }
 const getShopifyProducts = async (storeName, accessToken, searchTitle) => {
@@ -55,6 +58,7 @@ const getShopifyProducts = async (storeName, accessToken, searchTitle) => {
 };
 
 const ManualReviewRequestsPage = () => {
+	const shopify = useAppBridge();
 	const loaderData = useLoaderData();
 	const shopRecords = loaderData.shopRecords;
 	const shopSessionRecords = loaderData.shopSessionRecords;
@@ -66,61 +70,71 @@ const ManualReviewRequestsPage = () => {
 		{ title: "Manual review requests", link: "" },
 	]);
 	const [emails, setEmails] = useState([]);
-	const [showProductModal, setShowProductModal] = useState(false);
 	const [products, setProducts] = useState([]);
 	const [selectedProducts, setSelectedProducts] = useState([]);
-	const [updateMemo, setUpdateMemo] = useState(false);
 
 	const [keyword, setKeyword] = useState('');
 	const [requestEmailSubject, setRequestEmailSubject] = useState('');
 	const [loading, setLoading] = useState(false);
 	const [submittingRequest, setSubmittingRequest] = useState(false);
 	const [isVisibleInfo, setIsVisibleInfo] = useState(true);
+	const [allSelectedSearchProducts, setAllSelectedSearchProducts] = useState([]);
+	const [allSelectedProducts, setAllSelectedProducts] = useState([]);
 
-
-	const handleCloseProductModal = () => setShowProductModal(false);
 
 	const handleShowProductsModal = async () => {
-		setShowProductModal(true);
+		shopify.modal.show('manual-select-product-modal');
 		try {
 			setLoading(true);
-			const customParams = {
-				storeName: shopRecords.shop,
-				accessToken: shopSessionRecords.accessToken,
-			};
-			const response = await fetch(`/api/shopify-products`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(customParams)
-			});
-			const data = await response.json();
-
-			if (response.ok) {
-				setProducts(data);
-			}
+			const filteredProducts = await getShopifyProducts(shopRecords.myshopify_domain, shopSessionRecords.accessToken);
+			setProducts(filteredProducts);
 		} catch (error) {
 			console.log(error);
 		} finally {
 			setLoading(false);
 		}
+	};
 
+	const handleCloseModal = () => {
+		setKeyword('');
 	};
 
 
 	const handleCheckboxChange = (productId) => {
 		setSelectedProducts((prevSelectedProducts) => {
 			if (prevSelectedProducts.includes(productId)) {
-				return prevSelectedProducts.filter((id) => id !== productId);
-			} else if (prevSelectedProducts.length < 5) {
-				return [...prevSelectedProducts, productId];
+				// Remove from selectedProducts array
+				const updatedSelected = prevSelectedProducts.filter((id) => id !== productId);
+
+				// Update selectedAllProducts to remove the unchecked product
+				setAllSelectedSearchProducts((prevAllSelectedProducts) =>
+					prevAllSelectedProducts.filter((product) => product.id !== productId)
+				);
+
+				return updatedSelected;
 			} else {
-				return prevSelectedProducts;
+				// Add to selectedProducts array
+				const updatedSelected = [...prevSelectedProducts, productId];
+
+				// Find the product by its ID and add to selectedAllProducts
+				const selectedProduct = products.find((product) => product.id === productId);
+
+				setAllSelectedSearchProducts((prevAllSelectedProducts) => {
+					// Prevent duplicates in selectedAllProducts
+					const productAlreadySelected = prevAllSelectedProducts.some(
+						(product) => product.id === productId
+					);
+					if (!productAlreadySelected) {
+						return [...prevAllSelectedProducts, selectedProduct];
+					}
+					return prevAllSelectedProducts;
+				});
+
+				return updatedSelected;
 			}
 		});
-
 	};
+
 
 	const handleKeywordChange = useCallback(async (value) => {
 		setKeyword(value);
@@ -167,9 +181,10 @@ const ManualReviewRequestsPage = () => {
 				});
 				setEmails([]);
 				setSelectedProducts([]);
-				setUpdateMemo(!updateMemo);
-				setUpdateMemo(!updateMemo);
+				setAllSelectedProducts([]);
+				setAllSelectedSearchProducts([]);
 				setRequestEmailSubject('');
+				setKeyword('');
 			} else {
 				shopify.toast.show(data.message, {
 					duration: settingsJson.toasterCloseTime,
@@ -184,19 +199,14 @@ const ManualReviewRequestsPage = () => {
 	};
 
 	const submitProducts = async () => {
-		setShowProductModal(false);
-		setUpdateMemo(!updateMemo);
+		shopify.modal.hide('manual-select-product-modal');
+		setAllSelectedProducts(allSelectedSearchProducts);
 	}
 	const deleteSelectedProducts = async (product_id) => {
 		setSelectedProducts([...selectedProducts.filter((product, i) => product !== product_id)]);
-		setUpdateMemo(!updateMemo);
+		setAllSelectedProducts(allSelectedProducts.filter(product => product.id !== product_id));
+		setAllSelectedSearchProducts(allSelectedProducts.filter(product => product.id !== product_id));
 	}
-
-	const displayProductMemo = useMemo(() => {
-		return products.filter(product =>
-			selectedProducts.includes(product.id)
-		);
-	}, [updateMemo])
 
 	const backToReviewPage = (e) => {
 		e.preventDefault();
@@ -242,7 +252,7 @@ const ManualReviewRequestsPage = () => {
 												<label htmlFor="">Select products <span className="text-danger" >*</span></label>
 												<div className='productslist'>
 													<ul className='proul'>
-														{displayProductMemo.map(product => (
+														{allSelectedProducts.map(product => (
 															<li key={product.id}>
 																{/* <p>ID: {product.id}</p> */}
 																<div className='imagebox flxfix'>
@@ -257,9 +267,9 @@ const ManualReviewRequestsPage = () => {
 															</li>
 														))}
 													</ul>
-													{displayProductMemo.length <= 4 &&
+													{allSelectedProducts.length <= 4 &&
 														<div className='btninwrap'>
-															<Button className='revbtn bluelightbtn' onClick={(e) => handleShowProductsModal()}>{displayProductMemo.length > 0 ? 'add/edit products' : 'Select products'}</Button>
+															<Button className='revbtn bluelightbtn' onClick={(e) => handleShowProductsModal()}>{allSelectedProducts.length > 0 ? 'add/edit products' : 'Select products'}</Button>
 														</div>
 													}
 												</div>
@@ -277,81 +287,12 @@ const ManualReviewRequestsPage = () => {
 												/>
 
 											</div>
-											<InformationAlert alertKey="manual_review_request" alertType="email_appearance" pageSlug="/app/branding" alertClose/>
+											<InformationAlert alertKey="manual_review_request" alertType="email_appearance" pageSlug="/app/branding" alertClose />
 
 											<div className="btnwrap emailbottom align-items-center">
 												<span>By sending this email, I confirm that the recipients have given consent</span>
-												<Button className="revbtn ms-auto" disabled={(displayProductMemo.length == 0 || emails.length == 0 || submittingRequest)} onClick={(e) => sendManualRequest()}>Send email <i className='twenty-longarrow-right'></i></Button>
+												<Button variant="primary" disabled={(allSelectedProducts.length == 0 || emails.length == 0 || submittingRequest)} onClick={(e) => sendManualRequest()}>Send email </Button>
 											</div>
-
-											<Modal scrollable={true} dialogClassName={'productselect'} show={showProductModal} onHide={handleCloseProductModal} size="lg" backdrop="static">
-												<Modal.Header closeButton>
-													<Modal.Title>Select Products</Modal.Title>
-												</Modal.Header>
-
-												<Modal.Body>
-
-													<div className="formcontent flxfix" >
-														<TextField
-															value={keyword}
-															onChange={handleKeywordChange}
-															name="keyword"
-															id="search_input"
-															autoComplete="off"
-															placeholder='Search products'
-														/>
-
-													</div>
-													{loading ? (
-														<div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
-															<Spinner size="large" />
-														</div>
-													) : (
-														products.length > 0 ?
-															<div className='propopuplist'>
-																<div className="row">
-
-																	{products.map((product, index) => (
-																		<div className="col-md-6">
-																			<div className="product-item" key={index}>
-																				<div className="form-check mr-3">
-																					<input className="form-check-input" type="checkbox"
-																						value={product.id} id={"product_" + index}
-																						onChange={() => handleCheckboxChange(product.id)}
-																						checked={selectedProducts.includes(product.id)}
-																						disabled={!selectedProducts.includes(product.id) && selectedProducts.length >= 5}
-																					/>
-																					<label className="form-check-label" for={"product_" + index}>
-																						<div className='imgbox flxfix'>
-																							<img width="50" src={product.images[0].transformedSrc} alt="Product Image" />
-																						</div>
-																						<h5 className='flxflexi'>{product.title}</h5>
-																					</label>
-																				</div>
-																			</div>
-
-																		</div>
-																	))}
-																</div>
-															</div>
-															: <div>No products found</div>)
-													}
-
-
-
-												</Modal.Body>
-												<Modal.Footer>
-													<Button className='revbtn' disabled={selectedProducts.length == 0} onClick={submitProducts} >
-														Submit
-													</Button>
-													<Button className='revbtn lightbtn' onClick={handleCloseProductModal}>
-														Close
-													</Button>
-													<div className='productselected ms-auto'>
-														You have selected <span>{selectedProducts.length}</span>/<span>5</span> products.
-													</div>
-												</Modal.Footer>
-											</Modal>
 
 										</div>
 									</form>
@@ -363,6 +304,72 @@ const ManualReviewRequestsPage = () => {
 				</div>
 
 			</Page>
+			<Modal onHide={handleCloseModal} id="manual-select-product-modal">
+				<TitleBar title="Select Products">
+					<button variant="primary" onClick={submitProducts} disabled={selectedProducts.length === 0}>
+						Add
+					</button>
+					<button onClick={() => shopify.modal.hide('manual-select-product-modal')}>Close</button>
+				</TitleBar>
+				<Box padding="200">
+					<div style={{ position: 'sticky', top: 0, background: 'white', zIndex: 10, padding: '10px 0' }}>
+						<TextField
+							prefix={<Icon source={SearchIcon} tone="base" />}
+							onChange={handleKeywordChange}
+							placeholder="Search products"
+							autoComplete="off"
+							value={keyword}
+							name="keyword"
+							id="search_input"
+						/>
+					</div>
+
+					{loading ? (
+						<div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+							<Spinner size="small" />
+						</div>
+					) : (
+						<div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+							<ResourceList
+								resourceName={{ singular: 'product', plural: 'products' }}
+								items={products}
+								renderItem={(product) => {
+									const { id } = product;
+
+									// Create a click handler that toggles the checkbox
+									const handleProductClick = () => {
+										handleCheckboxChange(id);
+									};
+
+									return (
+										<ResourceItem id={id}>
+											{/* Make the whole item clickable */}
+											<div
+												onClick={handleProductClick}
+												style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} // Set cursor to pointer for better UX
+											>
+												<div>
+													{/* Checkbox itself should not trigger onClick to avoid double handling */}
+													<Checkbox
+														value={id}
+														checked={selectedProducts.includes(id)}
+														onChange={() => handleCheckboxChange(id)} // Keep this for direct checkbox clicks
+														id={`product-checkbox-${id}`}
+														onClick={(e) => e.stopPropagation()} // Prevent the event from bubbling to the parent div
+													/>
+												</div>
+												<Thumbnail size="small" source={product.images[0].transformedSrc} alt={product.title} />
+												<span style={{ marginLeft: '10px' }}>{product.title}</span>
+											</div>
+										</ResourceItem>
+									);
+								}}
+							/>
+						</div>
+					)}
+				</Box>
+			</Modal>
+
 		</>
 	);
 };

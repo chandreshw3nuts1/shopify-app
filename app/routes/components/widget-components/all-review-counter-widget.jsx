@@ -72,8 +72,8 @@ const AllReviewWidget = (props) => {
             <div className={`form-group trustbadgereview ${props.formParams.widget_alignment == "fill_container" && props.formParams.totalReviews > 0 ? openReviewsModalClass : ""} ${props.formParams.widget_alignment} ${props.formParams.widget_layout}`}>
                 {props.formParams.totalReviews > 0 ? (
                     <>
-                        <div class={`review-badge ${props.formParams.widget_alignment != "fill_container" ? openReviewsModalClass : ""}`}>
-                            <div class="review-content">
+                        <div className={`review-badge ${props.formParams.widget_alignment != "fill_container" ? openReviewsModalClass : ""}`}>
+                            <div className="review-content">
                                 <div className="topreviewpart">
                                     {props.formParams.show_rating_icon == 'true' &&
                                         <div className="iconwrap">
@@ -89,26 +89,26 @@ const AllReviewWidget = (props) => {
                                     {props.formParams.widget_layout === 'horizontal' &&
                                         <>
                                             {props.formParams.show_rating == 'true' &&
-                                                <span class="average-rating">{props.formParams.displayRverageRating}/5</span>
+                                                <span className="average-rating">{props.formParams.displayRverageRating}/5</span>
                                             }
                                         </>
                                     }
                                 </div>
 
-                                <div class="rating">
+                                <div className="rating">
                                     {props.formParams.show_rating == 'true' && props.formParams.widget_layout !== 'horizontal' &&
-                                        <span class="average-rating">{props.formParams.displayRverageRating}/5</span>
+                                        <span className="average-rating">{props.formParams.displayRverageRating}/5</span>
                                     }
 
                                     {props.formParams.show_review == 'true' &&
-                                        <span class="total-reviews">{props.formParams.totalReviews} {widgetText}</span>
+                                        <span className="total-reviews">{props.formParams.totalReviews} {widgetText}</span>
 
                                     }
                                 </div>
                             </div>
 
                             {props.formParams.show_branding == 'true' &&
-                                <div class="powered-by">
+                                <div className="powered-by">
                                     Powered by <a href="#">{settingsJson.app_name}</a>
                                 </div>
                             }
@@ -117,8 +117,8 @@ const AllReviewWidget = (props) => {
                 ) : (
                     <>
 
-                        <div class={`review-badge`}>
-                            <div class="review-content">
+                        <div className={`review-badge`}>
+                            <div className="review-content">
                                 <div className="topreviewpart">
                                     {props.formParams.show_rating_icon == 'true' &&
                                         <div className="iconwrap">
@@ -134,26 +134,26 @@ const AllReviewWidget = (props) => {
                                     {props.formParams.widget_layout === 'horizontal' &&
                                         <>
                                             {props.formParams.show_rating == 'true' &&
-                                                <span class="average-rating">0.0/5</span>
+                                                <span className="average-rating">0.0/5</span>
                                             }
                                         </>
                                     }
                                 </div>
 
-                                <div class="rating">
+                                <div className="rating">
                                     {props.formParams.show_rating == 'true' && props.formParams.widget_layout !== 'horizontal' &&
-                                        <span class="average-rating">0.0/5</span>
+                                        <span className="average-rating">0.0/5</span>
                                     }
 
                                     {props.formParams.show_review == 'true' &&
-                                        <span class="total-reviews">0 {widgetText}</span>
+                                        <span className="total-reviews">0 {widgetText}</span>
 
                                     }
                                 </div>
                             </div>
 
                             {props.formParams.show_branding == 'true' &&
-                                <div class="powered-by">
+                                <div className="powered-by">
                                     Powered by <a href="#">{settingsJson.app_name}</a>
                                 </div>
                             }

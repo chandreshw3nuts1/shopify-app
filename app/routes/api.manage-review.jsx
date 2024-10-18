@@ -43,13 +43,18 @@ export async function action({ request }) {
 					const productReviewData = await productReviews.findOne({ _id: requestBody.oid });
 					if (productReviewData) {
 						const shopRecords = await findOneRecord("shop_details", { "_id": productReviewData.shop_id });
+						const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
 
-						await updateTotalAndAverageSeoRating(shopRecords);
-						
+						/* update metafield for SEO rich snippet*/
+						if (generalSettingsModel.is_enable_seo_rich_snippet == true) {
+							updateTotalAndAverageSeoRating(shopRecords);
+						}
+						/* End update metafield for SEO rich snippet*/
+
 						return json({ "status": 200, "message": "Status updated!" });
 					}
 					return json({ "status": 400, "message": "Status not updated!" });
-					
+
 
 				} else if (actionType == 'addReviewReply') {
 					await productReviews.updateOne(
@@ -119,6 +124,8 @@ export async function action({ request }) {
 					const { shop, filter_status, filter_stars, search_keyword, filter_options } = requestBody.searchFormData;
 
 					const shopRecords = await getShopDetailsByShop(shop);
+					const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
+
 					const query = {
 						"shop_id": shopRecords._id, "status": filter_status, "rating": parseInt(filter_stars),
 						$or: [
@@ -194,7 +201,8 @@ export async function action({ request }) {
 						await productReviewQuestions.deleteMany({ review_id: { $in: reviewIds } });
 						await reviewDocuments.deleteMany({ review_id: { $in: reviewIds } });
 						await productReviews.deleteMany({ _id: { $in: reviewIds } });
-						await updateTotalAndAverageSeoRating(shopRecords);
+
+
 
 						var msg = "Review deleted";
 					} else {
@@ -210,6 +218,12 @@ export async function action({ request }) {
 						}
 
 					}
+
+					/* update metafield for SEO rich snippet*/
+					if (generalSettingsModel.is_enable_seo_rich_snippet == true) {
+						updateTotalAndAverageSeoRating(shopRecords);
+					}
+					/* End update metafield for SEO rich snippet*/
 					return json({ "status": 200, "message": msg });
 
 				} else if (actionType == 'imageSliderAction') {
@@ -413,10 +427,15 @@ export async function action({ request }) {
 
 							// Send request email
 							const subject = emailContents.subject;
+							const fromName = shopRecords.name;
+							const replyTo = generalSettingsModel.reply_email || shopRecords.email;
+
 							const response = await sendEmail({
 								to: email,
 								subject,
 								html: emailHtmlContent,
+								fromName,
+								replyTo
 							});
 
 							await productReviews.updateOne(
@@ -440,55 +459,60 @@ export async function action({ request }) {
 					const { review_id, changeProductHandle } = requestBody;
 					var updatedProductData = "";
 					if (changeProductHandle != "" && review_id != "") {
-						const shopSessionRecords = await findOneRecord("shopify_sessions", {
-							$or: [
-								{ shop: shop },
-								{ myshopify_domain: shop }
-							]
-						});
-						const client = new GraphQLClient(`https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
-							headers: {
-								'X-Shopify-Access-Token': shopSessionRecords.accessToken,
-							},
-						});
 
-						const productHandle = `"${changeProductHandle}"`;
-
-						const query = `
-							{
-								productByHandle(handle: ${productHandle}) {
-								id
-								title
-								descriptionHtml
-								handle
-								}
-							}`;
-
-						const data = await client.request(query);
-						if (data.productByHandle != null) {
-							const newProductData = data.productByHandle;
-							const newProductId = newProductData.id.split('/').pop();
-							const newProductUrl = `${newProductData.handle}`;
+						const productReviewData = await productReviews.findOne({ _id: review_id });
+						if (productReviewData) {
+							const shopRecords = await findOneRecord("shop_details", { "_id": productReviewData.shop_id });
+							const shopSessionRecords = await findOneRecord("shopify_sessions", { shop: shop });
 
 
-							await productReviews.updateOne(
-								{ _id: review_id },
+							const client = new GraphQLClient(`https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
+								headers: {
+									'X-Shopify-Access-Token': shopSessionRecords.accessToken,
+								},
+							});
+
+							const productHandle = `"${changeProductHandle}"`;
+
+							const query = `
 								{
-									$set: {
-										product_id: newProductId,
-										product_title: newProductData.title,
-										product_url: newProductUrl,
+									productByHandle(handle: ${productHandle}) {
+									id
+									title
+									descriptionHtml
+									handle
 									}
+								}`;
+
+							const data = await client.request(query);
+							if (data.productByHandle != null) {
+								const newProductData = data.productByHandle;
+								const newProductId = newProductData.id.split('/').pop();
+								const newProductUrl = `${newProductData.handle}`;
+
+
+								await productReviews.updateOne(
+									{ _id: review_id },
+									{
+										$set: {
+											product_id: newProductId,
+											product_title: newProductData.title,
+											product_url: newProductUrl,
+										}
+									}
+								);
+								var msg = "Product changed";
+								var status = 200;
+								updatedProductData = {
+									product_title: newProductData.title,
+									product_url: newProductData.handle,
 								}
-							);
-							var msg = "Product changed";
-							var status = 200;
-							updatedProductData = {
-								product_title: newProductData.title,
-								product_url: newProductData.handle,
+							} else {
+								var msg = `No product was found for handle: ${changeProductHandle}`;
+								var status = 400;
 							}
 						} else {
-							var msg = `No product was found for handle: ${changeProductHandle}`;
+							var msg = `Something went wrong`;
 							var status = 400;
 						}
 
@@ -632,7 +656,7 @@ export async function action({ request }) {
 								verify_badge: { $first: "$verify_badge" },
 								add_to_carousel: { $first: "$add_to_carousel" },
 								video_slider: { $first: "$video_slider" },
-								discount_price_rule_id: { $first: "$discount_price_rule_id" },
+								discount_code_id: { $first: "$discount_code_id" },
 								reviewDocuments: { $first: "$reviewDocuments" }, // Use $first to avoid duplicates
 								reviewQuestionsAnswer: {
 									$push: {
@@ -684,7 +708,7 @@ export async function action({ request }) {
 								verify_badge: 1,
 								add_to_carousel: 1,
 								video_slider: 1,
-								discount_price_rule_id: 1,
+								discount_code_id: 1,
 								reviewDocuments: 1,
 								reviewQuestionsAnswer: {
 									$filter: {
@@ -730,22 +754,29 @@ export async function action({ request }) {
 
 async function deleteReview(review_id) {
 	try {
-		
+
 		const productReviewData = await productReviews.findOne({ _id: review_id });
-	
-		const shopRecords = await findOneRecord("shop_details", { "_id": productReviewData.shop_id });
-		
-		await productReviews.findOneAndDelete({ _id: review_id });
+		if (productReviewData) {
+			const shopRecords = await findOneRecord("shop_details", { "_id": productReviewData.shop_id });
+			const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id });
 
-		await productReviewQuestions.deleteMany({ review_id: review_id });
-		await reviewDocuments.deleteMany({ review_id: review_id });
+			await productReviews.findOneAndDelete({ _id: review_id });
 
-		await updateTotalAndAverageSeoRating(shopRecords);
-		
+			await productReviewQuestions.deleteMany({ review_id: review_id });
+			await reviewDocuments.deleteMany({ review_id: review_id });
+
+			/* update metafield for SEO rich snippet*/
+			if (generalSettingsModel.is_enable_seo_rich_snippet == true) {
+				updateTotalAndAverageSeoRating(shopRecords);
+			}
+			/* End update metafield for SEO rich snippet*/
+		}
+
+
 	} catch (error) {
 	}
-	
-	
-	
+
+
+
 }
 

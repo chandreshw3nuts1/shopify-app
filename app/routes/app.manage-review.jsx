@@ -5,6 +5,7 @@ import RatingSummary from "./components/manageReview/RatingSummary";
 import ReviewItem from "./components/manageReview/ReviewItem";
 import { useNavigate } from 'react-router-dom';
 import generalSettings from './models/generalSettings';
+import { getUploadDocument } from './../utils/documentPath';
 
 import { mongoConnection } from './../utils/mongoConnection';
 import { getShopDetails } from './../utils/getShopDetails';
@@ -12,12 +13,14 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import settingsJson from './../utils/settings.json';
 const reviewImage = `/images/no-reviews-yet.svg`;
+import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 
 import {
 	Layout,
 	Page,
 	Spinner,
 	Image,
+	Box,
 } from "@shopify/polaris";
 
 export async function loader({ request }) {
@@ -207,6 +210,21 @@ export default function ManageReview() {
 		e.preventDefault();
 		navigate('/app/import-review/');
 	};
+
+	const [showImageModal, setShowImageModal] = useState(false);
+	const [selectedImage, setSelectedImage] = useState(null);
+	const [documentType, setDocumentType] = useState('image');
+
+	const handleCloseImageModal = () => {
+		setShowImageModal(false);
+		setSelectedImage(null);
+		setDocumentType('image');
+	};
+	const handleShowImageModal = (image, type, index) => {
+		setSelectedImage(image);
+		setDocumentType(type);
+		setShowImageModal(true);
+	};
 	return (
 		<>
 			<Breadcrumb crumbs={crumbs} />
@@ -282,7 +300,7 @@ export default function ManageReview() {
 									</form>
 								</div>
 								<div className="dividerblk"></div>
-								<ReviewItem filteredReviews={filteredReviews} setFilteredReviews={setFilteredReviews} filteredReviewsTotal={filteredReviewsTotal} setFilteredReviewsTotal={setFilteredReviewsTotal} shopRecords={shopRecords} searchFormData={searchFormData} setSubmitHandle={setSubmitHandle} submitHandle={submitHandle} setSearchFormData={setSearchFormData} />
+								<ReviewItem filteredReviews={filteredReviews} setFilteredReviews={setFilteredReviews} filteredReviewsTotal={filteredReviewsTotal} setFilteredReviewsTotal={setFilteredReviewsTotal} shopRecords={shopRecords} searchFormData={searchFormData} setSubmitHandle={setSubmitHandle} submitHandle={submitHandle} setSearchFormData={setSearchFormData} onImageClick={handleShowImageModal} />
 								<div ref={lastElementRef}>
 									{loading && (
 										<div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
@@ -314,6 +332,33 @@ export default function ManageReview() {
 
 
 			</Page>
+
+			{showImageModal && (
+				<Modal
+					variant="large"
+					open={showImageModal}
+					onHide={handleCloseImageModal}
+				>
+					<TitleBar title={documentType === 'image' ? "View Image" : "View Video"}>
+					</TitleBar>
+					<Box padding="500">
+						
+						{documentType === 'image' && selectedImage?.url ? (
+							<img
+								src={getUploadDocument(selectedImage.url, shopRecords.shop_id)}
+								alt='Selected'
+								style={{ width: '100%', objectFit: 'contain' }}
+							/>
+						) : documentType === 'video' && selectedImage?.url ? (
+							<video controls style={{ width: "100%" }}>
+								<source src={getUploadDocument(selectedImage.url, shopRecords.shop_id)} type='video/mp4' />
+							</video>
+						) : (
+							<p>No content to display</p>
+						)}
+					</Box>
+				</Modal>
+			)}
 		</>
 
 	);

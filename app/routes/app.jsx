@@ -24,6 +24,7 @@ export default function App() {
         </Link>
         <Link to="/app/review">Reviews</Link>
         <Link to="/app/branding">Settings</Link>
+        <Link to="/app/tests">testing menu</Link>
       </ui-nav-menu>
       <Outlet />
     </AppProvider>

@@ -641,9 +641,13 @@ const ReviewRequestForm = () => {
 												</div>
 												<input ref={fileInputRef} onChange={handleFileChange} className="form__file" name="image_and_videos[]" id="upload-files" type="file" accept={generalSettingsModel.is_enabled_video_review ? 'image/*,video/mp4,video/x-m4v,video/*' : 'image/*'} multiple="multiple" />
 											</label>
-											<div className="record_video" onClick={recordVideoStart}>
-												<RecordVideoIcon /> Rec
-											</div>
+
+											{generalSettingsModel?.is_enabled_video_review == true &&
+												<div className="record_video" onClick={recordVideoStart}>
+													<RecordVideoIcon /> Rec
+												</div>
+											}
+
 										</div>
 
 

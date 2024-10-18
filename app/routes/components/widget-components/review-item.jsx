@@ -144,8 +144,8 @@ const ReviewItem = (props) => {
                                                         <div className="date" style={{ color: reviewsText }}>{formatDate(review.createdAt, props.shopRecords.timezone, 'M/D/YYYY')}</div>
                                                     }
                                                 </div>
-                                                <div className='review_bottomwrap'>
-                                                    {(props.formParams.hideProductThumbnails != 'true' && review.productDetails) &&
+                                                {(props.formParams.hideProductThumbnails != 'true' && review.productDetails) &&
+                                                    <div className='review_bottomwrap'>
                                                         <div className="product-container product-thumb-detail">
                                                             <div className="image flxfix">
                                                                 {review.productDetails?.images?.edges?.[0]?.node?.transformedSrc &&
@@ -156,8 +156,8 @@ const ReviewItem = (props) => {
                                                                 <p style={{ color: reviewsText }}>{review.productDetails.title}</p>
                                                             </div>
                                                         </div>
-                                                    }
-                                                </div>
+                                                    </div>
+                                                }
 
 
                                             </div>
@@ -244,42 +244,54 @@ const ReviewItem = (props) => {
                                                         <div className='ratingcount'>{review.rating}.0</div>
                                                     </div>
                                                 </div>
-                                                <div className='review_bottomwrap'>
-                                                    {(props.formParams.hideProductThumbnails != 'true' && review.productDetails) &&
-                                                        <div className="product-container product-thumb-detail">
-                                                            <div className="image flxfix">
-                                                                {review.productDetails?.images?.edges?.[0]?.node?.transformedSrc &&
-                                                                    <img src={review.productDetails.images.edges[0].node.transformedSrc} alt="Product" />
-                                                                }
-                                                            </div>
-                                                            <div className="text flxflexi">
-                                                                <p style={{ color: reviewsText }}>{review.productDetails.title}</p>
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                    {review.reviewDocuments && review.reviewDocuments.length > 0 &&
-                                                        <div className='review_imageswrap flxrow'>
-                                                            {review.reviewDocuments.slice(0, 2).map((media, i) => (
-                                                                <div className='imagebox' key={i}>
-                                                                    {media.type === 'image' ? (
-                                                                        <img style={{ width: '100%' }} src={getUploadDocument(media.url, props.shopRecords.shop_id)} />
-                                                                    ) : (
-                                                                        <div className='videoth'>
-                                                                            <div className='playicon'><PlayIcon /></div>
-                                                                            <img style={{ width: '100%' }} src={getUploadDocument(media.thumbnail_name, props.shopRecords.shop_id)} />
-                                                                        </div>
+                                                {(props.formParams.hideProductThumbnails !== 'true' && review.productDetails) || (review.reviewDocuments && review.reviewDocuments.length > 0) ? (
+                                                    <div className='review_bottomwrap'>
+                                                        {(props.formParams.hideProductThumbnails !== 'true' && review.productDetails) && (
+                                                            <div className="product-container product-thumb-detail">
+                                                                <div className="image flxfix">
+                                                                    {review.productDetails?.images?.edges?.[0]?.node?.transformedSrc && (
+                                                                        <img
+                                                                            src={review.productDetails.images.edges[0].node.transformedSrc}
+                                                                            alt="Product"
+                                                                        />
                                                                     )}
                                                                 </div>
-                                                            ))}
-                                                            {review.reviewDocuments.length > 2 && (
-                                                                <div className='more-count'>
-                                                                    {`+${review.reviewDocuments.length - 2}`}
+                                                                <div className="text flxflexi">
+                                                                    <p style={{ color: reviewsText }}>{review.productDetails.title}</p>
                                                                 </div>
-                                                            )}
-                                                        </div>
-                                                    }
-                                                </div>
-
+                                                            </div>
+                                                        )}
+                                                        {review.reviewDocuments && review.reviewDocuments.length > 0 && (
+                                                            <div className='review_imageswrap flxrow'>
+                                                                {review.reviewDocuments.slice(0, 2).map((media, i) => (
+                                                                    <div className='imagebox' key={i}>
+                                                                        {media.type === 'image' ? (
+                                                                            <img
+                                                                                style={{ width: '100%' }}
+                                                                                src={getUploadDocument(media.url, props.shopRecords.shop_id)}
+                                                                                alt="Review Media"
+                                                                            />
+                                                                        ) : (
+                                                                            <div className='videoth'>
+                                                                                <div className='playicon'><PlayIcon /></div>
+                                                                                <img
+                                                                                    style={{ width: '100%' }}
+                                                                                    src={getUploadDocument(media.thumbnail_name, props.shopRecords.shop_id)}
+                                                                                    alt="Review Video Thumbnail"
+                                                                                />
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                ))}
+                                                                {review.reviewDocuments.length > 2 && (
+                                                                    <div className='more-count'>
+                                                                        {`+${review.reviewDocuments.length - 2}`}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ) : null}
 
                                             </div>
                                         </div>
@@ -417,7 +429,8 @@ const ReviewItem = (props) => {
 
                 </>
 
-            )}
+            )
+            }
 
         </>
 
