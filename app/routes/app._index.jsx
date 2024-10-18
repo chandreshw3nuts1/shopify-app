@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +7,36 @@ import { getShopDetails } from './../utils/getShopDetails';
 import HomeInformationAlert from './components/common/home-information-alert';
 import EnableAppEmbedAlert from './components/common/enable-app-embed-alert';
 import Cookies from 'js-cookie';
-import { Tooltip as ReactTooltip } from 'react-tooltip'
+import {
+	MediaCard, 
+	Text, 
+	Button, 
+	Popover, 
+	ActionList, 
+	Card, 
+	InlineGrid, 
+	BlockStack, 
+	Divider, 
+	Banner, 
+	Link, 
+	Icon, 
+	Tooltip,
+	Box,
+	Grid, 
+} from '@shopify/polaris';
+import { 
+	ChevronRightIcon, 
+	InfoIcon,
+	SendIcon,
+	StarIcon,
+	ImageIcon,
+	OrderIcon,
+	StoreManagedIcon,
+	ShareIcon,
+	SettingsIcon,
+	ChartHistogramGrowthIcon,
+	CashDollarIcon
+} from '@shopify/polaris-icons';
 
 
 const bannerImage = "/images/medium-shot-young-people-with-reviews.jpg"
@@ -78,6 +107,7 @@ export default function Index() {
 	const handleSelect = (eventKey) => {
 		setDaysFilterTitle(daysTitles[eventKey]);
 		setSelectedDays(eventKey);
+		setPopoverActive(false);
 	};
 
 
@@ -119,6 +149,29 @@ export default function Index() {
 
     }
 
+	const [isVisible, setIsVisible] = useState(true);
+
+	// Function to handle the dismiss action
+	const handleDismiss = () => {
+		setIsVisible(false);
+		console.log('yes');
+	};
+
+
+
+	const [popoverActive, setPopoverActive] = useState(false);
+
+	const togglePopoverActive = useCallback(
+		() => setPopoverActive((popoverActive) => !popoverActive),
+		[],
+	);
+
+	const activator = (
+		<Button onClick={togglePopoverActive} disclosure>
+			{daysFilterTitle}
+		</Button>
+	);
+
 	return (
 		<>
 			<div className="dashboardwrap max1048 mx-auto">
@@ -127,173 +180,253 @@ export default function Index() {
 				{!isEnabledAppEmbed && 
 					<EnableAppEmbedAlert alertKey="home_header_info" shopRecords={shopRecords} reviewExtensionId={reviewExtensionId} activeThemeId={activeThemes.id} page="index" />
 				}
-
-				<div className="dashbbanner">
-					<div className="detailbox flxflexi">
-						<h2>Ensure your best reviews get seen</h2>
-						<p>Use the pop-up widget to build trust faster by making sure your reviews are never missed</p>
-						<div className="btnwrap">
-							<a href="#" onClick={(e) => redirectToCustomizePage(e, "popupWidget")} className="revbtn smbtn">Add a pop-up</a>
-						</div>
-					</div>
-					<div className="imagebox flxfix">
-						<Image src={bannerImage} />
-					</div>
-				</div>
+				{isVisible && (
+					<MediaCard
+						title="Ensure your best reviews get seen"
+						primaryAction={{
+							content: 'Add a pop-up',
+							onAction: (e) => redirectToCustomizePage(e, "popupWidget"),
+							outline: true,
+						}}
+						description="Use the pop-up widget to build trust faster by making sure your reviews are never missed"
+						popoverActions={[{content: 'Dismiss', onAction: handleDismiss}]}
+					>
+						<img
+							alt=""
+							width="100%"
+							height="100%"
+							style={{
+							objectFit: 'cover',
+							objectPosition: 'center',
+							}}
+							src={bannerImage}
+						/>
+					</MediaCard>
+				)}
 
 				<div className="dashdatawrap">
 					<div className="maintitle">
-						<h2>Performance Overview</h2>
-						<div className="rightbox dropdownwrap ms-auto ddverylightbtn">
-							<DropdownButton
-								id="dropdown-basic-button"
-								title={daysFilterTitle}
-								align={'end'}
-								onSelect={handleSelect}
-							>
-
-								{Object.entries(daysTitles).map(([key, value]) => (
-									<Dropdown.Item
-										key={key}
-										eventKey={key}
-										className={`custom-dropdown-item ${key == selectedDays ? 'active' : ''}`}
-									>
-										{value}
-									</Dropdown.Item>
-								))}
-
-
-
-							</DropdownButton>
-						</div>
-					</div>
-					<div className="dashstetesticsbox">
-						<div className="titlebox">
-							<h3>Reviews</h3>
-							<div className="btnwrap m-0 ms-auto">
-								<a href="#" className="revbtn plainlink" onClick={showManageReviewPage}>Manage reviews <i className="twenty-arrow-right"></i></a>
-							</div>
-						</div>
-						<div className="numberboxwrap">
-							<div className="numberbox">
-								<div className="iconbox flxfix">
-									<ReviewRequestsSentIcon />
-								</div>
-								<div className="detailbox flxflexi">
-									<h3>{statisticResponse.requestSentcount}</h3>
-									<p>Review Requests Sent</p>
-								</div>
-							</div>
-							<div className="numberbox">
-								<div className="iconbox flxfix">
-									<ReviewsCollectedIcon />
-								</div>
-								<div className="detailbox flxflexi">
-									<h3>{statisticResponse.totalReceivedReview}</h3>
-									<p>Reviews Received</p>
-								</div>
-							</div>
-							<div className="numberbox">
-								<div className="iconbox flxfix">
-									<PhotoVideoReviewsIcon />
-								</div>
-								<div className="detailbox flxflexi">
-									<h3>{statisticResponse.totalReviewItemsImage}</h3>
-									<p>Photo/Video Reviews</p>
-								</div>
-							</div>
-						</div>
-						<div className="revenuebox">
-							<p><strong>{shopRecords.currency_symbol}{statisticResponse.reviewRevenue}</strong> Reviews-Generated Revenue</p>
-							<span data-tooltip-id="my-tooltip-1" className="infolink">
-								<InfoFillIcon />
-							</span>
-
-							<ReactTooltip
-								id="my-tooltip-1"
-								place="bottom"
-								className="custom-tooltip"
-								content="Revenue generated from orders that redeemed a discount for submitting a photo/video review"
+						<Text variant="headingXl" as="h2">Performance Overview</Text>
+						<Popover
+							active={popoverActive}
+							activator={activator}
+							autofocusTarget="first-node"
+							onClose={togglePopoverActive}
+							fullWidth={true}
+						>
+							<ActionList
+							actionRole="menuitem"
+							items={
+								Object.entries(daysTitles).map(([key, value]) => {
+									return{ content: value, active: key === selectedDays , onAction:() => handleSelect(key) }
+								})
+							}
 							/>
-							
-						</div>
+						</Popover>
 					</div>
 					<div className="dashstetesticsbox">
-						<div className="titlebox">
-							<h3>Referrals</h3>
-							<div className="btnwrap m-0 ms-auto">
-								<a href="#" className="revbtn plainlink">Manage referrals <i className="twenty-arrow-right"></i></a>
-							</div>
-						</div>
-						<div className="numberboxwrap">
-							<div className="numberbox">
-								<div className="iconbox flxfix">
-									<SharesDashIcon />
+						<Card padding="400" roundedAbove="xs">
+							<BlockStack gap="400">
+								<InlineGrid columns="1fr auto" alignItems="center">
+									<Text as="h3" variant="headingMd">
+										Reviews
+									</Text>
+									<Button
+										size="Medium"
+										onClick={showManageReviewPage}
+										accessibilityLabel="Manage reviews"
+										icon={SettingsIcon}
+									>
+										Manage reviews
+									</Button>
+								</InlineGrid>
+								<Divider borderColor="border" />
+								<div className="gridwrap">
+									<Grid>
+										<Grid.Cell columnSpan={{xs: 6, sm: 3, md: 6, lg: 4, xl: 4}}>
+											<card>
+												<InlineGrid columns="auto 1fr" alignItems="center" gap="600">
+													<Box background="bg-fill-transparent-hover" color="icon" padding="300" borderRadius="200">
+														<Icon tone="inherit" source={SendIcon}></Icon>
+													</Box>
+													<Box>
+														<Text as="h3" variant="heading2xl">{statisticResponse.requestSentcount}</Text>
+														<Text as="p" variant="bodyMd">Review Requests Sent</Text>
+													</Box>
+												</InlineGrid>
+											</card>
+										</Grid.Cell>
+										<Grid.Cell columnSpan={{xs: 6, sm: 3, md: 3, lg: 4, xl: 4}}>
+											<card >
+												<InlineGrid columns="auto 1fr" alignItems="center" gap="600">
+													<Box background="bg-fill-transparent-hover" color="icon" padding="300" borderRadius="200">
+														<Icon tone="inherit" source={StarIcon}></Icon>
+													</Box>
+													<Box>
+														<Text as="h3" variant="heading2xl">{statisticResponse.totalReceivedReview}</Text>
+														<Text as="p" variant="bodyMd">Reviews Received</Text>
+													</Box>
+												</InlineGrid>
+											</card>
+										</Grid.Cell>
+										<Grid.Cell columnSpan={{xs: 6, sm: 3, md: 3, lg: 4, xl: 4}}>
+											<card >
+												<InlineGrid columns="auto 1fr" alignItems="center" gap="600">
+													<Box background="bg-fill-transparent-hover" color="icon" padding="300" borderRadius="200">
+														<Icon tone="inherit" source={ImageIcon}></Icon>
+													</Box>
+													<Box>
+														<Text as="h3" variant="heading2xl">{statisticResponse.totalReviewItemsImage}</Text>
+														<Text as="p" variant="bodyMd">Photo/Video Reviews</Text>
+													</Box>
+												</InlineGrid>
+											</card>
+										</Grid.Cell>
+									</Grid>
 								</div>
-								<div className="detailbox flxflexi">
-									<h3>00</h3>
-									<p>Shares</p>
-								</div>
-							</div>
-							<div className="numberbox">
-								<div className="iconbox flxfix">
-									<StoreVisitsIcon />
-								</div>
-								<div className="detailbox flxflexi">
-									<h3>00</h3>
-									<p>Store Visits</p>
-								</div>
-							</div>
-							<div className="numberbox">
-								<div className="iconbox flxfix">
-									<OrdersDashIcon />
-								</div>
-								<div className="detailbox flxflexi">
-									<h3>00</h3>
-									<p>Orders</p>
-								</div>
-							</div>
-						</div>
-						<div className="revenuebox">
-							<p><strong>$00</strong> Referrals-Generated Revenue</p>
-							<a href="#" className="infolink">
-								<InfoFillIcon />
-							</a>
-						</div>
+								<Box padding="300" background="bg-surface-info" borderRadius="200">
+									<InlineGrid columns="1fr auto" alignItems="center">
+										<Text as="p" variant="bodyMd">
+											<strong>{shopRecords.currency_symbol}{statisticResponse.reviewRevenue}</strong> Reviews-Generated Revenue
+										</Text>
+										<Tooltip content="Revenue generated from orders that redeemed a discount for submitting a photo/video review" preferredPosition="above" width="wide" padding="300">
+											<Icon source={InfoIcon}></Icon>
+										</Tooltip>
+									</InlineGrid>
+								</Box>
+							</BlockStack>
+						</Card>
 					</div>
 					<div className="dashstetesticsbox">
-						<div className="titlebox">
-							<h3>Upsells</h3>
-							<div className="btnwrap m-0 ms-auto">
-								<a href="#" className="revbtn blueblacklightbtn bigbtn"><i className="twenty-Info_icon"></i> Complete Setup</a>
-							</div>
-						</div>
-						<div className="numberboxwrap">
-							<div className="numberbox">
-								<div className="iconbox flxfix">
-									<ImpressionsDashIcon />
+						<Card padding="400" roundedAbove="xs">
+							<BlockStack gap="400">
+								<InlineGrid columns="1fr auto" alignItems="center">
+									<Text as="h3" variant="headingMd">
+										Referrals
+									</Text>
+									<Button
+										// variant="primary"
+										size="Medium"
+										// onClick={showManageReviewPage}
+										accessibilityLabel="Manage referrals"
+										icon={SettingsIcon}
+									>
+										Manage referrals
+									</Button>
+								</InlineGrid>
+								<Divider borderColor="border" />
+								<div className="gridwrap">
+									<Grid>
+										<Grid.Cell columnSpan={{xs: 6, sm: 3, md: 3, lg: 4, xl: 4}}>
+											<card>
+												<InlineGrid columns="auto 1fr" alignItems="center" gap="600">
+													<Box background="bg-fill-transparent-hover" color="icon" padding="300" borderRadius="200">
+														<Icon tone="inherit" source={ShareIcon}></Icon>
+													</Box>
+													<Box>
+														<Text as="h3" variant="heading2xl">0</Text>
+														<Text as="p" variant="bodyMd">Shares</Text>
+													</Box>
+												</InlineGrid>
+											</card>
+										</Grid.Cell>
+										<Grid.Cell columnSpan={{xs: 6, sm: 3, md: 3, lg: 4, xl: 4}}>
+											<card >
+												<InlineGrid columns="auto 1fr" alignItems="center" gap="600">
+													<Box background="bg-fill-transparent-hover" color="icon" padding="300" borderRadius="200">
+														<Icon tone="inherit" source={StoreManagedIcon}></Icon>
+													</Box>
+													<Box>
+														<Text as="h3" variant="heading2xl">0</Text>
+														<Text as="p" variant="bodyMd">Store Visits</Text>
+													</Box>
+												</InlineGrid>
+											</card>
+										</Grid.Cell>
+										<Grid.Cell columnSpan={{xs: 6, sm: 3, md: 3, lg: 4, xl: 4}}>
+											<card >
+												<InlineGrid columns="auto 1fr" alignItems="center" gap="600">
+													<Box background="bg-fill-transparent-hover" color="icon" padding="300" borderRadius="200">
+														<Icon tone="inherit" source={OrderIcon}></Icon>
+													</Box>
+													<Box>
+														<Text as="h3" variant="heading2xl">0</Text>
+														<Text as="p" variant="bodyMd">Orders</Text>
+													</Box>
+												</InlineGrid>
+											</card>
+										</Grid.Cell>
+									</Grid>
 								</div>
-								<div className="detailbox flxflexi">
-									<h3>00</h3>
-									<p>Impressions</p>
+								<Box padding="300" background="bg-surface-info" borderRadius="200">
+									<InlineGrid columns="1fr auto" alignItems="center">
+										<Text as="p" variant="bodyMd">
+											<strong>$0</strong> Referrals-Generated Revenue
+										</Text>
+										<Icon source={InfoIcon}></Icon>
+									</InlineGrid>
+								</Box>
+							</BlockStack>
+						</Card>
+					</div>
+					<div className="dashstetesticsbox">
+						<Card padding="400" roundedAbove="xs">
+							<BlockStack gap="400">
+								<InlineGrid columns="1fr auto" alignItems="center">
+									<Text as="h3" variant="headingMd">
+										Upsells
+									</Text>
+									<Button
+										// variant="primary"
+										size="medium"
+										// onClick={showManageReviewPage}
+										accessibilityLabel="Complete Setup"
+										icon={SettingsIcon}
+									>
+										Complete Setup
+									</Button>
+								</InlineGrid>
+								<Divider borderColor="border" />
+								<div className="gridwrap">
+									<Grid>
+										<Grid.Cell columnSpan={{xs: 6, sm: 3, md: 3, lg: 4, xl: 4}}>
+											<card>
+												<InlineGrid columns="auto 1fr" alignItems="center" gap="600">
+													<Box background="bg-fill-transparent-hover" color="icon" padding="300" borderRadius="200">
+														<Icon tone="inherit" source={ChartHistogramGrowthIcon}></Icon>
+													</Box>
+													<Box>
+														<Text as="h3" variant="heading2xl">0</Text>
+														<Text as="p" variant="bodyMd">Impressions</Text>
+													</Box>
+												</InlineGrid>
+											</card>
+										</Grid.Cell>
+										<Grid.Cell columnSpan={{xs: 6, sm: 3, md: 3, lg: 4, xl: 4}}>
+											<card >
+												<InlineGrid columns="auto 1fr" alignItems="center" gap="600">
+													<Box background="bg-fill-transparent-hover" color="icon" padding="300" borderRadius="200">
+														<Icon tone="inherit" source={CashDollarIcon}></Icon>
+													</Box>
+													<Box>
+														<Text as="h3" variant="heading2xl">0</Text>
+														<Text as="p" variant="bodyMd">Upsells</Text>
+													</Box>
+												</InlineGrid>
+											</card>
+										</Grid.Cell>
+									</Grid>
 								</div>
-							</div>
-							<div className="numberbox">
-								<div className="iconbox flxfix">
-									<UpsellsDashIcon />
-								</div>
-								<div className="detailbox flxflexi">
-									<h3>00</h3>
-									<p>Upsells</p>
-								</div>
-							</div>
-						</div>
-						<div className="revenuebox">
-							<p><strong>$00</strong> Upsells-Generated Revenue</p>
-							<a href="#" className="infolink">
-								<InfoFillIcon />
-							</a>
-						</div>
+								<Box padding="300" background="bg-surface-info" borderRadius="200">
+									<InlineGrid columns="1fr auto" alignItems="center">
+										<Text as="p" variant="bodyMd">
+											<strong>$0</strong> Upsells-Generated Revenue
+										</Text>
+										<Icon source={InfoIcon}></Icon>
+									</InlineGrid>
+								</Box>
+							</BlockStack>
+						</Card>
 					</div>
 
 				</div>

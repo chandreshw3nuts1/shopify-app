@@ -4,6 +4,17 @@ import { useLoaderData } from '@remix-run/react';
 import { getShopDetails } from './../utils/getShopDetails';
 import { getCustomQuestions } from './../utils/common';
 import { useNavigate } from 'react-router-dom';
+import {Icon} from '@shopify/polaris';
+import {
+	StarIcon,
+	ClockIcon,
+	DiscountIcon,
+	QuestionCircleIcon,
+	EmailIcon,
+	ChatIcon,
+	NoteIcon,
+	PlayCircleIcon
+} from '@shopify/polaris-icons';
 
 import Breadcrumb from './components/Breadcrumb';
 import ReviewPageSidebar from './components/headerMenu/ReviewPageSidebar';
@@ -124,7 +135,8 @@ const ReviewPage = () => {
 							>
 								<div className='flxrow acctitle'>
 									<div className='flxfix iconbox'>
-										<i className='twenty-star'></i>
+										{/* <i className='twenty-star'></i> */}
+										<Icon source={StarIcon} tone="base"/>
 									</div>
 									<div className='flxflexi titledetail'>
 										<Text as="h1" variant="headingMd">
@@ -171,7 +183,8 @@ const ReviewPage = () => {
 							>
 								<div className='flxrow acctitle'>
 									<div className='flxfix iconbox'>
-										<i className='twenty-review-timing'></i>
+										{/* <i className='twenty-review-timing'></i> */}
+										<Icon source={ClockIcon} tone="base"/>
 									</div>
 									<div className='flxflexi titledetail'>
 										<Text as="h1" variant="headingMd">
@@ -214,7 +227,8 @@ const ReviewPage = () => {
 							>
 								<div className='flxrow acctitle'>
 									<div className='flxfix iconbox'>
-										<i className='twenty-discount'></i>
+										{/* <i className='twenty-discount'></i> */}
+										<Icon source={DiscountIcon} tone="base" />
 									</div>
 									<div className='flxflexi titledetail'>
 										<Text as="h1" variant="headingMd">
@@ -258,7 +272,8 @@ const ReviewPage = () => {
 							>
 								<div className='flxrow acctitle'>
 									<div className='flxfix iconbox'>
-										<i className='twenty-questions'></i>
+										{/* <i className='twenty-questions'></i> */}
+										<Icon source={QuestionCircleIcon} tone="base" />
 									</div>
 									<div className='flxflexi titledetail'>
 										<Text as="h1" variant="headingMd">
@@ -306,7 +321,8 @@ const ReviewPage = () => {
 							>
 								<div className='flxrow acctitle'>
 									<div className='flxfix iconbox'>
-										<i className='twenty-emails'></i>
+										{/* <i className='twenty-emails'></i> */}
+										<Icon source={EmailIcon} tone="base" />
 									</div>
 									<div className='flxflexi titledetail'>
 										<Text as="h1" variant="headingMd">
@@ -440,7 +456,8 @@ const ReviewPage = () => {
 							>
 								<div className='flxrow acctitle'>
 									<div className='flxfix iconbox'>
-										<i className='twenty-manualreview'></i>
+										{/* <i className='twenty-manualreview'></i> */}
+										<Icon source={ChatIcon} tone="base" />
 									</div>
 									<div className='flxflexi titledetail'>
 										<Text as="h1" variant="headingMd">
@@ -472,7 +489,8 @@ const ReviewPage = () => {
 							>
 								<div className='flxrow acctitle'>
 									<div className='flxfix iconbox'>
-										<i className='twenty-reviewform'></i>
+										{/* <i className='twenty-reviewform'></i> */}
+										<Icon source={NoteIcon} tone="base" />
 									</div>
 									<div className='flxflexi titledetail'>
 										<Text as="h1" variant="headingMd">
@@ -506,7 +524,8 @@ const ReviewPage = () => {
 							>
 								<div className='flxrow acctitle'>
 									<div className='flxfix iconbox'>
-										<i className='twenty-star'></i>
+										{/* <i className='twenty-star'></i> */}
+										<Icon source={PlayCircleIcon} tone="base" />
 									</div>
 									<div className='flxflexi titledetail'>
 										<Text as="h1" variant="headingMd">
