@@ -575,7 +575,7 @@ export default function Orders() {
                                             {result.manualRequestProducts.map((products, PIx) => (
                                                 <div className="suborderrow flxrow" key={PIx}>
                                                     <div className="ordername flxflexi">{productDetails[products.product_id]
-                                                        ? productDetails[products.product_id].title
+                                                        ? productDetails[products.product_id].product_title
                                                         : ""}</div>
                                                     <div className="orderstatus flxfix">
                                                         {renderOrderStatus(result, products)}

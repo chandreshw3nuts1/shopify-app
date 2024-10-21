@@ -9,6 +9,7 @@ import shopDetails from './../routes/models/shopDetails';
 import discountCodes from './../routes/models/discountCodes';
 import reviewDiscountSettings from './../routes/models/reviewDiscountSettings';
 import marketingEmailSubscriptions from './../routes/models/marketingEmailSubscriptions';
+import shopifyProducts from './../routes/models/shopifyProducts';
 
 export async function action({ request }) {
 	const hmacHeader = request.headers.get('X-Shopify-Hmac-Sha256');
@@ -83,7 +84,7 @@ export async function action({ request }) {
 
 
 		}
-		
+
 		var country_code = "";
 		// Check if shipping_address exists and if country_code is available, otherwise use the customer's default address country_code
 		if (bodyObj?.shipping_address?.country_code) {
@@ -206,6 +207,49 @@ export async function action({ request }) {
 				await shopDetails.updateOne(
 					{ _id: shopRecords._id },
 					{ $set: { country_code: bodyObj.country_code } }
+				);
+
+			} else {
+				console.log('No shop records found for the given shop domain.');
+			}
+		} catch (error) {
+			console.error('Error updating currency symbol:', error);
+		}
+
+	} else if (topic == 'products/update' || topic == 'products/create') {
+		try {
+			if (shopRecords) {
+				const shopifyImage = bodyObj?.images[0].src;
+				const size = "200x200";
+				const productImg =  shopifyImage.replace(/(\/[^\/]*?)(\.(jpg|jpeg|png|gif))(\?v=\d+)/, `$1_${size}$2$4`);
+
+				await shopifyProducts.updateOne(
+					{ shop_id: shopRecords._id, product_id: bodyObj.id },
+					{
+						$set: {
+							shop_id: shopRecords._id,
+							product_id: bodyObj.id,
+							product_title: bodyObj.title,
+							product_handle: bodyObj.handle,
+							product_image: productImg,
+						}
+					},
+					{ upsert: true }
+				);
+
+			} else {
+				console.log('No shop records found for the given shop domain.');
+			}
+		} catch (error) {
+			console.error('Error updating currency symbol:', error);
+		}
+
+	} else if (topic == 'products/delete') {
+		try {
+			if (shopRecords) {
+
+				await shopifyProducts.deleteOne(
+					{ shop_id: shopRecords._id, product_id: bodyObj.id },
 				);
 
 			} else {

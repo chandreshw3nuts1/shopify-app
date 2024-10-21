@@ -29,7 +29,7 @@ import popupModalWidgetCustomizes from "./models/popupModalWidgetCustomizes";
 import productGroups from './models/productGroups';
 
 
-import { getShopifyProducts, getDiscounts } from "./../utils/common";
+import { getAllShopifyProducts, getDiscounts } from "./../utils/common";
 import { ratingbabycloth, ratingbasket, ratingbones, ratingcoffeecup, ratingcrisamascap, ratingdiamondfront, ratingdiamondtop, ratingdogsleg, ratingfireflame, ratingflight, ratingfood, ratinggraduationcap, ratingheartround, ratingheartsq, ratingleafcanada, ratingleafnormal, ratinglikenormal, ratinglikerays, ratingpethouse, ratingplant, ratingshirt, ratingshoppingbag1, ratingshoppingbag2, ratingshoppingbag3, ratingstarrays, ratingstarrounded, ratingstarsq, ratingsunglass, ratingteacup, ratingtrophy1, ratingtrophy2, ratingtrophy3, ratingtshirt, ratingwine } from './../routes/components/icons/CommonIcons';
 import settingsJson from './../utils/settings.json';
 
@@ -270,9 +270,7 @@ export async function action({ request }) {
                 ]);
 
                 const reviewDetails = reviewItems[0];
-                const productId = `"gid://shopify/Product/${reviewDetails.product_id}"`;
-                var productsDetails = await getShopifyProducts(shopRecords.myshopify_domain, productId);
-
+                var productsDetails = await getAllShopifyProducts(shopRecords._id, [reviewDetails.product_id]);
                 const hideProductThumbnails = formData.get('hide_product_thumbnails') || 'false';
 
                 const formParams = {
@@ -907,24 +905,20 @@ export async function action({ request }) {
 
                 if (reviewItems.length > 0) {
                     const uniqueProductIds = [...new Set(reviewItems.map(item => item.product_id))];
-
-                    const productIds = uniqueProductIds.map((item) => `"gid://shopify/Product/${item}"`);
-                    var productsDetails = await getShopifyProducts(shopRecords.myshopify_domain, productIds);
+                    var productsDetails = await getAllShopifyProducts(shopRecords._id, uniqueProductIds);
 
                     if (productsDetails.length > 0) {
-                        productsDetails.forEach(node => {
-                            if (node) {
-                                const id = node.id.split('/').pop();
-                                mapProductDetails[id] = node;
+                        productsDetails.forEach(product => {
+                            if (product) {
+                                mapProductDetails[product.product_id] = product;
                             }
 
                         });
                     }
 
                 }
-
                 reviewItems.map(items => {
-                    items.productDetails = mapProductDetails[items.product_id];
+                    items.productDetails = mapProductDetails[items.product_id] ? mapProductDetails[items.product_id] :  {};
                     return items;
                 });
 
@@ -1183,23 +1177,20 @@ export async function action({ request }) {
 
                 const uniqueProductIds = [...new Set(reviewItems.map(item => item.product_id))];
 
-                const productIds = uniqueProductIds.map((item) => `"gid://shopify/Product/${item}"`);
-                var productsDetails = await getShopifyProducts(shopRecords.myshopify_domain, productIds);
+                var productsDetails = await getAllShopifyProducts(shopRecords._id, uniqueProductIds);
 
                 if (productsDetails.length > 0) {
-                    productsDetails.forEach(node => {
-                        if (node) {
-                            const id = node.id.split('/').pop();
-                            mapProductDetails[id] = node;
+                    productsDetails.forEach(product => {
+                        if (product) {
+                            mapProductDetails[product.product_id] = product;
                         }
 
                     });
                 }
 
             }
-
             reviewItems.map(items => {
-                items.productDetails = mapProductDetails[items.product_id];
+                items.productDetails = mapProductDetails[items.product_id] ? mapProductDetails[items.product_id] :  {};
                 return items;
             });
 

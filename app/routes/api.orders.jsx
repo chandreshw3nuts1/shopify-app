@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
-import { getShopDetailsByShop, getShopifyProducts, getLanguageWiseContents, generateUnsubscriptionLink } from "./../utils/common";
+import { getShopDetailsByShop, getAllShopifyProducts, getLanguageWiseContents, generateUnsubscriptionLink } from "./../utils/common";
 import ReactDOMServer from 'react-dom/server';
 import manualReviewRequests from "./models/manualReviewRequests";
 import manualRequestProducts from "./models/manualRequestProducts";
@@ -157,16 +157,14 @@ export async function action({ request }) {
 						const uniqueProductIds = ordersItems.flatMap(order =>
 							order.manualRequestProducts.map(product => product.product_id)
 						);
-						const productIds = uniqueProductIds.map((item) => `"gid://shopify/Product/${item}"`);
+						var productsDetails = await getAllShopifyProducts(shopRecords._id, uniqueProductIds);
 
-						var productsDetails = await getShopifyProducts(shopRecords.myshopify_domain, productIds);
+
 						if (productsDetails.length > 0) {
-							productsDetails.forEach(node => {
-								if (node) {
-									const id = node.id.split('/').pop();
-									mapProductDetails[id] = node;
+							productsDetails.forEach(product => {
+								if (product) {
+									mapProductDetails[product.product_id] = product;
 								}
-
 							});
 						}
 					}
@@ -185,11 +183,11 @@ export async function action({ request }) {
 						const logo = getUploadDocument(generalAppearancesObj.logo, shopRecords.shop_id, 'logo');
 
 						const uniqueProductIds = manualRequestProductsModel.map(item => item.product_id);
+						var mapProductDetails = await getAllShopifyProducts(shopRecords._id, uniqueProductIds);
+						if (mapProductDetails.length == 0) {
+							return json({ "status": 400, "message": "No product found!" });
 
-
-						const productIds = uniqueProductIds.map((item) => `"gid://shopify/Product/${item}"`);
-						var mapProductDetails = await getShopifyProducts(shopRecords.myshopify_domain, productIds, 200);
-
+						}
 						const customer_locale = manualRequestModel.customer_locale;
 
 						const replaceVars = {
@@ -225,18 +223,18 @@ export async function action({ request }) {
 							emailHtmlContent = emailHtmlContent.replace(`{{variant_title_${product.product_id}}}`, variantTitle);
 						}));
 
-						
-						const unsubscribeData = { 
+
+						const unsubscribeData = {
 							"shop_id": shopRecords.shop_id,
 							"email": manualRequestModel.email,
 						}
 						const unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
 						emailHtmlContent = emailHtmlContent.replace(`{{unsubscriptionLink}}`, unsubscriptionLink);
-						
+
 
 						// Send request email
 						const subject = emailContents.subject;
-						const response = await sendEmail({
+						const response = sendEmail({
 							to: manualRequestModel.email,
 							subject,
 							html: emailHtmlContent,

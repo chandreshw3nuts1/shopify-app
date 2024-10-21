@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
-import { findOneRecord, getShopDetailsByShop, getShopifyProducts, getLanguageWiseContents, createShopifyDiscountCode, generateRandomCode, generateVideoThumbnail, resizeImages, generateUnsubscriptionLink, updateTotalAndAverageSeoRating, createCustomerInShipify } from "./../utils/common";
+import { findOneRecord, getShopDetailsByShop, getAllShopifyProducts, getLanguageWiseContents, createShopifyDiscountCode, generateRandomCode, generateVideoThumbnail, resizeImages, generateUnsubscriptionLink, updateTotalAndAverageSeoRating, createCustomerInShipify } from "./../utils/common";
 import EmailTemplate from './components/email/EmailTemplate';
 import ReactDOMServer from 'react-dom/server';
 import { ObjectId } from 'mongodb';
@@ -285,8 +285,8 @@ export async function action({ request }) {
 						shop_id: shopRecords._id,
 					});
 					const productId = `"gid://shopify/Product/${formData.get('product_id')}"`;
-					var productsDetails = await getShopifyProducts(shopRecords.myshopify_domain, productId);
-					if (!productsDetails[0]) {
+					var productsDetails = await getAllShopifyProducts(shopRecords._id, [formData.get('product_id')]);
+					if (productsDetails.length  == 0) {
 						return json({ success: false });
 					}
 					const is_review_request = formData.get('requestId') ? true : false;
@@ -404,8 +404,8 @@ export async function action({ request }) {
 							rating: reviewStarRating,
 							product_id: parseInt(formData.get('product_id')),
 							variant_title: formData.get('variant_title'),
-							product_title: productNodes.title,
-							product_url: productNodes.handle,
+							product_title: productNodes.product_title,
+							product_url: productNodes.product_handle,
 							status: reviewStatus,
 							is_review_request: is_review_request,
 							verify_badge: orderExists
@@ -596,8 +596,8 @@ export async function action({ request }) {
 							description: formData.get('description'),
 							rating: reviewStarRating,
 							product_id: formData.get('product_id'),
-							product_title: productNodes.title,
-							product_url: productNodes.handle,
+							product_title: productNodes.product_title,
+							product_url: productNodes.product_handle,
 							shopifyStoreUrl: shopifyStoreUrl,
 							logo: logo,
 							shop_domain: shopRecords.shop,
@@ -609,7 +609,7 @@ export async function action({ request }) {
 						}
 						emailContents.unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
 
-						const subject = `New review (${formData.get('rating')}★) of ${productNodes.title} ${display_name}`;
+						const subject = `New review (${formData.get('rating')}★) of ${productNodes.product_title} ${display_name}`;
 						const emailHtml = ReactDOMServer.renderToStaticMarkup(
 							<EmailTemplate emailContents={emailContents} />
 						);

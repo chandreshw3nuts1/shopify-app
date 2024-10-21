@@ -11,7 +11,7 @@ import reviewRequestTimingSettings from './models/reviewRequestTimingSettings';
 import reviewRequestTracks from './models/reviewRequestTracks';
 import reviewDiscountSettings from './models/reviewDiscountSettings';
 
-import { getShopDetailsByShop, getShopifyProducts, getLanguageWiseContents } from './../utils/common';
+import { getShopDetailsByShop, getAllShopifyProducts, getLanguageWiseContents } from './../utils/common';
 import { sendEmail } from "./../utils/email.server";
 import ReactDOMServer from 'react-dom/server';
 import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTemplate';
@@ -43,8 +43,8 @@ export async function action({ params, request }) {
                     const generalAppearancesObj = await generalAppearances.findOne({ shop_id: shopRecords._id });
                     const logo = getUploadDocument(generalAppearancesObj.logo, shopRecords.shop_id, 'logo');
 
-                    const productIds = selectedProducts.map((item) => `"gid://shopify/Product/${item}"`);
-                    var mapProductDetails = await getShopifyProducts(shopRecords.myshopify_domain, productIds, 200);
+                    var mapProductDetails = await getAllShopifyProducts(shopRecords._id, selectedProducts);
+                    
                     const customer_locale = generalSettingsModel.defaul_language || 'en';
 
                     const replaceVars = {
@@ -112,7 +112,7 @@ export async function action({ params, request }) {
 
                             const fromName = shopRecords.name;
                             const replyTo = generalSettingsModel.reply_email || shopRecords.email;
-                            const response = await sendEmail({
+                            const response = sendEmail({
                                 to: email,
                                 subject,
                                 html: emailHtmlContent,

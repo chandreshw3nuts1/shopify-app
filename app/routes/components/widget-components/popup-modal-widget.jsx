@@ -72,12 +72,12 @@ const PopupModalWidget = (props) => {
                                     <div className='review_bottomwrap'>
                                         <div className="product-container product-thumb-detail">
                                             <div className="imagepro flxfix">
-                                                {review.productDetails?.images?.edges?.[0]?.node?.transformedSrc &&
-                                                    <img src={review.productDetails.images.edges[0].node.transformedSrc} alt="Product" />
+                                                {review.productDetails?.product_image &&
+                                                    <img src={review.productDetails.product_image} alt="Product" />
                                                 }
                                             </div>
                                             <div className="textpro flxflexi">
-                                                {review.productDetails.title}
+                                                {review.productDetails.product_title}
                                             </div>
                                         </div>
                                     </div>

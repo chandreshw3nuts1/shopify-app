@@ -35,12 +35,12 @@ export async function loader({ request }) {
 
 	return json({ shopRecords: shopRecords, shopSessionRecords });
 }
-const getShopifyProducts = async (storeName, accessToken, searchTitle) => {
+const getShopifyProducts = async (shopId, searchTitle) => {
 	try {
 		const customParams = {
-			storeName: storeName,
-			accessToken: accessToken,
+			shopId: shopId,
 			searchTitle: searchTitle,
+			actionType: "customProducts",
 		};
 		const response = await fetch(`/api/shopify-products`, {
 			method: 'POST',
@@ -86,7 +86,7 @@ const ManualReviewRequestsPage = () => {
 		shopify.modal.show('manual-select-product-modal');
 		try {
 			setLoading(true);
-			const filteredProducts = await getShopifyProducts(shopRecords.myshopify_domain, shopSessionRecords.accessToken);
+			const filteredProducts = await getShopifyProducts(shopRecords._id);
 			setProducts(filteredProducts);
 		} catch (error) {
 			console.log(error);
@@ -104,25 +104,29 @@ const ManualReviewRequestsPage = () => {
 		setSelectedProducts((prevSelectedProducts) => {
 			if (prevSelectedProducts.includes(productId)) {
 				// Remove from selectedProducts array
-				const updatedSelected = prevSelectedProducts.filter((id) => id !== productId);
+				const updatedSelected = prevSelectedProducts.filter((product_id) => product_id !== productId);
 
 				// Update selectedAllProducts to remove the unchecked product
 				setAllSelectedSearchProducts((prevAllSelectedProducts) =>
-					prevAllSelectedProducts.filter((product) => product.id !== productId)
+					prevAllSelectedProducts.filter((product) => product.product_id !== productId)
 				);
 
 				return updatedSelected;
 			} else {
+
+				if (prevSelectedProducts.length >= 5) {
+					return prevSelectedProducts;
+				}
 				// Add to selectedProducts array
 				const updatedSelected = [...prevSelectedProducts, productId];
 
 				// Find the product by its ID and add to selectedAllProducts
-				const selectedProduct = products.find((product) => product.id === productId);
+				const selectedProduct = products.find((product) => product.product_id === productId);
 
 				setAllSelectedSearchProducts((prevAllSelectedProducts) => {
 					// Prevent duplicates in selectedAllProducts
 					const productAlreadySelected = prevAllSelectedProducts.some(
-						(product) => product.id === productId
+						(product) => product.product_id === productId
 					);
 					if (!productAlreadySelected) {
 						return [...prevAllSelectedProducts, selectedProduct];
@@ -140,7 +144,7 @@ const ManualReviewRequestsPage = () => {
 		setKeyword(value);
 		try {
 			setLoading(true);
-			const filteredProducts = await getShopifyProducts(shopRecords.myshopify_domain, shopSessionRecords.accessToken, value.trim());
+			const filteredProducts = await getShopifyProducts(shopRecords._id, value.trim());
 			setProducts(filteredProducts);
 		} catch (error) {
 			console.log(error);
@@ -204,8 +208,8 @@ const ManualReviewRequestsPage = () => {
 	}
 	const deleteSelectedProducts = async (product_id) => {
 		setSelectedProducts([...selectedProducts.filter((product, i) => product !== product_id)]);
-		setAllSelectedProducts(allSelectedProducts.filter(product => product.id !== product_id));
-		setAllSelectedSearchProducts(allSelectedProducts.filter(product => product.id !== product_id));
+		setAllSelectedProducts(allSelectedProducts.filter(product => product.product_id !== product_id));
+		setAllSelectedSearchProducts(allSelectedProducts.filter(product => product.product_id !== product_id));
 	}
 
 	const backToReviewPage = (e) => {
@@ -253,15 +257,14 @@ const ManualReviewRequestsPage = () => {
 												<div className='productslist'>
 													<ul className='proul'>
 														{allSelectedProducts.map(product => (
-															<li key={product.id}>
-																{/* <p>ID: {product.id}</p> */}
+															<li key={product.product_id}>
 																<div className='imagebox flxfix'>
-																	<img width="50" src={product.images[0].transformedSrc} alt="Product Image" />
+																	<img width="50" src={product?.product_image} alt="Product Image" />
 																</div>
 																<div className='flxflexi'>
-																	<p>Title: {product.title}</p>
+																	<p>Title: {product?.product_title}</p>
 																</div>
-																<button className='flxfix' type="button" onClick={(e) => deleteSelectedProducts(product.id)} >
+																<button className='flxfix' type="button" onClick={(e) => deleteSelectedProducts(product.product_id)} >
 																	<i className='twenty-closeicon'></i>
 																</button>
 															</li>
@@ -311,7 +314,7 @@ const ManualReviewRequestsPage = () => {
 					</button>
 					<button onClick={() => shopify.modal.hide('manual-select-product-modal')}>Close</button>
 				</TitleBar>
-				<Box padding="200">
+				<Box padding="200" style={{ height: '400px' }}>
 					<div style={{ position: 'sticky', top: 0, background: 'white', zIndex: 10, padding: '10px 0' }}>
 						<TextField
 							prefix={<Icon source={SearchIcon} tone="base" />}
@@ -329,20 +332,20 @@ const ManualReviewRequestsPage = () => {
 							<Spinner size="small" />
 						</div>
 					) : (
-						<div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+						<div>
 							<ResourceList
 								resourceName={{ singular: 'product', plural: 'products' }}
 								items={products}
 								renderItem={(product) => {
-									const { id } = product;
+									const { product_id } = product;
 
 									// Create a click handler that toggles the checkbox
 									const handleProductClick = () => {
-										handleCheckboxChange(id);
+										handleCheckboxChange(product_id);
 									};
 
 									return (
-										<ResourceItem id={id}>
+										<ResourceItem product_id={product_id}>
 											{/* Make the whole item clickable */}
 											<div
 												onClick={handleProductClick}
@@ -351,15 +354,16 @@ const ManualReviewRequestsPage = () => {
 												<div>
 													{/* Checkbox itself should not trigger onClick to avoid double handling */}
 													<Checkbox
-														value={id}
-														checked={selectedProducts.includes(id)}
-														onChange={() => handleCheckboxChange(id)} // Keep this for direct checkbox clicks
-														id={`product-checkbox-${id}`}
+														value={product_id}
+														disabled={!selectedProducts.includes(product_id) && selectedProducts.length >= 5}
+
+														checked={selectedProducts.includes(product_id)}
+														id={`product-checkbox-${product_id}`}
 														onClick={(e) => e.stopPropagation()} // Prevent the event from bubbling to the parent div
 													/>
 												</div>
-												<Thumbnail size="small" source={product.images[0].transformedSrc} alt={product.title} />
-												<span style={{ marginLeft: '10px' }}>{product.title}</span>
+												<Thumbnail size="small" source={product?.product_image} alt={product?.product_title} />
+												<span style={{ marginLeft: '10px' }}>{product?.product_title}</span>
 											</div>
 										</ResourceItem>
 									);

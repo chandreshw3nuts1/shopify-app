@@ -2,7 +2,7 @@ import { json } from "@remix-run/node";
 import { mongoConnection } from './../utils/mongoConnection';
 import generalSettings from './models/generalSettings';
 import productGroups from './models/productGroups';
-import { getShopDetailsByShop, createMetafields, updateTotalAndAverageSeoRating, getShopifyProducts } from './../utils/common';
+import { getShopDetailsByShop, createMetafields, updateTotalAndAverageSeoRating, getAllShopifyProducts } from './../utils/common';
 import { ObjectId } from 'mongodb';
 
 export async function loader() {
@@ -98,25 +98,9 @@ export async function action({ params, request }) {
                     return json(productGroupsModel);
                 } else if (actionType == 'editProductGroups') {
                     const groupId = requestBody.groupId;
-
                     const productGroupsModel = await productGroups.findOne({ _id: groupId });
                     const uniqueProductIds = productGroupsModel.product_ids;
-                    const productIds = uniqueProductIds.map((item) => `"gid://shopify/Product/${item}"`);
-                    var mapProductDetails = await getShopifyProducts(shopRecords.myshopify_domain, productIds);
-                    let products = [];
-                    //return mapProductDetails;
-                    mapProductDetails.forEach(productEdge => {
-                        products.push({
-                            id: productEdge.id.split('/').pop(),
-                            title: productEdge.title,
-                            images: productEdge.images.edges.map(imageEdge => ({
-                                transformedSrc: imageEdge.node.transformedSrc,
-                            })),
-                        });
-                    });
-
-                    // return products;
-
+                    const products = await getAllShopifyProducts(shopRecords._id, uniqueProductIds);
                     return json({groupName : productGroupsModel.group_name ,products});
                 }
 

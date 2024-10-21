@@ -13,11 +13,15 @@ import emailPhotovideoReminderSettings from './../routes/models/emailPhotovideoR
 import emailDiscountPhotoVideoReviewReminderSettings from './../routes/models/emailDiscountPhotoVideoReviewReminderSettings';
 import emailReviewRequestReminderSettings from './../routes/models/emailReviewRequestReminderSettings';
 import popupModalWidgetCustomizes from './../routes/models/popupModalWidgetCustomizes';
+import shopifyProducts from './../routes/models/shopifyProducts';
+import { GraphQLClient } from "graphql-request";
 
 import settingsJson from './../utils/settings.json';
 
 export async function storeShopDetails(session) {
 	try {
+
+		
 		const url = `https://${session.shop}/admin/api/${process.env.SHOPIFY_API_VERSION}/shop.json`;
 
 		const response = await fetch(url, {
@@ -276,6 +280,41 @@ export async function storeShopDetails(session) {
 				},
 				{ upsert: true }
 			);
+
+			/* Insert all shopify product */
+			const customParams = {
+				storeName: shopRecords.myshopify_domain,
+				accessToken: session.accessToken
+			};
+			const response = await fetch(`${settingsJson.host_url}/api/shopify-products`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(customParams)
+			});
+			const shopifyProductResponse = await response.json();
+
+			if (shopifyProductResponse.length > 0) {
+				for (const product of shopifyProductResponse) {
+					const shopifyImage = product?.images[0]?.transformedSrc;
+					await shopifyProducts.updateOne(
+						{ shop_id: shopRecords._id, product_id : product.id },
+						{
+							$setOnInsert: {
+								shop_id: shopRecords._id,
+								product_id: product.id,
+								product_title: product.title,
+								product_handle: product.handle,
+								product_image: shopifyImage,
+							}
+						},
+						{ upsert: true }
+					);
+				}
+			}
+			/* End insert all shopify product */
+
 
 			
 			/* add install app log */

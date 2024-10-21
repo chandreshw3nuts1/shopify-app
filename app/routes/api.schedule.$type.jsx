@@ -18,7 +18,7 @@ import generalSettings from './models/generalSettings';
 import settingsJson from './../utils/settings.json';
 import { addDaysToDate, formatDate } from './../utils/dateFormat';
 import { getUploadDocument } from './../utils/documentPath';
-import { getShopifyProducts, getLanguageWiseContents, generateUnsubscriptionLink } from "./../utils/common";
+import { getLanguageWiseContents, generateUnsubscriptionLink, getAllShopifyProducts } from "./../utils/common";
 import ReviewRequestEmailTemplate from './components/email/ReviewRequestEmailTemplate';
 import DiscountPhotoVideoReviewEmail from './components/email/DiscountPhotoVideoReviewEmail';
 import productReviews from "./models/productReviews";
@@ -40,6 +40,7 @@ export async function action({ request, params }) {
             try {
                 if (actionType == 'send-review-request-email') {
 
+                    console.log('---------process start--------------', new Date().toISOString());
                     const shopDetailsModel = await shopDetails.find({});
                     const reviewRequestTimingSettingsModel = await reviewRequestTimingSettings.find({
                         default_day_timing: { $nin: ['never'] }
@@ -109,6 +110,9 @@ export async function action({ request, params }) {
                                     }
                                 },
                                 {
+                                    $sort: { createdAt: -1 } // Sort after matching
+                                },
+                                {
                                     $project: {
                                         _id: 1,
                                         first_name: 1,
@@ -125,7 +129,6 @@ export async function action({ request, params }) {
                                     }
                                 }
                             ]);
-
                             if (ordersItems.length > 0) {
                                 for (const singleOrder of ordersItems) {
 
@@ -142,65 +145,73 @@ export async function action({ request, params }) {
 
                                     if (productIdList.length > 0) {
 
-                                        const productIds = productIdList.map((item) => `"gid://shopify/Product/${item}"`);
-                                        var mapProductDetails = await getShopifyProducts(shop.myshopify_domain, productIds, 200);
-                                        const customer_locale = singleOrder.customer_locale;
+                                        var mapProductDetails = await getAllShopifyProducts(shop._id, productIdList);
+                                        if (mapProductDetails.length > 0) {
+                                            const customer_locale = singleOrder.customer_locale;
 
-                                        const replaceVars = {
-                                            "order_number": singleOrder.order_number,
-                                            "name": singleOrder.first_name,
-                                            "last_name": singleOrder.last_name,
+                                            const replaceVars = {
+                                                "order_number": singleOrder.order_number,
+                                                "name": singleOrder.first_name,
+                                                "last_name": singleOrder.last_name,
+                                            }
+                                            const emailContents = await getLanguageWiseContents("review_request", replaceVars, shop._id, customer_locale);
+                                            emailContents.banner = getUploadDocument(emailContents.banner, shop.shop_id, 'banners');
+
+                                            var generalAppearancesObj = await generalAppearances.findOne({ shop_id: shop._id });
+
+                                            emailContents.logo = getUploadDocument(generalAppearancesObj.logo, shop.shop_id, 'logo');
+
+                                            var generalSettingsModel = await generalSettings.findOne({ shop_id: shop._id });
+
+                                            var footerContent = "";
+                                            if (generalSettingsModel.email_footer_enabled) {
+                                                footerContent = generalSettingsModel[customer_locale] ? generalSettingsModel[customer_locale].footerText : "";
+                                            }
+                                            emailContents.footerContent = footerContent;
+                                            emailContents.email_footer_enabled = generalSettingsModel.email_footer_enabled;
+
+                                            var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
+                                                <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} />
+                                            );
+
+                                            await Promise.all(singleOrder.manualRequestProducts.map(async (product, index) => {
+
+                                                const reviewLink = `${settingsJson.host_url}/review-request/${product._id}/review-form`;
+                                                emailHtmlContent = emailHtmlContent.replace(`{{review_link_${product.product_id}}}`, reviewLink);
+                                                const variantTitle = product.variant_title ? product.variant_title : "";
+                                                emailHtmlContent = emailHtmlContent.replace(`{{variant_title_${product.product_id}}}`, variantTitle);
+
+                                            }));
+
+                                            const unsubscribeData = {
+                                                "shop_id": shop.shop_id,
+                                                "email": singleOrder.email,
+                                            }
+                                            const unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
+                                            emailHtmlContent = emailHtmlContent.replace(`{{unsubscriptionLink}}`, unsubscriptionLink);
+
+
+                                            // Send request email
+                                            const subject = emailContents.subject;
+                                            const fromName = shop.name;
+                                            const replyTo = generalSettingsModel.reply_email || shop.email;
+
+                                            const response = sendEmail({
+                                                to: singleOrder.email,
+                                                subject,
+                                                html: emailHtmlContent,
+                                                fromName,
+                                                replyTo
+                                            });
+
+                                            /* Add review request sent track  */
+                                            const reviewRequestTracksModel = new reviewRequestTracks({
+                                                shop_id: shop._id,
+                                            });
+                                            await reviewRequestTracksModel.save();
+                                            /* Add review request sent track end*/
+
                                         }
-                                        const emailContents = await getLanguageWiseContents("review_request", replaceVars, shop._id, customer_locale);
-                                        emailContents.banner = getUploadDocument(emailContents.banner, shop.shop_id, 'banners');
-
-                                        var generalAppearancesObj = await generalAppearances.findOne({ shop_id: shop._id });
-
-                                        emailContents.logo = getUploadDocument(generalAppearancesObj.logo, shop.shop_id, 'logo');
-
-                                        var generalSettingsModel = await generalSettings.findOne({ shop_id: shop._id });
-
-                                        var footerContent = "";
-                                        if (generalSettingsModel.email_footer_enabled) {
-                                            footerContent = generalSettingsModel[customer_locale] ? generalSettingsModel[customer_locale].footerText : "";
-                                        }
-                                        emailContents.footerContent = footerContent;
-                                        emailContents.email_footer_enabled = generalSettingsModel.email_footer_enabled;
-
-                                        var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
-                                            <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} />
-                                        );
-
-                                        await Promise.all(singleOrder.manualRequestProducts.map(async (product, index) => {
-
-                                            const reviewLink = `${settingsJson.host_url}/review-request/${product._id}/review-form`;
-                                            emailHtmlContent = emailHtmlContent.replace(`{{review_link_${product.product_id}}}`, reviewLink);
-                                            const variantTitle = product.variant_title ? product.variant_title : "";
-                                            emailHtmlContent = emailHtmlContent.replace(`{{variant_title_${product.product_id}}}`, variantTitle);
-
-                                        }));
-
-                                        const unsubscribeData = {
-                                            "shop_id": shop.shop_id,
-                                            "email": singleOrder.email,
-                                        }
-                                        const unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
-                                        emailHtmlContent = emailHtmlContent.replace(`{{unsubscriptionLink}}`, unsubscriptionLink);
-
-
-                                        // Send request email
-                                        const subject = emailContents.subject;
-                                        const fromName = shop.name;
-                                        const replyTo = generalSettingsModel.reply_email || shopRecords.email;
-
-                                        const response = await sendEmail({
-                                            to: singleOrder.email,
-                                            subject,
-                                            html: emailHtmlContent,
-                                            fromName,
-                                            replyTo
-                                        });
-
                                         if (singleOrder.manualRequestProducts.length == productIdList.length) {
                                             await manualReviewRequests.updateOne(
                                                 { _id: singleOrder._id },
@@ -218,19 +229,13 @@ export async function action({ request, params }) {
                                             }
                                         );
 
-
-                                        /* Add review request sent track  */
-                                        const reviewRequestTracksModel = new reviewRequestTracks({
-                                            shop_id: shop._id,
-                                        });
-                                        await reviewRequestTracksModel.save();
-                                        /* Add review request sent track end*/
-
                                     }
                                 }
                             }
                         }
                     }
+                    console.log('---------process end--------------', new Date().toISOString());
+
                     return json({ "status": 200, "message": "success" });
 
                 } else if (actionType == 'send-review-request-reminder-email') {
@@ -317,6 +322,9 @@ export async function action({ request, params }) {
                                     }
                                 },
                                 {
+                                    $sort: { createdAt: -1 } // Sort after matching
+                                },
+                                {
                                     $project: {
                                         _id: 1,
                                         first_name: 1,
@@ -337,69 +345,69 @@ export async function action({ request, params }) {
                                 for (const singleOrder of ordersItems) {
 
                                     let productIdList = singleOrder.manualRequestProducts.map(product => product.product_id);
-
                                     if (productIdList.length > 0) {
+                                        var mapProductDetails = await getAllShopifyProducts(shop._id, productIdList);
+                                        
+                                        if (mapProductDetails.length > 0) {
 
-                                        const productIds = productIdList.map((item) => `"gid://shopify/Product/${item}"`);
-                                        var mapProductDetails = await getShopifyProducts(shop.myshopify_domain, productIds, 200);
-                                        const customer_locale = singleOrder.customer_locale;
 
-                                        const replaceVars = {
-                                            "order_number": singleOrder.order_number,
-                                            "name": singleOrder.first_name,
-                                            "last_name": singleOrder.last_name,
+                                            const customer_locale = singleOrder.customer_locale;
+
+                                            const replaceVars = {
+                                                "order_number": singleOrder.order_number,
+                                                "name": singleOrder.first_name,
+                                                "last_name": singleOrder.last_name,
+                                            }
+
+                                            const emailContents = await getLanguageWiseContents("review_request_reminder", replaceVars, shop._id, customer_locale);
+                                            emailContents.banner = getUploadDocument(emailContents.banner, shop.shop_id, 'banners');
+                                            var generalAppearancesObj = await generalAppearances.findOne({ shop_id: shop._id });
+
+                                            emailContents.logo = getUploadDocument(generalAppearancesObj.logo, shop.shop_id, 'logo');
+
+                                            var generalSettingsModel = await generalSettings.findOne({ shop_id: shop._id });
+
+                                            var footerContent = "";
+                                            if (generalSettingsModel.email_footer_enabled) {
+                                                footerContent = generalSettingsModel[customer_locale] ? generalSettingsModel[customer_locale].footerText : "";
+                                            }
+                                            emailContents.footerContent = footerContent;
+                                            emailContents.email_footer_enabled = generalSettingsModel.email_footer_enabled;
+
+                                            var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
+                                                <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} />
+                                            );
+
+                                            await Promise.all(singleOrder.manualRequestProducts.map(async (product, index) => {
+
+                                                const reviewLink = `${settingsJson.host_url}/review-request/${product._id}/review-form`;
+                                                emailHtmlContent = emailHtmlContent.replace(`{{review_link_${product.product_id}}}`, reviewLink);
+                                                const variantTitle = product.variant_title ? product.variant_title : "";
+                                                emailHtmlContent = emailHtmlContent.replace(`{{variant_title_${product.product_id}}}`, variantTitle);
+
+                                            }));
+
+                                            const unsubscribeData = {
+                                                "shop_id": shop.shop_id,
+                                                "email": singleOrder.email,
+                                            }
+                                            const unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
+                                            emailHtmlContent = emailHtmlContent.replace(`{{unsubscriptionLink}}`, unsubscriptionLink);
+
+
+                                            // Send request email
+                                            const subject = emailContents.subject;
+                                            const fromName = shop.name;
+                                            const replyTo = generalSettingsModel.reply_email || shop.email;
+
+                                            const response = sendEmail({
+                                                to: singleOrder.email,
+                                                subject,
+                                                html: emailHtmlContent,
+                                                fromName,
+                                                replyTo
+                                            });
                                         }
-
-                                        const emailContents = await getLanguageWiseContents("review_request_reminder", replaceVars, shop._id, customer_locale);
-                                        emailContents.banner = getUploadDocument(emailContents.banner, shop.shop_id, 'banners');
-                                        var generalAppearancesObj = await generalAppearances.findOne({ shop_id: shop._id });
-
-                                        emailContents.logo = getUploadDocument(generalAppearancesObj.logo, shop.shop_id, 'logo');
-
-                                        var generalSettingsModel = await generalSettings.findOne({ shop_id: shop._id });
-
-                                        var footerContent = "";
-                                        if (generalSettingsModel.email_footer_enabled) {
-                                            footerContent = generalSettingsModel[customer_locale] ? generalSettingsModel[customer_locale].footerText : "";
-                                        }
-                                        emailContents.footerContent = footerContent;
-                                        emailContents.email_footer_enabled = generalSettingsModel.email_footer_enabled;
-
-                                        var emailHtmlContent = ReactDOMServer.renderToStaticMarkup(
-                                            <ReviewRequestEmailTemplate emailContents={emailContents} mapProductDetails={mapProductDetails} generalAppearancesObj={generalAppearancesObj} />
-                                        );
-
-                                        await Promise.all(singleOrder.manualRequestProducts.map(async (product, index) => {
-
-                                            const reviewLink = `${settingsJson.host_url}/review-request/${product._id}/review-form`;
-                                            emailHtmlContent = emailHtmlContent.replace(`{{review_link_${product.product_id}}}`, reviewLink);
-                                            const variantTitle = product.variant_title ? product.variant_title : "";
-                                            emailHtmlContent = emailHtmlContent.replace(`{{variant_title_${product.product_id}}}`, variantTitle);
-
-                                        }));
-
-                                        const unsubscribeData = {
-                                            "shop_id": shop.shop_id,
-                                            "email": singleOrder.email,
-                                        }
-                                        const unsubscriptionLink = generateUnsubscriptionLink(unsubscribeData);
-                                        emailHtmlContent = emailHtmlContent.replace(`{{unsubscriptionLink}}`, unsubscriptionLink);
-
-
-                                        // Send request email
-                                        const subject = emailContents.subject;
-                                        const fromName = shop.name;
-                                        const replyTo = generalSettingsModel.reply_email || shopRecords.email;
-
-                                        const response = await sendEmail({
-                                            to: singleOrder.email,
-                                            subject,
-                                            html: emailHtmlContent,
-                                            fromName,
-                                            replyTo
-                                        });
-
-
                                         await manualRequestProducts.updateMany(
                                             { product_id: { $in: productIdList } },
                                             {
@@ -446,6 +454,11 @@ export async function action({ request, params }) {
                                     }
                                 },
                                 {
+                                    $match: {
+                                        productReviews: { $ne: null }
+                                    }
+                                },
+                                {
                                     // Match documents where `updatedAt` is less than 7 days old
                                     $match: {
                                         $expr: {
@@ -471,6 +484,7 @@ export async function action({ request, params }) {
                                         discount_value: { $first: "$discount_value" },
                                         expire_on_date: { $first: "$expire_on_date" },
                                         updatedAt: { $first: "$updatedAt" },
+                                        createdAt: { $first: "$createdAt" },
                                         productReviews: {
                                             $first: {
                                                 _id: "$productReviews._id",
@@ -481,6 +495,9 @@ export async function action({ request, params }) {
                                             }
                                         }
                                     }
+                                },
+                                {
+                                    $sort: { createdAt: -1 } // Sort after matching
                                 },
                                 {
                                     $project: {
@@ -496,7 +513,7 @@ export async function action({ request, params }) {
                                 }
                             ]);
 
-                            //return discountCodeItems;
+                            // return discountCodeItems;
 
                             if (discountCodeItems.length > 0) {
                                 var generalAppearancesObj = await generalAppearances.findOne({ shop_id: shop._id });
@@ -515,6 +532,7 @@ export async function action({ request, params }) {
                                         "name": singleDiscountItem.productReviews.first_name,
                                         "last_name": singleDiscountItem.productReviews.last_name,
                                     }
+                                    // return replaceVars;
 
                                     const emailContentsDiscount = await getLanguageWiseContents("discount_photo_video_review_reminder", replaceVars, shop._id, customer_locale);
                                     emailContentsDiscount.banner = getUploadDocument(emailContentsDiscount.banner, shop.shop_id, 'banners');
@@ -540,16 +558,15 @@ export async function action({ request, params }) {
                                     );
 
                                     const fromName = shop.name;
-                                    const replyTo = generalSettingsModel.reply_email || shopRecords.email;
+                                    const replyTo = generalSettingsModel.reply_email || shop.email;
 
-                                    const emailResponse = await sendEmail({
+                                    const emailResponse = sendEmail({
                                         to: singleDiscountItem.email,
                                         subject: emailContentsDiscount.subject,
                                         html: discountEmailHtmlContent,
                                         fromName,
                                         replyTo
                                     });
-
                                     /* Update reminder sent status*/
                                     await discountCodes.updateOne(
                                         { _id: singleDiscountItem._id },
@@ -621,6 +638,9 @@ export async function action({ request, params }) {
                                     }
                                 },
                                 {
+                                    $sort: { createdAt: -1 } // Sort after matching
+                                },
+                                {
                                     $project: {
                                         _id: 1,
                                         rating: 1,
@@ -668,11 +688,11 @@ export async function action({ request, params }) {
                                 for (const singleReview of reviewItems) {
                                     const customer_locale = singleReview.customer_locale;
                                     const productIdList = [singleReview.product_id];
-                                    const productIds = productIdList.map((item) => `"gid://shopify/Product/${item}"`);
-                                    var mapProductDetails = await getShopifyProducts(shop.myshopify_domain, productIds, 200);
+                                    var mapProductDetails = await getAllShopifyProducts(shop._id, productIdList);
+
                                     if (mapProductDetails.length > 0) {
                                         const replaceVars = {
-                                            "product": mapProductDetails[0]['title'],
+                                            "product": mapProductDetails[0]['product_title'],
                                             "name": singleReview.first_name,
                                             "last_name": singleReview.last_name,
                                         }
@@ -706,9 +726,9 @@ export async function action({ request, params }) {
                                         // Send request email
                                         const subject = emailContents.subject;
                                         const fromName = shop.name;
-                                        const replyTo = generalSettingsModel.reply_email || shopRecords.email;
+                                        const replyTo = generalSettingsModel.reply_email || shop.email;
 
-                                        const response = await sendEmail({
+                                        const response = sendEmail({
                                             to: singleReview.email,
                                             subject,
                                             html: emailHtmlContent,
@@ -716,18 +736,19 @@ export async function action({ request, params }) {
                                             replyTo
                                         });
 
-                                        /*Update reminder sent status */
-
-                                        await productReviews.updateOne(
-                                            { _id: singleReview._id },
-                                            {
-                                                $set: {
-                                                    is_reminder_sent: true,
-                                                }
-                                            },
-                                            { upsert: true }
-                                        );
                                     }
+
+                                    /*Update reminder sent status */
+
+                                    await productReviews.updateOne(
+                                        { _id: singleReview._id },
+                                        {
+                                            $set: {
+                                                is_reminder_sent: true,
+                                            }
+                                        },
+                                        { upsert: true }
+                                    );
                                 }
                             }
                         }

@@ -1,23 +1,43 @@
 import { json } from '@remix-run/node';
+import { getAllShopifyProducts } from "./../utils/common";
 
 export const action = async ({ request }) => {
 	const requestBody = await request.json();
 
-	const storeName = requestBody.storeName;
-	const accessToken = requestBody.accessToken;
-	const searchTitle = requestBody.searchTitle;
+	if (requestBody.actionType == "customProducts") {
+		if (!requestBody?.shopId) {
+			return json({ error: 'Missing shop details' }, { status: 400 });
+		}
 
-	if (!storeName || !accessToken) {
-		return json({ error: 'Missing storeName or accessToken' }, { status: 400 });
+		try {
+			var products = await getAllShopifyProducts(requestBody.shopId, [] , requestBody.searchTitle);
+
+			return json(products);
+		} catch (error) {
+			console.error(error);
+			return json({ error: 'Failed to fetch products' }, { status: 500 });
+		}
+
+
+	} else {
+
+		const storeName = requestBody.storeName;
+		const accessToken = requestBody.accessToken;
+		const searchTitle = requestBody.searchTitle;
+
+		if (!storeName || !accessToken) {
+			return json({ error: 'Missing storeName or accessToken' }, { status: 400 });
+		}
+
+		try {
+			const products = await fetchAllProducts(storeName, accessToken, searchTitle);
+			return json(products);
+		} catch (error) {
+			console.error(error);
+			return json({ error: 'Failed to fetch products' }, { status: 500 });
+		}
 	}
 
-	try {
-		const products = await fetchAllProducts(storeName, accessToken, searchTitle);
-		return json(products);
-	} catch (error) {
-		console.error(error);
-		return json({ error: 'Failed to fetch products' }, { status: 500 });
-	}
 };
 
 async function fetchAllProducts(storeName, accessToken, searchTitle) {
@@ -35,12 +55,14 @@ async function fetchAllProducts(storeName, accessToken, searchTitle) {
 			  node {
 				id
 				title
+				handle
+				status
 				images(first: 10) {
 				  edges {
 					node {
 					  id
 					  originalSrc
-					  transformedSrc(maxWidth: 60, maxHeight: 60)
+					  transformedSrc(maxWidth: 200, maxHeight: 200)
 					}
 				  }
 				}
@@ -78,6 +100,7 @@ async function fetchAllProducts(storeName, accessToken, searchTitle) {
 			products.push({
 				id: productEdge.node.id.split('/').pop(),
 				title: productEdge.node.title,
+				handle: productEdge.node.handle,
 				images: productEdge.node.images.edges.map(imageEdge => ({
 					id: imageEdge.node.id,
 					originalSrc: imageEdge.node.originalSrc,

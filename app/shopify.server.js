@@ -1,5 +1,5 @@
 import "@shopify/shopify-app-remix/adapters/vercel";
-import {storeShopDetails} from './utils/shopifyInstallApp';
+import { storeShopDetails } from './utils/shopifyInstallApp';
 
 import {
   ApiVersion,
@@ -49,10 +49,23 @@ const shopify = shopifyApp({
     LOCATIONS_UPDATE: {
       deliveryMethod: DeliveryMethod.Http,
       callbackUrl: "/api/webhooks",
+    },
+    PRODUCTS_CREATE: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/api/webhooks",
+    },
+    PRODUCTS_DELETE: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/api/webhooks",
+    },
+    PRODUCTS_UPDATE: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/api/webhooks",
     }
-    
-    
-    
+
+
+
+
   },
   hooks: {
 
@@ -60,7 +73,7 @@ const shopify = shopifyApp({
 
       /* Handle shop api and store in db */
       await storeShopDetails(session);
-	    /* End Handle shop api and store in db */
+      /* End Handle shop api and store in db */
 
       shopify.registerWebhooks({ session });
 

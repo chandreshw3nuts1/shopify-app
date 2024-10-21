@@ -87,7 +87,7 @@ export async function action({ params, request }) {
                     const fromName = shopRecords.name;
                     const replyTo = generalSettingsModel.reply_email || shopRecords.email;
 
-                    const response = await sendEmail({
+                    const response = sendEmail({
                         to: email,
                         subject,
                         html: emailHtmlContent,

@@ -12,6 +12,7 @@ import emailDiscountPhotoVideoReviewReminderSettings from './../routes/models/em
 import emailPhotovideoReminderSettings from './../routes/models/emailPhotovideoReminderSettings';
 import emailResendReviewRequestSettings from './../routes/models/emailResendReviewRequestSettings';
 import productReviews from './../routes/models/productReviews';
+import shopifyProducts from './../routes/models/shopifyProducts';
 
 import settingJson from './../utils/settings.json';
 import { getCurrentDate, getCustomFormattedEndDateTime } from './dateFormat';
@@ -1072,4 +1073,26 @@ export async function createCustomerInShipify(shop, data) {
 		console.error('GraphQL error:', error);
 	}
 
+}
+
+export async function getAllShopifyProducts(shopId, productIds = [], keywords = "", limit = 0) {
+	try {
+		const query = {shop_id : shopId};
+
+		if (productIds.length > 0) {
+			query.product_id = { $in: productIds };
+		}
+		if (keywords) {
+			query.product_title = { $regex: keywords, $options: 'i' }; // 'i' makes the search case-insensitive
+		}
+		// Fetch products based on `shop_id` or `product_id`
+		const allShopifyProducts = await shopifyProducts.find(query).limit(limit);
+
+
+		return allShopifyProducts;
+
+	} catch (error) {
+		console.error('Error fetching product record :', error);
+		return [];
+	}
 }
