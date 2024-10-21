@@ -5,7 +5,8 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+import '@shopify/polaris-tokens/css/styles.css';
 import settings from './utils/settings.json'; 
 
 import './i18n';
@@ -32,7 +33,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body style={{ backgroundColor: 'var(--p-color-bg-fill-hover)'}}>
         <div className="main_layout">
           <Outlet />
           <ScrollRestoration />
