@@ -13,7 +13,7 @@ import {
 	EmailIcon,
 	ChatIcon,
 	NoteIcon,
-	PlayCircleIcon
+	PlayCircleIcon,
 } from '@shopify/polaris-icons';
 
 import Breadcrumb from './components/Breadcrumb';
@@ -38,6 +38,11 @@ import {
 	LegacyCard,
 	LegacyStack,
 	Collapsible,
+	Card,
+	Box,
+	Grid, 
+	BlockStack,
+	Bleed,
 } from '@shopify/polaris';
 const collectionName = 'settings';
 
@@ -126,7 +131,7 @@ const ReviewPage = () => {
 				<ReviewPageSidebar />
 				<div className='accordian_rowmain'>
 					<Layout.Section>
-						<LegacyCard sectioned>
+						<Card gap="200">
 							<div
 								onClick={handleToggleNewReview}
 								aria-expanded={openNewReview}
@@ -153,7 +158,7 @@ const ReviewPage = () => {
 									</div>
 								</div>
 							</div>
-							<LegacyStack vertical>
+							<Box>
 								<Collapsible
 									open={openNewReview}
 									id="basic-collapsible"
@@ -165,8 +170,8 @@ const ReviewPage = () => {
 								>
 									<ManageNewReview settings={settings} shopRecords={shopRecords} />
 								</Collapsible>
-							</LegacyStack>
-						</LegacyCard>
+							</Box>
+						</Card>
 					</Layout.Section>
 				</div>
 

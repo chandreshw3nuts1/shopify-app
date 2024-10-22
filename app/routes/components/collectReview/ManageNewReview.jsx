@@ -2,7 +2,11 @@ import { useState, useCallback } from 'react';
 import {
 	Card,
 	Select,
-	TextField
+	TextField,
+	Box,
+	Grid, 
+	BlockStack,
+	Checkbox,
 } from '@shopify/polaris';
 import settingsJson from './../../../utils/settings.json';
 
@@ -185,9 +189,101 @@ export default function ManageNewReview({ settings, shopRecords }) {
 
 	return (
 		<div className='row'>
+			<Grid>
+				<Grid.Cell columnSpan={{xs: 6, sm: 3, md: 6, lg: 4, xl: 4}}>
+					<Card>
+						<BlockStack gap="400">
+							<div className="bottomcheckrow">
+								<Checkbox
+									label="Auto-publish new reviews"
+									checked={isChecked}
+									onChange={handleCheckboxChange}
+									id="flexSwitchCheckChecked"
+									name="autoPublishReview"
+								/>
+								{/* <div className="form-check form-switch">
+									<input
+										checked={
+											isChecked
+										}
+										onChange={
+											handleCheckboxChange
+										}
+										className="form-check-input"
+										type="checkbox"
+										role="switch"
+										name="autoPublishReview"
+										id="flexSwitchCheckChecked"
+									/>
+									<label
+										className="form-check-label"
+										htmlFor="flexSwitchCheckChecked"
+									>
+										Auto-publish new reviews
+									</label>
+								</div> */}
+							</div>
+							{isChecked &&
+								<div className="formcontent" >
+									<Select
+										name="reviewPublishMode"
+										id="reviewPublishMode"
+										helpText="Select which reviews you want to auto-publish. Any changes will only affect new reviews."
+										options={options}
+										onChange={
+											handleSelectChange
+										}
+										value={selected}
+									/>
+								</div>
+							}
+						</BlockStack>
+					</Card>
+				</Grid.Cell>
+				<Grid.Cell columnSpan={{xs: 6, sm: 3, md: 6, lg: 4, xl: 4}}>
+					<Card>
+						<div className="formcontent" >
+							<TextField
+								value={reviewNotificationEmail}
+								onChange={handleReviewNotificationEmailChange}
+								onBlur={handleReviewNotificationEmailBlur}
+								name="reviewNotificationEmail"
+								autoComplete="off"
+								helpText={`Leave empty to have notifications sent to: ${shopRecords.email}`}
+								placeholder='Notification Email'
+							/>
+							{!isValidReviewNotificationEmail && <small className="text-danger">Email address is invalid.</small>}
+
+						</div>
+						<div className="bottomcheckrow">
+							<div className="form-check form-switch">
+								<input
+									checked={
+										isCheckedReviewNotification
+									}
+									onChange={
+										handleCheckboxChange
+									}
+									className="form-check-input"
+									type="checkbox"
+									role="switch"
+									name="reviewNotification"
+									id="revNotiSwitchCheckChecked"
+								/>
+								<label
+									className="form-check-label"
+									htmlFor="revNotiSwitchCheckChecked"
+								>
+									Review notifications
+								</label>
+							</div>
+						</div>
+					</Card>
+				</Grid.Cell>
+			</Grid>
 			<div className='col-md-6'>
 				<div className='collectreviewformbox'>
-					<Card>
+					{/* <Card>
 						{isChecked &&
 							<div className="formcontent" >
 								<Select
@@ -226,14 +322,14 @@ export default function ManageNewReview({ settings, shopRecords }) {
 								</label>
 							</div>
 						</div>
-					</Card>
+					</Card> */}
 				</div>
 			</div>
 
 
 			<div className='col-md-6'>
 				<div className='collectreviewformbox'>
-					<Card>
+					{/* <Card>
 
 						<div className="formcontent" >
 							<TextField
@@ -274,7 +370,7 @@ export default function ManageNewReview({ settings, shopRecords }) {
 								</label>
 							</div>
 						</div>
-					</Card>
+					</Card> */}
 				</div>
 			</div>
 

@@ -133,15 +133,15 @@ a.simplelink:hover { text-decoration: underline;}
 .review_topline ul li a i { display: block; width: 24px; height: 24px; font-size: 24px; margin: 0 10px 0 0;}
 .review_topline ul li a.active { background: var(--LightblueColor3); color: var(--blueColor);}
 
-.accordian_rowmain .Polaris-Layout__Section { margin: 0; padding: 0; min-height: 1px; height: auto; border: none;}
-.accordian_rowmain .Polaris-Layout__Section .Polaris-LegacyCard { margin: 0; padding: 0; min-height: 1px; height: auto; box-shadow: none; border: none; background: none; overflow: visible;}
+/* .accordian_rowmain .Polaris-Layout__Section { margin: 0; padding: 0; min-height: 1px; height: auto; border: none;}
+.accordian_rowmain .Polaris-Layout__Section .Polaris-LegacyCard { margin: 0; padding: 0; min-height: 1px; height: auto; box-shadow: none; border: none; background: none; overflow: visible;} */
 /* .accordian_rowmain .Polaris-Layout__Section .Polaris-LegacyCard::before { opacity: 0; visibility: hidden;} */
-.accordian_rowmain .Polaris-Layout__Section .Polaris-LegacyCard__Section { margin: 0; min-height: 1px; height: auto; box-shadow: none; background: var(--p-color-bg-surface); border-radius: var(--p-border-radius-300); box-shadow: var(--p-shadow-100);}
+/* .accordian_rowmain .Polaris-Layout__Section .Polaris-LegacyCard__Section { margin: 0; min-height: 1px; height: auto; box-shadow: none; background: var(--p-color-bg-surface); border-radius: var(--p-border-radius-300); box-shadow: var(--p-shadow-100);}
 .accordian_rowmain .Polaris-Layout__Section .Polaris-LegacyStack--vertical { margin: 0; padding: 0; min-height: 1px; height: auto; display: block; box-shadow: none; border: none; background: none;}
 .accordian_rowmain .Polaris-Layout__Section .Polaris-LegacyStack--vertical > .Polaris-LegacyStack__Item { margin: 0; padding: 0; min-height: 1px; height: auto; box-shadow: none; border: none; background: none;}
 .accordian_rowmain .Polaris-Layout__Section .Polaris-ShadowBevel { margin: 24px 0 0 0; box-shadow: none; border-radius: 0;}
 .accordian_rowmain .Polaris-Layout__Section .Polaris-ShadowBevel::before { opacity: 0; visibility: hidden;}
-.accordian_rowmain .Polaris-Layout__Section .Polaris-ShadowBevel .Polaris-Box { background: var(--whiteBg); border-radius: 10px; overflow: visible; border: solid 1px var(--borderColor); padding: 24px;}
+.accordian_rowmain .Polaris-Layout__Section .Polaris-ShadowBevel .Polaris-Box { background: var(--whiteBg); border-radius: 10px; overflow: visible; border: solid 1px var(--borderColor); padding: 24px;} */
 
 /* body .Polaris-TextField__Input { width: 100%; border: solid 1px var(--borderColor); height: 44px; padding: 0 16px; border-radius: 8px; resize: none; outline: none; box-shadow: none; color: var(--darkColor); font-size: 14px;} */
 /* body .Polaris-TextField--focus .Polaris-TextField__Input { border-color: var(--blueColor);} */
