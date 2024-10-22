@@ -6,14 +6,15 @@ import generalSettings from './models/generalSettings';
 import shopifySessions from './models/shopifySessions';
 import React from 'react';
 import settingsJson from './../utils/settings.json';
+import { GraphQLClient } from "graphql-request";
 
 
 export const meta = () => {
-	return [
-		{ title: `${settingsJson.app_name} Unsubscribed Successfully` },
-	];
+    return [
+        { title: `${settingsJson.app_name} Unsubscribed Successfully` },
+    ];
 };
-export const loader = async ({ params, request }) => {
+export const loader = async ({ request }) => {
     try {
         const url = new URL(request.url);
         const encryptedData = url.searchParams.get("data");
@@ -36,50 +37,80 @@ export const loader = async ({ params, request }) => {
             const generalSettingsModel = await generalSettings.findOne({ shop_id: shopRecords._id }).select('unsubscribing_type');
             if (generalSettingsModel.unsubscribing_type == 'unsubscribe_marking_email') {
                 let customerId = 0;
-                const shopSessionRecords = await shopifySessions.findOne({ shop: shopRecords.shop });
+                const shopSessionRecords = await shopifySessions.findOne({ shop: shopRecords.myshopify_domain });
 
-                const customerApiUrl = `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/customers/search.json?query=email:${email}`;
-                const response = await fetch(customerApiUrl, {
-                    method: 'GET',
+                const client = new GraphQLClient(`https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
                     headers: {
                         'X-Shopify-Access-Token': shopSessionRecords.accessToken,
-                    }
+                    },
                 });
+                const graphqlQuery = `
 
-                const customerResponse = await response.json();
+                {
+                    customers(first: 1, query: "email:${email}") {
+                        edges {
+                        node {
+                            id
+                            email
+                            firstName
+                            lastName
+                        
+                        }
+                        }
+                    }
+                    }
+              `;
 
-                if (customerResponse.customers && customerResponse.customers.length > 0) {
-                    customerId = customerResponse.customers[0].id;
+                const response = await client.request(graphqlQuery);
+                if (response?.customers && response?.customers?.edges.length > 0) {
+                    customerId = response.customers.edges[0].node.id;
                 }
+
                 if (customerId) {
-                    const customerApiUrl = `https://${shopRecords.myshopify_domain}/admin/api/${process.env.SHOPIFY_API_VERSION}/customers/${customerId}.json`;
-                    const response = await fetch(customerApiUrl, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Shopify-Access-Token': shopSessionRecords.accessToken,
+                    const customerEmailMarketingConsentMutation = `
+                    mutation customerEmailMarketingConsentUpdate($input: CustomerEmailMarketingConsentUpdateInput!) {
+                      customerEmailMarketingConsentUpdate(input: $input) {
+                        userErrors {
+                          field
+                          message
+                        }
+                        customer {
+                          id
+                          emailMarketingConsent {
+                            consentUpdatedAt
+                            marketingState
+                          }
+                        }
+                      }
+                    }
+                  `;
+
+                    const variables = {
+                        input: {
+                            customerId: `${customerId}`, // Use the correct format for the Shopify ID
+                            emailMarketingConsent: {
+                                marketingState: 'UNSUBSCRIBED', // Set the desired marketing state
+                            },
                         },
-                        body: JSON.stringify({
-                            customer: {
-                                email_marketing_consent: {
-                                    state: 'unsubscribed', // Change to 'unsubscribed'
-                                    opt_in_level: 'single_opt_in'
-                                }
-                            }
-                        })
-                    });
+                    };
+                    const response = await client.request(customerEmailMarketingConsentMutation, variables);
                 }
             }
 
         }
         return { shopRecords };
     } catch (error) {
+        console.log(error);
+
     }
     return {};
 };
 
 const UnsubscribePage = () => {
     const { shopRecords } = useLoaderData();
+    if (!shopRecords) {
+        return 'Page Not Found';
+    }
     return (
         <>
             <style>

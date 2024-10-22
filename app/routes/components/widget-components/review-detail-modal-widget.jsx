@@ -16,7 +16,7 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
     const { translations, productReviewWidgetCustomizesModel, languageWiseProductWidgetSettings } = otherProps;
     return (
         <>
-            <div className={`modal fade reviewdetailpopup ${reviewDetails.reviewDocuments.length > 0 ? '' : 'imagemissing'}`} data-bs-backdrop="static" id="staticBackdrop" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div className={`modal fade reviewdetailpopup ${reviewDetails.reviewDocuments.length > 0 ? '' : 'imagemissing'}`} id="staticBackdrop" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">
@@ -30,22 +30,20 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                     <div className="imagesliderwrap">
 
                                         <div id="carouselExampleCaptions" className="carousel slide">
+                                            {reviewDetails.reviewDocuments.length > 1 &&
+                                                <div className="carousel-indicators">
+                                                    {reviewDetails.reviewDocuments.map((media, i) => (
+                                                        <button key={i} type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to={i} className={i == 0 ? "active" : ""} aria-current={i == 0 ? "true" : ""} aria-label="Slide 1">
+                                                            {media.type === 'image' ? (
+                                                                <Image src={getUploadDocument(media.url, shopRecords.shop_id)} alt="" />
+                                                            ) : (
+                                                                <Image src={getUploadDocument(media.thumbnail_name, shopRecords.shop_id)} alt="" />
+                                                            )}
+                                                        </button>
+                                                    ))}
 
-                                            <div className="carousel-indicators">
-                                                {reviewDetails.reviewDocuments.map((media, i) => (
-                                                    <button key={i} type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to={i} className={i == 0 ? "active" : ""} aria-current={i == 0 ? "true" : ""} aria-label="Slide 1">
-                                                        {media.type === 'image' ? (
-                                                            <Image src={getUploadDocument(media.url, shopRecords.shop_id)} alt="" />
-                                                        ) : (
-                                                            // <Image src={videoIcon} alt="" />
-                                                            <video>
-                                                                <source src={getUploadDocument(media.url, shopRecords.shop_id)} type="video/mp4" />
-                                                            </video>
-                                                        )}
-                                                    </button>
-                                                ))}
-
-                                            </div>
+                                                </div>
+                                            }
                                             <div className="carousel-inner">
                                                 {reviewDetails.reviewDocuments.map((media, i) => (
                                                     <div key={i} className={`carousel-item ${i == 0 ? "active" : ""}`}>
@@ -111,7 +109,7 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
 
                                             </div>
 
-                                            {( (shopRecords.is_enable_future_purchase_discount && reviewDetails.reviewDocuments.length > 0) || (shopRecords.is_enable_import_from_external_source && reviewDetails.is_imported) || (shopRecords.is_enable_review_written_by_site_visitor  && !reviewDetails.is_imported) || (shopRecords.is_enable_marked_verified_by_store_owner &&  reviewDetails.verify_badge) ) &&
+                                            {((shopRecords.is_enable_future_purchase_discount && reviewDetails.reviewDocuments.length > 0) || (shopRecords.is_enable_import_from_external_source && reviewDetails.is_imported) || (shopRecords.is_enable_review_written_by_site_visitor && !reviewDetails.is_imported) || (shopRecords.is_enable_marked_verified_by_store_owner && reviewDetails.verify_badge)) &&
                                                 <div className="infoicon open-transparency-popup-modal">
                                                     <InfoIcon />
                                                 </div>
@@ -179,15 +177,15 @@ const ReviewDetailModalWidget = ({ shopRecords, reviewDetails, productsDetails, 
                                             <div className="productbox">
                                                 <div className="imgbox flxfix">
 
-                                                    {productsDetails[0]?.images?.edges?.[0]?.node?.transformedSrc &&
-                                                        <Image src={productsDetails[0].images.edges[0].node.transformedSrc} alt={productsDetails[0].title} />
+                                                    {productsDetails[0]?.product_image &&
+                                                        <Image src={productsDetails[0].product_image} alt={productsDetails[0].product_title} />
                                                     }
-                                                    
+
                                                 </div>
                                                 <div className="detailbox flxflexi">
-                                                    <h6>{productsDetails[0].title}</h6>
+                                                    <h6>{productsDetails[0].product_title}</h6>
                                                     <div className="prolink">
-                                                        <a href={`https://${shopRecords.shop}/products/${productsDetails[0].handle}`} target="_blank" rel="noopener noreferrer">
+                                                        <a href={`https://${shopRecords.shop}/products/${productsDetails[0].product_handle}`} target="_blank" rel="noopener noreferrer">
                                                             {languageWiseProductWidgetSettings.productPageLinkTitle ? languageWiseProductWidgetSettings.productPageLinkTitle : translations.productReviewConstomize.productPageLinkTitle} <ArrowRightIcon />
                                                         </a>
                                                     </div>

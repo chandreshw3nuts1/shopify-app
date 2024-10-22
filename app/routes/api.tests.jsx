@@ -4,6 +4,55 @@ import settings from './models/settings';
 
 export async function loader() {
 
+
+	const client = new GraphQLClient(`https://chandstest.myshopify.com/admin/api/${process.env.SHOPIFY_API_VERSION}/graphql.json`, {
+		headers: {
+			'X-Shopify-Access-Token': '',
+		},
+	});
+	const graphqlQuery = `
+{
+  shop {
+    name
+    id
+    locations(first: 10) {
+      edges {
+        node {
+          id
+          isPrimary
+          name
+        }
+      }
+    }
+    myshopifyDomain
+	ianaTimezone
+    primaryDomain {
+      host
+      localization {
+        alternateLocales
+        country
+        defaultLocale
+      }
+    }
+    timezoneOffset
+    email
+    currencyCode
+    domains {
+      localization {
+        country
+      }
+     
+      url
+    }
+  }
+}
+
+  `;
+
+	const response = await client.request(graphqlQuery);
+	return response;
+
+
 	if (0) {
 
 
@@ -27,7 +76,7 @@ export async function loader() {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				'X-Shopify-Access-Token': "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",
+				'X-Shopify-Access-Token': "",
 			},
 			body: JSON.stringify({ query }),
 		});
@@ -44,7 +93,7 @@ export async function loader() {
 		// 	method: 'GET',
 		// 	headers: {
 		// 		'Content-Type': 'application/json',
-		// 		'X-Shopify-Access-Token': "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",
+		// 		'X-Shopify-Access-Token': "",
 		// 	},
 		// 	// body: JSON.stringify({ query }),
 		// });
@@ -78,7 +127,7 @@ export async function loader() {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				'X-Shopify-Access-Token': "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",
+				'X-Shopify-Access-Token': "",
 			},
 			body: JSON.stringify({ query }),
 		});
@@ -90,13 +139,13 @@ export async function loader() {
 
 	if (1) {
 
-		const REST_ENDPOINT = `https://chandstest.myshopify.com/admin/api/2024-04/webhooks.json`;
+		const REST_ENDPOINT = `https://testchandsstore.myshopify.com/admin/api/2024-04/webhooks.json`;
 
 		const response = await fetch(REST_ENDPOINT, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				'X-Shopify-Access-Token': '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'
+				'X-Shopify-Access-Token': ''
 			},
 		});
 
@@ -114,7 +163,7 @@ export async function loader() {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				'X-Shopify-Access-Token': accessToken
+				'X-Shopify-Access-Token': 
 			},
 			body: JSON.stringify({
 				section: {
@@ -170,7 +219,7 @@ export async function action({ request }) {
 
 			const client = new GraphQLClient(`https://chandstest.myshopify.com/admin/api/2023-01/graphql.json`, {
 				headers: {
-					'X-Shopify-Access-Token': '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',
+					'X-Shopify-Access-Token': '',
 				},
 			});
 			const query1 = `

@@ -1,7 +1,7 @@
 import { json } from "@remix-run/node";
 import { sendEmail } from "./../utils/email.server";
 import { GraphQLClient } from "graphql-request";
-import { findOneRecord, getShopifyProducts, getLanguageWiseContents, generateUnsubscriptionLink, checkEmailToSendUser, getShopDetailsByShop, updateTotalAndAverageSeoRating } from "./../utils/common";
+import { findOneRecord, getAllShopifyProducts, getLanguageWiseContents, generateUnsubscriptionLink, checkEmailToSendUser, getShopDetailsByShop, updateTotalAndAverageSeoRating } from "./../utils/common";
 import ReplyEmailTemplate from './components/email/ReplyEmailTemplate';
 import ReactDOMServer from 'react-dom/server';
 import { ObjectId } from 'mongodb';
@@ -107,7 +107,7 @@ export async function action({ request }) {
 							);
 							const fromName = shopRecords.name;
 							const replyTo = generalSettingsModel.reply_email || shopRecords.email;
-							const response = await sendEmail({
+							const response = sendEmail({
 								to: productReviewsItem.email,
 								subject,
 								html: emailHtml,
@@ -131,6 +131,7 @@ export async function action({ request }) {
 						$or: [
 							{ first_name: { $regex: search_keyword, $options: 'i' } },
 							{ last_name: { $regex: search_keyword, $options: 'i' } },
+							{ email: { $regex: search_keyword, $options: 'i' } },
 							{ product_title: { $regex: search_keyword, $options: 'i' } }
 						]
 					};
@@ -380,9 +381,11 @@ export async function action({ request }) {
 							const logo = getUploadDocument(generalAppearancesObj.logo, shopRecords.shop_id, 'logo');
 							const customer_locale = productReviewsModel.customer_locale;
 
-							const productIds = [`"gid://shopify/Product/${productReviewsModel.product_id}"`];
-							var mapProductDetails = await getShopifyProducts(shopRecords.myshopify_domain, productIds, 200);
-							const productName = mapProductDetails?.[0]?.title;
+							var mapProductDetails = await getAllShopifyProducts(shopRecords._id, [productReviewsModel.product_id]);
+							if (mapProductDetails.length == 0) {
+								return json({ status: 400, message: "No product found!" });
+							}
+							const productName = mapProductDetails?.[0]?.product_title;
 							const replaceVars = {
 								"product": productName,
 								"name": productReviewsModel.first_name,
@@ -430,7 +433,7 @@ export async function action({ request }) {
 							const fromName = shopRecords.name;
 							const replyTo = generalSettingsModel.reply_email || shopRecords.email;
 
-							const response = await sendEmail({
+							const response = sendEmail({
 								to: email,
 								subject,
 								html: emailHtmlContent,
@@ -530,6 +533,7 @@ export async function action({ request }) {
 						$or: [
 							{ first_name: { $regex: search_keyword, $options: 'i' } },
 							{ last_name: { $regex: search_keyword, $options: 'i' } },
+							{ email: { $regex: search_keyword, $options: 'i' } },
 							{ product_title: { $regex: search_keyword, $options: 'i' } }
 						]
 					};

@@ -47,8 +47,8 @@ export default function ProductGroupsComponent(props) {
     }
 
     const handleCloseModal = () => {
-		setKeyword('');
-	};
+        setKeyword('');
+    };
     const handleInputChange = useCallback(
         (newValue) => setGroupName(newValue),
         [],
@@ -58,7 +58,7 @@ export default function ProductGroupsComponent(props) {
         shopify.modal.show('select-product-modal');
         try {
             setLoading(true);
-            const filteredProducts = await getShopifyProducts(props.shopRecords.myshopify_domain, props.shopSessionRecords.accessToken);
+            const filteredProducts = await getShopifyProducts(props.shopRecords._id);
             setProducts(filteredProducts);
         } catch (error) {
             console.log(error);
@@ -71,7 +71,7 @@ export default function ProductGroupsComponent(props) {
         setKeyword(value);
         try {
             setLoading(true);
-            const filteredProducts = await getShopifyProducts(props.shopRecords.myshopify_domain, props.shopSessionRecords.accessToken, value.trim());
+            const filteredProducts = await getShopifyProducts(props.shopRecords._id, value.trim());
             setProducts(filteredProducts);
         } catch (error) {
             console.log(error);
@@ -86,11 +86,11 @@ export default function ProductGroupsComponent(props) {
         setSelectedProducts((prevSelectedProducts) => {
             if (prevSelectedProducts.includes(productId)) {
                 // Remove from selectedProducts array
-                const updatedSelected = prevSelectedProducts.filter((id) => id !== productId);
+                const updatedSelected = prevSelectedProducts.filter((product_id) => product_id !== productId);
 
                 // Update selectedAllProducts to remove the unchecked product
                 setAllSelectedSearchProducts((prevAllSelectedProducts) =>
-                    prevAllSelectedProducts.filter((product) => product.id !== productId)
+                    prevAllSelectedProducts.filter((product) => product.product_id !== productId)
                 );
 
                 return updatedSelected;
@@ -99,12 +99,12 @@ export default function ProductGroupsComponent(props) {
                 const updatedSelected = [...prevSelectedProducts, productId];
 
                 // Find the product by its ID and add to selectedAllProducts
-                const selectedProduct = products.find((product) => product.id === productId);
+                const selectedProduct = products.find((product) => product.product_id === productId);
 
                 setAllSelectedSearchProducts((prevAllSelectedProducts) => {
                     // Prevent duplicates in selectedAllProducts
                     const productAlreadySelected = prevAllSelectedProducts.some(
-                        (product) => product.id === productId
+                        (product) => product.product_id === productId
                     );
                     if (!productAlreadySelected) {
                         return [...prevAllSelectedProducts, selectedProduct];
@@ -273,9 +273,7 @@ export default function ProductGroupsComponent(props) {
             const data = await response.json();
             setAllSelectedProducts(data.products);
             setAllSelectedSearchProducts(data.products);
-            setSelectedProducts(data.products.map(product => product.id));
-
-            console.log(selectedProducts);
+            setSelectedProducts(data.products.map(product => product.product_id));
             setGroupName(data.groupName);
         } catch (error) {
             console.log(error);
@@ -285,8 +283,8 @@ export default function ProductGroupsComponent(props) {
 
     const deleteSelectedEditProducts = async (product_id) => {
         setSelectedProducts([...selectedProducts.filter((product, i) => product !== product_id)]);
-        setAllSelectedProducts(allSelectedProducts.filter(product => product.id !== product_id));
-        setAllSelectedSearchProducts(allSelectedProducts.filter(product => product.id !== product_id));
+        setAllSelectedProducts(allSelectedProducts.filter(product => product.product_id !== product_id));
+        setAllSelectedSearchProducts(allSelectedProducts.filter(product => product.product_id !== product_id));
 
     }
 
@@ -368,22 +366,22 @@ export default function ProductGroupsComponent(props) {
                                                             <div className='selectproductwrap'>
                                                                 <label htmlFor="">Product </label>
                                                                 <div className='productslist'>
-                                                                    <ul className='proul'>
-                                                                        {allSelectedProducts.map(product => (
-                                                                            <li key={product.id}>
+                                                                    {allSelectedProducts.map((product, index) => (
+                                                                        <ul className='proul' key={index}>
+                                                                            <li >
                                                                                 <div className='imagebox flxfix'>
-                                                                                    <img width="50" src={product.images[0].transformedSrc} alt="Product Image" />
+                                                                                    <img width="50" src={product.product_image} alt="Product Image" />
                                                                                 </div>
                                                                                 <div className='flxflexi'>
-                                                                                    <p>Title: {product.title}</p>
+                                                                                    <p>Title: {product.product_title}</p>
                                                                                 </div>
-                                                                                <button className='flxfix' type="button" onClick={(e) => deleteSelectedEditProducts(product.id)} >
+                                                                                <button className='flxfix' type="button" onClick={(e) => deleteSelectedEditProducts(product.product_id)} >
                                                                                     <i className='twenty-closeicon'></i>
                                                                                 </button>
                                                                             </li>
-                                                                        ))}
-                                                                    </ul>
 
+                                                                        </ul>
+                                                                    ))}
                                                                 </div>
                                                             </div>
 
@@ -438,22 +436,23 @@ export default function ProductGroupsComponent(props) {
                                 <div className='selectproductwrap'>
                                     <label htmlFor="">Product </label>
                                     <div className='productslist'>
-                                        <ul className='proul'>
-                                            {allSelectedProducts.map(product => (
-                                                <li key={product.id}>
-                                                    {/* <p>ID: {product.id}</p> */}
+                                        {allSelectedProducts.map((product, index) => (
+                                            <ul className='proul' key={index}>
+
+                                                <li >
                                                     <div className='imagebox flxfix'>
-                                                        <img width="50" src={product.images[0].transformedSrc} alt="Product Image" />
+                                                        <img width="50" src={product.product_image} alt="Product Image" />
                                                     </div>
                                                     <div className='flxflexi'>
-                                                        <p>Title: {product.title}</p>
+                                                        <p>Title: {product.product_title}</p>
                                                     </div>
-                                                    <button className='flxfix' type="button" onClick={(e) => deleteSelectedEditProducts(product.id)} >
+                                                    <button className='flxfix' type="button" onClick={(e) => deleteSelectedEditProducts(product.product_id)} >
                                                         <i className='twenty-closeicon'></i>
                                                     </button>
                                                 </li>
-                                            ))}
-                                        </ul>
+                                            </ul>
+
+                                        ))}
 
                                     </div>
                                 </div>
@@ -478,7 +477,7 @@ export default function ProductGroupsComponent(props) {
                     </button>
                     <button onClick={() => shopify.modal.hide('select-product-modal')}>Close</button>
                 </TitleBar>
-                <Box padding="200">
+                <Box padding="200" style={{ height: '400px' }}>
                     <div style={{ position: 'sticky', top: 0, background: 'white', zIndex: 10, padding: '10px 0' }}>
                         <TextField
                             prefix={<Icon source={SearchIcon} tone="base" />}
@@ -496,20 +495,20 @@ export default function ProductGroupsComponent(props) {
                             <Spinner size="small" />
                         </div>
                     ) : (
-                        <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                        <div>
                             <ResourceList
                                 resourceName={{ singular: 'product', plural: 'products' }}
                                 items={products}
                                 renderItem={(product) => {
-                                    const { id } = product;
+                                    const { product_id } = product;
 
                                     // Create a click handler to toggle the checkbox
                                     const handleProductClick = () => {
-                                        handleCheckboxChange(id);
+                                        handleCheckboxChange(product_id);
                                     };
 
                                     return (
-                                        <ResourceItem id={id}>
+                                        <ResourceItem product_id={product_id}>
                                             {/* Wrap the entire product item with a click handler */}
                                             <div
                                                 onClick={handleProductClick}
@@ -518,15 +517,15 @@ export default function ProductGroupsComponent(props) {
                                                 <div>
                                                     {/* Prevent checkbox click from bubbling up to the parent div */}
                                                     <Checkbox
-                                                        value={id}
-                                                        checked={selectedProducts.includes(id)}
-                                                        onChange={() => handleCheckboxChange(id)}
-                                                        id={`product-checkbox-${id}`}
+                                                        value={product_id}
+                                                        checked={selectedProducts.includes(product_id)}
+                                                        // onChange={() => handleCheckboxChange(product_id)}
+                                                        id={`product-checkbox-${product_id}`}
                                                         onClick={(e) => e.stopPropagation()} // Prevent event from bubbling
                                                     />
                                                 </div>
-                                                <Thumbnail size="small" source={product.images[0].transformedSrc} alt={product.title} />
-                                                <span style={{ marginLeft: '10px' }}>{product.title}</span>
+                                                <Thumbnail size="small" source={product.product_image} alt={product.product_title} />
+                                                <span style={{ marginLeft: '10px' }}>{product.product_title}</span>
                                             </div>
                                         </ResourceItem>
                                     );
@@ -541,12 +540,14 @@ export default function ProductGroupsComponent(props) {
         </>
     );
 }
-const getShopifyProducts = async (storeName, accessToken, searchTitle) => {
+
+
+const getShopifyProducts = async (shopId, searchTitle) => {
     try {
         const customParams = {
-            storeName: storeName,
-            accessToken: accessToken,
+            shopId: shopId,
             searchTitle: searchTitle,
+            actionType: "customProducts",
         };
         const response = await fetch(`/api/shopify-products`, {
             method: 'POST',
@@ -562,6 +563,7 @@ const getShopifyProducts = async (storeName, accessToken, searchTitle) => {
     }
 
 };
+
 
 const getAllProductGroups = async (storeName) => {
     try {

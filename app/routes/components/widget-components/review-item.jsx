@@ -148,12 +148,12 @@ const ReviewItem = (props) => {
                                                     <div className='review_bottomwrap'>
                                                         <div className="product-container product-thumb-detail">
                                                             <div className="image flxfix">
-                                                                {review.productDetails?.images?.edges?.[0]?.node?.transformedSrc &&
-                                                                    <img src={review.productDetails.images.edges[0].node.transformedSrc} alt="Product" />
+                                                                {review.productDetails?.product_image &&
+                                                                    <img src={review.productDetails.product_image} alt="Product" />
                                                                 }
                                                             </div>
                                                             <div className="text flxflexi">
-                                                                <p style={{ color: reviewsText }}>{review.productDetails.title}</p>
+                                                                <p style={{ color: reviewsText }}>{review.productDetails.product_title}</p>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -249,15 +249,15 @@ const ReviewItem = (props) => {
                                                         {(props.formParams.hideProductThumbnails !== 'true' && review.productDetails) && (
                                                             <div className="product-container product-thumb-detail">
                                                                 <div className="image flxfix">
-                                                                    {review.productDetails?.images?.edges?.[0]?.node?.transformedSrc && (
+                                                                    {review.productDetails?.product_image && (
                                                                         <img
-                                                                            src={review.productDetails.images.edges[0].node.transformedSrc}
+                                                                            src={review.productDetails.product_image}
                                                                             alt="Product"
                                                                         />
                                                                     )}
                                                                 </div>
                                                                 <div className="text flxflexi">
-                                                                    <p style={{ color: reviewsText }}>{review.productDetails.title}</p>
+                                                                    <p style={{ color: reviewsText }}>{review.productDetails.product_title}</p>
                                                                 </div>
                                                             </div>
                                                         )}
@@ -386,13 +386,13 @@ const ReviewItem = (props) => {
                                                         {(props.formParams.hideProductThumbnails != 'true' && floatShowProductThumb == true && review.productDetails) &&
                                                             <div className="product-container product-thumb-detail">
                                                                 <div className="image flxfix">
-                                                                    {review.productDetails?.images?.edges?.[0]?.node?.transformedSrc &&
-                                                                        <img src={review.productDetails.images.edges[0].node.transformedSrc} alt="Product" />
+                                                                    {review.productDetails?.product_image &&
+                                                                        <img src={review.productDetails.product_image} alt="Product" />
                                                                     }
 
                                                                 </div>
                                                                 <div className="text flxflexi">
-                                                                    <p style={{ color: reviewsText }}>{review.productDetails.title}</p>
+                                                                    <p style={{ color: reviewsText }}>{review.productDetails.product_title}</p>
                                                                 </div>
                                                             </div>
                                                         }

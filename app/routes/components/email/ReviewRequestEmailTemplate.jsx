@@ -27,7 +27,7 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, generalA
     if (mapProductDetails.length > 0) {
 
         productsHtml = mapProductDetails.map((product) => {
-            const productId = product.id.split('/').pop();
+            const productId = product.product_id;
 
             return `
             <tr>
@@ -35,14 +35,14 @@ const ReviewRequestEmailTemplate = ({ emailContents, mapProductDetails, generalA
                 <table cellpadding="0" cellspacing="0" border="0" width="100%">
                     <tr>
                         <td align="center">
-                            <img src=${product.images.edges[0].node.transformedSrc} style="max-width: 160px;" alt=${product.title}>
+                            <img src=${product?.product_image} style="max-width: 160px;" alt=${product.product_title}>
                         </td>
                     </tr>
                     <tr>
                         <td style="padding-top: 10px;"></td>
                     </tr>
                     <tr>
-                        <td align="center" style="font-family:'${fontType}', sans-serif, Roboto, arial,tahoma,verdana;font-size:16px;color:${emailTextColor}; font-weight: 600;">${product.title}</td>
+                        <td align="center" style="font-family:'${fontType}', sans-serif, Roboto, arial,tahoma,verdana;font-size:16px;color:${emailTextColor}; font-weight: 600;">${product.product_title}</td>
                     </tr>
 
                      <tr>
