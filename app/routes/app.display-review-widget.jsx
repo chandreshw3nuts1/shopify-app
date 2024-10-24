@@ -11,6 +11,27 @@ import settingsJson from './../utils/settings.json';
 import sidebarReviewWidgetCustomizes from "./models/sidebarReviewWidgetCustomizes";
 import popupModalWidgetCustomizes from "./models/popupModalWidgetCustomizes";
 import { Image } from "react-bootstrap";
+
+import {
+	Button, 
+	Icon,
+	Page,
+	Layout,
+	Text,
+	Collapsible,
+	Card,
+	Box,
+	Grid, 
+	Bleed,
+	Divider,
+	InlineStack,
+	BlockStack,
+	InlineGrid,
+	Banner,
+	Link,
+    Badge
+} from '@shopify/polaris';
+
 const widgetThumb01 = `/images/widget-thumbs/Product Reviews Widget.png`;
 const widgetThumb02 = `/images/widget-thumbs/Rating Widget.png`;
 const widgetThumb03 = `/images/widget-thumbs/Testimonials Carousel Widget.png`;
@@ -24,9 +45,6 @@ const widgetThumb10 = `/images/widget-thumbs/Floating Product Reviews Widget.png
 const widgetThumb11 = `/images/widget-thumbs/Pop-up Widget.png`;
 const widgetThumb12 = `/images/widget-thumbs/Snippets Widget.png`;
 
-import {
-    Page
-} from "@shopify/polaris";
 
 export async function loader({ request }) {
     try {
@@ -167,224 +185,226 @@ export default function DisplayReviewWidget() {
     ];
     return (
         <>
-            <Breadcrumb crumbs={crumbs} />
+            <InlineStack align='center'>
+                <Box maxWidth='1048px' width='100%'>
+                    <Breadcrumb crumbs={crumbs} />
+                </Box>
+            </InlineStack>
             <Page fullWidth>
-                <ReviewPageSidebar />
-                <div className="pagebox">
-                    <div className="widget_main_wrap">
-                        <div className="widgetrow">
-                            <div className="widgetboxwrp">
-                                <div className="widgetbox flxcol">
-                                    <div className="imagebox flxfix">
-                                        <Image src={widgetThumb01} alt="" />
-                                    </div>
-                                    <div className="detailbox flxflexi">
-                                        <h3>Product Review Widget</h3>
-                                        <p>Collect and display product reviews on your product pages.</p>
-                                        <div className="btnwrap">
-                                            <a href="#" onClick={(e) => redirectToCustomizePage(e, "productWidget")} className="simplelink">Customize</a>
-                                            <a href={extensionUrs.productReviewWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
-                                        </div>
-                                    </div>
+                <InlineStack align='center'>
+                    <Box maxWidth='1048px' width='100%'>
+                        <ReviewPageSidebar />
+                        <InlineGrid columns={{xs: 2, sm: 2, md: 2, lg: 2, xl: 3}} gap='500'>
+                            <Box background="bg-surface" borderColor="bg-surface-secondary-active" borderWidth="0165" borderRadius="300" shadow="100">
+                                <div className="thumbimagebox flxfix">
+                                    <Image src={widgetThumb01} alt="" />
                                 </div>
-                            </div>
-                            <div className="widgetboxwrp">
-                                <div className="widgetbox flxcol">
-                                    <div className="imagebox flxfix">
-                                        <Image src={widgetThumb02} alt="" />
-                                    </div>
-                                    <div className="detailbox flxflexi">
-                                        <h3>Star Rating Badge</h3>
-                                        <p>Show the average rating of your products and how many reviews they've received.</p>
-                                        <div className="btnwrap">
-                                            <a href="#" className="simplelink"></a>
-                                            <a href={extensionUrs.ratingReviewWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
-                                        </div>
-                                    </div>
+                                <Box padding={400}>
+                                    <BlockStack gap={400}>
+                                        <BlockStack gap={200}>
+                                            <Text as="h3" variant="headingMd">Product Review Widget</Text>
+                                            <Text tone="subdued">Collect and display product reviews on your product pages.</Text>
+                                        </BlockStack>
+                                        <InlineStack align="space-between">
+                                            <Button size="large" onClick={(e) => redirectToCustomizePage(e, "productWidget")}>Customize</Button>
+                                            <Button size="large" variant="primary" url={extensionUrs.productReviewWidgetUrl}>Add to theme</Button>
+                                        </InlineStack>
+                                    </BlockStack>
+                                </Box>
+                            </Box>
+                            <Box background="bg-surface" borderColor="bg-surface-secondary-active" borderWidth="0165" borderRadius="300" shadow="100">
+                                <div className="thumbimagebox flxfix">
+                                    <Image src={widgetThumb02} alt="" />
                                 </div>
-                            </div>
-                            <div className="widgetboxwrp">
-                                <div className="widgetbox flxcol">
-                                    <div className="imagebox flxfix">
-                                        <Image src={widgetThumb03} alt="" />
-                                    </div>
-                                    <div className="detailbox flxflexi">
-                                        <h3>Testimonials Carousel Widget</h3>
-                                        <p>Showcase the text of your best reviews in an eye-catching, dynamic display.</p>
-                                        <div className="btnwrap">
-                                            <a href="#" className="simplelink"></a>
-                                            <a href={extensionUrs.testimonialSliderWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
-                                        </div>
-                                    </div>
+                                <Box padding={400}>
+                                    <BlockStack gap={400}>
+                                        <BlockStack gap={200}>
+                                            <Text as="h3" variant="headingMd">Star Rating Badge</Text>
+                                            <Text tone="subdued">Show the average rating of your products and how many reviews they've received.</Text>
+                                        </BlockStack>
+                                        <InlineStack align="end">
+                                            <Button size="large" variant="primary" url={extensionUrs.ratingReviewWidgetUrl}>Add to theme</Button>
+                                        </InlineStack>
+                                    </BlockStack>
+                                </Box>
+                            </Box>
+                            <Box background="bg-surface" borderColor="bg-surface-secondary-active" borderWidth="0165" borderRadius="300" shadow="100">
+                                <div className="thumbimagebox flxfix">
+                                    <Image src={widgetThumb03} alt="" />
                                 </div>
-                            </div>
-
-                            <div className="widgetboxwrp">
-                                <div className="widgetbox flxcol">
-                                    <div className="imagebox flxfix">
-                                        <Image src={widgetThumb11} alt="" />
-                                    </div>
-                                    <div className="detailbox flxflexi">
-                                        <h3>Pop-up Widget</h3>
-                                        <p>Spotlight relevant reviews and drive visitors to your product pages with a subtle social proof pop-up.</p>
-                                        <div className="btnwrap">
-                                            <a href="#" onClick={(e) => redirectToCustomizePage(e, "popupWidget")} className="simplelink">Customize</a>
+                                <Box padding={400}>
+                                    <BlockStack gap={400}>
+                                        <BlockStack gap={200}>
+                                            <Text as="h3" variant="headingMd">Testimonials Carousel Widget</Text>
+                                            <Text tone="subdued">Showcase the text of your best reviews in an eye-catching, dynamic display.</Text>
+                                        </BlockStack>
+                                        <InlineStack align="end">
+                                            <Button size="large" variant="primary" url={extensionUrs.testimonialSliderWidgetUrl}>Add to theme</Button>
+                                        </InlineStack>
+                                    </BlockStack>
+                                </Box>
+                            </Box>
+                            <Box background="bg-surface" borderColor="bg-surface-secondary-active" borderWidth="0165" borderRadius="300" shadow="100">
+                                <div className="thumbimagebox flxfix">
+                                    <Image src={widgetThumb11} alt="" />
+                                </div>
+                                <Box padding={400}>
+                                    <BlockStack gap={400}>
+                                        <BlockStack gap={200}>
+                                            <Text as="h3" variant="headingMd">Pop-up Widget</Text>
+                                            <Text tone="subdued">Spotlight relevant reviews and drive visitors to your product pages with a subtle social proof pop-up.</Text>
+                                        </BlockStack>
+                                        <InlineStack align="space-between">
+                                            <Button size="large" onClick={(e) => redirectToCustomizePage(e, "popupWidget")}>Customize</Button>
                                             {isPopupWidgetActivated ? (
-                                                <label className="revbtn smbtn blackbtn">Activated</label>
+                                                // <label className="revbtn smbtn blackbtn">Activated</label>
+                                                // <Badge size="large" tone="success">Activated</Badge>
+                                                <Button size="large" variant="primary" tone="success">Activated</Button>
                                             ) : (
-                                                <button onClick={() => changeWidgetActivationStatus('popup')} className="revbtn smbtn">Activate</button>
+                                                <Button size="large" onClick={() => changeWidgetActivationStatus('popup')}>Activate</Button>
                                             )}
-                                        </div>
-                                    </div>
-
+                                        </InlineStack>
+                                    </BlockStack>
+                                </Box>
+                            </Box>
+                            <Box background="bg-surface" borderColor="bg-surface-secondary-active" borderWidth="0165" borderRadius="300" shadow="100">
+                                <div className="thumbimagebox flxfix">
+                                    <Image src={widgetThumb12} alt="" />
                                 </div>
-                            </div>
-                            <div className="widgetboxwrp">
-                                <div className="widgetbox flxcol">
-                                    <div className="imagebox flxfix">
-                                        <Image src={widgetThumb12} alt="" />
-                                    </div>
-                                    <div className="detailbox flxflexi">
-                                        <h3>Snippets Widget</h3>
-                                        <p>Build instant trust by showing a glimpse of your best reviews at the top of your product pages, where purchase decisions are made.</p>
-                                        <div className="btnwrap">
-                                            <a href="#" className="simplelink"></a>
-                                            <a href={extensionUrs.snippetReviewWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
-                                        </div>
-                                    </div>
+                                <Box padding={400}>
+                                    <BlockStack gap={400}>
+                                        <BlockStack gap={200}>
+                                            <Text as="h3" variant="headingMd">Snippets Widget</Text>
+                                            <Text tone="subdued">Build instant trust by showing a glimpse of your best reviews at the top of your product pages, where purchase decisions are made.</Text>
+                                        </BlockStack>
+                                        <InlineStack align="end">
+                                            <Button size="large" variant="primary" url={extensionUrs.snippetReviewWidgetUrl}>Add to theme</Button>
+                                        </InlineStack>
+                                    </BlockStack>
+                                </Box>
+                            </Box>
+                            <Box background="bg-surface" borderColor="bg-surface-secondary-active" borderWidth="0165" borderRadius="300" shadow="100">
+                                <div className="thumbimagebox flxfix">
+                                    <Image src={widgetThumb04} alt="" />
                                 </div>
-                            </div>
-
-
-                            <div className="widgetboxwrp">
-                                <div className="widgetbox flxcol">
-                                    <div className="imagebox flxfix">
-                                        <Image src={widgetThumb04} alt="" />
-                                    </div>
-                                    <div className="detailbox flxflexi">
-                                        <h3>Sidebar Reviews Widget
-                                        </h3>
-                                        <p>Floating Reviews Tab Access all your reviews and collect store reviews through a floating tab at the side of the page.</p>
-                                        <div className="btnwrap">
-                                            <a href="#" onClick={(e) => redirectToCustomizePage(e, "sidebarWidget")} className="simplelink">Customize</a>
-                                            {isSidebarWidgetActivated ? (
-                                                <label className="revbtn smbtn blackbtn">Activated</label>
+                                <Box padding={400}>
+                                    <BlockStack gap={400}>
+                                        <BlockStack gap={200}>
+                                            <Text as="h3" variant="headingMd">Sidebar Reviews Widget</Text>
+                                            <Text tone="subdued">Floating Reviews Tab Access all your reviews and collect store reviews through a floating tab at the side of the page.</Text>
+                                        </BlockStack>
+                                        <InlineStack align="space-between">
+                                            <Button size="large" onClick={(e) => redirectToCustomizePage(e, "sidebarWidget")}>Customize</Button>
+                                            {isPopupWidgetActivated ? (
+                                                // <label className="revbtn smbtn blackbtn">Activated</label>
+                                                // <Badge size="large" tone="success">Activated</Badge>
+                                                <Button size="large" variant="primary" tone="success">Activated</Button>
                                             ) : (
-                                                <button onClick={() => changeWidgetActivationStatus('sidebar')} className="revbtn smbtn">Activate</button>
+                                                <Button size="large" onClick={() => changeWidgetActivationStatus('sidebar')}>Activate</Button>
                                             )}
-                                        </div>
-                                    </div>
+                                        </InlineStack>
+                                    </BlockStack>
+                                </Box>
+                            </Box>
+                            <Box background="bg-surface" borderColor="bg-surface-secondary-active" borderWidth="0165" borderRadius="300" shadow="100">
+                                <div className="thumbimagebox flxfix">
+                                    <Image src={widgetThumb05} alt="" />
                                 </div>
-                            </div>
-
-
-
-
-                            <div className="widgetboxwrp">
-                                <div className="widgetbox flxcol">
-                                    <div className="imagebox flxfix">
-                                        <Image src={widgetThumb05} alt="" />
-                                    </div>
-                                    <div className="detailbox flxflexi">
-                                        <h3>Cart Reviews Widget</h3>
-                                        <p>Reduce cart abandonment by showing ratings and reviews on the cart page, securing the trust needed to make the sale.</p>
-                                        <div className="btnwrap">
-                                            <a href="#" className="simplelink"></a>
-                                            <a href={extensionUrs.cartReviewWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
-                                        </div>
-                                    </div>
+                                <Box padding={400}>
+                                    <BlockStack gap={400}>
+                                        <BlockStack gap={200}>
+                                            <Text as="h3" variant="headingMd">Cart Reviews Widget</Text>
+                                            <Text tone="subdued">Reduce cart abandonment by showing ratings and reviews on the cart page, securing the trust needed to make the sale.</Text>
+                                        </BlockStack>
+                                        <InlineStack align="end">
+                                            <Button size="large" variant="primary" url={extensionUrs.cartReviewWidgetUrl}>Add to theme</Button>
+                                        </InlineStack>
+                                    </BlockStack>
+                                </Box>
+                            </Box>
+                            <Box background="bg-surface" borderColor="bg-surface-secondary-active" borderWidth="0165" borderRadius="300" shadow="100">
+                                <div className="thumbimagebox flxfix">
+                                    <Image src={widgetThumb06} alt="" />
                                 </div>
-                            </div>
-
-
-
-                            <div className="widgetboxwrp">
-                                <div className="widgetbox flxcol">
-                                    <div className="imagebox flxfix">
-                                        <Image src={widgetThumb06} alt="" />
-                                    </div>
-                                    <div className="detailbox flxflexi">
-                                        <h3>Trust Badge Rating Widget</h3>
-                                        <p>Shows the total number of published reviews you've received and their average rating.</p>
-                                        <div className="btnwrap">
-                                            <a href="#" className="simplelink"></a>
-                                            <a href={extensionUrs.allReviewWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
-                                        </div>
-                                    </div>
+                                <Box padding={400}>
+                                    <BlockStack gap={400}>
+                                        <BlockStack gap={200}>
+                                            <Text as="h3" variant="headingMd">Trust Badge Rating Widget</Text>
+                                            <Text tone="subdued">Shows the total number of published reviews you've received and their average rating.</Text>
+                                        </BlockStack>
+                                        <InlineStack align="end">
+                                            <Button size="large" variant="primary" url={extensionUrs.allReviewWidgetUrl}>Add to theme</Button>
+                                        </InlineStack>
+                                    </BlockStack>
+                                </Box>
+                            </Box>
+                            <Box background="bg-surface" borderColor="bg-surface-secondary-active" borderWidth="0165" borderRadius="300" shadow="100">
+                                <div className="thumbimagebox flxfix">
+                                    <Image src={widgetThumb07} alt="" />
                                 </div>
-                            </div>
-
-                            <div className="widgetboxwrp">
-                                <div className="widgetbox flxcol">
-                                    <div className="imagebox flxfix">
-                                        <Image src={widgetThumb07} alt="" />
-                                    </div>
-                                    <div className="detailbox flxflexi">
-                                        <h3>Video Slider Widget</h3>
-                                        <p>Display powerful photo and video reviews so store visitors can see your products in action.</p>
-                                        <div className="btnwrap">
-                                            <a href="#" className="simplelink"></a>
-                                            <a href={extensionUrs.videoSliderWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
-                                        </div>
-                                    </div>
+                                <Box padding={400}>
+                                    <BlockStack gap={400}>
+                                        <BlockStack gap={200}>
+                                            <Text as="h3" variant="headingMd">Video Slider Widget</Text>
+                                            <Text tone="subdued">Display powerful photo and video reviews so store visitors can see your products in action.</Text>
+                                        </BlockStack>
+                                        <InlineStack align="end">
+                                            <Button target="_blank" size="large" variant="primary" url={extensionUrs.videoSliderWidgetUrl}>Add to theme</Button>
+                                        </InlineStack>
+                                    </BlockStack>
+                                </Box>
+                            </Box>
+                            <Box background="bg-surface" borderColor="bg-surface-secondary-active" borderWidth="0165" borderRadius="300" shadow="100">
+                                <div className="thumbimagebox flxfix">
+                                    <Image src={widgetThumb08} alt="" />
                                 </div>
-                            </div>
-
-                            <div className="widgetboxwrp">
-                                <div className="widgetbox flxcol">
-                                    <div className="imagebox flxfix">
-                                        <Image src={widgetThumb08} alt="" />
-                                    </div>
-                                    <div className="detailbox flxflexi">
-                                        <h3>Gallery Carousel Widget</h3>
-                                        <p>Highlight your customers' user-generated photos in this dynamic carousel so visitors can see your products in action.</p>
-                                        <div className="btnwrap">
-                                            <a href="#" className="simplelink"></a>
-                                            <a href={extensionUrs.galleryCarouselWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
-                                        </div>
-                                    </div>
+                                <Box padding={400}>
+                                    <BlockStack gap={400}>
+                                        <BlockStack gap={200}>
+                                            <Text as="h3" variant="headingMd">Gallery Carousel Widget</Text>
+                                            <Text tone="subdued">Highlight your customers' user-generated photos in this dynamic carousel so visitors can see your products in action.</Text>
+                                        </BlockStack>
+                                        <InlineStack align="end">
+                                            <Button target="_blank" size="large" variant="primary" url={extensionUrs.galleryCarouselWidgetUrl}>Add to theme</Button>
+                                        </InlineStack>
+                                    </BlockStack>
+                                </Box>
+                            </Box>
+                            <Box background="bg-surface" borderColor="bg-surface-secondary-active" borderWidth="0165" borderRadius="300" shadow="100">
+                                <div className="thumbimagebox flxfix">
+                                    <Image src={widgetThumb09} alt="" />
                                 </div>
-                            </div>
-
-                            <div className="widgetboxwrp">
-                                <div className="widgetbox flxcol">
-                                    <div className="imagebox flxfix">
-                                        <Image src={widgetThumb09} alt="" />
-                                    </div>
-                                    <div className="detailbox flxflexi">
-                                        <h3>Cards Carousel Widget</h3>
-                                        <p>Combine visual reviews, text, and star ratings in this stylish and engaging carousel.</p>
-                                        <div className="btnwrap">
-                                            <a href="#" className="simplelink"></a>
-                                            <a href={extensionUrs.cardCarouselWidgetUrl} target="_blank" className="revbtn smbtn">Add to theme</a>
-                                        </div>
-                                    </div>
+                                <Box padding={400}>
+                                    <BlockStack gap={400}>
+                                        <BlockStack gap={200}>
+                                            <Text as="h3" variant="headingMd">Cards Carousel Widget</Text>
+                                            <Text tone="subdued">Combine visual reviews, text, and star ratings in this stylish and engaging carousel.</Text>
+                                        </BlockStack>
+                                        <InlineStack align="end">
+                                            <Button target="_blank" size="large" variant="primary" url={extensionUrs.cardCarouselWidgetUrl}>Add to theme</Button>
+                                        </InlineStack>
+                                    </BlockStack>
+                                </Box>
+                            </Box>
+                            <Box background="bg-surface" borderColor="bg-surface-secondary-active" borderWidth="0165" borderRadius="300" shadow="100">
+                                <div className="thumbimagebox flxfix">
+                                    <Image src={widgetThumb10} alt="" />
                                 </div>
-                            </div>
-
-
-
-
-                            <div className="widgetboxwrp">
-                                <div className="widgetbox flxcol">
-                                    <div className="imagebox flxfix">
-                                        <Image src={widgetThumb10} alt="" />
-                                    </div>
-                                    <div className="detailbox flxflexi">
-                                        <h3>Floating Product Reviews Widget
-                                        </h3>
-                                        <p>Present your reviews on a floating display so users can browse through reviews without leaving the page they are currently on.</p>
-                                        <div className="btnwrap">
-                                            <a href="#" onClick={(e) => redirectToCustomizePage(e, "floatingWidget")} className="simplelink">Customize</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                        </div>
-                    </div>
-                </div>
+                                <Box padding={400}>
+                                    <BlockStack gap={400}>
+                                        <BlockStack gap={200}>
+                                            <Text as="h3" variant="headingMd">Floating Product Reviews Widget</Text>
+                                            <Text tone="subdued">Present your reviews on a floating display so users can browse through reviews without leaving the page they are currently on.</Text>
+                                        </BlockStack>
+                                        <InlineStack align="start">
+                                            <Button size="large" onClick={(e) => redirectToCustomizePage(e, "floatingWidget")}>Customize</Button>
+                                        </InlineStack>
+                                    </BlockStack>
+                                </Box>
+                            </Box>
+                        </InlineGrid>
+                    </Box>
+                </InlineStack>
 
             </Page>
         </>

@@ -3,7 +3,13 @@ import { useState, useCallback } from 'react';
 import {
     Card,
     Select,
-    TextField
+    TextField,
+    Box,
+	Grid, 
+	BlockStack,
+	Checkbox,
+	InlineError,
+    Text,
 } from '@shopify/polaris';
 import settingsJson from './../../../utils/settings.json';
 
@@ -84,7 +90,41 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
     };
 
 
-    const handleCheckboxChange = async event => {
+    const handleCheckboxChange = useCallback(async (checked, name) => {
+        try {
+            // console.log(checked, name)
+            const updateData = {
+                field: name,
+                value: checked,
+                shop: shopRecords.shop,
+                actionType: "reviewRequestTiming"
+            };
+            const response = await fetch('/api/collect-review-setting', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updateData),
+            });
+            const data = await response.json();
+            if (data.status == 200) {
+                shopify.toast.show(data.message, {
+					duration: settingsJson.toasterCloseTime
+				});
+            } else {
+                shopify.toast.show(data.message, {
+                    duration: settingsJson.toasterCloseTime,
+                    isError: true
+                });
+            }
+            setIsDifferentTimingChecked(checked);
+        } catch (error) {
+            console.error('Error updating record:', error);
+        }
+
+    });
+
+    /* const handleCheckboxChange = async event => {
         try {
 
             const updateData = {
@@ -116,187 +156,184 @@ export default function ReviewRequestTiming({ reviewRequestTimingSettings, shopR
             console.error('Error updating record:', error);
         }
 
-    };
+    }; */
 
 
 
     return (
-        <div className='row'>
-            <div className='col-md-12'>
-                <div className='collectreviewformbox'>
-                    <Card>
-                        <div className="reviewtiming_wrap">
-
-                            <div className="form-group m-0 flxflexi">
-                                <label htmlFor="">Email timing</label>
-                                <div className='beforeafterwrap flxrow'>
+        <BlockStack gap="400">
+            <Card gap="200">
+                <BlockStack gap='400'>
+                    <BlockStack gap='100'>
+                        <Text variant="bodyMd" as="p">Email timing</Text>
+                        <Grid>
+                            <Grid.Cell columnSpan={{xs: 12, sm: 12, md: 5, lg: 5, xl: 5}}>
+                                <Select
+                                    name="default_day_timing"
+                                    id="default_day_timing"
+                                    options={dayTimings}
+                                    disabled={isDifferentTimingChecked}
+                                    onChange={
+                                        handleSelectChange
+                                    }
+                                    value={selectedDefaultDayTiming}
+                                />
+                            </Grid.Cell>
+                            {selectedDefaultDayTiming != "never" && (
+                                <>
+                                    <Grid.Cell columnSpan={{xs: 12, sm: 12, md: 2, lg: 1, xl: 1}}>
+                                        <Text variant="bodyMd" alignment='center' as="p">After</Text>
+                                    </Grid.Cell>
+                                    <Grid.Cell columnSpan={{xs: 12, sm: 12, md: 5, lg: 5, xl: 5}}>
+                                        <Select
+                                            name="default_order_timing"
+                                            id="default_order_timing"
+                                            options={defaultOrderTiming}
+                                            disabled={isDifferentTimingChecked}
+                                            onChange={
+                                                handleSelectChange
+                                            }
+                                            value={selectedDefaultOrderTiming}
+                                        />
+                                    </Grid.Cell>
+                                </>
+                            )}
+                        </Grid>
+                    </BlockStack>
+                    {/* <div className="form-group m-0 flxflexi">
+                        <label htmlFor="">Email timing</label>
+                        <div className='beforeafterwrap flxrow'>
+                            <div className='inputwrap flxflexi'>
+                                <div className="formcontent" >
+                                    <Select
+                                        name="default_day_timing"
+                                        id="default_day_timing"
+                                        options={dayTimings}
+                                        disabled={isDifferentTimingChecked}
+                                        onChange={
+                                            handleSelectChange
+                                        }
+                                        value={selectedDefaultDayTiming}
+                                    />
+                                </div>
+                            </div>
+                            {selectedDefaultDayTiming != "never" && (
+                                <><span className="flxfix aftertextlabel">After</span>
                                     <div className='inputwrap flxflexi'>
                                         <div className="formcontent" >
                                             <Select
-                                                name="default_day_timing"
-                                                id="default_day_timing"
-                                                options={dayTimings}
+                                                name="default_order_timing"
+                                                id="default_order_timing"
+                                                options={defaultOrderTiming}
                                                 disabled={isDifferentTimingChecked}
                                                 onChange={
                                                     handleSelectChange
                                                 }
-                                                value={selectedDefaultDayTiming}
+                                                value={selectedDefaultOrderTiming}
                                             />
                                         </div>
                                     </div>
-                                    {selectedDefaultDayTiming != "never" && (
-                                        <><span className="flxfix aftertextlabel">After</span>
-                                            <div className='inputwrap flxflexi'>
-                                                <div className="formcontent" >
-                                                    <Select
-                                                        name="default_order_timing"
-                                                        id="default_order_timing"
-                                                        options={defaultOrderTiming}
-                                                        disabled={isDifferentTimingChecked}
-                                                        onChange={
-                                                            handleSelectChange
-                                                        }
-                                                        value={selectedDefaultOrderTiming}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
-                            </div>
-
-                            {(selectedDefaultOrderTiming == "delivery" && !isDifferentTimingChecked && selectedDefaultDayTiming != "never") &&
-                                <div className="form-group m-0 horizontal-form alightop">
-                                    <label htmlFor="">Fallback timing</label>
-                                    <div className='sideinput mw300 flxflexi'>
-                                        <div className="formcontent" >
-                                            <Select
-                                                name="fallback_timing"
-                                                id="fallback_timing"
-                                                options={fallbackTiming}
-                                                onChange={
-                                                    handleSelectChange
-                                                }
-                                                value={selectedFallbackTiming}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-
-
-                            {(selectedDefaultDayTiming != "never") &&
-
-                                <div className="form-check form-switch">
-                                    <input
-                                        checked={
-                                            isDifferentTimingChecked
-                                        }
-                                        onChange={
-                                            handleCheckboxChange
-                                        }
-                                        className="form-check-input"
-                                        type="checkbox"
-                                        role="switch"
-                                        name="is_different_timing"
-                                        id="is_different_timing"
-                                    />
-                                    <label
-                                        className="form-check-label"
-                                        htmlFor="is_different_timing"
-                                    >
-                                        Set different timing for domestic and international orders
-                                    </label>
-                                </div>
-                            }
-
-                            {isDifferentTimingChecked &&
-                                <>
-
-                                    <div className="">
-                                        <div className="form-group m-0">
-                                            <label htmlFor="">Domestic orders (shipping within IN)</label>
-                                            <div className='beforeafterwrap flxrow'>
-                                                <div className='inputwrap flxflexi'>
-                                                    <div className="formcontent" >
-                                                        <Select
-                                                            name="domestic_day_timing"
-                                                            id="domestic_day_timing"
-                                                            options={dayTimings.slice(0, -1)}
-                                                            onChange={
-                                                                handleSelectChange
-                                                            }
-                                                            value={selectedDomesticDayTiming}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <span className="flxfix aftertextlabel">After</span>
-                                                <div className="inputwrap flxflexi">
-                                                    <div className="formcontent" >
-                                                        <Select
-                                                            name="domestic_order_timing"
-                                                            id="domestic_order_timing"
-                                                            options={differentOrderTiming}
-                                                            onChange={
-                                                                handleSelectChange
-                                                            }
-                                                            value={selectedDomesticOrderTiming}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-
-                                    <div className="">
-                                        <div className="form-group m-0">
-                                            <label htmlFor="">{`International orders (shipping outside ${shopRecords.country_code})`}</label>
-                                            <div className='beforeafterwrap flxrow'>
-                                                <div className='inputwrap flxflexi'>
-                                                    <div className="formcontent" >
-                                                        <Select
-                                                            name="intenational_day_timing"
-                                                            id="intenational_day_timing"
-                                                            options={dayTimings.slice(0, -1)}
-                                                            onChange={
-                                                                handleSelectChange
-                                                            }
-                                                            value={selectedInternationalDayTiming}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <span className="flxfix aftertextlabel">After</span>
-                                                <div className="inputwrap flxflexi">
-                                                    <div className="formcontent" >
-                                                        <Select
-                                                            name="intenational_order_timing"
-                                                            id="intenational_order_timing"
-                                                            options={differentOrderTiming}
-                                                            onChange={
-                                                                handleSelectChange
-                                                            }
-                                                            value={selectedInternationalOrderTiming}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                    </div>
-
                                 </>
-                            }
-
+                            )}
                         </div>
+                    </div> */}
 
-                    </Card>
-                </div>
-            </div>
+                    {(selectedDefaultOrderTiming == "delivery" && !isDifferentTimingChecked && selectedDefaultDayTiming != "never") &&
+                        <Grid>
+                            <Grid.Cell columnSpan={{xs: 12, sm: 12, md: 5, lg: 5, xl: 5}}>
+                                <Select
+                                    label="Fallback timing"
+                                    name="fallback_timing"
+                                    id="fallback_timing"
+                                    options={fallbackTiming}
+                                    onChange={
+                                        handleSelectChange
+                                    }
+                                    value={selectedFallbackTiming}
+                                />
+                            </Grid.Cell>
+                        </Grid>
+                    }
 
 
-        </div>
+                    {(selectedDefaultDayTiming != "never") &&
+
+                        <div className="form-check form-switch">
+                            <Checkbox
+                                label="Set different timing for domestic and international orders"
+                                checked={isDifferentTimingChecked}
+                                onChange={ (value) => handleCheckboxChange(value , "is_different_timing")}
+                            />
+                        </div>
+                    }
+
+                    {isDifferentTimingChecked &&
+                        <>
+                            <BlockStack gap='100'>
+                                <Text variant="bodyMd" as="p">Domestic orders (shipping within IN)</Text>
+                                <Grid>
+                                    <Grid.Cell columnSpan={{xs: 12, sm: 12, md: 5, lg: 5, xl: 5}}>
+                                        <Select
+                                            name="domestic_day_timing"
+                                            id="domestic_day_timing"
+                                            options={dayTimings.slice(0, -1)}
+                                            onChange={
+                                                handleSelectChange
+                                            }
+                                            value={selectedDomesticDayTiming}
+                                        />
+                                    </Grid.Cell>
+                                    <Grid.Cell columnSpan={{xs: 12, sm: 12, md: 2, lg: 1, xl: 1}}>
+                                        <Text variant="bodyMd" alignment='center' as="p">After</Text>
+                                    </Grid.Cell>
+                                    <Grid.Cell columnSpan={{xs: 12, sm: 12, md: 5, lg: 5, xl: 5}}>
+                                        <Select
+                                            name="domestic_order_timing"
+                                            id="domestic_order_timing"
+                                            options={differentOrderTiming}
+                                            onChange={
+                                                handleSelectChange
+                                            }
+                                            value={selectedDomesticOrderTiming}
+                                        />
+                                    </Grid.Cell>
+                                </Grid>
+                            </BlockStack>
+                            <BlockStack gap='100'>
+                                <Text variant="bodyMd" as="p">{`International orders (shipping outside ${shopRecords.country_code})`}</Text>
+                                <Grid>
+                                    <Grid.Cell columnSpan={{xs: 12, sm: 12, md: 5, lg: 5, xl: 5}}>
+                                        <Select
+                                            name="intenational_day_timing"
+                                            id="intenational_day_timing"
+                                            options={dayTimings.slice(0, -1)}
+                                            onChange={
+                                                handleSelectChange
+                                            }
+                                            value={selectedInternationalDayTiming}
+                                        />
+                                    </Grid.Cell>
+                                    <Grid.Cell columnSpan={{xs: 12, sm: 12, md: 2, lg: 1, xl: 1}}>
+                                        <Text variant="bodyMd" alignment='center' as="p">After</Text>
+                                    </Grid.Cell>
+                                    <Grid.Cell columnSpan={{xs: 12, sm: 12, md: 5, lg: 5, xl: 5}}>
+                                        <Select
+                                            name="intenational_order_timing"
+                                            id="intenational_order_timing"
+                                            options={differentOrderTiming}
+                                            onChange={
+                                                handleSelectChange
+                                            }
+                                            value={selectedInternationalOrderTiming}
+                                        />
+                                    </Grid.Cell>
+                                </Grid>
+                            </BlockStack>
+                        </>
+                    }
+
+                </BlockStack>
+            </Card>
+        </BlockStack>
     );
 }

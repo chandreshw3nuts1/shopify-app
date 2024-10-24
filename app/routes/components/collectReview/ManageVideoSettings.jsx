@@ -2,7 +2,9 @@ import { useState, useCallback } from 'react';
 import {
 	Card,
 	Select,
-	TextField
+	TextField,
+	Checkbox,
+	Box
 } from '@shopify/polaris';
 import settingsJson from './../../../utils/settings.json';
 
@@ -15,10 +17,10 @@ export default function ManageVideoSettings({ generalSettings, shopRecords }) {
  
  
 
-	const handleVideoEnableReviewChange = async event => {
+	const handleVideoEnableReviewChange = useCallback(async (name) => {
 		try {
 			const updateData = {
-				field: event.target.name,
+				field: name,
 				value: !isVideoEnabled,
 				shop: shopRecords.shop,
                 actionType : "generalSettings"
@@ -45,42 +47,18 @@ export default function ManageVideoSettings({ generalSettings, shopRecords }) {
 			console.error('Error updating record:', error);
 		}
 		setIsVideoEnabled(!isVideoEnabled);
-	};
+	});
 
 
 	return (
-		<div className='row'>
-			
-			<div className='col-md-12'>
-				<div className='collectreviewformbox'>
-					<Card>
-						<div className="">
-							<div className="form-check form-switch">
-								<input
-									checked={
-										isVideoEnabled
-									}
-									onChange={
-										handleVideoEnableReviewChange
-									}
-									className="form-check-input"
-									type="checkbox"
-									role="switch"
-									name="is_enabled_video_review"
-									id="enableVideoSwitchCheckChecked"
-								/>
-								<label
-									className="form-check-label"
-									htmlFor="enableVideoSwitchCheckChecked"
-								>
-									Enable customers to upload a video with their review
-								</label>
-							</div>
-						</div>
-					</Card>
-				</div>
-			</div>
-
-		</div>
+		<Box paddingBlock='200' paddingInline='300' borderStyle='solid' borderWidth='0165' borderColor='border-brand' borderRadius='200'>
+			<Checkbox
+				label="Enable customers to upload a video with their review"
+				checked={isVideoEnabled}
+				onChange={handleVideoEnableReviewChange}
+				name="is_enabled_video_review"
+				id="enableVideoSwitchCheckChecked"
+			/>
+		</Box>
 	);
 }

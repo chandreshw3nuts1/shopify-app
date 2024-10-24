@@ -10,10 +10,27 @@ import settingsJson from './../../../utils/settings.json';
 import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 import {
     Button,
-    Box
+    Box,
+    Popover,
+    ActionList, 
+    Icon,
+    MediaCard, 
+	Text, 
+	Card, 
+	InlineGrid, 
+	BlockStack, 
+	Divider, 
+	Banner, 
+	Link, 
+	Tooltip,
+	Grid,
+    InlineStack, 
+    Badge,
+    TextField,
+    Checkbox
 } from '@shopify/polaris';
-import { PlusIcon } from '@shopify/polaris-icons';
-
+import { PlusIcon, MenuVerticalIcon, DragHandleIcon, XIcon } from '@shopify/polaris-icons';
+  
 const QuestionItemType = 'icon';
 const DraggableQuestion = ({ id, index, questionItem, shopRecords, customQuestionsAnswer, deleteQuestion, editQuestion, moveInputQuestion }) => {
     const ref = React.useRef(null);
@@ -69,23 +86,67 @@ const DraggableQuestion = ({ id, index, questionItem, shopRecords, customQuestio
     };
 
     const handleQuestionChange = async (optionType, questionId, index) => {
+        setPopoverActive(false);
         if (optionType == 'edit') {
             editQuestion(index);
         } else if (optionType == 'delete') {
             deleteQuestion(questionId, index);
         }
     };
+
+
+    const [popoverActive, setPopoverActive] = useState(false);
+
+	const togglePopoverActive = useCallback(
+		() => setPopoverActive((popoverActive) => !popoverActive),
+		[],
+	);
+    const questionAction = (
+		<Button onClick={togglePopoverActive} icon={MenuVerticalIcon}>
+		</Button>
+	);
+
     drag(drop(ref));
 
     return (
-
-        <div className='questionrow'>
-            <div ref={ref} className='draggableicon flxfix flxrow'>
-                <div className='iconbox'>
-                    <i className='twenty-dragicon'></i>
-                </div>
-            </div>
-            <div className='questionmiddbox flxflexi'>
+        <Card>
+            <InlineStack wrap={false} gap='400'>
+                <Box>
+                    <div ref={ref} className='draggableicon flxfix flxrow'>
+                        <Icon source={DragHandleIcon} tone="base" />
+                    </div>
+                </Box>
+                <Box width='100%'>
+                    <BlockStack gap='200'>
+                        <Text as='h3' variant='headingMd'>{questionItem.question}</Text>
+                        <InlineStack gap='400'>
+                            {questionItem.answers.map((ansItem, ansIndex) => (
+                                <>
+                                    <Badge key={ansIndex}>{ansItem.val}</Badge>
+                                    {/* <div key={ansIndex} className='singlequestion'>{ansItem.val}</div> */}
+                                </>
+                            ))}
+                        </InlineStack>
+                    </BlockStack>
+                </Box>
+                <Box>
+                    <Popover
+                        active={popoverActive}
+                        activator={questionAction}
+                        autofocusTarget="first-node"
+                        onClose={togglePopoverActive}
+                        fullWidth={false}
+                        preferredAlignment='right'
+                    >
+                        <ActionList
+                            actionRole="menuitem"
+                            items={[{content: 'Edit',onAction:() => handleQuestionChange('edit', questionItem._id, index)}, {content: 'Delete', onAction:() => handleQuestionChange('delete', questionItem._id, index)}]}
+                        />
+                    </Popover>
+                </Box>
+            </InlineStack>
+            
+            {/* <div className='questionmiddbox flxflexi'>
                 <div className='mainquestion'>
                     <h3>{questionItem.question}</h3>
                 </div>
@@ -94,18 +155,9 @@ const DraggableQuestion = ({ id, index, questionItem, shopRecords, customQuestio
                         <div key={ansIndex} className='singlequestion'>{ansItem.val}</div>
                     ))}
                 </div>
-            </div>
-            <div className='questionaction flxfix dropdownwrap ddlightbtn'>
-
-                <DropdownButton id="dropdown-basic-button" onSelect={(e) => handleQuestionChange(e, questionItem._id, index)} title={<MoreIcon />} align={'end'}>
-                    <Dropdown.Item eventKey="edit" className="custom-dropdown-item" >Edit</Dropdown.Item>
-                    <Dropdown.Item eventKey="delete" className="custom-dropdown-item" >Delete</Dropdown.Item>
-                </DropdownButton>
-            </div>
-        </div>
-
-
-
+            </div> */}
+            
+        </Card>
     );
 };
 
@@ -150,12 +202,8 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
         setCountsAnswers(2);
 
     }
-    const handleInputChange = useCallback((event) => {
-        if (event && event.target) {
-            setQuestionTitle(event.target.value);
-        } else {
-            console.error('Event or event.target is undefined');
-        }
+    const handleInputChange = useCallback((value) => {
+        setQuestionTitle(value);
     }, []);
 
     useEffect(() => {
@@ -209,8 +257,7 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
     };
 
     // Function to handle input changes
-    const handleInputChanges = (index, event) => {
-        const { value } = event.target;
+    const handleInputChanges = (index, value) => {
         const allInputs = [...customAnswer];
         allInputs[index].val = value;
         setCustomAnswer(allInputs);
@@ -358,30 +405,32 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
     return (
         <>
             {/* <CustomQuestionsLists customQuestionsData={customQuestionsDataItem} shopRecords={shopRecords}/> */}
-
-            <DndProvider backend={HTML5Backend}>
-                {customQuestionsAnswer.map((input, index) => (
-                    <DraggableQuestion
-                        key={input._id}
-                        id={input._id}
-                        index={index}
-                        questionItem={input}
-                        customQuestionsAnswer={customQuestionsAnswer}
-                        shopRecords={shopRecords}
-                        deleteQuestion={deleteQuestion}
-                        editQuestion={editQuestion}
-                        moveInputQuestion={moveInputQuestion}
-                    />
-                ))}
-            </DndProvider>
-
-
-            <div className='btnwrap'>
-                <Button variant="primary" icon={PlusIcon} onClick={handleShowModal}>
-                    New Question
-                </Button>
-            </div>
-
+            
+            <BlockStack gap='400'>
+                <DndProvider backend={HTML5Backend}>
+                    <BlockStack gap='200'>
+                    {customQuestionsAnswer.map((input, index) => (
+                        <DraggableQuestion
+                            key={input._id}
+                            id={input._id}
+                            index={index}
+                            questionItem={input}
+                            customQuestionsAnswer={customQuestionsAnswer}
+                            shopRecords={shopRecords}
+                            deleteQuestion={deleteQuestion}
+                            editQuestion={editQuestion}
+                            moveInputQuestion={moveInputQuestion}
+                        />
+                    ))}
+                    </BlockStack>
+                </DndProvider>
+                <Box>
+                    <Button variant="primary" icon={PlusIcon} onClick={handleShowModal}>
+                        New Question
+                    </Button>
+                </Box>
+            </BlockStack>
+            
             <Modal onHide={handleCloseModal} id="select-product-modal">
                 <TitleBar title="Custom Questions">
                     <button variant="primary" onClick={submitAnswers} disabled={inputValueError}>
@@ -390,97 +439,73 @@ export default function CustomQuestions({ customQuestionsData, shopRecords }) {
                     <button onClick={() => shopify.modal.hide('select-product-modal')}>Close</button>
                 </TitleBar>
                 <Box padding="500">
-                    <div className='form-group'>
-                        <label className="">Question text</label>
-                        <input className="form-control"
-                            type="text" // Or any other input type
-                            value={questionTitle}
-                            onChange={handleInputChange} />
-                        <span className="letterlimite">{questionTitle.length}/40</span>
-                    </div>
-
-                    <div className='form-group'>
-                        <label className="">Answers</label>
-
-                        {customAnswer.map((input, index) => (
-                            <div className='modalAnswerItems' key={index}>
-                                <div className='draggable'>
-                                    <div className='inputandlatter flxflexi'>
-                                        <input
-                                            type="text"
-                                            value={input.val}
-                                            name={input.name}
-                                            id={input.name}
-                                            className='form-control'
-                                            onChange={(e) => handleInputChanges(index, e)}
-                                        />
-                                        <div className="letterlimite">{input.val.length}/24</div>
-                                    </div>
-                                    {allowDeleteAns && (
-                                        <div className='deletebtn flxfix'>
-                                            <button onClick={(e) => deleteAnswerInput(index, e)}>
-                                                <i className='twenty-closeicon'></i>
-                                            </button>
-                                        </div>
-                                    )}
-
-                                </div>
-
-                            </div>
-                        ))}
-                    </div>
-                    {isAddMoreButtonVisible && (
-                        <div className='btnwrap popbtnwrap'>
-                            <button onClick={addAnswerInput} className='revbtn bluelightbtn'><i className='twenty-addicon'></i> Add Option</button>
-                        </div>
-                    )}
-                    <div className="bottomcheckrow">
-                        <div className="form-check form-switch">
-                            <input
-                                checked={
-                                    isMakeRequireQuestion
-                                }
-                                onChange={
-                                    handleMakeRequireQuestion
-                                }
-                                className="form-check-input"
-                                type="checkbox"
-                                role="switch"
-                                name="isMakeRequireQuestion"
-                                id="isMakeRequireQuestion"
+                    <BlockStack gap='400'>
+                        <BlockStack gap={100}>
+                            <Text as='h3' variant='headingSm'>Question text</Text>
+                            <TextField
+                                value={questionTitle}
+                                onChange={handleInputChange}
+                                maxLength={40}
+                                showCharacterCount
                             />
-                            <label
-                                className="form-check-label"
-                                for="isMakeRequireQuestion"
-                            >
-                                Make it required question
-                            </label>
-                        </div>
-                    </div>
-
-                    <div className="bottomcheckrow">
-                        <div className="form-check form-switch">
-                            <input
-                                checked={
-                                    isHideAnswers
-                                }
-                                onChange={
-                                    handleHideAnswers
-                                }
-                                className="form-check-input"
-                                type="checkbox"
-                                role="switch"
-                                name="isHideAnswers"
-                                id="isHideAnswers"
-                            />
-                            <label
-                                className="form-check-label"
-                                for="isHideAnswers"
-                            >
-                                Hide answers, won't be displayed publicly
-                            </label>
-                        </div>
-                    </div>
+                        </BlockStack>
+                        {/* <Divider /> */}
+                        <BlockStack gap={100}>
+                            <Text as='h3' variant='headingSm'>Answers</Text>
+                            <BlockStack gap={200}>
+                                {customAnswer.map((input, index) => (
+                                    <InlineStack gap={400} wrap={false} key={index}>
+                                        <Box width='100%'>
+                                            <TextField
+                                                value={input.val}
+                                                name={input.name}
+                                                id={input.name}
+                                                onChange={(e) => handleInputChanges(index, e)}
+                                                labelHidden={true}
+                                                maxLength={24}
+                                                showCharacterCount
+                                            />
+                                        </Box>
+                                        {allowDeleteAns && (
+                                            <Box>
+                                                <Button tone='critical' onClick={(e) => deleteAnswerInput(index, e)} icon={XIcon} />
+                                            </Box>
+                                        )}
+                                        
+                                    </InlineStack>
+                                ))}
+                            </BlockStack>
+                        </BlockStack>
+                        {isAddMoreButtonVisible && (
+                            <Box>
+                                <Button variant="primary" icon={PlusIcon} onClick={addAnswerInput}>
+                                    Add answer
+                                </Button>
+                            </Box>
+                        )}
+                        <Divider />
+                        <BlockStack gap={0}>
+                            <Box>
+                                <Checkbox
+                                    label="Make it required question"
+                                    checked={isMakeRequireQuestion}
+                                    onChange={handleMakeRequireQuestion}
+                                    name="isMakeRequireQuestion"
+                                    id="isMakeRequireQuestion"
+                                />
+                            </Box>
+                            <Box>
+                                <Checkbox
+                                    label="Hide answers, won't be displayed publicly"
+                                    checked={isHideAnswers}
+                                    onChange={handleHideAnswers}
+                                    name="isHideAnswers"
+                                    id="isHideAnswers"
+                                />
+                            </Box>
+                        </BlockStack>
+                    </BlockStack>
+                    
                 </Box>
             </Modal>
         </>
