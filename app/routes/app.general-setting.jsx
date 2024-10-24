@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLoaderData } from '@remix-run/react';
 import Breadcrumb from "./components/Breadcrumb";
 import SettingPageSidebar from "./components/headerMenu/SettingPageSidebar";
@@ -11,7 +11,6 @@ import AlertInfo from "./components/AlertInfo";
 import settingsJson from './../utils/settings.json';
 import EnableAppEmbedAlert from './components/common/enable-app-embed-alert';
 import ProductGroupsComponent from './components/generalSettings/ProductGroups';
-// import productGroups from './models/productGroups';
 
 
 import { json } from "@remix-run/node";
@@ -19,6 +18,14 @@ import { json } from "@remix-run/node";
 import {
 	Page,
 	Select,
+	Checkbox,
+	Card,
+	TextField,
+	Text,
+	BlockStack,
+	Button,
+	InlineGrid,
+	InlineError, InlineStack, Box
 } from "@shopify/polaris";
 
 export async function loader({ request }) {
@@ -41,7 +48,7 @@ export async function loader({ request }) {
 
 		const reviewExtensionId = process.env.SHOPIFY_ALL_REVIEW_EXTENSION_ID;
 
-		return json({ shopRecords, shopSessionRecords, generalSettingsModel, allThemes,activeTheme, isEnabledAppEmbed, reviewExtensionId });
+		return json({ shopRecords, shopSessionRecords, generalSettingsModel, allThemes, activeTheme, isEnabledAppEmbed, reviewExtensionId });
 
 	} catch (error) {
 		console.error('Error fetching records:', error);
@@ -54,7 +61,7 @@ export default function GeneralSettings() {
 	const loaderData = useLoaderData();
 	const shopRecords = loaderData.shopRecords;
 	const shopSessionRecords = loaderData.shopSessionRecords;
-	
+
 	const [generalSettings, setGeneralSettings] = useState(loaderData.generalSettingsModel);
 	const reviewExtensionId = loaderData.reviewExtensionId;
 	const allThemes = loaderData.allThemes;
@@ -94,8 +101,8 @@ export default function GeneralSettings() {
 		generalSettings?.is_enable_seo_rich_snippet || false
 	);
 
-
 	const [currentLanguage, setCurrentLanguage] = useState(generalSettings?.defaul_language || '');
+	const [footerCurrentLanguage, setFooterCurrentLanguage] = useState(generalSettings?.defaul_language || '');
 	const [footerText, setFooterText] = useState('');
 
 	let themesOptions = allThemes.map(theme => ({
@@ -114,20 +121,19 @@ export default function GeneralSettings() {
 	}));
 
 
-
 	useEffect(() => {
 
-
-		const footerEmailTextInfo = (generalSettings && generalSettings[currentLanguage]) ? generalSettings[currentLanguage] : {};
+		const footerEmailTextInfo = (generalSettings && generalSettings[footerCurrentLanguage]) ? generalSettings[footerCurrentLanguage] : {};
 		const { footerText } = footerEmailTextInfo;
 		setFooterText(footerText || '');
+		setFooterCurrentLanguage(footerCurrentLanguage);
 
 		setInitialData({
 			reply_email: generalSettings.reply_email || '',
 			footerText: footerText || ''
 		});
 
-	}, [generalSettings, currentLanguage]);
+	}, [footerCurrentLanguage]);
 
 	const handleSelectChange = async (value, name) => {
 
@@ -158,6 +164,7 @@ export default function GeneralSettings() {
 				setCurrentLanguage(generalSettings.defaul_language);
 			} else if (name == "defaul_language") {
 				setCurrentLanguage(value);
+				setFooterCurrentLanguage(value);
 			}
 
 			shopify.toast.show(data.message, {
@@ -171,23 +178,65 @@ export default function GeneralSettings() {
 		}
 	};
 
-	const handleFooterLanguageChange = async (value, name) => {
-		setCurrentLanguage(value);
-	};
+	const handleFooterLanguageChange = useCallback((value) => {
+		setFooterCurrentLanguage(value);
+	}, []);
 
-	const changeInput = (event) => {
-		const eventKey = event.target.name;
-		const eventVal = event.target.value;
+	const changeInput = useCallback((value, name) => {
+		const eventKey = name;
+		const eventVal = value;
 
 		if (eventKey == 'reply_email') {
 			setReplyEmail(eventVal);
 		} else if (eventKey == 'footerText') {
 			setFooterText(eventVal);
 		}
+	}, []);
 
-	};
+	const handleReplyEmailBlur = useCallback(async (value, name) => {
+		const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		console.log(value, name);
+		setIsValidReplyEmail(false);
 
-	const handleReplyEmailBlur = async (e) => {
+		if (regex.test(value) || value == '') {
+
+			setIsValidReplyEmail(true);
+
+			if (initialReplyEmail != value) {
+				const updateData = {
+					field: name,
+					value: replyEmail,
+					shop: shopRecords.shop,
+					actionType: "generalSettings"
+				};
+				const response = await fetch('/api/general-settings', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(updateData),
+				});
+
+				const data = await response.json();
+				if (data.status == 200) {
+					shopify.toast.show(data.message, {
+						duration: settingsJson.toasterCloseTime
+					});
+				} else {
+					shopify.toast.show(data.message, {
+						duration: settingsJson.toasterCloseTime,
+						isError: true
+					});
+				}
+
+				setInitialReplyEmail(value);
+
+			}
+
+		}
+	});
+
+	const handleReplyEmailBlurolx = async (e) => {
 
 		const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -231,17 +280,16 @@ export default function GeneralSettings() {
 		}
 	};
 
-	const handleCheckboxEnableChange = async event => {
+	const handleCheckboxEnableChange = useCallback(async (checked, name) => {
 		try {
-			const eventKey = event.target.name;
+			const eventKey = name;
 
 			const updateData = {
-				field: event.target.name,
-				value: event.target.checked,
+				field: eventKey,
+				value: checked,
 				actionType: "generalSettings",
 				shop: shopRecords.shop
 			};
-
 			const response = await fetch('/api/general-settings', {
 				method: 'POST',
 				headers: {
@@ -261,32 +309,35 @@ export default function GeneralSettings() {
 				});
 			}
 			if (eventKey == 'email_footer_enabled') {
-				setIsEnableFooterTextChecked(!event.target.checked);
+				setIsEnableFooterTextChecked(checked);
 			} else if (eventKey == 'is_enable_import_from_external_source') {
-				setIsEnableImportFromExternalSource(!event.target.checked);
+				setIsEnableImportFromExternalSource(checked);
 			} else if (eventKey == 'is_enable_marked_verified_by_store_owner') {
-				setIsEnableMarkedVerifiedByStoreOwner(!event.target.checked);
+				setIsEnableMarkedVerifiedByStoreOwner(checked);
 			} else if (eventKey == 'is_enable_review_written_by_site_visitor') {
-				setIsEnableReviewWrittenBySiteVisitor(!event.target.checked);
+				setIsEnableReviewWrittenBySiteVisitor(checked);
 			} else if (eventKey == 'is_enable_review_not_verified') {
-				setIsEnableReviewNotVerified(!event.target.checked);
+				setIsEnableReviewNotVerified(checked);
 			} else if (eventKey == 'is_enable_future_purchase_discount') {
-				setIsEnableFuturePurchaseDiscount(!event.target.checked);
+				setIsEnableFuturePurchaseDiscount(checked);
 			} else if (eventKey == 'is_enable_seo_rich_snippet') {
-				setIsEnableSeoRichSnippetChecked(!event.target.checked);
+				setIsEnableSeoRichSnippetChecked(checked);
 			}
 		} catch (error) {
 			console.error('Error updating record:', error);
 		}
+	}, []);
 
-	};
 
-	const inputFooterTextBlur = async (e) => {
-		if (initialData[e.target.name] != e.target.value) {
+	const inputFooterTextBlur = useCallback(async (value, name) => {
+		const eventKey = name;
+		const eventVal = value;
+		console.log("input blur : ", footerCurrentLanguage);
+		if (initialData[eventKey] != eventVal) {
 			const updateData = {
-				field: e.target.name,
-				value: e.target.value,
-				language: currentLanguage,
+				field: eventKey,
+				value: eventVal,
+				language: footerCurrentLanguage,
 				actionType: "generalSettingsFooterText",
 				shop: shopRecords.shop
 			};
@@ -302,9 +353,9 @@ export default function GeneralSettings() {
 
 				setGeneralSettings(prevState => ({
 					...(prevState || {}),  // Ensure prevState is an object
-					[currentLanguage]: {
-						...(prevState ? prevState[currentLanguage] : {}),  // Ensure nested object is an object
-						[e.target.name]: e.target.value
+					[footerCurrentLanguage]: {
+						...(prevState ? prevState[footerCurrentLanguage] : {}),  // Ensure nested object is an object
+						[eventKey]: eventVal
 					}
 				}));
 
@@ -319,8 +370,8 @@ export default function GeneralSettings() {
 				});
 			}
 		}
+	}, [footerCurrentLanguage]);
 
-	}
 
 	const handleSelectThemeChange = async (value, name) => {
 		setSelectedTheme(parseInt(value));
@@ -366,10 +417,7 @@ export default function GeneralSettings() {
 
 				<div className="pagebox">
 					<div className="graywrapbox gapy24">
-						{/* <div className="subtitlebox">
-						<h2>General setting</h2>
-						<p>Choose the right W3 plan to grow your business</p>
-					</div> */}
+						<Text variant="headingLg" as="h5">General setting</Text>
 						<div className="general_row">
 							<a href="#" className="whitebox ourplanbox flxrow">
 								<div className="iconbox flxfix">
@@ -384,21 +432,21 @@ export default function GeneralSettings() {
 								</div>
 							</a>
 						</div>
-						<div className="whitebox">
-							<div className="general_row">
-								<div className="row_title">
-									<div className="flxflexi lefttitle">
-										<h4>Add {settingsJson.app_name} to your theme</h4>
-										<p><b>To enable the {settingsJson.app_name} Core Script on your Shopify theme, follow the steps below.</b></p>
-										<p>1 . Select the theme you want to integrate with {settingsJson.app_name}</p>
-										<p>2 . Click "Add {settingsJson.app_name} to your theme"</p>
-										<p>3 . Make sure "{settingsJson.app_name} Core Script" is on</p>
-										<p>4 . Click "Save"</p>
-									</div>
-								</div>
-								<div className="formrow flxrow gapx24">
-									<div className="flxflexi">
-										<div className="form-group m-0">
+
+						<Card sectioned padding="400" roundedAbove="xs">
+							<BlockStack gap="500">
+								<BlockStack gap="100">
+									<Text as="h3" variant="headingMd">Add {settingsJson.app_name} to your theme</Text>
+									<Text >To enable the {settingsJson.app_name} Core Script on your Shopify theme, follow the steps below.</Text>
+									<Text >1 . Select the theme you want to integrate with {settingsJson.app_name}</Text>
+									<Text>2 . Click "Add {settingsJson.app_name} to your theme"</Text>
+									<Text>3 . Make sure "{settingsJson.app_name} Core Script" is on</Text>
+									<Text>4 . Click "Save"</Text>
+								</BlockStack>
+
+								<BlockStack gap="400">
+									<InlineGrid columns={['twoThirds', 'oneThird']} alignItems="center">
+										<Box>
 											<Select
 												name="theme_id"
 												id="theme_id"
@@ -408,397 +456,231 @@ export default function GeneralSettings() {
 												}
 												value={selectedTheme}
 											/>
-										</div>
-									</div>
-									<div className="flxfix">
-										<button type="button" className="revbtn" onClick={addAppEmbedToTheme} disabled={!addAppThemeButton}  >Add {settingsJson.app_name} to your theme</button>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div className="whitebox">
-							<div className="general_row">
-								<div className="row_title">
-									<div className="flxflexi lefttitle">
-										<h4>Localization</h4>
-										<p>Customize the languages used in {settingsJson.app_name} widgets and emails</p>
-									</div>
-								</div>
-								<div className="formrow">
-									<div className="row">
-										<div className="col-lg-6">
-											<div className="form-group m-0">
-												<label htmlFor="">Primary language</label>
+										</Box>
+										<Box style={{ marginLeft: '10px' }} >
+											<Button variant="primary" className="revbtn" onClick={addAppEmbedToTheme} disabled={!addAppThemeButton}  >Add {settingsJson.app_name} to your theme</Button>
+										</Box>
+									</InlineGrid>
+								</BlockStack>
+							</BlockStack>
+						</Card>
 
-												<Select
-													name="defaul_language"
-													id="defaul_language"
-													options={formattedLanguages}
-													onChange={
-														handleSelectChange
-													}
-													value={generalSettings?.defaul_language}
-												/>
+						<Card sectioned padding="400" roundedAbove="xs">
+							<BlockStack gap="500">
+								<BlockStack gap="100">
+									<Text as="h3" variant="headingMd">Localization</Text>
+									<Text>Customize the languages used in {settingsJson.app_name} widgets and emails</Text>
+								</BlockStack>
 
-											</div>
-										</div>
-										<div className="col-lg-6">
-											<div className="form-group m-0">
-												<label htmlFor="">Multilingual support</label>
-												<Select
-													name="multilingual_support"
-													id="multilingual_support"
-													options={[{ "label": "Enabled", "value": "true" }, { "label": "Disabled", "value": "false" }]}
-													onChange={
-														handleSelectChange
-													}
-													value={generalSettings.multilingual_support ? "true" : "false"}
-												/>
+								<Select
+									label="Primary language"
+									name="defaul_language"
+									id="defaul_language"
+									options={formattedLanguages}
+									onChange={
+										handleSelectChange
+									}
+									value={generalSettings?.defaul_language}
+								/>
 
-											</div>
-										</div>
-										<div className="col-lg-12">
-											<div className="inputnote"><strong>Note:</strong> When you enable multilingual support, we will use each customer's checkout language for the emails and review form.</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div className="whitebox">
-							<div className="general_row">
-								<div className="row_title">
-									<div className="flxflexi lefttitle">
-										<h4>Email replies address</h4>
-										<p>Customer replies to {settingsJson.app_name} emails will be sent to this email address</p>
-									</div>
-								</div>
-								<div className="formrow">
-									<div className="row">
-										<div className="col-lg-12">
-											<div className="form-group m-0">
-												<label htmlFor="">Send email replies to</label>
+								<Select
+									label="Multilingual support"
 
-												<input type="text" onBlur={handleReplyEmailBlur} onChange={changeInput} name="reply_email" value={replyEmail} className="input_text" placeholder="Enter your email address" />
-												{!isValidReplyEmail && <small className="text-danger">Email address is invalid.</small>}
+									name="multilingual_support"
+									id="multilingual_support"
+									options={[{ "label": "Enabled", "value": "true" }, { "label": "Disabled", "value": "false" }]}
+									onChange={
+										handleSelectChange
+									}
+									value={generalSettings.multilingual_support ? "true" : "false"}
+								/>
 
-											</div>
-										</div>
-										<div className="col-lg-12">
-											<div className="inputnote">Leave empty to have email replies sent to: <strong>{shopRecords.email}</strong></div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div className="whitebox">
-							<div className="general_row">
-								<div className="row_title">
-									<div className="flxflexi lefttitle">
-										<h4>Email footer</h4>
-										<p>Display text in the footer of {settingsJson.app_name} emails</p>
-									</div>
-									<div className="flxfix rightaction">
-										<div className="form-check form-switch">
-											<input
-												checked={
-													isEnableFooterTextChecked
-												}
-												onChange={
-													handleCheckboxEnableChange
-												}
-												className="form-check-input"
-												type="checkbox"
-												role="switch"
-												name="email_footer_enabled"
-												id="enablefooterText"
-											/>
-											<label
-												className="form-check-label"
-												htmlFor="enablefooterText"
-											>
-												Display Footer
-											</label>
+								<Text><strong>Note:</strong> When you enable multilingual support, we will use each customer's checkout language for the emails and review form.</Text>
 
-										</div>
-									</div>
-								</div>
-								<div className="formrow">
-									<div className="row gapy16">
-										{generalSettings.multilingual_support &&
-											<div className="col-lg-4">
-												<div className="form-group m-0">
-													<label htmlFor="">Editing text in</label>
+							</BlockStack>
+						</Card>
 
-													<Select
-														name="footer_email_text_language"
-														id="footer_email_text_language"
-														options={formattedLanguages}
-														onChange={
-															handleFooterLanguageChange
-														}
-														value={currentLanguage}
-													/>
 
-												</div>
-											</div>
+						<Card sectioned padding="400" roundedAbove="xs">
+							<BlockStack gap="500">
+								<BlockStack gap="100">
+									<Text as="h3" variant="headingMd">Email replies address</Text>
+									<Text>Customer replies to {settingsJson.app_name} emails will be sent to this email address</Text>
+								</BlockStack>
+
+								<TextField
+									label="Send email replies to"
+									type="email"
+									value={replyEmail}
+									onChange={(value) => changeInput(value, "reply_email")}
+									onBlur={() => handleReplyEmailBlur(replyEmail, "reply_email")} // pass the value directly
+									autoComplete="off"
+									placeholder="Enter your email address"
+									helpText={`Leave empty to have email replies sent to: ${shopRecords.email}`}
+
+								/>
+
+								{!isValidReplyEmail && <InlineError message="Email address is invalid" />}
+
+							</BlockStack>
+						</Card>
+
+
+						<Card padding="400" roundedAbove="xs">
+							<BlockStack gap="500">
+								<InlineGrid gap="400" columns={['twoThirds', 'oneThird']} alignItems="center">
+									<InlineStack align="start" gap="400" >
+										<BlockStack gap="100">
+											<Text as="h4" variant="headingMd">Email footer</Text>
+											<p>Display text in the footer of {settingsJson.app_name} emails</p>
+
+										</BlockStack>
+
+									</InlineStack>
+									<InlineStack align="end" gap="400" >
+										<Checkbox
+											label="Display Footer"
+											checked={isEnableFooterTextChecked}
+											onChange={(value) => handleCheckboxEnableChange(value, "email_footer_enabled")}
+										/>
+									</InlineStack>
+								</InlineGrid>
+
+								{generalSettings.multilingual_support &&
+									<Select
+										label="Editing text in"
+										name="footer_email_text_language"
+										id="footer_email_text_language"
+										options={formattedLanguages}
+										onChange={
+											handleFooterLanguageChange
 										}
-										<div className="col-lg-12">
-											<div className="form-group m-0">
-												<label htmlFor="">Footer text</label>
+										value={footerCurrentLanguage}
+									/>
+								}
+								<TextField
+									label="Footer text"
+									value={footerText}
+									onChange={(value) => changeInput(value, "footerText")}
+									onBlur={() => inputFooterTextBlur(footerText, "footerText")} // pass the value directly
 
-												<input type="text" disabled={!isEnableFooterTextChecked} onChange={changeInput} onBlur={inputFooterTextBlur} value={footerText} className="input_text" name="footerText" placeholder="Enter your email address" />
-											</div>
-										</div>
+									disabled={!isEnableFooterTextChecked}
+									autoComplete="off"
+									placeholder="Enter footer text"
+								/>
+							</BlockStack>
+						</Card>
 
-									</div>
-								</div>
-							</div>
-						</div>
-						<div className="whitebox">
-							<div className="general_row">
-								<div className="row_title">
-									<div className="flxflexi lefttitle">
-										<h4>Email compliance</h4>
-										<p>Choose who receives {settingsJson.app_name} emails, and how to handle unsubscribes</p>
-									</div>
-								</div>
-								<div className="formrow">
-									<div className="row gapy16">
-										<div className="col-lg-12">
-											<div className="form-group m-0">
+						<Card padding="400" roundedAbove="xs">
+							<BlockStack gap="500">
+								<BlockStack gap="100">
+									<Text as="h4" variant="headingMd">Email compliance</Text>
+									<Text>Choose who receives {settingsJson.app_name} emails, and how to handle unsubscribes</Text>
+								</BlockStack>
+								<Select
+									label="Send emails"
+									name="send_email_type"
+									id="send_email_type"
+									options={emailsOptions}
+									onChange={
+										handleSelectChange
+									}
+									value={generalSettings?.send_email_type}
+								/>
+								<Select
+									label="Unsubscribing"
+									name="unsubscribing_type"
+									id="unsubscribing_type"
+									options={unsubscribeOptions}
+									onChange={
+										handleSelectChange
+									}
+									value={generalSettings?.unsubscribing_type}
+								/>
 
-												<label htmlFor="">Send emails</label>
+							</BlockStack>
 
-												<Select
-													name="send_email_type"
-													id="send_email_type"
-													options={emailsOptions}
-													onChange={
-														handleSelectChange
-													}
-													value={generalSettings?.send_email_type}
-												/>
+						</Card>
 
+						<Card padding="400" roundedAbove="xs">
+							<BlockStack gap="200">
+								<BlockStack gap="100">
+									<Text as="h4" variant="headingMd">Transparency</Text>
+									<Text>{settingsJson.app_name} enables you to automatically display disclosures, in order to comply with any local laws, rules and regulations</Text>
+								</BlockStack>
 
-											</div>
-										</div>
-										<div className="col-lg-12">
-											<div className="form-group m-0">
-												<label htmlFor="">Unsubscribing</label>
+								<Select
+									label="Verified review style"
+									name="verified_review_style"
+									id="verified_review_style"
+									options={[{ "label": "Icon only", "value": "icon" }, { "label": "Icon + Text", "value": "icon_text" }]}
+									onChange={
+										handleSelectChange
+									}
+									value={generalSettings.verified_review_style}
+								/>
 
-												<Select
-													name="unsubscribing_type"
-													id="unsubscribing_type"
-													options={unsubscribeOptions}
-													onChange={
-														handleSelectChange
-													}
-													value={generalSettings?.unsubscribing_type}
-												/>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div className="whitebox">
-							<div className="general_row">
-								<div className="row_title">
-									<div className="flxflexi lefttitle">
-										<h4>Transparency</h4>
-										<p>{settingsJson.app_name} enables you to automatically display disclosures, in order to comply with any local laws, rules and regulations</p>
-									</div>
-								</div>
-								<div className="formrow">
-									<div className="row gapy16">
-										<div className="col-lg-4">
-											<div className="form-group m-0">
-												<label htmlFor="">Verified review style</label>
+								<Checkbox
+									label="Indicate that a review was imported from an external source"
+									helpText="Display a disclosure in the review detail popup about reviews that were imported from a CSV file or another external source."
+									checked={isEnableImportFromExternalSource}
+									onChange={(value) => handleCheckboxEnableChange(value, "is_enable_import_from_external_source")}
+								/>
 
-												<Select
-													name="verified_review_style"
-													id="verified_review_style"
-													options={[{ "label": "Icon only", "value": "icon" }, { "label": "Icon + Text", "value": "icon_text" }]}
-													onChange={
-														handleSelectChange
-													}
-													value={generalSettings.verified_review_style}
-												/>
+								<Checkbox
+									label="Indicate that a review was marked as verified by the store owner"
+									helpText="Display a disclosure in the review detail popup about site visitor reviews and imported reviews that you marked as verified."
+									checked={isEnableMarkedVerifiedByStoreOwner}
+									onChange={(value) => handleCheckboxEnableChange(value, "is_enable_marked_verified_by_store_owner")}
+								/>
 
-											</div>
-										</div>
-										<div className="col-lg-12">
-											<div className="form-group m-0">
-												<div className="form-check form-switch">
+								<Checkbox
+									label="Indicate that a review was written by a site visitor"
+									helpText="Display a disclosure in the review detail popup about reviews that were submitted by a visitor on your store."
+									checked={isEnableReviewWrittenBySiteVisitor}
+									onChange={(value) => handleCheckboxEnableChange(value, "is_enable_review_written_by_site_visitor")}
+								/>
 
-													<input
-														checked={
-															isEnableImportFromExternalSource
-														}
-														onChange={
-															handleCheckboxEnableChange
-														}
-														className="form-check-input"
-														type="checkbox"
-														role="switch"
-														name="is_enable_import_from_external_source"
-														id="is_enable_import_from_external_source"
-													/>
-													<label
-														className="form-check-label"
-														htmlFor="is_enable_import_from_external_source"
-													>
-														Indicate that a review was imported from an external source <span>Display a disclosure in the review detail popup about reviews that were imported from a CSV file or another external source.</span>
-													</label>
+								<Checkbox
+									label="Indicate that a review is not verified"
+									helpText="Display a disclosure about reviews from non-verified customers."
+									checked={isEnableReviewNotVerified}
+									onChange={(value) => handleCheckboxEnableChange(value, "is_enable_review_not_verified")}
+								/>
+
+								<Checkbox
+									label="Indicate that the reviewer received a future purchase discount for adding media to their review"
+									helpText="Display a disclosure when the reviewer received an incentive for adding a photo or a video to their review."
+									checked={isEnableFuturePurchaseDiscount}
+									onChange={(value) => handleCheckboxEnableChange(value, "is_enable_future_purchase_discount")}
+								/>
+
+							</BlockStack>
+						</Card>
+
+						<Card padding="400" roundedAbove="xs">
+							<BlockStack gap="500">
+								<BlockStack gap="100">
+									<Text as="h4" variant="headingMd">Reviewers name format</Text>
+									<Text>Customize how the reviewer name is displayed on {settingsJson.app_name} widgets</Text>
+								</BlockStack>
+
+								<Select
+									label="Display name"
+									name="reviewers_name_format"
+									id="reviewers_name_format"
+									options={reviewerNameFormatOptions}
+									onChange={
+										handleSelectChange
+									}
+									value={generalSettings.reviewers_name_format}
+								/>
+
+							</BlockStack>
+						</Card>
 
 
-												</div>
-											</div>
-										</div>
-										<div className="col-lg-12">
-											<div className="form-group m-0">
-												<div className="form-check form-switch">
-
-
-													<input
-														checked={
-															isEnableMarkedVerifiedByStoreOwner
-														}
-														onChange={
-															handleCheckboxEnableChange
-														}
-														className="form-check-input"
-														type="checkbox"
-														role="switch"
-														name="is_enable_marked_verified_by_store_owner"
-														id="is_enable_marked_verified_by_store_owner"
-													/>
-													<label
-														className="form-check-label"
-														htmlFor="is_enable_marked_verified_by_store_owner"
-													>
-														Indicate that a review was marked as verified by the store owner<span>Display a disclosure in the review detail popup about site visitor reviews and imported reviews that you marked as verified.</span>
-													</label>
-
-												</div>
-											</div>
-										</div>
-										<div className="col-lg-12">
-											<div className="form-group m-0">
-												<div className="form-check form-switch">
-													<input
-														checked={
-															isEnableReviewWrittenBySiteVisitor
-														}
-														onChange={
-															handleCheckboxEnableChange
-														}
-														className="form-check-input"
-														type="checkbox"
-														role="switch"
-														name="is_enable_review_written_by_site_visitor"
-														id="is_enable_review_written_by_site_visitor"
-													/>
-													<label
-														className="form-check-label"
-														htmlFor="is_enable_review_written_by_site_visitor"
-													>
-														Indicate that a review was written by a site visitor<span>Display a disclosure in the review detail popup about reviews that were submitted by a visitor on your store.</span>
-
-													</label>
-
-												</div>
-											</div>
-										</div>
-										<div className="col-lg-12">
-											<div className="form-group m-0">
-												<div className="form-check form-switch">
-
-													<input
-														checked={
-															isEnableReviewNotVerified
-														}
-														onChange={
-															handleCheckboxEnableChange
-														}
-														className="form-check-input"
-														type="checkbox"
-														role="switch"
-														name="is_enable_review_not_verified"
-														id="is_enable_review_not_verified"
-													/>
-													<label
-														className="form-check-label"
-														htmlFor="is_enable_review_not_verified"
-													>
-														Indicate that a review is not verified<span>Display a disclosure about reviews from non-verified customers.</span>
-
-													</label>
-												</div>
-											</div>
-										</div>
-										<div className="col-lg-12">
-											<div className="form-group m-0">
-												<div className="form-check form-switch">
-
-													<input
-														checked={
-															isEnableFuturePurchaseDiscount
-														}
-														onChange={
-															handleCheckboxEnableChange
-														}
-														className="form-check-input"
-														type="checkbox"
-														role="switch"
-														name="is_enable_future_purchase_discount"
-														id="is_enable_future_purchase_discount"
-													/>
-													<label
-														className="form-check-label"
-														htmlFor="is_enable_future_purchase_discount"
-													>
-														Indicate that the reviewer received a future purchase discount for adding media to their review<span>Display a disclosure when the reviewer received an incentive for adding a photo or a video to their review.</span>
-
-													</label>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div className="whitebox">
-							<div className="general_row">
-								<div className="row_title">
-									<div className="flxflexi lefttitle">
-										<h4>Reviewers name format</h4>
-										<p>Customize how the reviewer name is displayed on {settingsJson.app_name} widgets</p>
-									</div>
-								</div>
-								<div className="formrow">
-									<div className="row gapy16">
-										<div className="col-lg-12">
-											<div className="form-group m-0">
-												<label htmlFor="">Display name</label>
-
-												<Select
-													name="reviewers_name_format"
-													id="reviewers_name_format"
-													options={reviewerNameFormatOptions}
-													onChange={
-														handleSelectChange
-													}
-													value={generalSettings.reviewers_name_format}
-												/>
-
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div className="whitebox">
+						{/* <div className="whitebox">
 							<div className="general_row">
 								<div className="row_title">
 									<div className="flxflexi lefttitle">
@@ -815,46 +697,26 @@ export default function GeneralSettings() {
 									/>
 								</div>
 							</div>
-						</div>
-						<ProductGroupsComponent shopRecords={shopRecords} shopSessionRecords={shopSessionRecords} />
-						
-						<div className="whitebox">
-							<div className="general_row">
-								<div className="row_title">
-									<div className="flxflexi lefttitle">
-										<h4>SEO</h4>
-										<p>Display the average rating and number of reviews for each product in Google search results</p>
-									</div>
-								</div>
-								<div className="formrow">
-									<div className="form-group m-0">
-										<div className="form-check form-switch">
-											<input
-												checked={
-													isEnableSeoRichSnippetChecked
-												}
-												onChange={
-													handleCheckboxEnableChange
-												}
-												className="form-check-input"
-												type="checkbox"
-												role="switch"
-												name="is_enable_seo_rich_snippet"
-												id="ratingongooglesearch"
-											/>
-											<label
-												className="form-check-label"
-												htmlFor="ratingongooglesearch"
-											>
-												Show product ratings in Google search results
-											</label>
+						</div> */}
 
-										</div>
-									</div>
-								</div>
+						<ProductGroupsComponent shopRecords={shopRecords} shopSessionRecords={shopSessionRecords} />
+
+						<Card padding="400" roundedAbove="xs">
+							<BlockStack gap="500">
+								<BlockStack gap="100">
+									<Text as="h4" variant="headingMd">SEO</Text>
+									<Text>Display the average rating and number of reviews for each product in Google search results</Text>
+								</BlockStack>
+
+								<Checkbox
+									label="Show product ratings in Google search results"
+									checked={isEnableSeoRichSnippetChecked}
+									onChange={(value) => handleCheckboxEnableChange(value, "is_enable_seo_rich_snippet")}
+								/>
+
 								<div className="formrow">
 									{!isEnabledAppEmbed &&
-										<EnableAppEmbedAlert alertKey="general_seo_snippet" shopRecords={shopRecords} reviewExtensionId={reviewExtensionId} activeThemeId={activeTheme.id} page="general" alertClose/>
+										<EnableAppEmbedAlert alertKey="general_seo_snippet" shopRecords={shopRecords} reviewExtensionId={reviewExtensionId} activeThemeId={activeTheme.id} page="general" alertClose />
 									}
 								</div>
 								<div className="formrow">
@@ -865,9 +727,8 @@ export default function GeneralSettings() {
 										colorTheme=""
 									/>
 								</div>
-							</div>
-						</div>
-
+							</BlockStack>
+						</Card>
 
 					</div>
 				</div>

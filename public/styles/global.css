@@ -601,7 +601,7 @@ body .dropdown-toggle::after { content: "\e902"; font-family: 'icon24' !importan
 .lightdarkwrap button.darkbg i::before { background: var(--whiteBg);}
 
 
-.whitebox.p-0 .insidewhitecard.darkpreview { background: var(--darkColor); border-radius: 0 0 10px 10px;}
+.insidewhitecard.darkpreview { background: var(--darkColor); border-radius: 0 0 10px 10px;}
 
 .whitebox.p-0 .insidewhitecard { padding: 16px 24px;}
 

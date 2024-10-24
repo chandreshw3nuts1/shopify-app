@@ -11,7 +11,7 @@ const ReviewItem = (props) => {
         reviewsText = "",
         reviewsBackground = "",
         reviewsBackgroundOnHover = "";
-
+    let verifiedBadgeBackgroundColor = settingsJson.productWidgetCustomize.verifiedBadgeBackgroundColor;
     if (productReviewWidgetCustomizesModel.widgetColor == 'custom') {
         replyText = productReviewWidgetCustomizesModel.replyText;
         replyBackground = productReviewWidgetCustomizesModel.replyBackground;
@@ -19,6 +19,7 @@ const ReviewItem = (props) => {
         reviewsText = productReviewWidgetCustomizesModel.reviewsText;
         reviewsBackground = productReviewWidgetCustomizesModel.reviewsBackground;
         reviewsBackgroundOnHover = productReviewWidgetCustomizesModel.reviewsBackgroundOnHover;
+        verifiedBadgeBackgroundColor = productReviewWidgetCustomizesModel.verifiedBadgeBackgroundColor;
     } else if (productReviewWidgetCustomizesModel.widgetColor == 'white') {
 
     }
@@ -121,11 +122,11 @@ const ReviewItem = (props) => {
                                                             <>
                                                                 {props.shopRecords.verified_review_style == "icon" ? (
                                                                     <div className='verifiedreview'>
-                                                                        <ReviewVerifyIcon />
+                                                                        <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} />
                                                                     </div>
                                                                 ) : (
                                                                     <div className='verifiedreview'>
-                                                                        <ReviewVerifyIcon /> {translations.verifiedPurchase}
+                                                                        <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {translations.verifiedPurchase}
                                                                     </div>
                                                                 )}
                                                             </>
@@ -187,11 +188,11 @@ const ReviewItem = (props) => {
                                                                 <>
                                                                     {props.shopRecords.verified_review_style == "icon" ? (
                                                                         <div className='verifiedreview'>
-                                                                            <ReviewVerifyIcon />
+                                                                            <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} />
                                                                         </div>
                                                                     ) : (
                                                                         <div className='verifiedreview'>
-                                                                            <ReviewVerifyIcon /> {translations.verifiedPurchase}
+                                                                            <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {translations.verifiedPurchase}
                                                                         </div>
                                                                     )}
                                                                 </>
@@ -319,11 +320,11 @@ const ReviewItem = (props) => {
                                                                 <>
                                                                     {props.shopRecords.verified_review_style == "icon" ? (
                                                                         <div className='verifiedreview'>
-                                                                            <ReviewVerifyIcon />
+                                                                            <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} />
                                                                         </div>
                                                                     ) : (
                                                                         <div className='verifiedreview'>
-                                                                            <ReviewVerifyIcon /> {translations.verifiedPurchase}
+                                                                            <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {translations.verifiedPurchase}
                                                                         </div>
                                                                     )}
                                                                 </>

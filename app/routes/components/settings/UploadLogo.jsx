@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { getUploadDocument } from './../../../utils/documentPath';
 import settingsJson from './../../../utils/settings.json';
+import { DeleteIcon, EditIcon } from '@shopify/polaris-icons';
+import { Icon } from '@shopify/polaris';
 
 const UploadLogo = (props) => {
 	const [file, setFile] = useState('');
@@ -53,9 +55,9 @@ const UploadLogo = (props) => {
 				});
 			} else {
 				shopify.toast.show(data.message, {
-                    duration: settingsJson.toasterCloseTime,
-                    isError: true
-                });
+					duration: settingsJson.toasterCloseTime,
+					isError: true
+				});
 			}
 
 		} catch (error) {
@@ -123,7 +125,11 @@ const UploadLogo = (props) => {
 						<div className="form__image-container">
 							<img className="form__image" src={file} alt="" />
 							<div className="deleteicon" onClick={(e) => handleRemoveFile()}>
-								<i className='twenty-deleteicon'></i>
+								<Icon
+									source={DeleteIcon}
+									tone="base"
+								/>
+
 							</div>
 						</div>
 					</div>

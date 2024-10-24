@@ -6,6 +6,7 @@ export default function MasonryLayout(props) {
     const masonryContainerRef = useRef(null);
     let replyText, replyBackground, replyBackgroundOnHover, reviewsText, reviewsBackground, reviewsBackgroundOnHover = "";
 
+    let verifiedBadgeBackgroundColor = settingsJson.productWidgetCustomize.verifiedBadgeBackgroundColor;
 
     if (props.documentObj.widgetColor == 'custom') {
         replyText = props.documentObj.replyText;
@@ -14,6 +15,7 @@ export default function MasonryLayout(props) {
         reviewsText = props.documentObj.reviewsText;
         reviewsBackground = props.documentObj.reviewsBackground;
         reviewsBackgroundOnHover = props.documentObj.reviewsBackgroundOnHover;
+        verifiedBadgeBackgroundColor = props.documentObj.verifiedBadgeBackgroundColor;
     } else if (props.documentObj.widgetColor == 'white') {
 
     }
@@ -120,16 +122,13 @@ export default function MasonryLayout(props) {
                                             </p>
                                         </div>
 
-
-
-
                                         <div className='mid_detail flxflexi'>
                                             <div className='nametitle flxrow align-items-center'>
                                                 <h4 style={{ color: reviewsText }}>
                                                     Sarah M.
                                                 </h4>
                                                 <div className='verifiedreview'>
-                                                    <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                 </div>
                                             </div>
                                             {props.documentObj.reviewDates == 'show' &&
@@ -207,7 +206,7 @@ export default function MasonryLayout(props) {
                                                     Alex B.
                                                 </h4>
                                                 <div className='verifiedreview'>
-                                                    <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                 </div>
                                             </div>
                                             {props.documentObj.reviewDates == 'show' &&
@@ -274,7 +273,7 @@ export default function MasonryLayout(props) {
                                                     John H
                                                 </h4>
                                                 <div className='verifiedreview'>
-                                                    <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                 </div>
                                             </div>
                                             {props.documentObj.reviewDates == 'show' &&
@@ -353,7 +352,7 @@ export default function MasonryLayout(props) {
 
                                                 </h4>
                                                 <div className='verifiedreview'>
-                                                    <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                 </div>
                                             </div>
                                             {props.documentObj.reviewDates == 'show' &&
@@ -431,7 +430,7 @@ export default function MasonryLayout(props) {
                                                     Michael S.
                                                 </h4>
                                                 <div className='verifiedreview'>
-                                                    <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                 </div>
                                             </div>
                                             {props.documentObj.reviewDates == 'show' &&
@@ -500,7 +499,7 @@ export default function MasonryLayout(props) {
 
                                                 </h4>
                                                 <div className='verifiedreview'>
-                                                    <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                 </div>
                                             </div>
                                             {props.documentObj.reviewDates == 'show' &&
@@ -568,7 +567,7 @@ export default function MasonryLayout(props) {
 
                                                 </h4>
                                                 <div className='verifiedreview'>
-                                                    <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                 </div>
                                             </div>
                                             {props.documentObj.reviewDates == 'show' &&
@@ -645,7 +644,7 @@ export default function MasonryLayout(props) {
                                                     Jessica T.
                                                 </h4>
                                                 <div className='verifiedreview'>
-                                                    <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                 </div>
                                             </div>
                                             {props.documentObj.reviewDates == 'show' &&
@@ -712,7 +711,7 @@ export default function MasonryLayout(props) {
                                                     Daniel L.
                                                 </h4>
                                                 <div className='verifiedreview'>
-                                                    <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                 </div>
                                             </div>
                                             {props.documentObj.reviewDates == 'show' &&
@@ -780,7 +779,7 @@ export default function MasonryLayout(props) {
                                                     Olivia P.
                                                 </h4>
                                                 <div className='verifiedreview'>
-                                                    <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                 </div>
                                             </div>
                                             {props.documentObj.reviewDates == 'show' &&
@@ -824,7 +823,7 @@ export default function MasonryLayout(props) {
                                                         John H
                                                     </h4>
                                                     <div className='verifiedreview'>
-                                                        <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                        <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                     </div>
 
                                                 </div>
@@ -908,7 +907,7 @@ export default function MasonryLayout(props) {
 
                                                     </h4>
                                                     <div className='verifiedreview'>
-                                                        <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                        <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                     </div>
 
                                                 </div>
@@ -979,7 +978,7 @@ export default function MasonryLayout(props) {
                                                         Alex B.
                                                     </h4>
                                                     <div className='verifiedreview'>
-                                                        <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                        <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                     </div>
 
                                                 </div>
@@ -1063,7 +1062,7 @@ export default function MasonryLayout(props) {
 
                                                     </h4>
                                                     <div className='verifiedreview'>
-                                                        <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                        <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                     </div>
 
                                                 </div>
@@ -1147,7 +1146,7 @@ export default function MasonryLayout(props) {
 
                                                     </h4>
                                                     <div className='verifiedreview'>
-                                                        <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                        <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                     </div>
 
                                                 </div>
@@ -1222,7 +1221,7 @@ export default function MasonryLayout(props) {
 
                                                     </h4>
                                                     <div className='verifiedreview'>
-                                                        <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                        <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                     </div>
 
                                                 </div>
@@ -1303,7 +1302,7 @@ export default function MasonryLayout(props) {
 
                                                     </h4>
                                                     <div className='verifiedreview'>
-                                                        <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                        <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                     </div>
 
                                                 </div>
@@ -1387,7 +1386,7 @@ export default function MasonryLayout(props) {
 
                                                     </h4>
                                                     <div className='verifiedreview'>
-                                                        <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                        <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                     </div>
 
                                                 </div>
@@ -1469,7 +1468,7 @@ export default function MasonryLayout(props) {
 
                                                     </h4>
                                                     <div className='verifiedreview'>
-                                                        <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                        <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                     </div>
 
                                                 </div>
@@ -1552,7 +1551,7 @@ export default function MasonryLayout(props) {
                                                         Olivia P.
                                                     </h4>
                                                     <div className='verifiedreview'>
-                                                        <ReviewVerifyIcon /> {props.translator('verifiedPurchase')}
+                                                        <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
                                                     </div>
 
                                                 </div>
@@ -1630,13 +1629,15 @@ export default function MasonryLayout(props) {
                                 <div className='box-style custombg' style={{ backgroundColor: reviewsBackground }}>
                                     <div className='review'>
                                         <div className='review_topbar flxrow'>
-                                            <div className='mid_detail flxflexi' >
+                                            <div className='mid_detail nametitle  flxflexi' >
                                                 <h4>John H.</h4>
-
+                                                <div className='verifiedreview'>
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
+                                                </div>
                                                 {props.documentObj.reviewDates == 'show' &&
                                                     <div className='date' style={{ color: reviewsText }}>08/03/2024</div>
                                                 }
-
+                                                
 
                                             </div>
                                             <div className='star_reviews flxfix'>
@@ -1702,9 +1703,11 @@ export default function MasonryLayout(props) {
                                 <div className='box-style custombg' style={{ backgroundColor: reviewsBackground }}>
                                     <div className='review'>
                                         <div className='review_topbar flxrow'>
-                                            <div className='mid_detail flxflexi' >
+                                            <div className='mid_detail nametitle flxflexi' >
                                                 <h4>Sarah M.</h4>
-
+                                                <div className='verifiedreview'>
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
+                                                </div>
                                                 {props.documentObj.reviewDates == 'show' &&
                                                     <div className='date' style={{ color: reviewsText }}>08/03/2024</div>
                                                 }
@@ -1765,9 +1768,11 @@ export default function MasonryLayout(props) {
                                 <div className='box-style custombg' style={{ backgroundColor: reviewsBackground }}>
                                     <div className='review'>
                                         <div className='review_topbar flxrow'>
-                                            <div className='mid_detail flxflexi' >
+                                            <div className='mid_detail nametitle flxflexi' >
                                                 <h4>Alex B.</h4>
-
+                                                <div className='verifiedreview'>
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
+                                                </div>
                                                 {props.documentObj.reviewDates == 'show' &&
                                                     <div className='date' style={{ color: reviewsText }}>08/03/2024</div>
                                                 }
@@ -1835,9 +1840,11 @@ export default function MasonryLayout(props) {
                                 <div className='box-style custombg' style={{ backgroundColor: reviewsBackground }}>
                                     <div className='review'>
                                         <div className='review_topbar flxrow'>
-                                            <div className='mid_detail flxflexi' >
+                                            <div className='mid_detail nametitle flxflexi' >
                                                 <h4>Emily R.</h4>
-
+                                                <div className='verifiedreview'>
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
+                                                </div>
                                                 {props.documentObj.reviewDates == 'show' &&
                                                     <div className='date' style={{ color: reviewsText }}>08/03/2024</div>
                                                 }
@@ -1907,9 +1914,11 @@ export default function MasonryLayout(props) {
                                 <div className='box-style custombg' style={{ backgroundColor: reviewsBackground }}>
                                     <div className='review'>
                                         <div className='review_topbar flxrow'>
-                                            <div className='mid_detail flxflexi' >
+                                            <div className='mid_detail nametitle flxflexi' >
                                                 <h4>Michael S.</h4>
-
+                                                <div className='verifiedreview'>
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
+                                                </div>
                                                 {props.documentObj.reviewDates == 'show' &&
                                                     <div className='date' style={{ color: reviewsText }}>08/03/2024</div>
                                                 }
@@ -1977,9 +1986,11 @@ export default function MasonryLayout(props) {
                                 <div className='box-style custombg' style={{ backgroundColor: reviewsBackground }}>
                                     <div className='review'>
                                         <div className='review_topbar flxrow'>
-                                            <div className='mid_detail flxflexi' >
+                                            <div className='mid_detail nametitle flxflexi' >
                                                 <h4>Laura H.</h4>
-
+                                                <div className='verifiedreview'>
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
+                                                </div>
                                                 {props.documentObj.reviewDates == 'show' &&
                                                     <div className='date' style={{ color: reviewsText }}>08/03/2024</div>
                                                 }
@@ -2039,9 +2050,11 @@ export default function MasonryLayout(props) {
                                 <div className='box-style custombg' style={{ backgroundColor: reviewsBackground }}>
                                     <div className='review'>
                                         <div className='review_topbar flxrow'>
-                                            <div className='mid_detail flxflexi' >
+                                            <div className='mid_detail nametitle flxflexi' >
                                                 <h4>David K.</h4>
-
+                                                <div className='verifiedreview'>
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
+                                                </div>
                                                 {props.documentObj.reviewDates == 'show' &&
                                                     <div className='date' style={{ color: reviewsText }}>08/03/2024</div>
                                                 }
@@ -2112,9 +2125,11 @@ export default function MasonryLayout(props) {
                                 <div className='box-style custombg' style={{ backgroundColor: reviewsBackground }}>
                                     <div className='review'>
                                         <div className='review_topbar flxrow'>
-                                            <div className='mid_detail flxflexi' >
+                                            <div className='mid_detail nametitle flxflexi' >
                                                 <h4>Jessica T.</h4>
-
+                                                <div className='verifiedreview'>
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
+                                                </div>
                                                 {props.documentObj.reviewDates == 'show' &&
                                                     <div className='date' style={{ color: reviewsText }}>08/03/2024</div>
                                                 }
@@ -2185,9 +2200,11 @@ export default function MasonryLayout(props) {
                                 <div className='box-style custombg' style={{ backgroundColor: reviewsBackground }}>
                                     <div className='review'>
                                         <div className='review_topbar flxrow'>
-                                            <div className='mid_detail flxflexi' >
+                                            <div className='mid_detail nametitle flxflexi' >
                                                 <h4>Daniel L.</h4>
-
+                                                <div className='verifiedreview'>
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
+                                                </div>
                                                 {props.documentObj.reviewDates == 'show' &&
                                                     <div className='date' style={{ color: reviewsText }}>08/03/2024</div>
                                                 }
@@ -2248,9 +2265,11 @@ export default function MasonryLayout(props) {
                                 <div className='box-style custombg' style={{ backgroundColor: reviewsBackground }}>
                                     <div className='review'>
                                         <div className='review_topbar flxrow'>
-                                            <div className='mid_detail flxflexi' >
+                                            <div className='mid_detail nametitle flxflexi' >
                                                 <h4>Olivia P. </h4>
-
+                                                <div className='verifiedreview'>
+                                                    <ReviewVerifyIcon color={verifiedBadgeBackgroundColor} /> {props.translator('verifiedPurchase')}
+                                                </div>
                                                 {props.documentObj.reviewDates == 'show' &&
                                                     <div className='date' style={{ color: reviewsText }}>08/03/2024</div>
                                                 }

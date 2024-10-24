@@ -1,5 +1,5 @@
 import { ColorPicker, TextField, Popover } from '@shopify/polaris';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import settingsJson from './../../../utils/settings.json';
 
 // Helper function to convert HSB to RGB and then to Hex
@@ -114,6 +114,11 @@ export default function ColorPickerComponent(props) {
     const [selectedColor, setSelectedColor] = useState(
         props.documentObj && props.documentObj[props.pickerType] ? props.documentObj[props.pickerType] : defaultColor
     );
+
+    const [color, setColor] = useState(
+        props.documentObj && props.documentObj[props.pickerType] ? hexToHsb(props.documentObj[props.pickerType]) : hexToHsb(defaultColor)
+    );
+
     const [initialSelectedColor, setInitialSelectedColor] = useState(
         props.documentObj && props.documentObj[props.pickerType] ? props.documentObj[props.pickerType] : defaultColor
     );
@@ -126,55 +131,74 @@ export default function ColorPickerComponent(props) {
     };
 
     const onChangeHandle = (hsb) => {
+        setColor(hsb);
         const hexColor = hsbToHex(hsb); // Convert HSB to HEX
         setSelectedColor(hexColor); // Update selected color
-
     };
     const handlePopoverClose = async () => {
         setActivePopover(false);
-        if (activePopover && selectedColor != initialSelectedColor) {
+        if (activePopover && selectedColor != initialSelectedColor && selectedColor.length == 7) {
             await updateColorCode(selectedColor, props);
             setInitialSelectedColor(selectedColor);
-
         }
     };
 
+
+    const changeColorPicker = useCallback( async (value) => {
+        setSelectedColor(`#${value}`);
+
+        if (value.length == 6) {
+            const hexRegex = /^#[0-9a-fA-F]{6}$/;
+            if (hexRegex.test(`#${value}`)) {
+                await updateColorCode(`#${value}`, props);
+                setInitialSelectedColor(`#${value}`);
+
+            } else {
+                shopify.toast.show("Invalid color code", {
+                    duration: settingsJson.toasterCloseTime,
+                    isError: true
+                });
+
+            }
+        }
+
+    });
+
+
+
+
     return (
-        <div>
-            <Popover
-                active={activePopover}
-                activator={
-                    <div onClick={togglePopover} className="colorpicker_input" style={{ display: 'flex', alignItems: 'center', border: '1px solid #E3E4E5', borderRadius: '8px', padding: '0 8px 0 15px' }}>
-                        <span>#</span>
-                        <input
-                            className='form-control'
-                            type="text"
-                            defaultValue={selectedColor.replace('#', '')}
-                            style={{ flexGrow: 1, border: 'none', outline: 'none', cursor: 'pointer' }}
-                            maxLength={6}
-                            onClick={handlePopoverClose}
-                            placeholder={defaultColor}
-                        />
-                        <div
+        <Popover
+            active={activePopover}
+            activator={
+                <div onClick={togglePopover} className="" >
+
+                    <TextField
+                        prefix="#"
+                        suffix={<div
                             style={{
-                                width: '30px',
-                                height: '30px',
+                                width: '22px',
+                                height: '22px',
                                 backgroundColor: selectedColor.startsWith('#') ? selectedColor : `#${selectedColor}`, // Ensure the color has a # prefix
                                 borderRadius: '4px',
-                                marginLeft: '5px'
-                            }}
-                        ></div>
-                    </div>
 
-                }
-                onClose={handlePopoverClose} // Save color when closing the popover
-                preferredAlignment="left"
-            >
-                <ColorPicker
-                    onChange={(hsb) => onChangeHandle(hsb)}
-                    color={hexToHsb(selectedColor)} // Convert HEX to HSB for ColorPicker
-                />
-            </Popover>
-        </div>
+                            }}
+                        ></div>}
+                        value={selectedColor.replace('#', '')}
+                        onChange={changeColorPicker}
+                        autoComplete="off"
+                    />
+
+                </div>
+
+            }
+            onClose={handlePopoverClose} // Save color when closing the popover
+            preferredAlignment="left"
+        >
+            <ColorPicker
+                onChange={(hsb) => onChangeHandle(hsb)}
+                color={color} // Convert HEX to HSB for ColorPicker
+            />
+        </Popover>
     );
 }

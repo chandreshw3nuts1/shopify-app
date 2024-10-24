@@ -509,5 +509,72 @@
 	"floatingWidgetCustomize": {
 		"backgroundColor": "#ffffff",
 		"textColor": "#000000"
-	}
+	},
+	"orderFilterOptions" : [
+		{ "label": "All orders", "value": "all" },
+		{ "label": "Sent orders", "value": "sent" },
+		{ "label": "Scheduled/Pending fulfilled", "value": "pending" },
+		{ "label": "Review received", "value": "received" },
+		{ "label": "Cancelled", "value": "cancelled" }
+	],
+	"orderFilterDatesOptions" : [
+		{ "label": "All time", "value": "all" },
+		{ "label": "Custom", "value": "custom" }
+	],
+	"cornerOptions" :[
+		{ "label": "Sharp", "value": "0" },
+		{ "label": "Slightly Rounded", "value": "4" },
+		{ "label": "Rounded", "value": "8" },
+		{ "label": "Extra Rounded", "value": "16" }
+	],
+	"searchStatusOptions" :[
+		{ "label": "All", "value": "all" },
+		{ "label": "Pending", "value": "pending" },
+		{ "label": "Publish", "value": "publish" },
+		{ "label": "Unpublish", "value": "unpublish" }
+	],
+	"searchRatingOptions" :[
+		{ "label": "Any rating", "value": "all" },
+		{ "label": "5 stars", "value": "5" },
+		{ "label": "4 stars", "value": "4" },
+		{ "label": "3 stars", "value": "3" },
+		{ "label": "2 stars", "value": "2" },
+		{ "label": "1 star", "value": "1" }
+	],
+	"searchFilterOptions" :[
+		{ "label": "All", "value": "" },
+		{ "label": "Photo & Video Reviews", "value": "image_video" },
+		{ "label": "Only Photo", "value": "image" },
+		{ "label": "Only Video", "value": "video" },
+		{ "label": "Featured review", "value": "tag_as_feature" },
+		{ "label": "Verify badge review", "value": "verify_badge" },
+		{ "label": "Carousel review", "value": "carousel_review" },
+		{ "label": "Video slider", "value": "video_slider" },
+		{ "label": "Imported reviews", "value": "imported_review" }
+	],
+	"reviewShadowOptions" :[
+		{ "label": "Basic", "value": "basic" },
+		{ "label": "Dark offset", "value": "dark_offset" },
+		{ "label": "Light offset", "value": "light_offset" },
+		{ "label": "No shadow", "value": "no" }
+	],
+	"headerLayoutOptions" :[
+		{ "label": "Minimal", "value": "minimal" },
+		{ "label": "Compact", "value": "compact" },
+		{ "label": "Expanded", "value": "expanded" }
+	],
+	"writeReviewButtonOptions" :[
+		{ "label": "Always shown", "value": "show" },
+		{ "label": "Always hidden", "value": "hide" }
+	],
+	"hideShowOptions" :[
+		{ "label": "Shown", "value": "show" },
+		{ "label": "Hidden", "value": "hide" }
+	],
+	"sortingOptions" :[
+		{ "label": "Featured", "value": "featured" },
+		{ "label": "Newest", "value": "newest" },
+		{ "label": "Highest Ratings", "value": "highest_ratings" },
+		{ "label": "Lowest Ratings", "value": "lowest_ratings" }
+	]
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Breadcrumb from "./components/Breadcrumb";
 import ReviewPageSidebar from "./components/headerMenu/ReviewPageSidebar";
 import RatingSummary from "./components/manageReview/RatingSummary";
@@ -13,7 +13,7 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import settingsJson from './../utils/settings.json';
 const reviewImage = `/images/no-reviews-yet.svg`;
-import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
+import { Modal, TitleBar } from '@shopify/app-bridge-react';
 
 import {
 	Layout,
@@ -21,6 +21,7 @@ import {
 	Spinner,
 	Image,
 	Box,
+	Card, Button, Text, InlineGrid, InlineStack, TextField, Select
 } from "@shopify/polaris";
 
 export async function loader({ request }) {
@@ -104,27 +105,17 @@ export default function ManageReview() {
 	const [selectedRating, setSelectedRating] = useState('all');
 	const [selectedFilterOptions, setSelectedFilterOptions] = useState('all');
 
-	const handleSelectStatusChange = (e) => {
-		setSelectedStatus(e.target.value);
-		setSearchFormData({ ...searchFormData, filter_status: e.target.value });
+	const handleSelectChange = (value, name) => {
+		setSelectedStatus(value);
+		setSearchFormData({ ...searchFormData, [name]: value });
+	}
 
-	};
+	const handleChange = useCallback(
+		(value, name) => {
+			setSearchFormData({ ...searchFormData, [name]: value });
+		}
+	)
 
-	const handleSelectedRatingChange = (e) => {
-		setSelectedRating(e.target.value);
-		setSearchFormData({ ...searchFormData, filter_stars: e.target.value });
-	};
-
-	const handleSelectedFilterOptionsChange = (e) => {
-		setSelectedFilterOptions(e.target.value);
-		setSearchFormData({ ...searchFormData, filter_options: e.target.value });
-	};
-
-
-	const handleChange = (e) => {
-		setSearchFormData({ ...searchFormData, [e.target.name]: e.target.value });
-	};
-	// const [filteredReviews, setFilteredReviews] = useState(manageReviewData.reviewItems.reviewItems);
 	const [filteredReviews, setFilteredReviews] = useState([]);
 	const [filteredReviewsTotal, setFilteredReviewsTotal] = useState(0);
 
@@ -225,6 +216,7 @@ export default function ManageReview() {
 		setDocumentType(type);
 		setShowImageModal(true);
 	};
+
 	return (
 		<>
 			<Breadcrumb crumbs={crumbs} />
@@ -240,65 +232,56 @@ export default function ManageReview() {
 						{countRating > 0 ?
 							<>
 								<RatingSummary shopRecords={shopRecords} ratingData={manageReviewData.outputRatting} />
-								<div className="filterandserchwrap">
+								<Card padding="400" roundedAbove="xs">
 									<form onSubmit={handleSubmit}>
-										<div className="row">
-											<div className="col-lg-6">
-												<div className="form-group">
-													<label htmlFor="">Search</label>
-													<input type="text" name="search_keyword" value={searchFormData.search_keyword} onChange={handleChange} className="input_text" placeholder="Search by name, email and product" />
-												</div>
-											</div>
-											<div className="col-lg-6">
-												<div className="form-group">
-													<label htmlFor="">Review</label>
-													<select value={selectedStatus} onChange={handleSelectStatusChange} className="input_text">
-														<option value="all">All</option>
-														<option value="pending">Pending</option>
-														<option value="publish">Publish</option>
-														<option value="unpublish">Unpublish</option>
-													</select>
+										<Box paddingBlock="200">
+											<InlineGrid gap="400" columns={['oneHalf', 'oneHalf']} alignItems="center">
+												<Box>
+													<TextField
+														label="Search"
+														value={searchFormData.search_keyword}
+														onChange={(value) => handleChange(value, 'search_keyword')}
+														autoComplete="off"
+														placeholder="Search by name, email and product"
+													/>
+												</Box>
+												<Box>
+													<Select
+														label="Status"
+														options={settingsJson.searchStatusOptions}
+														onChange={(value) => handleSelectChange(value, "filter_status")}
+														value={searchFormData.filter_status}
+													/>
+												</Box>
+											</InlineGrid>
+										</Box>
 
-												</div>
-											</div>
-											<div className="col-lg-6">
-												<div className="form-group">
-													<label htmlFor="">Ratings</label>
-
-													<select value={selectedRating} onChange={handleSelectedRatingChange} className="input_text">
-														<option value="all">Any rating</option>
-														<option value="5">5 stars</option>
-														<option value="4">4 stars</option>
-														<option value="3">3 stars</option>
-														<option value="2">2 stars</option>
-														<option value="1">1 star</option>
-													</select>
-												</div>
-											</div>
-											<div className="col-lg-6">
-												<div className="form-group">
-													<label htmlFor="">Filter</label>
-													<select value={selectedFilterOptions} onChange={handleSelectedFilterOptionsChange} className="input_text">
-														<option value="">All</option>
-														<option value="image_video">Photo & Video Reviews</option>
-														<option value="image">Only Photo</option>
-														<option value="video">Only Video</option>
-														<option value="tag_as_feature">Featured review</option>
-														<option value="verify_badge">Verify badge review</option>
-														<option value="carousel_review">Carousel review</option>
-														<option value="video_slider">Video slider</option>
-														<option value="imported_review">Imported reviews</option>
-													</select>
-												</div>
-											</div>
-											<div className="col-lg-12">
-												<div className="btnbox">
-													<input type="submit" value="Search" className="revbtn" />
-												</div>
-											</div>
-										</div>
+										<Box paddingBlock="200">
+											<InlineGrid gap="400" columns={['oneHalf', 'oneHalf']} alignItems="center">
+												<Box>
+													<Select
+														label="Ratings"
+														options={settingsJson.searchRatingOptions}
+														onChange={(value) => handleSelectChange(value, "filter_stars")}
+														value={searchFormData.filter_stars}
+													/>
+												</Box>
+												<Box>
+													<Select
+														label="Filter"
+														options={settingsJson.searchFilterOptions}
+														onChange={(value) => handleSelectChange(value, "filter_options")}
+														value={searchFormData.filter_options}
+													/>
+												</Box>
+											</InlineGrid>
+										</Box>
+										<Box paddingBlock="200">
+											<Button submit={true} variant="primary">Search</Button>
+										</Box>
 									</form>
-								</div>
+								</Card>
+
 								<div className="dividerblk"></div>
 								<ReviewItem filteredReviews={filteredReviews} setFilteredReviews={setFilteredReviews} filteredReviewsTotal={filteredReviewsTotal} setFilteredReviewsTotal={setFilteredReviewsTotal} shopRecords={shopRecords} searchFormData={searchFormData} setSubmitHandle={setSubmitHandle} submitHandle={submitHandle} setSearchFormData={setSearchFormData} onImageClick={handleShowImageModal} />
 								<div ref={lastElementRef}>
@@ -342,7 +325,7 @@ export default function ManageReview() {
 					<TitleBar title={documentType === 'image' ? "View Image" : "View Video"}>
 					</TitleBar>
 					<Box padding="500">
-						
+
 						{documentType === 'image' && selectedImage?.url ? (
 							<img
 								src={getUploadDocument(selectedImage.url, shopRecords.shop_id)}

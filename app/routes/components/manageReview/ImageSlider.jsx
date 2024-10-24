@@ -1,12 +1,14 @@
-// src/components/ImageSlider.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styles from './imageSlider.module.css';
-import { DropdownButton, Dropdown } from 'react-bootstrap';
 import settingsJson from './../../../utils/settings.json';
 import { getUploadDocument } from './../../../utils/documentPath';
-import MoreIcon from '../../../images/MoreIcon';
 
 import UnPublishedIcon from '../../../images/UnPublishedIcon';
+import {
+	Popover, ActionList, Icon
+} from "@shopify/polaris";
+
+import { MenuVerticalIcon } from '@shopify/polaris-icons';
 
 const ImageSlider = ({ reviewDocuments, shopRecords, onImageClick, autoPlay, interval }) => {
 
@@ -18,14 +20,6 @@ const ImageSlider = ({ reviewDocuments, shopRecords, onImageClick, autoPlay, int
 	useEffect(() => {
 		setImages(reviewDocuments);
 	}, [reviewDocuments]);
-
-	const handleCloseImageModal = () => setShowImageModal(false);
-
-
-	const handleShowImageModal = (event, type) => {
-		setDocumentType(type);
-		setShowImageModal(true);
-	}
 
 	const nextSlide = () => {
 		setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -56,15 +50,9 @@ const ImageSlider = ({ reviewDocuments, shopRecords, onImageClick, autoPlay, int
 		}
 	}, [currentIndex, autoPlay, interval]);
 
-	const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-	const handleMenuToggle = () => {
-		setIsMenuOpen(!isMenuOpen);
-	};
-
 
 	const makeCoverPhoto = async (event, index) => {
-		const docId = images[index]._id;
+		setPopoverImageActionDropdown(false);
 		const customParams = {
 			doc_id: images[index]._id,
 			review_id: images[index].review_id,
@@ -85,9 +73,9 @@ const ImageSlider = ({ reviewDocuments, shopRecords, onImageClick, autoPlay, int
 			});
 		} else {
 			shopify.toast.show(data.message, {
-                duration: settingsJson.toasterCloseTime,
-                isError: true
-            });
+				duration: settingsJson.toasterCloseTime,
+				isError: true
+			});
 		}
 
 		setImages(images.map((item, idx) =>
@@ -97,7 +85,8 @@ const ImageSlider = ({ reviewDocuments, shopRecords, onImageClick, autoPlay, int
 	};
 
 	const approvePhoto = async (event, index) => {
-		const docId = images[index]._id;
+		setPopoverImageActionDropdown(false);
+
 		const customParams = {
 			doc_id: images[index]._id,
 			review_id: images[index].review_id,
@@ -118,9 +107,9 @@ const ImageSlider = ({ reviewDocuments, shopRecords, onImageClick, autoPlay, int
 			});
 		} else {
 			shopify.toast.show(data.message, {
-                duration: settingsJson.toasterCloseTime,
-                isError: true
-            });
+				duration: settingsJson.toasterCloseTime,
+				isError: true
+			});
 		}
 
 		setImages(images.map((item, idx) =>
@@ -128,7 +117,7 @@ const ImageSlider = ({ reviewDocuments, shopRecords, onImageClick, autoPlay, int
 		));
 	};
 	const hidePhoto = async (event, index) => {
-		const docId = images[index]._id;
+		setPopoverImageActionDropdown(false);
 		const customParams = {
 			doc_id: images[index]._id,
 			review_id: images[index].review_id,
@@ -149,9 +138,9 @@ const ImageSlider = ({ reviewDocuments, shopRecords, onImageClick, autoPlay, int
 			});
 		} else {
 			shopify.toast.show(data.message, {
-                duration: settingsJson.toasterCloseTime,
-                isError: true
-            });
+				duration: settingsJson.toasterCloseTime,
+				isError: true
+			});
 		}
 
 		setImages(images.map((item, idx) =>
@@ -191,6 +180,13 @@ const ImageSlider = ({ reviewDocuments, shopRecords, onImageClick, autoPlay, int
 			});
 	}
 
+	const [popoverImageActionDropdown, setPopoverImageActionDropdown] = useState(false);
+
+	
+	const togglePopoverImageActionDropdown = (index) => {
+		setPopoverImageActionDropdown(popoverImageActionDropdown === index ? null : index);
+	};
+
 	return (
 		<>
 			<div className={styles.slider}>
@@ -203,31 +199,46 @@ const ImageSlider = ({ reviewDocuments, shopRecords, onImageClick, autoPlay, int
 						>
 
 							<img onClick={() => onImageClick(image, image.type, index)} className={styles.img} src={getUploadDocument(image.thumbnail_name || image.url, shopRecords.shop_id)} alt={`Slide ${index}`} />
-							 
 
-							{/* {image.type === 'image' ? (
-							) : (
-								<video onClick={(e) => handleShowImageModal(e, image.type)} className={styles.img} controls>
-									<source src={getUploadDocument(image.thumbnail_name || image.url, shopRecords.shop_id)} type="video/mp4" />
-								</video>
-							)} */}
+							<Popover
+								active={popoverImageActionDropdown === index}
+								activator={
+									<div className={styles.menu_icon} onClick={() => togglePopoverImageActionDropdown(index)}>
+										<Icon source={MenuVerticalIcon} />
+									</div>
+								}
+
+								onClose={() => togglePopoverImageActionDropdown(index)}
+								preferredAlignment="right"
+							>
+								<ActionList
+									actionRole="menuitem"
+									items={[
+										image.is_cover === false && image.is_approve === true && {
+											content: `Make cover ${image.type === "image" ? "photo" : "video"}`,
+											onAction: (e) => makeCoverPhoto(e, index),
+										},
+										image.is_approve === false && {
+											content: `Approve ${image.type === "image" ? "photo" : "video"}`,
+											onAction: (e) => approvePhoto(e, index),
+										},
+										image.is_approve && {
+											content: `Hide ${image.type === "image" ? "photo" : "video"}`,
+											onAction: (e) => hidePhoto(e, index),
+										},
+										{
+											content: `View ${image.type === "image" ? "photo" : "video"}`,
+											onAction: (e) => openImageInNewTab(image.url),
+										},
+										{
+											content: `Download ${image.type === "image" ? "photo" : "video"}`,
+											onAction: (e) => downloadImage(image.url),
+										},
+									].filter(Boolean)}
+								/>
+							</Popover>
 
 
-							<div className='flxfix dropdownwrap ddlightbtn'>
-
-								<DropdownButton className={styles.menu_icon} id="dropdown-basic-button" title={<MoreIcon />} align={'end'}>
-									{image.is_cover == false && image.is_approve == true ?
-										<Dropdown.Item onClick={(e) => makeCoverPhoto(e, index)} eventKey="edit" className="custom-dropdown-item" >Make cover {image.type == "image" ? "photo" : "video"} </Dropdown.Item> : ""}
-									{image.is_approve == false ?
-										<Dropdown.Item onClick={(e) => approvePhoto(e, index)} eventKey="delete" className="custom-dropdown-item" >Approve {image.type == "image" ? "photo" : "video"}</Dropdown.Item> : ""}
-									{image.is_approve &&
-										<Dropdown.Item onClick={(e) => hidePhoto(e, index)} eventKey="delete" className="custom-dropdown-item" >Hide {image.type == "image" ? "photo" : "video"}</Dropdown.Item>}
-									<Dropdown.Item onClick={(e) => openImageInNewTab(image.url)} eventKey="delete" className="custom-dropdown-item" >View {image.type == "image" ? "photo" : "video"}</Dropdown.Item>
-									<Dropdown.Item onClick={(e) => downloadImage(image.url)} eventKey="delete" className="custom-dropdown-item" >Download {image.type == "image" ? "photo" : "video"}</Dropdown.Item>
-
-								</DropdownButton>
-							</div>
-							
 							{image.is_cover && image.is_approve && (
 								<span className={`${styles.cover_photo_label} ${styles.coverphotolabel}`}>
 									<i className='starsico-single-star'></i> cover {image.type == "image" ? "photo" : "video"}
@@ -253,7 +264,7 @@ const ImageSlider = ({ reviewDocuments, shopRecords, onImageClick, autoPlay, int
 					: ""
 				}
 			</div>
-			
+
 		</>
 
 	);

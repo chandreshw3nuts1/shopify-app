@@ -13,8 +13,11 @@ import {
     Page,
     Popover,
     Spinner,
-    DatePicker, TextField, Button
+    Select,
+    Grid, InlineGrid, Box,
+    DatePicker, TextField, Button, BlockStack, Card, Text, InlineStack, Badge, Divider
 } from "@shopify/polaris";
+
 
 export async function loader({ request }) {
     try {
@@ -86,16 +89,18 @@ export default function Orders() {
         setSearchFormData({ ...searchFormData, search_keyword: value });
     };
 
-    const handleSelectStatusChange = (e) => {
-        setSelectedStatus(e.target.value);
-        setSearchFormData({ ...searchFormData, filter_status: e.target.value });
-    };
+    const handleSelectStatusChange = useCallback(async (value, name) => {
+        if (name == "filterOrder") {
+            setSelectedStatus(value);
+            setSearchFormData({ ...searchFormData, filter_status: value });
+        } else {
+            setSelectedTimes(value);
+            setSearchFormData({ ...searchFormData, filter_time: value });
+            setIsAllTime(!isAllTime);
+        }
 
-    const handleSelectTimeChange = (e) => {
-        setSelectedTimes(e.target.value);
-        setSearchFormData({ ...searchFormData, filter_time: e.target.value });
-        setIsAllTime(!isAllTime);
-    };
+
+    });
 
 
     const observer = useRef();
@@ -113,7 +118,7 @@ export default function Orders() {
 
         observer.current = new IntersectionObserver(handleObserver, {
             root: null,
-            rootMargin: '0px',
+            rootMargin: '0px 0px -20% 0px', // Adjust rootMargin to trigger earlier
             threshold: 0.1,
         });
 
@@ -420,7 +425,6 @@ export default function Orders() {
 
         setInputValue(`${startDate} - ${endDate}`);
         setSearchFormData({ ...searchFormData, date_range: `${formatDate(newDates.start)} - ${formatDate(newDates.end)}` });
-        // setSearchFormData({ ...searchFormData, end_date: endDate });
 
         // Only close the Popover after the user selects both start and end dates
     };
@@ -430,6 +434,11 @@ export default function Orders() {
         if (selectedDates.start && selectedDates.end) {
             setPopoverActive(false);
         }
+    };
+
+    const showOrderPage = (orderId) => {
+        const orderDetailUrl = `${orderUrl}${shopRecords.myshopify_domain.replace(".myshopify.com", "")}/orders/${orderId}`;
+        window.open(orderDetailUrl, "_blank");
     };
 
 
@@ -449,163 +458,154 @@ export default function Orders() {
                     </div>
                     <div className="whitebox ordersearchbox">
                         <form onSubmit={handleSubmit}>
-                            <div className="row">
-                                <div className="col-lg-6">
-                                    <div className="form-group">
-                                        <TextField
-                                            name="search_keyword"
-                                            placeholder="Search by email"
-                                            value={searchFormData.search_keyword}
-                                            onChange={handleKeywordChange} // No action needed, just to comply with TextField component requirements
-                                        />
 
-                                        {/* <input type="text" name="search_keyword" className="form-control" value={searchFormData.search_keyword} onChange={handleKeywordChange} placeholder="Search by email" /> */}
-                                    </div>
-                                </div>
-                                <div className="col-lg-3">
-                                    <div className="form-group">
-                                        <select value={selectedStatus} onChange={handleSelectStatusChange} className="input_text">
-                                            <option value="all">All orders</option>
-                                            <option value="sent">Sent orders</option>
-                                            <option value="pending">Scheduled/Pending fulfilled</option>
-                                            <option value="received">Review received</option>
-                                            <option value="cancelled">Cancelled</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="col-lg-3">
-                                    <div className="form-group">
-                                        <select value={selectedTimes} onChange={handleSelectTimeChange} className="input_text">
-                                            <option value="all">All time</option>
-                                            <option value="custom">Custom</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                {!isAllTime &&
-                                    <>
-                                        <div className="col-lg-6">
-                                            <Popover
-                                                active={popoverActive} // Controls if Popover is visible
-                                                activator={
-                                                    <TextField
-                                                        placeholder="Select date range"
-                                                        value={inputValue}
-                                                        onFocus={handleInputClick} // Show Popover when input is focused
-                                                        onChange={() => { }} // No action needed, just to comply with TextField component requirements
-                                                        readOnly
-                                                    />
-                                                }
-                                                onClose={() => setPopoverActive(false)} // Close popover when user clicks outside
-                                                preferredAlignment="left" // Optional: Align the popover to the left
-                                            >
-                                                <div style={{ padding: '10px', width: '600px', maxHeight: '400px', overflow: 'hidden' }}>
-                                                    <DatePicker
-                                                        month={month}
-                                                        year={year}
-                                                        onChange={handleDateChange}
-                                                        onMonthChange={handleMonthChange}
-                                                        selected={selectedDates}
-                                                        multiMonth
-                                                        allowRange
-                                                    />
-                                                    <Button onClick={handleApplyClick} primary style={{ marginTop: '10px' }}>
-                                                        Apply
-                                                    </Button>
-                                                </div>
-                                            </Popover>
-                                        </div>
+                            <Grid>
+                                <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 2, lg: 4, xl: 4 }}>
+                                    <TextField
+                                        label="Filter by email"
 
-                                    </>
-                                }
+                                        name="search_keyword"
+                                        placeholder="Search by email"
+                                        value={searchFormData.search_keyword}
+                                        onChange={handleKeywordChange} // No action needed, just to comply with TextField component requirements
+                                    />
+                                </Grid.Cell>
+                                <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 2, lg: 4, xl: 4 }}>
+                                    <Select
+                                        label="Filter orders"
+                                        options={settingsJson.orderFilterOptions}
+                                        onChange={(value) => handleSelectStatusChange(value, 'filterOrder')}
+                                        value={selectedStatus}
+                                    />
 
-                                <div className="col-lg-12">
-                                    <div className="btnwrap m-0">
-                                        <input type="submit" className="revbtn" value="Search" />
-                                    </div>
-                                </div>
+                                </Grid.Cell>
+                                <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 2, lg: 4, xl: 4 }}>
+                                    <Select
+                                        label="Filter order by dates"
+                                        options={settingsJson.orderFilterDatesOptions}
+                                        onChange={(value) => handleSelectStatusChange(value, 'filterDate')}
+                                        value={selectedTimes}
+                                    />
+
+                                    {!isAllTime &&
+                                        <>
+                                            <div className="col-lg-6">
+                                                <Popover
+                                                    active={popoverActive} // Controls if Popover is visible
+                                                    activator={
+                                                        <TextField
+                                                            placeholder="Select date range"
+                                                            value={inputValue}
+                                                            onFocus={handleInputClick} // Show Popover when input is focused
+                                                            onChange={() => { }} // No action needed, just to comply with TextField component requirements
+                                                            readOnly
+                                                        />
+                                                    }
+                                                    onClose={() => setPopoverActive(false)} // Close popover when user clicks outside
+                                                    preferredAlignment="left" // Optional: Align the popover to the left
+                                                >
+                                                    <div style={{ padding: '10px', width: '600px', maxHeight: '400px', overflow: 'hidden' }}>
+                                                        <DatePicker
+                                                            month={month}
+                                                            year={year}
+                                                            onChange={handleDateChange}
+                                                            onMonthChange={handleMonthChange}
+                                                            selected={selectedDates}
+                                                            multiMonth
+                                                            allowRange
+                                                        />
+                                                        <Button onClick={handleApplyClick} primary style={{ marginTop: '10px' }}>
+                                                            Apply
+                                                        </Button>
+                                                    </div>
+                                                </Popover>
+                                            </div>
+                                        </>
+                                    }
+                                </Grid.Cell>
+                            </Grid>
+
+                            <div className="btnwrap m-0">
+                                <Button variant="primary" submit={true}>Search</Button>
                             </div>
+
                         </form>
                     </div>
                     {filteredOrders.length > 0 &&
-                        <div className="orderlistmain">
+                        <>
                             {filteredOrders.map((result, index) => (
-                                <div className="whitebox order_row" key={index}>
-                                    <div className="topmetabox flxrow">
-                                        <div className="titlebox flxflexi">{result.order_id ? result.first_name + " " + result.last_name : result.email}</div>
-                                        <div className="actionbox">
-                                            {result.order_id &&
-                                                <>
-                                                    <a href={`${orderUrl}${shopRecords.myshopify_domain.replace(".myshopify.com", "")}/orders/${result.order_id}`} target="_blank" className="revbtn lightbtn">
-                                                        <i className="twenty-carticon"></i>
-                                                        Go to order
-                                                    </a>
-                                                    {(result.request_status == "pending" || result.request_status == "cancel") &&
-                                                        <>
-                                                            <button href="#" onClick={(e) => sendReviewRequest(e, result._id, index)} disabled={sendNowLoading === index} className="revbtn lightbtn">
-                                                                <i className="twenty-senticon"></i>
-                                                                Send now
-                                                            </button>
-                                                        </>
-                                                    }
-                                                    {(result.request_status == "pending") &&
-                                                        <a href="#" onClick={(e) => cancelReviewRequest(e, result._id, index)} className="revbtn lightbtn">
-                                                            <i className="twenty-canceliconr"></i>
-                                                            Cancel
-                                                        </a>
-                                                    }
-                                                    {result.request_status == "cancel" && (
-                                                        <span className="revbtn lightbtn">
-                                                            <i className="twenty-canceliconr"></i>
-                                                            Cancel
-                                                        </span>
-                                                    )}
+                                <>
+                                    <Card key={index} sectioned padding="400" roundedAbove="xs" >
+                                        <BlockStack gap="500">
+                                            <InlineGrid columns={['oneThird', 'twoThirds']} alignItems="center">
+                                                <Box>
+                                                    <Text variant="headingLg" as="h5">{result.order_id ? result.first_name + " " + result.last_name : result.email}</Text>
+                                                </Box>
 
+                                                <Box alignment="end" >
+                                                    <InlineStack align="end" gap="200">
+                                                        {result.order_id &&
+                                                            <>
+                                                                <Button paddingRight="10px" variant="primary" onClick={() => showOrderPage(result.order_id)}  >
+                                                                    Go to order
+                                                                </Button>
+                                                                {(result.request_status == "pending" || result.request_status == "cancel") &&
+                                                                    <Button variant="primary" onClick={(e) => sendReviewRequest(e, result._id, index)} disabled={sendNowLoading === index} >
+                                                                        Send now
+                                                                    </Button>
+                                                                }
 
-                                                </>
+                                                                {(result.request_status == "pending") &&
+                                                                    <Button variant="primary" onClick={(e) => cancelReviewRequest(e, result._id, index)}  >
+                                                                        Cancel
+                                                                    </Button>
+                                                                }
+
+                                                                {result.request_status == "cancel" && (
+                                                                    <span className="revbtn lightbtn">
+                                                                        <i className="twenty-canceliconr"></i>
+                                                                        Cancel
+                                                                    </span>
+                                                                )}
+                                                            </>
+                                                        }
+                                                        <Badge tone="info">
+                                                            <i className="twenty-timericon"></i>
+                                                            {formatTimeAgo(result.createdAt, shopRecords.timezone, 'MM-DD-YYYY')}
+                                                        </Badge>
+
+                                                    </InlineStack>
+                                                </Box>
+                                            </InlineGrid>
+                                            <Divider />            
+                                            {result.manualRequestProducts.length > 0 &&
+                                                result.manualRequestProducts.map((products, PIx) => (
+                                                    <InlineGrid columns={['twoThirds', 'oneThird']} alignItems="center">
+                                                        <Box>
+                                                            <Text variant="headingMd" as="h6">
+                                                                {productDetails[products.product_id]
+                                                                    ? productDetails[products.product_id].product_title
+                                                                    : ""}
+                                                            </Text>
+                                                        </Box>
+
+                                                        <Box alignment="end" >
+                                                            <InlineStack align="end" gap="200">
+
+                                                                <Badge tone="info">
+                                                                    <i className="twenty-timericon"></i>
+                                                                    {renderOrderStatus(result, products)}
+                                                                </Badge>
+                                                            </InlineStack>
+                                                        </Box>
+                                                    </InlineGrid>
+                                                ))
                                             }
-                                            <span className="revbtn lightbtn">
-                                                <i className="twenty-timericon"></i>
-                                                {formatTimeAgo(result.createdAt, shopRecords.timezone, 'MM-DD-YYYY')}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    {
-                                        result.manualRequestProducts.length > 0 &&
-                                        <div className="suborderwrap">
-                                            {result.manualRequestProducts.map((products, PIx) => (
-                                                <div className="suborderrow flxrow" key={PIx}>
-                                                    <div className="ordername flxflexi">{productDetails[products.product_id]
-                                                        ? productDetails[products.product_id].product_title
-                                                        : ""}</div>
-                                                    <div className="orderstatus flxfix">
-                                                        {renderOrderStatus(result, products)}
-
-
-                                                        {/* {products.status === "sent" && (
-                                                            <span>Sent : {formatTimeAgo(products.updatedAt)}</span>
-                                                        )}
-                                                        {products.status === "fulfilled" && (
-                                                            <span>Scheduled for {formatDate(products.createdAt)}</span>
-                                                        )}
-
-                                                        {products.status === "cancelled" && (
-                                                            <span>Cancelled</span>
-                                                        )}
-
-
-                                                        {products.status === "received" && (
-                                                            <span>Review received</span>
-                                                        )} */}
-
-                                                    </div>
-                                                </div>
-                                            ))}
-
-                                        </div>
-                                    }
-                                </div>
+                                        </BlockStack>
+                                    </Card >
+                                </>
                             ))}
-                        </div>
+                        </>
                     }
                     <div ref={lastElementRef}>
                         {loading && (

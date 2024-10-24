@@ -1,7 +1,6 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import settingsJson from './../../../utils/settings.json';
-import { PlusIcon, SearchIcon } from '@shopify/polaris-icons';
-import Swal from 'sweetalert2';
+import { PlusIcon, SearchIcon, XIcon, EditIcon } from '@shopify/polaris-icons';
 import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 
 import {
@@ -10,8 +9,10 @@ import {
     ResourceItem,
     TextField,
     Thumbnail,
-    Checkbox, Spinner, Box, Icon
+    Link,
+    Checkbox, Spinner, Box, Icon, Card, Text, BlockStack, InlineGrid, InlineStack, Divider
 } from '@shopify/polaris';
+
 export default function ProductGroupsComponent(props) {
     const shopify = useAppBridge();
 
@@ -27,7 +28,8 @@ export default function ProductGroupsComponent(props) {
     const [addingProduct, setAddingProduct] = useState(false);
     const [showProductGroupForm, setShowProductGroupForm] = useState(false);
     const [editingGroupId, setEditingGroupId] = useState(null); // Track which group is being edited
-    const [displayEditedProducts, setDisplayEditedProducts] = useState([]); // Track which group is being edited
+    const [deleteGroupId, setDeleteGroupId] = useState(null); // Track which group is being edited
+    const [deleteGroupIndex, setDeleteGroupIndex] = useState(null); // Track which group is being edited
 
     const handleAddNewgroup = () => {
         setAddingProduct(true);
@@ -203,52 +205,50 @@ export default function ProductGroupsComponent(props) {
 
     }, []);
 
-    const deleteProductGroups = async (id, index) => {
-        Swal.fire({
-            title: 'Are you sure that you want to delete this group?',
-            text: "This action is irreversible, and this group will not be accessible again.",
-            // icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Delete'
-        }).then(async (result) => {
-            if (result.isConfirmed) {
 
-                try {
-                    const customParams = {
-                        id: id,
-                        actionType: "productGroup"
-                    };
-                    const response = await fetch(`/api/general-settings`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(customParams)
-                    });
-
-                    const data = await response.json();
-                    if (data.status == 200) {
-                        shopify.toast.show(data.message, {
-                            duration: settingsJson.toasterCloseTime
-                        });
-                        setAllProductGroups(allProductGroups.filter((item, i) => i !== index));
-                    } else {
-                        shopify.toast.show(data.message, {
-                            duration: settingsJson.toasterCloseTime,
-                            isError: true
-                        });
-                    }
-                } catch (error) {
-                    console.error("Error deleting record:", error);
-
-                }
-            }
-
-        });
+    const openProductGroupDeleteModal = (id, index) => {
+        shopify.modal.show('delete-product-group-modal');
+        setDeleteGroupId(id);
+        setDeleteGroupIndex(index);
 
     }
+    const deleteProductGroups = async () => {
+
+        try {
+            shopify.modal.hide('delete-product-group-modal');
+
+            const customParams = {
+                id: deleteGroupId,
+                actionType: "productGroup"
+            };
+            const response = await fetch(`/api/general-settings`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(customParams)
+            });
+
+            const data = await response.json();
+            if (data.status == 200) {
+                shopify.toast.show(data.message, {
+                    duration: settingsJson.toasterCloseTime
+                });
+                setAllProductGroups(allProductGroups.filter((item, i) => i !== deleteGroupIndex));
+            } else {
+                shopify.toast.show(data.message, {
+                    duration: settingsJson.toasterCloseTime,
+                    isError: true
+                });
+            }
+        } catch (error) {
+            console.error("Error deleting record:", error);
+
+        }
+
+
+    }
+
 
     const handleEditClick = async (groupId, event) => {
         event.preventDefault();
@@ -291,121 +291,134 @@ export default function ProductGroupsComponent(props) {
 
     return (
         <>
-            <div className="whitebox">
-                <div className="general_row">
-                    <div className="row_title">
-                        <div className="flxflexi lefttitle">
-                            <h4>Product groups</h4>
-                            <p>Share reviews between multiple products by grouping them together</p>
-                        </div>
-                    </div>
-                    {/* <div className="formrow">
-                        <div className="form-group m-0">
-                            <div className="form-check form-switch">
-                                <input
-                                    
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    role="switch"
-                                    name="is_enable_seo_rich_snippet"
-                                    id="ratingongooglesearch"
-                                />
-                                <label
-                                    className="form-check-label"
-                                    htmlFor="ratingongooglesearch"
-                                >
-                                    Show product thumbnail in grouping
-                                </label>
 
-                            </div>
-                        </div>
-                    </div> */}
+            <Card padding="400" roundedAbove="xs">
+                <BlockStack gap="400">
+                    <BlockStack gap="100">
+                        <Text as="h4" variant="headingMd">Product groups</Text>
+                        <Text>Use product grouping to share reviews on an ongoing basis between different products. This is useful if you sell similar to identical product using different Shopify product pages.</Text>
+                    </BlockStack>
+                    <Divider />
 
-                    <div>
-                        {allProductGroups.length > 0 &&
-                            <div className='selectproductwrap'>
-                                <div className='productslist'>
-                                    {allProductGroups.map((group, i) => (
-                                        <ul className='proul' key={i}>
-                                            <li>
-                                                {editingGroupId !== group._id &&
-                                                    <>
-                                                        <div className='flxflexi'>
-                                                            <a href="#" onClick={(e) => handleEditClick(group._id, e)}> {group.group_name}</a>
-                                                        </div>
-                                                        <div className='flxflexi'>
-                                                            <Button onClick={(e) => handleEditClick(group._id, e)}>
-                                                                Edit
-                                                            </Button>
-                                                            <Button onClick={(e) => deleteProductGroups(group._id, i)}>
-                                                                Delete
-                                                            </Button>
-                                                        </div>
-                                                    </>
+                    {allProductGroups.length > 0 &&
+                        <>
+                            {allProductGroups.map((group, i) => (
+                                <div key={i}>
+                                    {editingGroupId !== group._id &&
+                                        <>
 
-                                                }
-                                                {editingGroupId === group._id && (
-                                                    <>
-                                                        <div className="row_title">
-                                                            <div className="flxflexi lefttitle">
-                                                                <TextField
-                                                                    label="Group name"
-                                                                    value={groupName}
-                                                                    onChange={handleInputChange}
-                                                                    autoComplete="off"
-                                                                />
-                                                            </div>
-                                                            <div className="flxfix rightaction">
-                                                                <div className='form-group'>
-                                                                    <label className="">Products</label>
-                                                                    <Button variant="primary" onClick={handleShowProductsModal} >Select products</Button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        {allSelectedProducts.length > 0 &&
-                                                            <div className='selectproductwrap'>
-                                                                <label htmlFor="">Product </label>
-                                                                <div className='productslist'>
-                                                                    {allSelectedProducts.map((product, index) => (
-                                                                        <ul className='proul' key={index}>
-                                                                            <li >
-                                                                                <div className='imagebox flxfix'>
-                                                                                    <img width="50" src={product.product_image} alt="Product Image" />
-                                                                                </div>
-                                                                                <div className='flxflexi'>
-                                                                                    <p>Title: {product.product_title}</p>
-                                                                                </div>
-                                                                                <button className='flxfix' type="button" onClick={(e) => deleteSelectedEditProducts(product.product_id)} >
-                                                                                    <i className='twenty-closeicon'></i>
-                                                                                </button>
-                                                                            </li>
+                                            <InlineGrid gap="400" columns={['twoThirds', 'oneThird']} alignItems="center">
+                                                <InlineStack align="start" gap="400" >
 
-                                                                        </ul>
-                                                                    ))}
-                                                                </div>
-                                                            </div>
+                                                    <Link monochrome removeUnderline={true} url="#" onClick={(e) => handleEditClick(group._id, e)}>{group.group_name}</Link>
 
-                                                        }
+                                                </InlineStack>
+                                                <InlineStack align="end" gap="400" >
 
-                                                        <div className='btnwrap'>
-                                                            <Button variant="primary" onClick={cancelProductGroupFrom} >Cancel</Button>
-                                                            <Button variant="primary" onClick={saveProductsGroup} >Save Group</Button>
+                                                    <Link removeUnderline={true} url="#" onClick={(e) => handleEditClick(group._id, e)}><Icon
+                                                        source={EditIcon}
+                                                        tone="base"
+                                                    /></Link>
+                                                    <Link
+                                                        removeUnderline={true}
+                                                        url="#"
+                                                        onClick={(event) => {
+                                                            event.preventDefault();
+                                                            openProductGroupDeleteModal(group._id, i);
+                                                        }}
+                                                    >
+                                                        <Icon
+                                                            source={XIcon}
+                                                            tone="critical"
+                                                        />
+                                                    </Link>
 
-                                                        </div>
-                                                    </>
-                                                )}
+                                                </InlineStack>
+                                            </InlineGrid>
+                                        </>
 
-                                            </li>
-                                        </ul>
-                                    ))}
+                                    }
+                                    {editingGroupId === group._id && (
+                                        <>
+                                            <Box padding="400" >
 
+                                                <InlineGrid columns={['twoThirds', 'oneThird']} alignItems="center">
+                                                    <Box>
+                                                        <TextField
+                                                            label="Group name"
+                                                            value={groupName}
+                                                            onChange={handleInputChange}
+                                                            autoComplete="off"
+                                                            placeholder="Enter group name"
+
+                                                        />
+                                                    </Box>
+                                                    <Box style={{ marginLeft: '10px' }} >
+                                                        <Text>Products</Text>
+                                                        <Button variant="primary" onClick={handleShowProductsModal} >Select products</Button>
+                                                    </Box>
+
+                                                </InlineGrid>
+                                            </Box>
+                                            {allSelectedProducts.length > 0 &&
+                                                <Box padding="400" >
+                                                    <InlineGrid gap="400" columns={['twoThirds', 'oneThird']} alignItems="center">
+                                                        <InlineStack alignment="center" spacing="tight">
+                                                            <Text variant="headingSm" element="h3" style={{ flex: 1 }}>Product</Text>
+                                                        </InlineStack>
+                                                        <InlineStack align="end" spacing="tight">
+                                                            <Text variant="headingSm" element="h3" style={{ flex: 1 }}>Remove</Text>
+                                                        </InlineStack>
+
+                                                    </InlineGrid>
+                                                    <ResourceList
+                                                        resourceName={{ singular: 'product', plural: 'products' }}
+                                                        items={allSelectedProducts}
+                                                        renderItem={(product, index) => {
+                                                            const { product_id, product_title, product_image } = product;
+                                                            const media = <Thumbnail source={product_image} alt={product_title} />;
+
+                                                            return (
+                                                                <ResourceItem id={product_id} media={media}>
+                                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                                        <Text variation="strong">{product_title}</Text>
+
+                                                                        <Link
+                                                                            removeUnderline={true}
+                                                                            url="#"
+                                                                            onClick={(event) => {
+                                                                                event.preventDefault();
+                                                                                deleteSelectedEditProducts(product_id);
+                                                                            }}
+                                                                        >
+                                                                            <Icon
+                                                                                source={XIcon}
+                                                                                tone="critical"
+                                                                            /></Link>
+
+                                                                    </div>
+                                                                </ResourceItem>
+                                                            );
+                                                        }}
+                                                    />
+
+                                                    <div className='btnwrap'>
+                                                        <Button variant="primary" onClick={cancelProductGroupFrom} >Cancel</Button>
+                                                        <Button variant="primary" onClick={saveProductsGroup} >Save Group</Button>
+
+                                                    </div>
+                                                </Box>
+                                            }
+
+                                        </>
+                                    )}
                                 </div>
-                            </div>
 
-                        }
+                            ))}
+                        </>
+                    }
 
 
-                    </div>
                     {!addingProduct &&
                         <div className='btnwrap'>
                             <Button icon={PlusIcon} variant="primary" onClick={handleAddNewgroup}>
@@ -416,59 +429,76 @@ export default function ProductGroupsComponent(props) {
 
                     {showProductGroupForm &&
                         <>
-                            <div className="row_title">
-                                <div className="flxflexi lefttitle">
+                            <InlineGrid columns={['twoThirds', 'oneThird']} alignItems="center">
+                                <Box>
                                     <TextField
                                         label="Group name"
                                         value={groupName}
                                         onChange={handleInputChange}
                                         autoComplete="off"
+                                        placeholder="Enter group name"
+                                        fullWidth
                                     />
-                                </div>
-                                <div className="flxfix rightaction">
-                                    <div className='form-group'>
-                                        <label className="">Products</label>
-                                        <Button variant="primary" onClick={handleShowProductsModal} >Select products</Button>
-                                    </div>
-                                </div>
-                            </div>
+                                </Box>
+                                <Box style={{ marginLeft: '10px' }} >
+                                    <Text>Products</Text>
+                                    <Button variant="primary" onClick={handleShowProductsModal} >Select products</Button>
+                                </Box>
+
+                            </InlineGrid>
                             {allSelectedProducts.length > 0 &&
-                                <div className='selectproductwrap'>
-                                    <label htmlFor="">Product </label>
-                                    <div className='productslist'>
-                                        {allSelectedProducts.map((product, index) => (
-                                            <ul className='proul' key={index}>
+                                <>
+                                    <InlineGrid gap="400" columns={['twoThirds', 'oneThird']} alignItems="center">
+                                        <InlineStack alignment="center" spacing="tight">
+                                            <Text variant="headingSm" element="h3" style={{ flex: 1 }}>Product</Text>
+                                        </InlineStack>
+                                        <InlineStack align="end" spacing="tight">
+                                            <Text variant="headingSm" element="h3" style={{ flex: 1 }}>Remove</Text>
+                                        </InlineStack>
 
-                                                <li >
-                                                    <div className='imagebox flxfix'>
-                                                        <img width="50" src={product.product_image} alt="Product Image" />
+                                    </InlineGrid>
+                                    <ResourceList
+                                        resourceName={{ singular: 'product', plural: 'products' }}
+                                        items={allSelectedProducts}
+                                        renderItem={(product, index) => {
+                                            const { product_id, product_title, product_image } = product;
+                                            const media = <Thumbnail source={product_image} alt={product_title} />;
+
+                                            return (
+                                                <ResourceItem id={product_id} media={media}>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                        <Text variation="strong">{product_title}</Text>
+
+                                                        <Link
+                                                            removeUnderline={true}
+                                                            url="#"
+                                                            onClick={(event) => {
+                                                                event.preventDefault();
+                                                                deleteSelectedEditProducts(product_id);
+                                                            }}
+                                                        >
+                                                            <Icon
+                                                                source={XIcon}
+                                                                tone="critical"
+                                                            />
+                                                        </Link>
                                                     </div>
-                                                    <div className='flxflexi'>
-                                                        <p>Title: {product.product_title}</p>
-                                                    </div>
-                                                    <button className='flxfix' type="button" onClick={(e) => deleteSelectedEditProducts(product.product_id)} >
-                                                        <i className='twenty-closeicon'></i>
-                                                    </button>
-                                                </li>
-                                            </ul>
-
-                                        ))}
-
-                                    </div>
-                                </div>
+                                                </ResourceItem>
+                                            );
+                                        }}
+                                    />
+                                </>
 
                             }
-
                             <div className='btnwrap'>
                                 <Button variant="primary" onClick={cancelProductGroupFrom} >Cancel</Button>
                                 <Button variant="primary" onClick={saveProductsGroup} >Save Group</Button>
-
                             </div>
                         </>
                     }
 
-                </div>
-            </div>
+                </BlockStack>
+            </Card >
 
             <Modal onHide={handleCloseModal} id="select-product-modal">
                 <TitleBar title="Add products">
@@ -477,7 +507,7 @@ export default function ProductGroupsComponent(props) {
                     </button>
                     <button onClick={() => shopify.modal.hide('select-product-modal')}>Close</button>
                 </TitleBar>
-                <Box padding="200" style={{ height: '400px' }}>
+                <Box padding="400" style={{ height: '400px' }}>
                     <div style={{ position: 'sticky', top: 0, background: 'white', zIndex: 10, padding: '10px 0' }}>
                         <TextField
                             prefix={<Icon source={SearchIcon} tone="base" />}
@@ -536,6 +566,25 @@ export default function ProductGroupsComponent(props) {
                 </Box>
             </Modal>
 
+
+            <Modal id="delete-product-group-modal">
+                <TitleBar title="Delete product group">
+                    <button tone="critical" variant="primary" onClick={deleteProductGroups} >
+                        Delete
+                    </button>
+                    <button onClick={() => shopify.modal.hide('delete-product-group-modal')}>Cancel</button>
+                </TitleBar>
+                <Box padding="400">
+                    <BlockStack gap="400">
+                        <Text variant="headingXl" as="h4" style={{ marginBottom: "10px" }}>
+                            Are you sure that you want to delete this group?
+                        </Text>
+                        <Text>
+                            <strong>Warning: </strong>This action is irreversible, and this group will not be accessible again.
+                        </Text>
+                    </BlockStack>
+                </Box>
+            </Modal>
 
         </>
     );

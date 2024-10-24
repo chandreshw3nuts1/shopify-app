@@ -262,7 +262,7 @@ const ProductReviewWidgetModal = ({ show, handleClose, documentObj, shopRecords,
 
                                             <div className="dropdown">
 
-                                                <button className="dropdown-dist-btn" onClick={toggleDropdownDisct}>
+                                                <a className="dropdown-dist-btn" onClick={toggleDropdownDisct}>
                                                     <div className={`ratingstars flxrow star-4`}>
                                                         <i className='rating-star-rounded'></i>
                                                         <i className='rating-star-rounded'></i>
@@ -277,7 +277,7 @@ const ProductReviewWidgetModal = ({ show, handleClose, documentObj, shopRecords,
                                                         </div>
                                                     }
 
-                                                </button>
+                                                </a>
                                                 {isOpenDisct && (
                                                     <div className="dropdown-content">
                                                         <div className="stardetaildd">

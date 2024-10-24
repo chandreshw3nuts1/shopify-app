@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import settingsJson from './../../../utils/settings.json';
@@ -6,11 +6,14 @@ import ColorPicker from "./../settings/ColorPicker";
 import GridLayoutIcon from '../icons/GridLayoutIcon';
 import ListLayoutIcon from '../icons/ListLayoutIcon';
 import CompactLayoutIcon from '../icons/CompactLayoutIcon';
-import { Dropdown } from "react-bootstrap";
+import ReviewVerifyIcon from '../icons/ReviewVerifyIcon';
 
 import {
-    Select,
+    Select, Button, Icon, Card, Box, Text, Grid, RadioButton, BlockStack, InlineGrid, Checkbox, TextField
 } from '@shopify/polaris';
+import {
+    ViewIcon, ChevronUpIcon, ChevronDownIcon
+} from '@shopify/polaris-icons';
 import ProductReviewWidgetModal from './ProductReviewWidgetModal';
 
 const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
@@ -77,7 +80,6 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
         const language = localStorage.getItem('i18nextLng');
         setCurrentLanguage(language);
 
-
         const documentObjInfo = (documentObj && documentObj[currentLanguage]) ? documentObj[currentLanguage] : {};
         const {
             reviewHeaderTitle,
@@ -132,17 +134,13 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
 
     }, [i18n, i18n.language, currentLanguage]);
 
+    const handleRadioChange = useCallback(async (value, fieldValue, fieldName) => {
 
-    const handleSelectChange = async (event) => {
-        const eventKey = event.target.name;
-        let eventVal = event.target.value;
-        if (eventKey == 'showSortingOptions') {
-            eventVal = !selectedShowSortingOptions;
-        } else if (eventKey == 'showRatingsDistribution') {
-            eventVal = !selectedShowRatingsDistribution;
-        }
+        const eventKey = fieldName;
+        const eventVal = fieldValue;
+
         const updateData = {
-            field: event.target.name,
+            field: eventKey,
             value: eventVal,
             shop: shopRecords.shop,
             actionType: "productReviewCustomize"
@@ -177,7 +175,51 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
             setSelectedLayout(eventVal);
         } else if (eventKey == 'widgetColor') {
             setSelectedWidgetColor(eventVal);
-        } else if (eventKey == 'reviewShadow') {
+        }
+    });
+
+    const handleSelectChange = useCallback(async (fieldValue, fieldName) => {
+        console.log(fieldValue, fieldName);
+        const eventKey = fieldName;
+        let eventVal = fieldValue;
+        if (eventKey == 'showSortingOptions') {
+            eventVal = !selectedShowSortingOptions;
+        } else if (eventKey == 'showRatingsDistribution') {
+            eventVal = !selectedShowRatingsDistribution;
+        }
+        const updateData = {
+            field: eventKey,
+            value: eventVal,
+            shop: shopRecords.shop,
+            actionType: "productReviewCustomize"
+        };
+        const response = await fetch('/api/customize-widget', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updateData),
+        });
+        const data = await response.json();
+        if (data.status == 200) {
+            shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime
+            });
+
+
+            setDocumentObj(prevState => ({
+                ...(prevState || {}),  // Ensure prevState is an object
+                [eventKey]: eventVal
+            }));
+
+
+        } else {
+            shopify.toast.show(data.message, {
+                duration: settingsJson.toasterCloseTime,
+                isError: true
+            });
+        }
+        if (eventKey == 'reviewShadow') {
             setSelectedReviewShadow(eventVal);
         } else if (eventKey == 'cornerRadius') {
             setSelectedCornerRadius(eventVal);
@@ -198,16 +240,18 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
         } else if (eventKey == 'itemType') {
             setSelectedItemType(eventVal);
         }
+    });
 
+    const handleInputBlur = useCallback(async (name, value) => {
+        const fieldName = name;
+        const fieldValue = value;
 
-    };
-
-    const handleInputBlur = async (e) => {
         const language = localStorage.getItem('i18nextLng');
-        if (initialData[e.target.name] != e.target.value) {
+
+        if (initialData[fieldName] != fieldValue) {
             const updateData = {
-                field: e.target.name,
-                value: e.target.value,
+                field: fieldName,
+                value: fieldValue,
                 shop: shopRecords.shop,
                 language: language,
                 actionType: "productReviewCustomizeLanguageContent"
@@ -229,13 +273,13 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                     ...(prevState || {}),  // Ensure prevState is an object
                     [currentLanguage]: {
                         ...(prevState ? prevState[currentLanguage] : {}),  // Ensure nested object is an object
-                        [e.target.name]: e.target.value
+                        [fieldName]: fieldValue
                     }
                 }));
 
                 setInitialData(prevState => ({
                     ...(prevState || {}),
-                    [e.target.name]: e.target.value
+                    [fieldName]: fieldValue
                 }));
 
 
@@ -246,12 +290,12 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                 });
             }
         }
-    };
+    }, [initialData]);
 
-    const changeLanguageInput = (event) => {
-        const eventKey = event.target.name;
-        const eventVal = event.target.value;
 
+    const changeLanguageInput = useCallback((value, name) => {
+        const eventVal = value;
+        const eventKey = name;
         if (eventKey == 'reviewHeaderTitle') {
             setReviewHeaderTitle(eventVal);
         } else if (eventKey == 'reviewSingular') {
@@ -271,14 +315,13 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
         } else if (eventKey == 'itemTypeTitle') {
             setItemTypeTitle(eventVal);
         }
-
-    };
+    });
 
 
     useEffect(() => {
         let headerTextColor, buttonBorderColor, buttonTitleColor, buttonBackgroundOnHover, buttonTextOnHover, buttonBackground, starsBarBackground, starsBarFill, replyText, replyBackground, replyBackgroundOnHover, reviewsText, reviewsBackground, reviewsBackgroundOnHover = "";
 
-
+        let verifiedBadgeBackgroundColor = "#282828";
         if (selectedWidgetColor == 'custom') {
             headerTextColor = documentObj.headerTextColor;
             buttonBorderColor = `1px solid ${documentObj.buttonBorderColor}`;
@@ -296,6 +339,7 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
             reviewsText = documentObj.reviewsText;
             reviewsBackground = documentObj.reviewsBackground;
             reviewsBackgroundOnHover = documentObj.reviewsBackgroundOnHover;
+            verifiedBadgeBackgroundColor = documentObj.verifiedBadgeBackgroundColor;
         } else if (selectedWidgetColor == 'white') {
             headerTextColor = '#ffffff';
             buttonBorderColor = `1px solid #ffffff`;
@@ -318,7 +362,8 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
             replyBackgroundOnHover,
             reviewsText,
             reviewsBackground,
-            reviewsBackgroundOnHover
+            reviewsBackgroundOnHover,
+            verifiedBadgeBackgroundColor
         });
 
         let reviewShadow = '0px 0px 0px rgba(0, 0, 0, 0)';
@@ -347,7 +392,6 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
             return t(`productReviewConstomize.${type}`);
         }
     }
-    // console.log(selectedHeaderLayout);
 
     const minimalHeader = selectedHeaderLayout === 'minimal';
     const compactHeader = selectedHeaderLayout === 'compact';
@@ -366,6 +410,15 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
         gridClassName = 'grid-two-column';
     }
 
+    const [isOpen, setIsOpen] = useState(false);
+    const [isOpenDisct, setIsOpenDisct] = useState(false);
+
+    const toggleDropdown = () => {
+        setIsOpen((prev) => !prev);
+    };
+    const toggleDropdownDisct = () => {
+        setIsOpenDisct((prev) => !prev);
+    };
 
     return (
         <>
@@ -374,13 +427,16 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                 <p>Collect and display product reviews on your product pages.</p>
             </div>
             <div className='flxfix'>
-                <div className="row">
-                    <div className="col-lg-5">
-                        <div className='customize_wrap'>
-                            <div className="whitebox p-0">
-                                <div className='custwidtitle'>
-                                    <h3>Widget layout</h3>
-                                </div>
+                <Grid>
+                    <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 6, xl: 6 }}>
+                        <Card roundedAbove="sm">
+                            <Box paddingBlock="200">
+                                <Text variant="headingMd" as="h6">
+                                    Widget layout
+                                </Text>
+
+                            </Box>
+                            <Box paddingBlock="200">
                                 <div className='insidewhitecard'>
                                     <div className="form-group m-0">
                                         <div className='layoutstr'>
@@ -390,7 +446,7 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                                     value="grid"
                                                     name='widgetLayout'
                                                     id='gridlayout'
-                                                    onChange={handleSelectChange}
+                                                    onChange={() => handleRadioChange("", "grid", "widgetLayout")}
                                                     checked={selectedLayout === 'grid'}
 
                                                 />
@@ -405,7 +461,7 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                                     value="list"
                                                     name='widgetLayout'
                                                     id='listlayout'
-                                                    onChange={handleSelectChange}
+                                                    onChange={() => handleRadioChange("", "list", "widgetLayout")}
                                                     checked={selectedLayout === 'list'}
                                                 />
                                                 <label htmlFor="listlayout">
@@ -419,7 +475,7 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                                     value="compact"
                                                     name='widgetLayout'
                                                     id='compactlayout'
-                                                    onChange={handleSelectChange}
+                                                    onChange={() => handleRadioChange("", "compact", "widgetLayout")}
                                                     checked={selectedLayout === 'compact'}
 
                                                 />
@@ -431,718 +487,857 @@ const ProductReviewWidget = ({ shopRecords, customizeObj }) => {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="whitebox p-0">
-                                <div className='custwidtitle'>
-                                    <h3>Widget colors</h3>
-                                </div>
-                                <div className='insidewhitecard'>
-                                    <div className="form-group m-0 horizontal-form">
-                                        <div className='sideinput flxflexi'>
-                                            <div className='radiogroup vertical'>
-                                                <div className='radiobox'>
-                                                    <input
-                                                        type="radio"
-                                                        value="black"
-                                                        name='widgetColor'
-                                                        checked={selectedWidgetColor === 'black'}
-                                                        onChange={handleSelectChange}
-                                                        id='widcolorblacktext'
-                                                    />
-                                                    <label htmlFor='widcolorblacktext'>Black text (best over light backgrounds)</label>
-                                                </div>
-                                                <div className='radiobox'>
-                                                    <input
-                                                        type="radio"
-                                                        value="white"
-                                                        name='widgetColor'
-                                                        checked={selectedWidgetColor === 'white'}
-                                                        onChange={handleSelectChange}
-                                                        id='widcolorwhitetext'
-                                                    />
-                                                    <label htmlFor='widcolorwhitetext'>White text (best over dark backgrounds)</label>
-                                                </div>
-                                                <div className='radiobox'>
-                                                    <input
-                                                        type="radio"
-                                                        value="custom"
-                                                        name='widgetColor'
-                                                        checked={selectedWidgetColor === 'custom'}
-                                                        onChange={handleSelectChange}
-                                                        id='widcolorcustom'
-                                                    />
-                                                    <label htmlFor='widcolorcustom'>Custom</label>
-                                                </div>
-                                            </div>
+                            </Box>
+                        </Card>
+                        <Box paddingBlockStart="400" />
 
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {selectedWidgetColor == "custom" &&
-                                <div className="whitebox p-0">
-                                    <div className='custwidtitle'>
-                                        <h3>Custom widget colors</h3>
-                                    </div>
-                                    <div className='insidewhitecard'>
-                                        <div className='widget-theme-options'>
-                                            <div className="form-group m-0 horizontal-form">
-                                                <label htmlFor="">Header text</label>
-                                                <div className='sideinput mw300 flxflexi'>
-                                                    <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="headerTextColor" />
-                                                </div>
-                                            </div>
-                                            <div className="form-group m-0 horizontal-form">
-                                                <label htmlFor="">Button border</label>
-                                                <div className='sideinput mw300 flxflexi'>
-                                                    <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="buttonBorderColor" />
-                                                </div>
-                                            </div>
-                                            <div className="form-group m-0 horizontal-form">
-                                                <label htmlFor="">Button text</label>
-                                                <div className='sideinput mw300 flxflexi'>
-                                                    <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="buttonTitleColor" />
-                                                </div>
-                                            </div>
-                                            <div className="form-group m-0 horizontal-form">
-                                                <label htmlFor="">Button background on hover</label>
-                                                <div className='sideinput mw300 flxflexi'>
-                                                    <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="buttonBackgroundOnHover" />
-                                                </div>
-                                            </div>
-                                            <div className="form-group m-0 horizontal-form">
-                                                <label htmlFor="">Button text on hover</label>
-                                                <div className='sideinput mw300 flxflexi'>
-                                                    <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="buttonTextOnHover" />
-                                                </div>
-                                            </div>
-                                            <div className="form-group m-0 horizontal-form">
-                                                <label htmlFor="">Button background</label>
-                                                <div className='sideinput mw300 flxflexi'>
-                                                    <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="buttonBackground" />
-                                                </div>
-                                            </div>
-                                            <div className="form-group m-0 horizontal-form">
-                                                <label htmlFor="">Reviews text</label>
-                                                <div className='sideinput mw300 flxflexi'>
-                                                    <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="reviewsText" />
-                                                </div>
-                                            </div>
-                                            <div className="form-group m-0 horizontal-form">
-                                                <label htmlFor="">Reviews background</label>
-                                                <div className='sideinput mw300 flxflexi'>
-                                                    <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="reviewsBackground" />
-                                                </div>
-                                            </div>
-                                            <div className="form-group m-0 horizontal-form">
-                                                <label htmlFor="">Reviews background on hover</label>
-                                                <div className='sideinput mw300 flxflexi'>
-                                                    <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="reviewsBackgroundOnHover" />
-                                                </div>
-                                            </div>
-                                            <div className="form-group m-0 horizontal-form">
-                                                <label htmlFor="">Reply text</label>
-                                                <div className='sideinput mw300 flxflexi'>
-                                                    <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="replyText" />
-                                                </div>
-                                            </div>
-                                            <div className="form-group m-0 horizontal-form">
-                                                <label htmlFor="">Reply background</label>
-                                                <div className='sideinput mw300 flxflexi'>
-                                                    <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="replyBackground" />
-                                                </div>
-                                            </div>
-                                            <div className="form-group m-0 horizontal-form">
-                                                <label htmlFor="">Reply background on hover</label>
-                                                <div className='sideinput mw300 flxflexi'>
-                                                    <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="replyBackgroundOnHover" />
-                                                </div>
-                                            </div>
-                                            <div className="form-group m-0 horizontal-form">
-                                                <label htmlFor="">Verified badge background color</label>
-                                                <div className='sideinput mw300 flxflexi'>
-                                                    <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="verifiedBadgeBackgroundColor" />
-                                                </div>
-                                            </div>
-                                            <div className="form-group m-0 horizontal-form">
-                                                <label htmlFor="">Stars bar fill</label>
-                                                <div className='sideinput mw300 flxflexi'>
-                                                    <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="starsBarFill" />
-                                                </div>
-                                            </div>
-                                            <div className="form-group m-0 horizontal-form">
-                                                <label htmlFor="">Stars bar background</label>
-                                                <div className='sideinput mw300 flxflexi'>
-                                                    <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="starsBarBackground" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                            <div className="whitebox p-0">
-                                <div className='custwidtitle'>
-                                    <h3>Widget settings</h3>
-                                </div>
-                                <div className='insidewhitecard'>
-                                    <div className='widget-theme-options'>
-                                        <div className="form-group m-0 horizontal-form alightop">
-                                            <label htmlFor="">Review shadow</label>
-                                            <div className='sideinput mw300 flxflexi'>
+                        <Card roundedAbove="sm">
+                            <Box paddingBlock="200">
+                                <Text variant="headingMd" as="h6">
+                                    Widget colors
+                                </Text>
 
-                                                <select name="reviewShadow" onChange={handleSelectChange} value={selectedReviewShadow} className='input_text'>
-                                                    <option value="basic">Basic</option>
-                                                    <option value="dark_offset">Dark offset</option>
-                                                    <option value="light_offset">Light offset</option>
-                                                    <option value="no">No shadow</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div className="form-group m-0 horizontal-form alightop">
-                                            <label htmlFor="">Corner Radius</label>
-                                            <div className='sideinput mw300 flxflexi'>
-                                                <select name="cornerRadius" onChange={handleSelectChange} value={selectedCornerRadius} className='input_text'>
-                                                    <option value="0">Sharp</option>
-                                                    <option value="4">Slightly Rounded</option>
-                                                    <option value="8">Rounded</option>
-                                                    <option value="16">Extra Rounded</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div className="form-group m-0 horizontal-form alightop">
-                                            <label htmlFor="">Header layout</label>
-                                            <div className='sideinput mw300 flxflexi'>
-                                                <select name="headerLayout" onChange={handleSelectChange} value={selectedHeaderLayout} className='input_text'>
-                                                    <option value="minimal">Minimal</option>
-                                                    <option value="compact">Compact</option>
-                                                    <option value="expanded">Expanded</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        {/* <div className="form-group m-0 horizontal-form alightop">
-                                            <label htmlFor="">Product Reviews Widget</label>
-                                            <div className='sideinput mw300 flxflexi'>
-                                                <select name="productReviewsWidget" onChange={handleSelectChange} value={selectedProductReviewsWidget} className='input_text'>
-                                                    <option value="always_shown">Always shown</option>
-                                                    <option value="hidden_when_empty">Hidden when empty</option>
-                                                    <option value="always_hidden">Always hidden</option>
-                                                    <option value="all_reviews_when_empty">All reviews when empty</option>
-                                                    <option value="all_reviews_always">All reviews always</option>
-                                                </select>
-                                                <div className='inputnote'>Note: Hiding the widget will also hide the "Write a review" button</div>
-                                            </div>
-                                        </div> */}
-                                        <div className="form-group m-0 horizontal-form alightop">
-                                            <label htmlFor="">"Write a review" button</label>
-                                            <div className='sideinput mw300 flxflexi'>
-                                                <select name="writeReviewButton" onChange={handleSelectChange} value={selectedWriteReviewButton} className='input_text'>
-                                                    <option value="show">Always shown</option>
-                                                    <option value="hide">Always hidden</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        {/* <div className="form-group m-0 horizontal-form alightop">
-                                        <label htmlFor="">Reviews per page</label>
-                                        <div className='sideinput mw300 flxflexi'>
-                                            <select name="cornerRadius" onChange={handleSelectChange} value={selectedCornerRadius} className='input_text'>
-                                                <option value="">1</option>
-                                                <option value="">2</option>
-                                            </select>
-                                            <div className='inputnote'>Number of reviews displayed before "Show more" on product pages</div>
-                                        </div>
-                                    </div> */}
-                                        <div className="form-group m-0 horizontal-form alightop">
-                                            <label htmlFor="">Review dates</label>
-                                            <div className='sideinput mw300 flxflexi'>
-                                                <select name="reviewDates" onChange={handleSelectChange} value={selectedReviewDates} className='input_text'>
-                                                    <option value="show">Shown</option>
-                                                    <option value="hide">Hidden</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div className="form-group m-0 horizontal-form alightop">
-                                            <label htmlFor="">Item type</label>
-                                            <div className='sideinput mw300 flxflexi'>
-                                                <select name="itemType" onChange={handleSelectChange} value={selectedItemType} className='input_text'>
-                                                    <option value="show">Shown</option>
-                                                    <option value="hide">Hidden</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div className="form-group m-0 horizontal-form alightop">
-                                            <label htmlFor="">Default sorting</label>
-                                            <div className='sideinput mw300 flxflexi'>
-                                                <select name="defaultSorting" onChange={handleSelectChange} value={selectedDefaultSorting} className='input_text'>
-                                                    <option value="featured">Featured</option>
-                                                    <option value="newest">Newest</option>
-                                                    <option value="highest_ratings">Highest Ratings</option>
-                                                    <option value="lowest_ratings">Lowest Ratings</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div className="form-group m-0 horizontal-form alightop">
-                                            <label htmlFor="" className='p-0'>Show sorting options</label>
-                                            <div className='sideinput mw300 flxflexi'>
-                                                <div className="form-check form-switch">
-                                                    <input
-                                                        checked={
-                                                            selectedShowSortingOptions
-                                                        }
-                                                        onChange={
-                                                            handleSelectChange
-                                                        }
-                                                        className="form-check-input"
-                                                        type="checkbox"
-                                                        role="switch"
-                                                        name="showSortingOptions"
-                                                    />
+                            </Box>
+                            <Box paddingBlock="200">
+                                <BlockStack >
+                                    <RadioButton
+                                        label="Black text (best over light backgrounds)"
+                                        checked={selectedWidgetColor === 'black'}
+                                        id="black"
+                                        name="widgetColor"
+                                        onChange={(value, name) => handleRadioChange(value, name, "widgetColor")}
+                                    />
 
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="form-group m-0 horizontal-form alightop">
-                                            <label htmlFor="" className='p-0'>Show ratings distribution</label>
-                                            <div className='sideinput mw300 flxflexi'>
-                                                <div className="form-check form-switch">
-                                                    <input
-                                                        checked={
-                                                            selectedShowRatingsDistribution
-                                                        }
-                                                        onChange={
-                                                            handleSelectChange
-                                                        }
-                                                        className="form-check-input"
-                                                        type="checkbox"
-                                                        role="switch"
-                                                        name="showRatingsDistribution"
-                                                    />
+                                    <RadioButton
+                                        label="White text (best over dark backgrounds)"
+                                        checked={selectedWidgetColor === 'white'}
+                                        id="white"
+                                        name="widgetColor"
+                                        onChange={(value, name) => handleRadioChange(value, name, "widgetColor")}
+                                    />
 
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="whitebox p-0">
-                                <div className='custwidtitle'>
-                                    <h3>Content</h3>
-                                </div>
-                                <div className='insidewhitecard flxcol gapy18'>
-                                    <div className="form-group m-0">
-                                        <label htmlFor="">Review Header Title</label>
-                                        <div className='sideinput flxflexi'>
-                                            <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="reviewHeaderTitle" value={reviewHeaderTitle} placeholder={placeHolderLanguageData.reviewHeaderTitle} />
-                                        </div>
-                                    </div>
-                                    <div className="form-group m-0">
-                                        <label htmlFor="">Review (Singular)</label>
-                                        <div className='sideinput flxflexi'>
-                                            <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="reviewSingular" value={reviewSingular} placeholder={placeHolderLanguageData.reviewSingular} />
-                                        </div>
-                                    </div>
-                                    <div className="form-group m-0">
-                                        <label htmlFor="">Reviews (Plural)</label>
-                                        <div className='sideinput flxflexi'>
-                                            <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="reviewPlural" value={reviewPlural} placeholder={placeHolderLanguageData.reviewPlural} />
-                                        </div>
-                                    </div>
-                                    <div className="form-group m-0">
-                                        <label htmlFor="">Write a review button title</label>
-                                        <div className='sideinput flxflexi'>
-                                            <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="writeReviewButtonTitle" value={writeReviewButtonTitle} placeholder={placeHolderLanguageData.writeReviewButtonTitle} />
-                                        </div>
-                                    </div>
-                                    <div className="form-group m-0">
-                                        <label htmlFor="">No reviews title - first part</label>
-                                        <div className='sideinput flxflexi'>
-                                            <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="noReviewsTitleFirstPart" value={noReviewsTitleFirstPart} placeholder={placeHolderLanguageData.noReviewsTitleFirstPart} />
-                                        </div>
-                                    </div>
-                                    <div className="form-group m-0">
-                                        <label htmlFor="">No reviews title - last part (underlined)</label>
-                                        <div className='sideinput flxflexi'>
-                                            <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="noReviewsTitleLastPart" value={noReviewsTitleLastPart} placeholder={placeHolderLanguageData.noReviewsTitleLastPart} />
-                                        </div>
-                                    </div>
-                                    <div className="form-group m-0">
-                                        <label htmlFor="">Show more reviews title</label>
-                                        <div className='sideinput flxflexi'>
-                                            <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="showMoreReviewsTitle" value={showMoreReviewsTitle} placeholder={placeHolderLanguageData.showMoreReviewsTitle} />
-                                        </div>
-                                    </div>
-                                    <div className="form-group m-0">
-                                        <label htmlFor="">Link to product page button title</label>
-                                        <div className='sideinput flxflexi'>
-                                            <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="productPageLinkTitle" value={productPageLinkTitle} placeholder={placeHolderLanguageData.productPageLinkTitle} />
-                                        </div>
-                                    </div>
-                                    <div className="form-group m-0">
-                                        <label htmlFor="">Item type title</label>
-                                        <div className='sideinput flxflexi'>
-                                            <input type='text' className='form-control' onBlur={handleInputBlur} onChange={changeLanguageInput} name="itemTypeTitle" value={itemTypeTitle} placeholder={placeHolderLanguageData.itemTypeTitle} />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-lg-7">
-                        <div className='whitebox p-0'>
-                            <div className="custwidtitle">
-                                <h3>Preview</h3>
-                                <div className='lightdarkwrap'>
-                                    <button href='#' onClick={changeLightDarkModel} className={`${lightDarkModel ? 'darkbg' : ''}`}><i></i></button>
-                                </div>
+                                    <RadioButton
+                                        label="Custom"
+                                        checked={selectedWidgetColor === 'custom'}
+                                        id="custom"
+                                        name="widgetColor"
+                                        onChange={(value, name) => handleRadioChange(value, name, "widgetColor")}
+                                    />
+                                </BlockStack>
 
-                                <div className='btnbox ms-auto'>
-                                    <a href="#" onClick={(e) => handleShowPreviewModal()} className='revbtn tinybtn'>Preview</a>
-                                </div>
+
+                            </Box>
+                        </Card>
+
+                        {selectedWidgetColor == "custom" &&
+                            <>
+                                <Box paddingBlockStart="400" />
+
+                                <Card roundedAbove="sm">
+                                    <Box paddingBlock="200">
+                                        <Text variant="headingMd" as="h6">
+                                            Custom widget colors
+                                        </Text>
+
+                                    </Box>
+
+                                    <Box paddingBlock="200">
+                                        <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                            <Text>Header text</Text>
+                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="headerTextColor" />
+                                        </InlineGrid>
+                                    </Box>
+
+                                    <Box paddingBlock="200">
+                                        <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                            <Text>Button border</Text>
+                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="buttonBorderColor" />
+                                        </InlineGrid>
+                                    </Box>
+
+                                    <Box paddingBlock="200">
+                                        <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                            <Text>Button text</Text>
+                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="buttonTitleColor" />
+                                        </InlineGrid>
+                                    </Box>
+
+                                    <Box paddingBlock="200">
+                                        <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                            <Text>Button background on hover</Text>
+                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="buttonBackgroundOnHover" />
+                                        </InlineGrid>
+                                    </Box>
+
+                                    <Box paddingBlock="200">
+                                        <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                            <Text>Button text on hover</Text>
+                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="buttonTextOnHover" />
+                                        </InlineGrid>
+                                    </Box>
+
+                                    <Box paddingBlock="200">
+                                        <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                            <Text>Button background</Text>
+                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="buttonBackground" />
+                                        </InlineGrid>
+                                    </Box>
+
+
+                                    <Box paddingBlock="200">
+                                        <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                            <Text>Reviews text</Text>
+                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="reviewsText" />
+                                        </InlineGrid>
+                                    </Box>
+
+                                    <Box paddingBlock="200">
+                                        <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                            <Text>Reviews background</Text>
+                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="reviewsBackground" />
+                                        </InlineGrid>
+                                    </Box>
+
+                                    <Box paddingBlock="200">
+                                        <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                            <Text>Reviews background on hover</Text>
+                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="reviewsBackgroundOnHover" />
+                                        </InlineGrid>
+                                    </Box>
+
+                                    <Box paddingBlock="200">
+                                        <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                            <Text>Reply text</Text>
+                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="replyText" />
+                                        </InlineGrid>
+                                    </Box>
+
+                                    <Box paddingBlock="200">
+                                        <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                            <Text>Reply background</Text>
+                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="replyBackground" />
+                                        </InlineGrid>
+                                    </Box>
+
+                                    <Box paddingBlock="200">
+                                        <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                            <Text>Reply background on hover</Text>
+                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="replyBackgroundOnHover" />
+                                        </InlineGrid>
+                                    </Box>
+
+                                    <Box paddingBlock="200">
+                                        <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                            <Text>Verified badge icon color</Text>
+                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="verifiedBadgeBackgroundColor" />
+                                        </InlineGrid>
+                                    </Box>
+
+                                    <Box paddingBlock="200">
+                                        <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                            <Text>Stars bar fill</Text>
+                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="starsBarFill" />
+                                        </InlineGrid>
+                                    </Box>
+
+                                    <Box paddingBlock="200">
+                                        <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                            <Text>Stars bar background</Text>
+                                            <ColorPicker documentObj={documentObj} shopRecords={shopRecords} setDocumentObj={setDocumentObj} pickerContent="productWidgetCustomize" pickerType="starsBarBackground" />
+                                        </InlineGrid>
+                                    </Box>
+                                </Card>
+
+                            </>
+                        }
+
+                        <Box paddingBlockStart="400" />
+
+                        <Card roundedAbove="sm">
+                            <Box paddingBlock="200">
+                                <Text variant="headingMd" as="h6">
+                                    Widget settings
+                                </Text>
+                            </Box>
+
+                            <Box paddingBlock="200">
+                                <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                    <Text>Review shadow</Text>
+                                    <Select
+                                        options={settingsJson.reviewShadowOptions}
+                                        onChange={(value) => handleSelectChange(value, 'reviewShadow')}
+                                        value={selectedReviewShadow}
+                                    />
+                                </InlineGrid>
+                            </Box>
+
+
+                            <Box paddingBlock="200">
+                                <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                    <Text>Corner Radius</Text>
+                                    <Select
+                                        options={settingsJson.cornerOptions}
+                                        onChange={(value) => handleSelectChange(value, 'cornerRadius')}
+                                        value={selectedCornerRadius}
+                                    />
+                                </InlineGrid>
+                            </Box>
+
+                            <Box paddingBlock="200">
+                                <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                    <Text>Header layout</Text>
+                                    <Select
+                                        options={settingsJson.headerLayoutOptions}
+                                        onChange={(value) => handleSelectChange(value, 'headerLayout')}
+                                        value={selectedHeaderLayout}
+                                    />
+                                </InlineGrid>
+                            </Box>
+
+
+
+                            <Box paddingBlock="200">
+                                <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                    <Text>"Write a review" button</Text>
+                                    <Select
+                                        options={settingsJson.writeReviewButtonOptions}
+                                        onChange={(value) => handleSelectChange(value, 'writeReviewButton')}
+                                        value={selectedWriteReviewButton}
+                                    />
+                                </InlineGrid>
+                            </Box>
+
+                            <Box paddingBlock="200">
+                                <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                    <Text>Review dates</Text>
+                                    <Select
+                                        options={settingsJson.hideShowOptions}
+                                        onChange={(value) => handleSelectChange(value, 'reviewDates')}
+                                        value={selectedReviewDates}
+                                    />
+                                </InlineGrid>
+                            </Box>
+
+                            <Box paddingBlock="200">
+                                <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                    <Text>Item type</Text>
+                                    <Select
+                                        options={settingsJson.hideShowOptions}
+                                        onChange={(value) => handleSelectChange(value, 'itemType')}
+                                        value={selectedItemType}
+                                    />
+                                </InlineGrid>
+                            </Box>
+
+                            <Box paddingBlock="200">
+                                <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                    <Text>Default sorting</Text>
+                                    <Select
+                                        options={settingsJson.sortingOptions}
+                                        onChange={(value) => handleSelectChange(value, 'defaultSorting')}
+                                        value={selectedDefaultSorting}
+                                    />
+                                </InlineGrid>
+                            </Box>
+
+
+                            <Box paddingBlock="200">
+                                <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                    <Text>Show sorting options</Text>
+                                    <Checkbox
+                                        checked={selectedShowSortingOptions}
+                                        onChange={(value) => handleSelectChange(value, 'showSortingOptions')}
+                                    />
+                                </InlineGrid>
+                            </Box>
+
+                            <Box paddingBlock="200">
+                                <InlineGrid columns={['oneHalf', 'oneHalf']} alignItems="center">
+                                    <Text>Show ratings distribution</Text>
+                                    <Checkbox
+                                        checked={selectedShowRatingsDistribution}
+                                        onChange={(value) => handleSelectChange(value, 'showRatingsDistribution')}
+                                    />
+                                </InlineGrid>
+                            </Box>
+
+                        </Card>
+
+                        <Box paddingBlockStart="400" />
+
+                        <Card roundedAbove="sm">
+                            <Box paddingBlock="200">
+                                <Text variant="headingMd" as="h6">
+                                    Content
+                                </Text>
+
+                            </Box>
+
+                            <Box paddingBlock="200">
+
+                                <TextField
+                                    label="Review Header Title"
+                                    value={reviewHeaderTitle}
+                                    onChange={(value) => changeLanguageInput(value, 'reviewHeaderTitle')} // Update value on change
+                                    onBlur={() => handleInputBlur('reviewHeaderTitle', reviewHeaderTitle)}
+                                    autoComplete="off"
+                                    placeholder={placeHolderLanguageData.reviewHeaderTitle}
+                                />
+                            </Box>
+
+                            <Box paddingBlock="200">
+                                <TextField
+                                    label="Review (Singular)"
+                                    value={reviewSingular}
+                                    onChange={(value) => changeLanguageInput(value, 'reviewSingular')}
+                                    onBlur={() => handleInputBlur('reviewSingular', reviewSingular)}
+                                    autoComplete="off"
+                                    placeholder={placeHolderLanguageData.reviewSingular}
+                                />
+                            </Box>
+
+                            <Box paddingBlock="200">
+                                <TextField
+                                    label="Reviews (Plural)"
+                                    value={reviewPlural}
+                                    onChange={(value) => changeLanguageInput(value, 'reviewPlural')}
+                                    onBlur={() => handleInputBlur('reviewPlural', reviewPlural)}
+                                    autoComplete="off"
+                                    placeholder={placeHolderLanguageData.reviewPlural}
+                                />
+                            </Box>
+
+                            <Box paddingBlock="200">
+                                <TextField
+                                    label="Write a review button title"
+                                    value={writeReviewButtonTitle}
+                                    onChange={(value) => changeLanguageInput(value, 'writeReviewButtonTitle')}
+                                    onBlur={() => handleInputBlur('writeReviewButtonTitle', writeReviewButtonTitle)}
+                                    autoComplete="off"
+                                    placeholder={placeHolderLanguageData.writeReviewButtonTitle}
+                                />
+                            </Box>
+
+
+                            <Box paddingBlock="200">
+                                <TextField
+                                    label="No reviews title - first part"
+                                    value={noReviewsTitleFirstPart}
+                                    onChange={(value) => changeLanguageInput(value, 'noReviewsTitleFirstPart')}
+                                    onBlur={() => handleInputBlur('noReviewsTitleFirstPart', noReviewsTitleFirstPart)}
+                                    autoComplete="off"
+                                    placeholder={placeHolderLanguageData.noReviewsTitleFirstPart}
+                                />
+                            </Box>
+
+                            <Box paddingBlock="200">
+                                <TextField
+                                    label="No reviews title - last part (underlined)"
+                                    value={noReviewsTitleLastPart}
+                                    onChange={(value) => changeLanguageInput(value, 'noReviewsTitleLastPart')}
+                                    onBlur={() => handleInputBlur('noReviewsTitleLastPart', noReviewsTitleLastPart)}
+                                    autoComplete="off"
+                                    placeholder={placeHolderLanguageData.noReviewsTitleLastPart}
+                                />
+                            </Box>
+
+                            <Box paddingBlock="200">
+                                <TextField
+                                    label="Show more reviews title"
+                                    value={showMoreReviewsTitle}
+                                    onChange={(value) => changeLanguageInput(value, 'showMoreReviewsTitle')}
+                                    onBlur={() => handleInputBlur('showMoreReviewsTitle', showMoreReviewsTitle)}
+                                    autoComplete="off"
+                                    placeholder={placeHolderLanguageData.showMoreReviewsTitle}
+                                />
+                            </Box>
+
+                            <Box paddingBlock="200">
+                                <TextField
+                                    label="Link to product page button title"
+                                    value={productPageLinkTitle}
+                                    onChange={(value) => changeLanguageInput(value, 'productPageLinkTitle')}
+                                    onBlur={() => handleInputBlur('productPageLinkTitle', productPageLinkTitle)}
+                                    autoComplete="off"
+                                    placeholder={placeHolderLanguageData.productPageLinkTitle}
+                                />
+                            </Box>
+
+
+                            <Box paddingBlock="200">
+                                <TextField
+                                    label="Item type title"
+                                    value={itemTypeTitle}
+                                    onChange={(value) => changeLanguageInput(value, 'itemTypeTitle')}
+                                    onBlur={() => handleInputBlur('itemTypeTitle', itemTypeTitle)}
+                                    autoComplete="off"
+                                    placeholder={placeHolderLanguageData.itemTypeTitle}
+                                />
+                            </Box>
+                        </Card>
+                    </Grid.Cell>
+                    <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 6, xl: 6 }}>
+                        <Card roundedAbove="sm">
+                            <Box paddingBlock="200">
+                                <InlineGrid columns={['oneThird', 'oneThird', 'oneThird']} >
+                                    <Box padding="100" >
+                                        <Text variant="headingMd" as="h6">
+                                            Widget Preview
+                                        </Text>
+                                    </Box>
+                                    <Box>
+                                        <div className='lightdarkwrap'>
+                                            <button href='#' onClick={changeLightDarkModel} className={`${lightDarkModel ? 'darkbg' : ''}`}><i></i></button>
+                                        </div>
+                                    </Box>
+
+                                    <Box>
+                                        <Button icon={ViewIcon} onClick={(e) => handleShowPreviewModal()}>Preview</Button>
+                                    </Box>
+
+                                </InlineGrid>
+                            </Box>
+
+
+                            <Box paddingBlock="200">
+                                <style>
+                                    {`
+                                        .custombtn:hover {
+                                            background-color: ${widgetColorStyles.buttonBackgroundOnHover} !important;
+                                            color : ${widgetColorStyles.buttonTextOnHover} !important;
+                                        }
+                                        .review_top_actions .stardetaildd .stardetailrow .processbar .activebar {
+                                            background-color: ${widgetColorStyles.starsBarFill} !important;
+                                        }
+
+                                        .review_top_actions .stardetaildd .stardetailrow .processbar {
+                                            background-color: ${widgetColorStyles.starsBarBackground} !important;
+                                        }
+                                        .reply-text:hover {
+                                            background-color: ${widgetColorStyles.replyBackgroundOnHover} !important;
+                                        }
+                                        .custombg:hover {
+                                            background-color: ${widgetColorStyles.reviewsBackgroundOnHover} !important;
+                                        }
+                                        .box-style {
+                                            border-radius : ${selectedCornerRadius}px !important;
+                                            box-shadow : ${selectedReviewShadowValue};
+                                        }
+
+                                        .dropdown {
+                                            position: relative;
+                                            display: inline-block;
+                                        }
+                                        .dropdown .twenty-filtericon {
+                                            font-size: 18px;
+                                        }
+                                        
+                                        .dropbtn {
+                                            background: #F8F9FB;
+                                            color: #222222;
+                                            padding: 10px 16px;
+                                            border: none;
+                                            cursor: pointer;
+                                            height: 48px;
+                                            display: inline-flex;
+                                            padding: 0 24px;
+                                            border-radius: 100px;
+                                            font-size: 14px;
+                                            font-weight: 400;
+                                            text-decoration: none;
+                                            outline: none;
+                                            box-shadow: none;
+                                            align-items: center;
+                                            column-gap: 6px;
+                                            column-gap: 6px;
+                                            line-height: 16px;
+                                            margin: 0;
+                                        }
                                 
-                            </div>
-                            <style>
-                                {`
-								.custombtn:hover {
-									background-color: ${widgetColorStyles.buttonBackgroundOnHover} !important;
-									color : ${widgetColorStyles.buttonTextOnHover} !important;
-								}
-								.review_top_actions .stardetaildd .stardetailrow .processbar .activebar {
-									background-color: ${widgetColorStyles.starsBarFill} !important;
-								}
+                                        .dropdown-content {
+                                            display: block; /* Changed to block */
+                                            position: absolute;
+                                            background-color: white;
+                                            min-width: 160px;
+                                            z-index: 1;
+                                            border-radius: 10px;
+                                            border : solid 1px #E3E4E5;
+                                            padding:6px;
+                                        }
+                                
+                                        .dropdown-content button {
+                                            color: black;
+                                            padding: 12px 16px;
+                                            text-decoration: none;
+                                            display: block;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: space-between;
+                                            cursor: pointer;
+                                            background: none;
+                                            width: 100%;
+                                            border:none;
+                                        }
+                                
+                                        .dropdown-content button:hover {
+                                            background-color: #f1f1f1;
+                                        }
 
-								.review_top_actions .stardetaildd .stardetailrow .processbar {
-									background-color: ${widgetColorStyles.starsBarBackground} !important;
-								}
-                                .reply-text:hover {
-                                    background-color: ${widgetColorStyles.replyBackgroundOnHover} !important;
-                                }
-                                .custombg:hover {
-                                    background-color: ${widgetColorStyles.reviewsBackgroundOnHover} !important;
-                                }
-                                .box-style {
-                                    border-radius : ${selectedCornerRadius}px !important;
-                                    box-shadow : ${selectedReviewShadowValue};
-                                }
-        					`}
-                            </style>
-                            <div className={`insidewhitecard ${lightDarkModel ? 'darkpreview' : ''}`}>
-                                <div className='reviewbox_wrap'>
+                                        .dropdown-dist-btn {
+                                            background: none !important;
+                                            border: none !important;
+                                            outline: none !important;
+                                            box-shadow: none !important;
+                                            display: flex;
+                                            align-items: center;
+                                            color: #222222;
+                                            border: none;
+                                            cursor: pointer;
+                                            height: 48px;
+                                            display: inline-flex;
+                                            border-radius: 100px;
+                                            font-size: 14px;
+                                            font-weight: 400;
+                                            outline: none;
+                                            align-items: center;
+                                            column-gap: 6px;
+                                            line-height: 16px;
+                                        }
+                                    `}
+                                </style>
 
-                                    <div className={`review_top_actions ${minimalHeader ? 'minimalheader' : 'otherheaderlayout'} ${compactHeader ? 'compactheader' : ''} ${expandedHeader ? 'expandedheader' : ''}`}>
-                                        <div className={`left_actions flxfix ${minimalHeader ? '' : 'sidebyside'}`}>
-                                            <div className="leftpart">
-                                                <div className="section_title" style={{ color: widgetColorStyles.headerTextColor }} >{getPreviewText('reviewHeaderTitle', currentLanguage)}</div>
-                                                {!minimalHeader &&
-                                                    <div className="bigcountavarage flxrow">
-                                                        <i className='rating-star-rounded'></i>
-                                                        <div className="averagetext" style={{ color: widgetColorStyles.headerTextColor }}>4.7</div>
-                                                    </div>
-                                                }
-                                                {!minimalHeader &&
+                                <div className={`insidewhitecard ${lightDarkModel ? 'darkpreview' : ''}`}>
+                                    <div className='reviewbox_wrap'>
+
+                                        <div className={`review_top_actions ${minimalHeader ? 'minimalheader' : 'otherheaderlayout'} ${compactHeader ? 'compactheader' : ''} ${expandedHeader ? 'expandedheader' : ''}`}>
+                                            <div className={`left_actions flxfix ${minimalHeader ? '' : 'sidebyside'}`}>
+                                                <div className="leftpart">
+                                                    <div className="section_title" style={{ color: widgetColorStyles.headerTextColor }} >{getPreviewText('reviewHeaderTitle', currentLanguage)}</div>
+                                                    {!minimalHeader &&
+                                                        <div className="bigcountavarage flxrow">
+                                                            <i className='rating-star-rounded'></i>
+                                                            <div className="averagetext" style={{ color: widgetColorStyles.headerTextColor }}>4.7</div>
+                                                        </div>
+                                                    }
+                                                    {!minimalHeader &&
+                                                        <div className="totalreviewcount" style={{ color: widgetColorStyles.headerTextColor }}>
+                                                            <span>5</span> {getPreviewText('reviewPlural', currentLanguage)}
+                                                        </div>
+                                                    }
+                                                </div>
+                                                <div className="rightpart">
+                                                    {!minimalHeader && (
+                                                        selectedShowRatingsDistribution &&
+                                                        <div className="stardetaildd">
+                                                            <div className="stardetailrow flxrow">
+                                                                <div className="sratnumber">5</div>
+                                                                <div className="starsicons flxrow star-5">
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                </div>
+                                                                <div className="processbar"><div className="activebar" style={{ width: `40%` }}></div></div>
+                                                                <div className="reviewgiven">(2)</div>
+                                                            </div>
+                                                            <div className="stardetailrow flxrow">
+                                                                <div className="sratnumber">4</div>
+                                                                <div className="starsicons flxrow star-4">
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                </div>
+                                                                <div className="processbar"><div className="activebar" style={{ width: `20%` }}></div></div>
+                                                                <div className="reviewgiven">(1)</div>
+                                                            </div>
+                                                            <div className="stardetailrow flxrow">
+                                                                <div className="sratnumber">3</div>
+                                                                <div className="starsicons flxrow star-4">
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                </div>
+                                                                <div className="processbar"><div className="activebar" style={{ width: `20%` }}></div></div>
+                                                                <div className="reviewgiven">(2)</div>
+                                                            </div>
+                                                            <div className="stardetailrow flxrow">
+                                                                <div className="sratnumber">2</div>
+                                                                <div className="starsicons flxrow star-4">
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                </div>
+                                                                <div className="processbar"><div className="activebar" style={{ width: `0%` }}></div></div>
+                                                                <div className="reviewgiven">(0)</div>
+                                                            </div>
+                                                            <div className="stardetailrow flxrow">
+                                                                <div className="sratnumber">1</div>
+                                                                <div className="starsicons flxrow star-4">
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                </div>
+                                                                <div className="processbar"><div className="activebar" style={{ width: `0%` }}></div></div>
+                                                                <div className="reviewgiven">(0)</div>
+                                                            </div>
+                                                        </div>
+                                                    )
+
+                                                    }
+                                                    {minimalHeader &&
+                                                        <div className="star-rating">
+                                                            <div className="dropdown">
+
+                                                                <a className="dropdown-dist-btn" onClick={toggleDropdownDisct}>
+                                                                    <div className={`ratingstars flxrow star-4`}>
+                                                                        <i className='rating-star-rounded'></i>
+                                                                        <i className='rating-star-rounded'></i>
+                                                                        <i className='rating-star-rounded'></i>
+                                                                        <i className='rating-star-rounded'></i>
+                                                                        <i className='rating-star-rounded'></i>
+                                                                    </div>
+                                                                    <div className='ratingcount' style={{ color: widgetColorStyles.headerTextColor }}>4 {t('out_of')} <span>5</span></div>
+                                                                    {selectedShowRatingsDistribution &&
+                                                                        <div className="arrowright" style={{ color: widgetColorStyles.headerTextColor }}>
+                                                                            <i className='twenty-arrow-down'></i>
+                                                                        </div>
+                                                                    }
+
+                                                                </a>
+                                                                {(selectedShowRatingsDistribution && isOpenDisct) && (
+                                                                    <div className="dropdown-content">
+                                                                        <div className="stardetaildd">
+                                                                            <div className="stardetailrow flxrow">
+                                                                                <div className="starsicons flxrow star-5">
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                </div>
+                                                                                <div className="processbar"><div className="activebar" style={{ width: `40%` }}></div></div>
+                                                                                <div className="reviewgiven">(2)</div>
+                                                                            </div>
+                                                                            <div className="stardetailrow flxrow">
+                                                                                <div className="starsicons flxrow star-4">
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                </div>
+                                                                                <div className="processbar"><div className="activebar" style={{ width: `20%` }}></div></div>
+                                                                                <div className="reviewgiven">(1)</div>
+                                                                            </div>
+                                                                            <div className="stardetailrow flxrow">
+                                                                                <div className="starsicons flxrow star-4">
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                </div>
+                                                                                <div className="processbar"><div className="activebar" style={{ width: `20%` }}></div></div>
+                                                                                <div className="reviewgiven">(2)</div>
+                                                                            </div>
+                                                                            <div className="stardetailrow flxrow">
+                                                                                <div className="starsicons flxrow star-4">
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                </div>
+                                                                                <div className="processbar"><div className="activebar" style={{ width: `0%` }}></div></div>
+                                                                                <div className="reviewgiven">(0)</div>
+                                                                            </div>
+                                                                            <div className="stardetailrow flxrow">
+                                                                                <div className="starsicons flxrow star-4">
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                    <div className='stardiv'><i className='rating-star-rounded'></i></div>
+                                                                                </div>
+                                                                                <div className="processbar"><div className="activebar" style={{ width: `0%` }}></div></div>
+                                                                                <div className="reviewgiven">(0)</div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+
+                                                        </div>
+                                                    }
+                                                </div>
+
+                                                {minimalHeader &&
                                                     <div className="totalreviewcount" style={{ color: widgetColorStyles.headerTextColor }}>
                                                         <span>5</span> {getPreviewText('reviewPlural', currentLanguage)}
                                                     </div>
                                                 }
                                             </div>
-                                            <div className="rightpart">
-                                                {!minimalHeader && (
-                                                    selectedShowRatingsDistribution &&
-                                                    <div className="stardetaildd">
-                                                        <div className="stardetailrow flxrow">
-                                                            <div className="sratnumber">5</div>
-                                                            <div className="starsicons flxrow star-5">
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                            </div>
-                                                            <div className="processbar"><div className="activebar" style={{ width: `40%` }}></div></div>
-                                                            <div className="reviewgiven">(2)</div>
-                                                        </div>
-                                                        <div className="stardetailrow flxrow">
-                                                            <div className="sratnumber">4</div>
-                                                            <div className="starsicons flxrow star-4">
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                            </div>
-                                                            <div className="processbar"><div className="activebar" style={{ width: `20%` }}></div></div>
-                                                            <div className="reviewgiven">(1)</div>
-                                                        </div>
-                                                        <div className="stardetailrow flxrow">
-                                                            <div className="sratnumber">3</div>
-                                                            <div className="starsicons flxrow star-4">
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                            </div>
-                                                            <div className="processbar"><div className="activebar" style={{ width: `20%` }}></div></div>
-                                                            <div className="reviewgiven">(2)</div>
-                                                        </div>
-                                                        <div className="stardetailrow flxrow">
-                                                            <div className="sratnumber">2</div>
-                                                            <div className="starsicons flxrow star-4">
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                            </div>
-                                                            <div className="processbar"><div className="activebar" style={{ width: `0%` }}></div></div>
-                                                            <div className="reviewgiven">(0)</div>
-                                                        </div>
-                                                        <div className="stardetailrow flxrow">
-                                                            <div className="sratnumber">1</div>
-                                                            <div className="starsicons flxrow star-4">
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                            </div>
-                                                            <div className="processbar"><div className="activebar" style={{ width: `0%` }}></div></div>
-                                                            <div className="reviewgiven">(0)</div>
-                                                        </div>
-                                                    </div>
-                                                )
+                                            <div className="right_actions btnwrap flxflexi flxrow justify-content-end">
+                                                {selectedShowSortingOptions &&
 
-                                                }
-                                                {minimalHeader &&
-                                                    <div className="star-rating">
-                                                        <Dropdown>
-                                                            <Dropdown.Toggle variant="" className='starbtn' id="dropdown-basic">
-                                                                <div className={`ratingstars flxrow star-4`}>
-                                                                    <i className='rating-star-rounded'></i>
-                                                                    <i className='rating-star-rounded'></i>
-                                                                    <i className='rating-star-rounded'></i>
-                                                                    <i className='rating-star-rounded'></i>
-                                                                    <i className='rating-star-rounded'></i>
-                                                                </div>
-                                                                <div className='ratingcount' style={{ color: widgetColorStyles.headerTextColor }}>4 {t('out_of')} <span>5</span></div>
-                                                                {selectedShowRatingsDistribution &&
-                                                                    <div className="arrowright" style={{ color: widgetColorStyles.headerTextColor }}>
-                                                                        <i className='twenty-arrow-down'></i>
-                                                                    </div>
-                                                                }
-                                                            </Dropdown.Toggle>
-                                                            {selectedShowRatingsDistribution &&
-                                                                <Dropdown.Menu align={'start'}>
-                                                                    <div className="stardetaildd">
-                                                                        <div className="stardetailrow flxrow">
-                                                                            <div className="sratnumber">5</div>
-                                                                            <div className="starsicons flxrow star-5">
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                            </div>
-                                                                            <div className="processbar"><div className="activebar" style={{ width: `40%` }}></div></div>
-                                                                            <div className="reviewgiven">(2)</div>
-                                                                        </div>
-                                                                        <div className="stardetailrow flxrow">
-                                                                            <div className="sratnumber">4</div>
-                                                                            <div className="starsicons flxrow star-4">
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                            </div>
-                                                                            <div className="processbar"><div className="activebar" style={{ width: `20%` }}></div></div>
-                                                                            <div className="reviewgiven">(1)</div>
-                                                                        </div>
-                                                                        <div className="stardetailrow flxrow">
-                                                                            <div className="sratnumber">3</div>
-                                                                            <div className="starsicons flxrow star-4">
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                            </div>
-                                                                            <div className="processbar"><div className="activebar" style={{ width: `20%` }}></div></div>
-                                                                            <div className="reviewgiven">(2)</div>
-                                                                        </div>
-                                                                        <div className="stardetailrow flxrow">
-                                                                            <div className="sratnumber">2</div>
-                                                                            <div className="starsicons flxrow star-4">
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                            </div>
-                                                                            <div className="processbar"><div className="activebar" style={{ width: `0%` }}></div></div>
-                                                                            <div className="reviewgiven">(0)</div>
-                                                                        </div>
-                                                                        <div className="stardetailrow flxrow">
-                                                                            <div className="sratnumber">1</div>
-                                                                            <div className="starsicons flxrow star-4">
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                                <div className='stardiv'><i className='rating-star-rounded'></i></div>
-                                                                            </div>
-                                                                            <div className="processbar"><div className="activebar" style={{ width: `0%` }}></div></div>
-                                                                            <div className="reviewgiven">(0)</div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <input type="hidden" id="ratting_wise_filter" />
-                                                                </Dropdown.Menu>
-                                                            }
-                                                        </Dropdown>
+                                                    <div className="dropdown">
 
+                                                        <button className="dropbtn custombtn" onClick={toggleDropdown} style={{ border: widgetColorStyles.buttonBorderColor, color: widgetColorStyles.buttonTitleColor, backgroundColor: widgetColorStyles.buttonBackground }}>
+                                                            <i className="twenty-filtericon"></i> {t('sort_by')} {isOpen ? <Icon source={ChevronUpIcon} tone="base" /> : <Icon source={ChevronDownIcon} tone="base" />} {/* Up and Down arrows */}
+                                                        </button>
+                                                        {isOpen && (
+                                                            <div className="dropdown-content">
+                                                                <button>{t('featured')}</button>
+                                                                <button>{t('newest')}</button>
+                                                                <button>{t('highest_rating')}</button>
+                                                                <button>{t('lowest_rating')}</button>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 }
+
+                                                {selectedWriteReviewButton == "show" && <button className="revbtn wbigbtn custombtn " id="show_create_review_modal" style={{ border: widgetColorStyles.buttonBorderColor, color: widgetColorStyles.buttonTitleColor, backgroundColor: widgetColorStyles.buttonBackground }} >{getPreviewText('writeReviewButtonTitle', currentLanguage)}</button>}
                                             </div>
-
-                                            {minimalHeader &&
-                                                <div className="totalreviewcount" style={{ color: widgetColorStyles.headerTextColor }}>
-                                                    <span>5</span> {getPreviewText('reviewPlural', currentLanguage)}
-                                                </div>
-                                            }
                                         </div>
-                                        <div className="right_actions btnwrap flxflexi flxrow justify-content-end">
-                                            {selectedShowSortingOptions &&
-                                                <Dropdown>
-                                                    <Dropdown.Toggle variant="" className='revbtn lightbtn wbigbtn custombtn noafter' id="dropdown-basic" style={{ border: widgetColorStyles.buttonBorderColor, color: widgetColorStyles.buttonTitleColor, backgroundColor: widgetColorStyles.buttonBackground }}>
-                                                        <i className='twenty-filtericon'></i>
-                                                        {t('sort_by')}
-                                                        <div className="arrowright">
-                                                            <i className='twenty-arrow-down'></i>
-                                                        </div>
-                                                    </Dropdown.Toggle>
-
-                                                    <Dropdown.Menu align={'end'}>
-                                                        <li><a className="dropdown-item sort_by_filter" data-sort="tag_as_feature" href="#">{t('featured')}</a></li>
-                                                        <li><a className="dropdown-item sort_by_filter" data-sort="newest" href="#">{t('newest')}</a></li>
-                                                        <li><a className="dropdown-item sort_by_filter" data-sort="highest_ratings" href="#">{t('highest_rating')}</a></li>
-                                                        <li><a className="dropdown-item sort_by_filter" data-sort="lowest_ratings" href="#">{t('lowest_rating')}</a></li>
-                                                        <input type="hidden" id="sort_by_filter" />
-                                                    </Dropdown.Menu>
-                                                </Dropdown>
-                                            }
-
-                                            {selectedWriteReviewButton == "show" && <button className="revbtn wbigbtn custombtn " id="show_create_review_modal" style={{ border: widgetColorStyles.buttonBorderColor, color: widgetColorStyles.buttonTitleColor, backgroundColor: widgetColorStyles.buttonBackground }} >{getPreviewText('writeReviewButtonTitle', currentLanguage)}</button>}
-                                        </div>
-                                    </div>
-                                    <div className={`review-list-item frontreviewbox ${gridClassName}`}>
-                                        <div className='box-style custombg' style={{ backgroundColor: widgetColorStyles.reviewsBackground }}>
-                                            <div className='review'>
-                                                {gridFormat &&
-                                                    <div className='review_imageswrap flxrow'>
-                                                        <div className='imagebox'>
-                                                            <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
-                                                        </div>
-                                                    </div>
-                                                }
-                                                <div className='review_topbar flxrow'>
-                                                    {!gridFormat &&
-                                                        <div className={`mid_detail ${compactFormat ? 'flxrow' : 'flxflexi'}`} >
-                                                            <h4 style={{ color: widgetColorStyles.reviewsText }}>John H</h4>
-                                                            {selectedReviewDates == "show" && <div className='date' style={{ color: widgetColorStyles.reviewsText }}>08/03/2024</div>}
-                                                        </div>
-                                                    }
-                                                    {(listFormat || gridFormat) &&
-                                                        <div className='star_reviews flxfix'>
-                                                            <div className='star-rating'>
-                                                                {listFormat &&
-                                                                    <>
-                                                                        <div className='ratingstars flxrow star-4'>
-                                                                            <div className='ratingcount'>4.0</div>
-                                                                            <i className="rating-star-rounded"></i>
-                                                                            <i className="rating-star-rounded"></i>
-                                                                            <i className="rating-star-rounded"></i>
-                                                                            <i className="rating-star-rounded"></i>
-                                                                            <i className="rating-star-rounded"></i>
-                                                                        </div>
-                                                                    </>
-                                                                }
-                                                                {gridFormat &&
-                                                                    <>
-                                                                        <div className='ratingstars flxrow star-4'>
-                                                                            <i className="rating-star-rounded"></i>
-                                                                            <i className="rating-star-rounded"></i>
-                                                                            <i className="rating-star-rounded"></i>
-                                                                            <i className="rating-star-rounded"></i>
-                                                                            <i className="rating-star-rounded"></i>
-                                                                        </div>
-                                                                        <div className='ratingcount'>4.0</div>
-                                                                    </>
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                </div>
-                                                <div className='text_content'>
-                                                    <p>I have been using these industry leading headphones by Sony, colour Midnight Blue, and trust me i find them worth every penny spent. Yes, i agree these headphones are highly expensive, some may say you can purchase Apple Airpods, Boss, Sennheiser, and other audio equipment options, but trust me nothing beats these bad boys.</p>
-                                                </div>
-                                                {selectedItemType == "show" &&
-                                                    <div className='text_content '>
-                                                        <p><strong>{getPreviewText('itemTypeTitle', currentLanguage)}</strong> :  L / Blue</p>
-                                                    </div>
-                                                }
-                                                <div className='text_content reply-text' style={{ backgroundColor: widgetColorStyles.replyBackground }}>
-                                                    <p style={{ color: widgetColorStyles.replyText }}><strong>{shopRecords.name}</strong> {t('replied')}:</p>
-                                                    <p style={{ color: widgetColorStyles.replyText }}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-                                                </div>
-                                                {gridFormat &&
-                                                    <div className='mid_detail flxflexi' >
-                                                        <h4 style={{ color: widgetColorStyles.reviewsText }}>John H</h4>
-                                                        {selectedReviewDates == "show" && <div className='date' style={{ color: widgetColorStyles.reviewsText }}>08/03/2024</div>}
-                                                    </div>
-                                                }
-                                                {compactFormat &&
-                                                    <div className='star_reviews flxfix'>
-                                                        <div className='star-rating'>
-                                                            <div className='ratingstars flxrow star-4'>
-                                                                <i className="rating-star-rounded"></i>
-                                                                <i className="rating-star-rounded"></i>
-                                                                <i className="rating-star-rounded"></i>
-                                                                <i className="rating-star-rounded"></i>
-                                                                <i className="rating-star-rounded"></i>
-                                                            </div>
-                                                            <div className='ratingcount'>4.0</div>
-                                                        </div>
-                                                    </div>
-                                                }
-                                                <div className='review_bottomwrap'>
-                                                    <div className='product-container product-thumb-detail'>
-                                                        <div className='image flxfix'>
-                                                            <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
-                                                        </div>
-                                                        <div className='text flxflexi'>
-                                                            <p>Sample Product</p>
-                                                        </div>
-                                                    </div>
-                                                    {!gridFormat &&
+                                        <div className={`review-list-item frontreviewbox ${gridClassName}`}>
+                                            <div className='box-style custombg' style={{ backgroundColor: widgetColorStyles.reviewsBackground }}>
+                                                <div className='review'>
+                                                    {gridFormat &&
                                                         <div className='review_imageswrap flxrow'>
                                                             <div className='imagebox'>
                                                                 <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
                                                             </div>
-                                                            <div className='imagebox'>
-                                                                <img src={`${settingsJson.host_url}/images/sample-review-images/2.png`} alt="" />
+                                                        </div>
+                                                    }
+                                                    <div className='review_topbar flxrow'>
+                                                        {!gridFormat &&
+                                                            <div className={`mid_detail  ${compactFormat ? 'flxrow' : 'flxflexi'}`} >
+                                                                <h4 style={{ color: widgetColorStyles.reviewsText }}>John H</h4>
+                                                                <div className='nametitle flxrow align-items-center'>
+                                                                    <div className='verifiedreview'>
+                                                                        <ReviewVerifyIcon color={widgetColorStyles.verifiedBadgeBackgroundColor} /> {t('verifiedPurchase')}
+                                                                    </div>
+                                                                </div>
+
+                                                                {selectedReviewDates == "show" && <div className='date' style={{ color: widgetColorStyles.reviewsText }}>08/03/2024</div>}
                                                             </div>
-                                                            <div className='imagebox'>
-                                                                <img src={`${settingsJson.host_url}/images/sample-review-images/3.png`} alt="" />
+                                                        }
+
+
+                                                        {(listFormat || gridFormat) &&
+                                                            <div className='star_reviews flxfix'>
+                                                                <div className='star-rating'>
+                                                                    {listFormat &&
+                                                                        <>
+                                                                            <div className='ratingstars flxrow star-4'>
+                                                                                <div className='ratingcount'>4.0</div>
+                                                                                <i className="rating-star-rounded"></i>
+                                                                                <i className="rating-star-rounded"></i>
+                                                                                <i className="rating-star-rounded"></i>
+                                                                                <i className="rating-star-rounded"></i>
+                                                                                <i className="rating-star-rounded"></i>
+                                                                            </div>
+                                                                        </>
+                                                                    }
+                                                                    {gridFormat &&
+                                                                        <>
+                                                                            <div className='ratingstars flxrow star-4'>
+                                                                                <i className="rating-star-rounded"></i>
+                                                                                <i className="rating-star-rounded"></i>
+                                                                                <i className="rating-star-rounded"></i>
+                                                                                <i className="rating-star-rounded"></i>
+                                                                                <i className="rating-star-rounded"></i>
+                                                                            </div>
+                                                                            <div className='ratingcount'>4.0</div>
+                                                                        </>
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                    <div className='text_content'>
+                                                        <p>I have been using these industry leading headphones by Sony, colour Midnight Blue, and trust me i find them worth every penny spent. Yes, i agree these headphones are highly expensive, some may say you can purchase Apple Airpods, Boss, Sennheiser, and other audio equipment options, but trust me nothing beats these bad boys.</p>
+                                                    </div>
+                                                    {selectedItemType == "show" &&
+                                                        <div className='text_content '>
+                                                            <p><strong>{getPreviewText('itemTypeTitle', currentLanguage)}</strong> :  L / Blue</p>
+                                                        </div>
+                                                    }
+                                                    <div className='text_content reply-text' style={{ backgroundColor: widgetColorStyles.replyBackground }}>
+                                                        <p style={{ color: widgetColorStyles.replyText }}><strong>{shopRecords.name}</strong> {t('replied')}:</p>
+                                                        <p style={{ color: widgetColorStyles.replyText }}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+                                                    </div>
+                                                    {gridFormat &&
+                                                        <div className='mid_detail flxflexi' >
+
+                                                            <div className='nametitle flxrow align-items-center'>
+                                                                <h4 style={{ color: widgetColorStyles.reviewsText }}>
+                                                                    John H.
+                                                                </h4>
+                                                                <div className='verifiedreview'>
+                                                                    <ReviewVerifyIcon color={widgetColorStyles.verifiedBadgeBackgroundColor} /> {t('verifiedPurchase')}
+                                                                </div>
+                                                            </div>
+
+                                                            {selectedReviewDates == "show" && <div className='date' style={{ color: widgetColorStyles.reviewsText }}>08/03/2024</div>}
+                                                        </div>
+                                                    }
+                                                    {compactFormat &&
+                                                        <div className='star_reviews flxfix'>
+                                                            <div className='star-rating'>
+                                                                <div className='ratingstars flxrow star-4'>
+                                                                    <i className="rating-star-rounded"></i>
+                                                                    <i className="rating-star-rounded"></i>
+                                                                    <i className="rating-star-rounded"></i>
+                                                                    <i className="rating-star-rounded"></i>
+                                                                    <i className="rating-star-rounded"></i>
+                                                                </div>
+                                                                <div className='ratingcount'>4.0</div>
                                                             </div>
                                                         </div>
                                                     }
+                                                    <div className='review_bottomwrap'>
+                                                        <div className='product-container product-thumb-detail'>
+                                                            <div className='image flxfix'>
+                                                                <img src={`${settingsJson.host_url}/images/product-default.png`} alt="" />
+                                                            </div>
+                                                            <div className='text flxflexi'>
+                                                                <p>Sample Product</p>
+                                                            </div>
+                                                        </div>
+                                                        {!gridFormat &&
+                                                            <div className='review_imageswrap flxrow'>
+                                                                <div className='imagebox'>
+                                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/1.png`} alt="" />
+                                                                </div>
+                                                                <div className='imagebox'>
+                                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/2.png`} alt="" />
+                                                                </div>
+                                                                <div className='imagebox'>
+                                                                    <img src={`${settingsJson.host_url}/images/sample-review-images/3.png`} alt="" />
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                            </Box>
+                        </Card>
+                    </Grid.Cell>
+                </Grid>
+
             </div>
 
             {showPreviewModal &&
