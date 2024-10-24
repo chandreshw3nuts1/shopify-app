@@ -163,7 +163,7 @@ export async function loader() {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				'X-Shopify-Access-Token': 
+				'X-Shopify-Access-Token':'' 
 			},
 			body: JSON.stringify({
 				section: {

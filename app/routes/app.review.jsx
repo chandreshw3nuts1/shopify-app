@@ -4,7 +4,6 @@ import { useLoaderData } from '@remix-run/react';
 import { getShopDetails } from './../utils/getShopDetails';
 import { getCustomQuestions } from './../utils/common';
 import { useNavigate } from 'react-router-dom';
-import {Icon} from '@shopify/polaris';
 import {
 	StarIcon,
 	ClockIcon,
@@ -14,6 +13,8 @@ import {
 	ChatIcon,
 	NoteIcon,
 	PlayCircleIcon,
+	ArrowRightIcon,
+	ChevronDownIcon,
 } from '@shopify/polaris-icons';
 
 import Breadcrumb from './components/Breadcrumb';
@@ -32,17 +33,22 @@ import reviewDiscountSettings from './models/reviewDiscountSettings';
 import generalSettings from './models/generalSettings';
 
 import {
+	Button, 
+	Icon,
 	Page,
 	Layout,
 	Text,
-	LegacyCard,
-	LegacyStack,
 	Collapsible,
 	Card,
 	Box,
 	Grid, 
-	BlockStack,
 	Bleed,
+	Divider,
+	InlineStack,
+	BlockStack,
+	InlineGrid,
+	Banner,
+	Link,
 } from '@shopify/polaris';
 const collectionName = 'settings';
 
@@ -125,40 +131,46 @@ const ReviewPage = () => {
 
 	return (
 		<>
-			<Breadcrumb crumbs={crumbs} />
-
+			<InlineStack align='center'>
+				<Box maxWidth='1048px' width='100%'>
+					<Breadcrumb crumbs={crumbs} />
+				</Box>
+			</InlineStack>
 			<Page fullWidth>
-				<ReviewPageSidebar />
-				<div className='accordian_rowmain'>
-					<Layout.Section>
-						<Card gap="200">
-							<div
-								onClick={handleToggleNewReview}
-								aria-expanded={openNewReview}
-								aria-controls="basic-collapsible"
-								className={openNewReview ? 'open' : ''}
-							>
-								<div className='flxrow acctitle'>
-									<div className='flxfix iconbox'>
-										{/* <i className='twenty-star'></i> */}
-										<Icon source={StarIcon} tone="base"/>
+				<InlineStack align='center'>
+					<Box maxWidth='1048px' width='100%'>
+
+						<ReviewPageSidebar />
+						
+						<div className='accordian_rowmain'>
+							<Card gap="200" padding='0'>
+								<InlineGrid columns="1fr auto" alignItems="center">
+									<div
+										onClick={handleToggleNewReview}
+										aria-expanded={openNewReview}
+										aria-controls="basic-collapsible"
+										className={openNewReview ? 'open' : ''}
+									>
+										<Box style={{cursor: 'pointer'}}>
+											<Box padding='400'>
+												<InlineGrid columns="auto 1fr" gap='400' alignItems='center'>
+													<div className='bigiconbox'>
+														<Icon source={StarIcon} tone="base" />
+													</div>
+													<BlockStack gap={100}>
+														<Text as='h3' variant='headingMd'>Manage New Review</Text>
+														<Text tone="subdued">Choose which reviews you want to auto publish and how you want to be notified of new reviews</Text>
+													</BlockStack>
+												</InlineGrid>
+											</Box>
+										</Box>
 									</div>
-									<div className='flxflexi titledetail'>
-										<Text as="h1" variant="headingMd">
-											Manage New Review
-										</Text>
-										<Text>
-											Choose which reviews you want to auto
-											publish and how you want to be notified
-											of new reviews
-										</Text>
-									</div>
-									<div className='flxfix arrowicon'>
-										<i className='twenty-arrow-down'></i>
-									</div>
-								</div>
-							</div>
-							<Box>
+									<Box padding='400'>
+										<InlineGrid columns="1fr auto" gap={200}>
+											<Icon source={ChevronDownIcon} tone="base" />
+										</InlineGrid>
+									</Box>
+								</InlineGrid>
 								<Collapsible
 									open={openNewReview}
 									id="basic-collapsible"
@@ -168,43 +180,42 @@ const ReviewPage = () => {
 									}}
 									expandOnPrint
 								>
-									<ManageNewReview settings={settings} shopRecords={shopRecords} />
+									<Box paddingInline='400' paddingBlockEnd='400'>
+										<ManageNewReview settings={settings} shopRecords={shopRecords} />
+									</Box>
 								</Collapsible>
-							</Box>
-						</Card>
-					</Layout.Section>
-				</div>
+							</Card>
+						</div>
 
-
-
-				<div className='accordian_rowmain'>
-					<Layout.Section>
-						<LegacyCard sectioned>
-							<div
-								onClick={handleToggleReviewRequestTiming}
-								aria-expanded={openReviewRequestTiming}
-								aria-controls="basic-collapsible"
-								className={openReviewRequestTiming ? 'open' : ''}
-							>
-								<div className='flxrow acctitle'>
-									<div className='flxfix iconbox'>
-										{/* <i className='twenty-review-timing'></i> */}
-										<Icon source={ClockIcon} tone="base"/>
+						<div className='accordian_rowmain'>
+							<Card gap="200" padding='0'>
+								<InlineGrid columns="1fr auto" alignItems="center">
+									<div
+										onClick={handleToggleReviewRequestTiming}
+										aria-expanded={openReviewRequestTiming}
+										aria-controls="basic-collapsible"
+										className={openReviewRequestTiming ? 'open' : ''}
+									>
+										<Box style={{cursor: 'pointer'}}>
+											<Box padding='400'>
+												<InlineGrid columns="auto 1fr" gap='400' alignItems='center'>
+													<div className='bigiconbox'>
+														<Icon source={ClockIcon} tone="base" />
+													</div>
+													<BlockStack gap={100}>
+														<Text as='h3' variant='headingMd'>Review request timing</Text>
+														<Text tone="subdued">Set the timing of the first review request email sent to your customers</Text>
+													</BlockStack>
+												</InlineGrid>
+											</Box>
+										</Box>
 									</div>
-									<div className='flxflexi titledetail'>
-										<Text as="h1" variant="headingMd">
-											Review request timing
-										</Text>
-										<Text>
-											Set the timing of the first review request email sent to your customers
-										</Text>
-									</div>
-									<div className='flxfix arrowicon'>
-										<i className='twenty-arrow-down'></i>
-									</div>
-								</div>
-							</div>
-							<LegacyStack vertical>
+									<Box padding='400'>
+										<InlineGrid columns="1fr auto" gap={200}>
+											<Icon source={ChevronDownIcon} tone="base" />
+										</InlineGrid>
+									</Box>
+								</InlineGrid>
 								<Collapsible
 									open={openReviewRequestTiming}
 									id="basic-collapsible"
@@ -214,41 +225,43 @@ const ReviewPage = () => {
 									}}
 									expandOnPrint
 								>
-									<ReviewRequestTiming reviewRequestTimingSettings={reviewRequestTimingSettings} shopRecords={shopRecords} />
+									<Box paddingInline='400' paddingBlockEnd='400'>
+										<ReviewRequestTiming reviewRequestTimingSettings={reviewRequestTimingSettings} shopRecords={shopRecords} />
+									</Box>
 								</Collapsible>
-							</LegacyStack>
-						</LegacyCard>
-					</Layout.Section>
-				</div>
+							</Card>
+						</div>
 
-				<div className='accordian_rowmain'>
-					<Layout.Section>
-						<LegacyCard sectioned>
-							<div
-								onClick={handleToggleDiscountPhotoVideoReview}
-								aria-expanded={openDiscountPhotoVideoReview}
-								aria-controls="basic-collapsible"
-								className={openDiscountPhotoVideoReview ? 'open' : ''}
-							>
-								<div className='flxrow acctitle'>
-									<div className='flxfix iconbox'>
-										{/* <i className='twenty-discount'></i> */}
-										<Icon source={DiscountIcon} tone="base" />
+						<div className='accordian_rowmain'>
+							<Card gap="200" padding='0'>
+								<InlineGrid columns="1fr auto" alignItems="center">
+									<div
+										onClick={handleToggleDiscountPhotoVideoReview}
+										aria-expanded={openDiscountPhotoVideoReview}
+										aria-controls="basic-collapsible"
+										className={openDiscountPhotoVideoReview ? 'open' : ''}
+									>
+										<Box style={{cursor: 'pointer'}}>
+											<Box padding='400'>
+												<InlineGrid columns="auto 1fr" gap='400' alignItems='center'>
+													<div className='bigiconbox'>
+														<Icon source={DiscountIcon} tone="base" />
+													</div>
+													<BlockStack gap={100}>
+														<Text as='h3' variant='headingMd'>Discount for photo/video reviews</Text>
+														<Text tone="subdued">Incentivize customers to leave a photo/video review by offering a discount for their next purchase</Text>
+													</BlockStack>
+												</InlineGrid>
+											</Box>
+										</Box>
 									</div>
-									<div className='flxflexi titledetail'>
-										<Text as="h1" variant="headingMd">
-											Discount for photo/video reviews
-										</Text>
-										<Text>
-											Incentivize customers to leave a photo/video review by offering a discount for their next purchase
-										</Text>
-									</div>
-									<div className='flxfix arrowicon'>
-										<i className='twenty-arrow-down'></i>
-									</div>
-								</div>
-							</div>
-							<LegacyStack vertical>
+									<Box padding='400'>
+										<InlineGrid columns="1fr auto" gap={200}>
+											<Icon source={ChevronDownIcon} tone="base" />
+										</InlineGrid>
+									</Box>
+								</InlineGrid>
+								
 								<Collapsible
 									open={openDiscountPhotoVideoReview}
 									id="basic-collapsible"
@@ -258,94 +271,92 @@ const ReviewPage = () => {
 									}}
 									expandOnPrint
 								>
-									<DiscountPhotoVideoReview reviewDiscountSettings={reviewDiscountSettings} shopRecords={shopRecords} />
+									<Box paddingInline='400' paddingBlockEnd='400'>
+										<DiscountPhotoVideoReview reviewDiscountSettings={reviewDiscountSettings} shopRecords={shopRecords} />
+									</Box>
 								</Collapsible>
-							</LegacyStack>
-						</LegacyCard>
-					</Layout.Section>
-				</div>
+								
+							</Card>
+						</div>
 
-
-				<div className='accordian_rowmain'>
-					<Layout.Section>
-						<LegacyCard sectioned>
-							<div
-								onClick={handleToggleCustomQuestions}
-								aria-expanded={openCustomQuestions}
-								aria-controls="basic-collapsible"
-								className={openCustomQuestions ? 'open' : ''}
-							>
-								<div className='flxrow acctitle'>
-									<div className='flxfix iconbox'>
-										{/* <i className='twenty-questions'></i> */}
-										<Icon source={QuestionCircleIcon} tone="base" />
+						<div className='accordian_rowmain'>
+							<Card gap="200" padding='0'>
+								<InlineGrid columns="1fr auto" alignItems="center">
+									<div
+										onClick={handleToggleCustomQuestions}
+										aria-expanded={openCustomQuestions}
+										aria-controls="basic-collapsible"
+										className={openCustomQuestions ? 'open' : ''}
+									>
+										<Box style={{cursor: 'pointer'}}>
+											<Box padding='400'>
+												<InlineGrid columns="auto 1fr" gap='400' alignItems='center'>
+													<div className='bigiconbox'>
+														<Icon source={QuestionCircleIcon} tone="base" />
+													</div>
+													<BlockStack gap={100}>
+														<Text as='h3' variant='headingMd'>Custom Questions</Text>
+														<Text tone="subdued">Add your own custom questions to the review form</Text>
+													</BlockStack>
+												</InlineGrid>
+											</Box>
+										</Box>
 									</div>
-									<div className='flxflexi titledetail'>
-										<Text as="h1" variant="headingMd">
-											Custom Questions
-										</Text>
-										<Text>
-											Add your own custom questions to the review form
-										</Text>
-									</div>
-									<div className='flxfix arrowicon'>
-										<i className='twenty-arrow-down'></i>
-									</div>
-								</div>
-							</div>
-							<LegacyStack vertical>
-								<Collapsible
-									open={openCustomQuestions}
-									id="basic-collapsible"
-									transition={{
-										duration: '300ms',
-										timingFunction: 'ease-in-out',
-									}}
-									expandOnPrint
-								>
-									<div className='row'>
-										<div className='col-md-12'>
+									<Box padding='400'>
+										<InlineGrid columns="1fr auto" gap={200}>
+											<Icon source={ChevronDownIcon} tone="base" />
+										</InlineGrid>
+									</Box>
+								</InlineGrid>
+								<Box>
+									<Collapsible
+										open={openCustomQuestions}
+										id="basic-collapsible"
+										transition={{
+											duration: '300ms',
+											timingFunction: 'ease-in-out',
+										}}
+										expandOnPrint
+									>
+										<Box paddingInline='400' paddingBlockEnd='400'>
 											<CustomQuestions customQuestionsData={customQuestionsData} shopRecords={shopRecords} />
-										</div>
-									</div>
-								</Collapsible>
-							</LegacyStack>
-						</LegacyCard>
-					</Layout.Section>
-				</div>
+										</Box>
+											
+									</Collapsible>
+								</Box>
+							</Card>
+						</div>
 
-
-				<div className='accordian_rowmain'>
-					<Layout.Section>
-						<LegacyCard sectioned>
-							<div
-								onClick={handleToggleEmailSettings}
-								aria-expanded={openEmailSettings}
-								aria-controls="basic-collapsible"
-								className={openEmailSettings ? 'open' : ''}
-							>
-								<div className='flxrow acctitle'>
-									<div className='flxfix iconbox'>
-										{/* <i className='twenty-emails'></i> */}
-										<Icon source={EmailIcon} tone="base" />
+						<div className='accordian_rowmain'>
+							<Card padding='0' gap="200">
+								<InlineGrid columns="1fr auto" alignItems="center">
+									<div
+										onClick={handleToggleEmailSettings}
+										aria-expanded={openEmailSettings}
+										aria-controls="basic-collapsible"
+										className={openEmailSettings ? 'open' : ''}
+									>
+										<Box style={{cursor: 'pointer'}}>
+											<Box padding='400'>
+												<InlineGrid columns="auto 1fr" gap='400' alignItems='center'>
+													<div className='bigiconbox'>
+														<Icon source={EmailIcon} tone="base" />
+													</div>
+													<BlockStack gap={100}>
+														<Text as='h3' variant='headingMd'>Emails</Text>
+														<Text tone="subdued">Customize the emails sent to your customers</Text>
+													</BlockStack>
+												</InlineGrid>
+											</Box>
+										</Box>
 									</div>
-									<div className='flxflexi titledetail'>
-										<Text as="h1" variant="headingMd">
-											Emails
-										</Text>
-										<Text>
-											Customize the emails sent to your customers
-										</Text>
-									</div>
-									<div className='flxfix btnwrap m-0'>
-										<a href="#" className='revbtn'>Learn More</a>
-									</div>
-									<div className='flxfix arrowicon'>
-										<i className='twenty-arrow-down'></i>
-									</div>
-								</div>
-							</div>
-							<LegacyStack vertical>
+									<Box padding='400'>
+										<InlineGrid columns="1fr auto" gap={200}>
+											<Button variant='primary'>Learn More</Button>
+											<Icon source={ChevronDownIcon} tone="base" />
+										</InlineGrid>
+									</Box>
+								</InlineGrid>
 								<Collapsible
 									open={openEmailSettings}
 									id="basic-collapsible"
@@ -355,213 +366,215 @@ const ReviewPage = () => {
 									}}
 									expandOnPrint
 								>
-									<div className='maininsideacc'>
-										{/* Below DIV will be repeat */}
-										<div className='insiderowacc' onClick={() => showEmailSettingsForm("review-request")}>
-											<div className='titledetail flxflexi'>
-												<h6>Review Request</h6>
-												<p>Encourage your customers to leave a review with an automated email</p>
-											</div>
-											<div className='flxfix btnwrap m-0'>
-												<a href="#" className='revbtn'>Learn More</a>
-											</div>
-											<div className='flxfix arrowicon'>
-												<i className="twenty-longarrow-right"></i>
-											</div>
-										</div>
-
-										<div className='insiderowacc' onClick={() => showEmailSettingsForm("review-request-reminder")}>
-											<div className='titledetail flxflexi'>
-												<h6>Review request reminder</h6>
-												<p>Send a second review request to customers who did not submit a review yet
-												</p>
-											</div>
-											<div className='flxfix btnwrap m-0'>
-												<a href="#" className='revbtn'>Learn More</a>
-											</div>
-											<div className='flxfix arrowicon'>
-												<i className="twenty-longarrow-right"></i>
-											</div>
-										</div>
-
-										<div className='insiderowacc' onClick={() => showEmailSettingsForm("photo-video-reminder")}>
-											<div className='titledetail flxflexi'>
-												<h6>Photo/video reminder</h6>
-												<p>Remind customers who submitted a text review to add a photo/video
-												</p>
-											</div>
-											<div className='flxfix btnwrap m-0'>
-												<a href="#" className='revbtn'>Learn More</a>
-											</div>
-											<div className='flxfix arrowicon'>
-												<i className="twenty-longarrow-right"></i>
-											</div>
-										</div>
-
-										<div className='insiderowacc' onClick={() => showEmailSettingsForm("review-reply")}>
-											<div className='titledetail flxflexi'>
-												<h6>Reply to review</h6>
-												<p>Inform your customers once you publicly reply to their review</p>
-											</div>
-
-											<div className='flxfix arrowicon'>
-												<i className="twenty-longarrow-right"></i>
-											</div>
-										</div>
-
-										<div className='insiderowacc' onClick={() => showEmailSettingsForm("discount-photo-video-review")}>
-											<div className='titledetail flxflexi'>
-												<h6>Discount for photo/video review</h6>
-												<p>Send customers a next-purchase code after submitting a review with a photo/video</p>
-											</div>
-
-											<div className='flxfix arrowicon'>
-												<i className="twenty-longarrow-right"></i>
-											</div>
-										</div>
-
-										<div className='insiderowacc' onClick={() => showEmailSettingsForm("discount-photo-video-review-reminder")}>
-											<div className='titledetail flxflexi'>
-												<h6>Discount reminder for photo/video review</h6>
-												<p>Remind your customers to use their next-purchase discount if they haven't used it yet</p>
-											</div>
-
-											<div className='flxfix arrowicon'>
-												<i className="twenty-longarrow-right"></i>
-											</div>
-										</div>
-
-										<div className='insiderowacc' onClick={() => showEmailSettingsForm("resend-review-request")}>
-											<div className='titledetail flxflexi'>
-												<h6>Resend review request email </h6>
-												<p>Resend review request email to your customers.</p>
-											</div>
-
-											<div className='flxfix arrowicon'>
-												<i className="twenty-longarrow-right"></i>
-											</div>
-										</div>
-
-										{/* Above DIV will be repeat */}
+									<Box paddingInline='400' paddingBlockEnd='400'>
+										<Card>
+											<BlockStack gap={400}>
+												{/* Below DIV will be repeat */}
+												<InlineGrid columns="1fr auto" alignItems="center" >
+													<Box style={{cursor: 'pointer'}} onClick={() => showEmailSettingsForm("review-request")}>
+														<BlockStack gap={100} >
+															<Text as='h3' variant='headingMd'>Review Request</Text>
+															<Text>Encourage your customers to leave a review with an automated email</Text>
+														</BlockStack>
+													</Box>
+													<InlineGrid columns="1fr auto" gap={200}>
+														<Button fullWidth={true} variant='primary'>Learn More</Button>
+														<Icon source={ArrowRightIcon} tone="base" />
+													</InlineGrid>
+												</InlineGrid>
+												<Divider />
+												<InlineGrid columns="1fr auto" alignItems="center" >
+													<Box style={{cursor: 'pointer'}} onClick={() => showEmailSettingsForm("review-request-reminder")}>
+														<BlockStack gap={100}>
+															<Text as='h3' variant='headingMd'>Review request reminder</Text>
+															<Text>Send a second review request to customers who did not submit a review yet</Text>
+														</BlockStack>
+													</Box>
+													<InlineGrid columns="1fr auto" gap={200}>
+														<Button fullWidth={true} variant='primary'>Learn More</Button>
+														<Icon source={ArrowRightIcon} tone="base" />
+													</InlineGrid>
+												</InlineGrid>
+												<Divider />
+												<InlineGrid columns="1fr auto" alignItems="center" >
+													<Box style={{cursor: 'pointer'}} onClick={() => showEmailSettingsForm("photo-video-reminder")}>
+														<BlockStack gap={100}>
+															<Text as='h3' variant='headingMd'>Photo/video reminder</Text>
+															<Text>Remind customers who submitted a text review to add a photo/video</Text>
+														</BlockStack>
+													</Box>
+													<InlineGrid columns="1fr auto" gap={200}>
+														<Button fullWidth={true} variant='primary'>Learn More</Button>
+														<Icon source={ArrowRightIcon} tone="base" />
+													</InlineGrid>
+												</InlineGrid>
+												<Divider />
+												<InlineGrid columns="1fr auto" alignItems="center" >
+													<Box style={{cursor: 'pointer'}} onClick={() => showEmailSettingsForm("review-reply")}>
+														<BlockStack gap={100}>
+															<Text as='h3' variant='headingMd'>Reply to review</Text>
+															<Text>Inform your customers once you publicly reply to their review</Text>
+														</BlockStack>
+													</Box>
+													<InlineGrid columns="1fr auto" gap={200}>
+														<Icon source={ArrowRightIcon} tone="base" />
+													</InlineGrid>
+												</InlineGrid>
+												<Divider />
+												<InlineGrid columns="1fr auto" alignItems="center" >
+													<Box style={{cursor: 'pointer'}} onClick={() => showEmailSettingsForm("discount-photo-video-review")}>
+														<BlockStack gap={100}>
+															<Text as='h3' variant='headingMd'>Discount for photo/video review</Text>
+															<Text>Send customers a next-purchase code after submitting a review with a photo/video</Text>
+														</BlockStack>
+													</Box>
+													<InlineGrid columns="1fr auto" gap={200}>
+														<Icon source={ArrowRightIcon} tone="base" />
+													</InlineGrid>
+												</InlineGrid>
+												<Divider />
+												<InlineGrid columns="1fr auto" alignItems="center" >
+													<Box style={{cursor: 'pointer'}} onClick={() => showEmailSettingsForm("discount-photo-video-review-reminder")}>
+														<BlockStack gap={100}>
+															<Text as='h3' variant='headingMd'>Discount reminder for photo/video review</Text>
+															<Text>Remind your customers to use their next-purchase discount if they haven't used it yet</Text>
+														</BlockStack>
+													</Box>
+													<InlineGrid columns="1fr auto" gap={200}>
+														<Icon source={ArrowRightIcon} tone="base" />
+													</InlineGrid>
+												</InlineGrid>
+												<Divider />
+												<InlineGrid columns="1fr auto" alignItems="center" >
+													<Box style={{cursor: 'pointer'}} onClick={() => showEmailSettingsForm("resend-review-request")}>
+														<BlockStack gap={100}>
+															<Text as='h3' variant='headingMd'>Resend review request email</Text>
+															<Text>Resend review request email to your customers.</Text>
+														</BlockStack>
+													</Box>
+													<InlineGrid columns="1fr auto" gap={200}>
+														<Icon source={ArrowRightIcon} tone="base" />
+													</InlineGrid>
+												</InlineGrid>
+												{/* Above DIV will be repeat */}
+												<Banner onDismiss={() => {}}>
+													<Text>
+													Your email appearance settings can be customized on the{' '}
+														<Link url="/app/branding">Branding</Link> page.
+													</Text>
+												</Banner>
+											</BlockStack>
+										</Card>
+									</Box>
+									{/* <div className='maininsideacc'>
 										<InformationAlert alertKey="email_review" alertType="email_appearance" colorTheme="primarybox mt-24" pageSlug="/app/branding" className="mt-24" alertClose/>
-
-									</div>
+									</div> */}
 								</Collapsible>
-							</LegacyStack>
-						</LegacyCard>
-					</Layout.Section>
-				</div>
+							</Card>
+						</div>
 
+						<div className='accordian_rowmain'>
+							<Card padding='0'>
+								<InlineGrid columns="1fr auto" alignItems="center" >
+									<Box style={{cursor: 'pointer'}} onClick={showManualRequestForm}>
+										<Box padding='400'>
+											<InlineGrid columns="auto 1fr" gap='400' alignItems='center'>
+												<div className='bigiconbox'>
+													<Icon source={ChatIcon} tone="base" />
+												</div>
+												<BlockStack gap={100}>
+													<Text as='h3' variant='headingMd'>Manual review requests</Text>
+													<Text tone="subdued">Send one-time emails to collect reviews of your products</Text>
+												</BlockStack>
+											</InlineGrid>
+										</Box>
+									</Box>
+									<Box padding='400'>
+										<InlineGrid columns="1fr auto" gap={200}>
+											<Button fullWidth={true} variant='primary'>Learn More</Button>
+											<Icon source={ArrowRightIcon} tone="base" />
+										</InlineGrid>
+									</Box>
+								</InlineGrid>
+							</Card>
+						</div>
 
-				<div className='accordian_rowmain' onClick={showManualRequestForm}>
-					<Layout.Section>
-						<LegacyCard sectioned>
-							<div
-								aria-controls="basic-collapsible"
-							>
-								<div className='flxrow acctitle'>
-									<div className='flxfix iconbox'>
-										{/* <i className='twenty-manualreview'></i> */}
-										<Icon source={ChatIcon} tone="base" />
-									</div>
-									<div className='flxflexi titledetail'>
-										<Text as="h1" variant="headingMd">
-											Manual review requests
-										</Text>
-										<Text>
-											Send one-time emails to collect reviews of your products
-										</Text>
-									</div>
-									<div className='flxfix btnwrap m-0'>
-										<a href="#" className='revbtn'>Learn More</a>
-									</div>
-									<div className='flxfix arrowicon'>
-										<i className='twenty-longarrow-right'></i>
-									</div>
-								</div>
-							</div>
-						</LegacyCard>
-					</Layout.Section>
-				</div>
+						<div className='accordian_rowmain'>
+							<Card padding='0'>
+								<InlineGrid columns="1fr auto" alignItems="center" >
+									<Box style={{cursor: 'pointer'}} onClick={showReviewFormSettings}>
+										<Box padding='400'>
+											<InlineGrid columns="auto 1fr" gap='400' alignItems='center'>
+												<div className='bigiconbox'>
+													<Icon source={NoteIcon} tone="base" />
+												</div>
+												<BlockStack gap={100}>
+													<Text as='h3' variant='headingMd'>Review Form</Text>
+													<Text tone="subdued">Customize the form your customers use when writing a review</Text>
+												</BlockStack>
+											</InlineGrid>
+										</Box>
+									</Box>
+									<Box padding='400'>
+										<InlineGrid columns="1fr auto" gap={200}>
+											<Button fullWidth={true} variant='primary'>Learn More</Button>
+											<Icon source={ArrowRightIcon} tone="base" />
+										</InlineGrid>
+									</Box>
+								</InlineGrid>
+							</Card>
+						</div>
 
-
-
-				<div className='accordian_rowmain' onClick={showReviewFormSettings}>
-					<Layout.Section>
-						<LegacyCard sectioned>
-							<div
-								aria-controls="basic-collapsible"
-							>
-								<div className='flxrow acctitle'>
-									<div className='flxfix iconbox'>
-										{/* <i className='twenty-reviewform'></i> */}
-										<Icon source={NoteIcon} tone="base" />
+						<div className='accordian_rowmain'>
+							<Card padding='0' gap="200">
+								<InlineGrid columns="1fr auto" alignItems="center" >
+									<div
+										onClick={handleToggleVideoSettings}
+										aria-expanded={openVideoSettings}
+										aria-controls="basic-collapsible"
+										className={openVideoSettings ? 'open' : ''}
+									>
+										<Box style={{cursor: 'pointer'}}>
+											<Box padding='400'>
+												<InlineGrid columns="auto 1fr" gap='400' alignItems='center'>
+													<div className='bigiconbox'>
+														<Icon source={PlayCircleIcon} tone="base" />
+													</div>
+													<BlockStack gap={100}>
+														<Text as='h3' variant='headingMd'>Video reviews</Text>
+														<Text tone="subdued">Collect and display video reviews of your happy customers</Text>
+													</BlockStack>
+												</InlineGrid>
+											</Box>
+										</Box>
 									</div>
-									<div className='flxflexi titledetail'>
-										<Text as="h1" variant="headingMd">
-											Review Form
-										</Text>
-										<Text>
-											Customize the form your customers use when writing a review
-										</Text>
-									</div>
-									<div className='flxfix btnwrap m-0'>
-										<a href="#" className='revbtn'>Learn More</a>
-									</div>
-									<div className='flxfix arrowicon'>
-										<i className='twenty-longarrow-right'></i>
-									</div>
-								</div>
-							</div>
-						</LegacyCard>
-					</Layout.Section>
-				</div>
-
-
-				<div className='accordian_rowmain'>
-					<Layout.Section>
-						<LegacyCard sectioned>
-							<div
-								onClick={handleToggleVideoSettings}
-								aria-expanded={openVideoSettings}
-								aria-controls="basic-collapsible"
-								className={openVideoSettings ? 'open' : ''}
-							>
-								<div className='flxrow acctitle'>
-									<div className='flxfix iconbox'>
-										{/* <i className='twenty-star'></i> */}
-										<Icon source={PlayCircleIcon} tone="base" />
-									</div>
-									<div className='flxflexi titledetail'>
-										<Text as="h1" variant="headingMd">
-											Video reviews
-										</Text>
-										<Text>
-											Collect and display video reviews of your happy customers
-										</Text>
-									</div>
-									<div className='flxfix arrowicon'>
-										<i className='twenty-arrow-down'></i>
-									</div>
-								</div>
-							</div>
-							<LegacyStack vertical>
-								<Collapsible
-									open={openVideoSettings}
-									id="basic-collapsible"
-									transition={{
-										duration: '300ms',
-										timingFunction: 'ease-in-out',
-									}}
-									expandOnPrint
-								>
-									<ManageVideoSettings generalSettings={generalSettings} shopRecords={shopRecords} />
-								</Collapsible>
-							</LegacyStack>
-						</LegacyCard>
-					</Layout.Section>
-				</div>
-
+									<Box padding='400'>
+										<InlineGrid columns="1fr auto" gap={200}>
+											<Icon source={ChevronDownIcon} tone="base" />
+										</InlineGrid>
+									</Box>
+								</InlineGrid>
+								
+								<Box>
+									<Collapsible
+										open={openVideoSettings}
+										id="basic-collapsible"
+										transition={{
+											duration: '300ms',
+											timingFunction: 'ease-in-out',
+										}}
+										expandOnPrint
+									>
+										<Box paddingInline='400' paddingBlockEnd='400'>
+											<ManageVideoSettings generalSettings={generalSettings} shopRecords={shopRecords} />
+										</Box>
+									</Collapsible>
+								</Box>
+							</Card>
+						</div>
+						
+					</Box>
+				</InlineStack>
 			</Page>
 		</>
 	);

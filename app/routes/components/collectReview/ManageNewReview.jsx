@@ -7,6 +7,8 @@ import {
 	Grid, 
 	BlockStack,
 	Checkbox,
+	InlineError,
+	InlineGrid,
 } from '@shopify/polaris';
 import settingsJson from './../../../utils/settings.json';
 
@@ -65,14 +67,13 @@ export default function ManageNewReview({ settings, shopRecords }) {
 	};
 	const options = settingsJson.manage_new_review_options;
 
-
-	const handleCheckboxChange = async event => {
+	const handleCheckboxChange = useCallback(async (checked, name) => {
 		try {
-			const eventKey = event.target.name;
+			const eventKey = name;
 
 			const updateData = {
-				field: event.target.name,
-				value: event.target.checked,
+				field: name,
+				value: checked,
 				oid: settings._id,
 				shop: shopRecords.shop
 			};
@@ -95,16 +96,15 @@ export default function ManageNewReview({ settings, shopRecords }) {
 				});
 			}
 			if (eventKey == 'autoPublishReview') {
-				setIsChecked(!event.target.checked);
+				setIsChecked(checked);
 			} else if (eventKey == 'reviewNotification') {
-				setIsCheckedReviewNotification(!event.target.checked);
+				setIsCheckedReviewNotification(checked);
 			}
 		} catch (error) {
 			console.error('Error updating record:', error);
 		}
-
-	};
-
+	});
+	
 
 	const handleReviewNotificationEmailChange = useCallback((value) => {
 		setReviewNotificationEmail(value);
@@ -154,12 +154,13 @@ export default function ManageNewReview({ settings, shopRecords }) {
 		}
 	};
 
-	const handleAddOnsiteReviewChange = async event => {
+	
+	const handleAddOnsiteReviewChange = useCallback(async (checked, name) => {
+
 		try {
-			const myKey = event.target.name;
 			const updateData = {
-				field: event.target.name,
-				value: !isAddOnsiteReview,
+				field: name,
+				value: checked,
 				shop: shopRecords.shop
 			};
 			const response = await fetch('/api/collect-review-setting', {
@@ -183,107 +184,22 @@ export default function ManageNewReview({ settings, shopRecords }) {
 		} catch (error) {
 			console.error('Error updating record:', error);
 		}
-		setIsAddOnsiteReview(!isAddOnsiteReview);
-	};
-
+		setIsAddOnsiteReview(checked);
+	})
 
 	return (
-		<div className='row'>
-			<Grid>
-				<Grid.Cell columnSpan={{xs: 6, sm: 3, md: 6, lg: 4, xl: 4}}>
-					<Card>
-						<BlockStack gap="400">
-							<div className="bottomcheckrow">
-								<Checkbox
-									label="Auto-publish new reviews"
-									checked={isChecked}
-									onChange={handleCheckboxChange}
-									id="flexSwitchCheckChecked"
-									name="autoPublishReview"
-								/>
-								{/* <div className="form-check form-switch">
-									<input
-										checked={
-											isChecked
-										}
-										onChange={
-											handleCheckboxChange
-										}
-										className="form-check-input"
-										type="checkbox"
-										role="switch"
-										name="autoPublishReview"
-										id="flexSwitchCheckChecked"
-									/>
-									<label
-										className="form-check-label"
-										htmlFor="flexSwitchCheckChecked"
-									>
-										Auto-publish new reviews
-									</label>
-								</div> */}
-							</div>
-							{isChecked &&
-								<div className="formcontent" >
-									<Select
-										name="reviewPublishMode"
-										id="reviewPublishMode"
-										helpText="Select which reviews you want to auto-publish. Any changes will only affect new reviews."
-										options={options}
-										onChange={
-											handleSelectChange
-										}
-										value={selected}
-									/>
-								</div>
-							}
-						</BlockStack>
-					</Card>
-				</Grid.Cell>
-				<Grid.Cell columnSpan={{xs: 6, sm: 3, md: 6, lg: 4, xl: 4}}>
-					<Card>
-						<div className="formcontent" >
-							<TextField
-								value={reviewNotificationEmail}
-								onChange={handleReviewNotificationEmailChange}
-								onBlur={handleReviewNotificationEmailBlur}
-								name="reviewNotificationEmail"
-								autoComplete="off"
-								helpText={`Leave empty to have notifications sent to: ${shopRecords.email}`}
-								placeholder='Notification Email'
-							/>
-							{!isValidReviewNotificationEmail && <small className="text-danger">Email address is invalid.</small>}
-
-						</div>
+		<BlockStack gap="400">
+			<InlineGrid gap="400" columns={{xs: 1, sm: 1, md: 2, lg: 2, xl: 2}}>
+				<Card>
+					<BlockStack gap="400">
 						<div className="bottomcheckrow">
-							<div className="form-check form-switch">
-								<input
-									checked={
-										isCheckedReviewNotification
-									}
-									onChange={
-										handleCheckboxChange
-									}
-									className="form-check-input"
-									type="checkbox"
-									role="switch"
-									name="reviewNotification"
-									id="revNotiSwitchCheckChecked"
-								/>
-								<label
-									className="form-check-label"
-									htmlFor="revNotiSwitchCheckChecked"
-								>
-									Review notifications
-								</label>
-							</div>
+							<Checkbox
+								label="Auto-publish new reviews"
+								checked={isChecked}
+								onChange={ (value) => handleCheckboxChange(value , "autoPublishReview")}
+								id="flexSwitchCheckChecked"
+							/>
 						</div>
-					</Card>
-				</Grid.Cell>
-			</Grid>
-			<div className='col-md-6'>
-				<div className='collectreviewformbox'>
-					{/* <Card>
 						{isChecked &&
 							<div className="formcontent" >
 								<Select
@@ -298,39 +214,17 @@ export default function ManageNewReview({ settings, shopRecords }) {
 								/>
 							</div>
 						}
-
+					</BlockStack>
+				</Card>
+				<Card>
+					<BlockStack gap="400">
 						<div className="bottomcheckrow">
-							<div className="form-check form-switch">
-								<input
-									checked={
-										isChecked
-									}
-									onChange={
-										handleCheckboxChange
-									}
-									className="form-check-input"
-									type="checkbox"
-									role="switch"
-									name="autoPublishReview"
-									id="flexSwitchCheckChecked"
-								/>
-								<label
-									className="form-check-label"
-									htmlFor="flexSwitchCheckChecked"
-								>
-									Auto-publish new reviews
-								</label>
-							</div>
+							<Checkbox
+								label="Review notifications"
+								checked={isCheckedReviewNotification}
+								onChange={ (value) => handleCheckboxChange(value , "reviewNotification")}
+							/>
 						</div>
-					</Card> */}
-				</div>
-			</div>
-
-
-			<div className='col-md-6'>
-				<div className='collectreviewformbox'>
-					{/* <Card>
-
 						<div className="formcontent" >
 							<TextField
 								value={reviewNotificationEmail}
@@ -340,70 +234,44 @@ export default function ManageNewReview({ settings, shopRecords }) {
 								autoComplete="off"
 								helpText={`Leave empty to have notifications sent to: ${shopRecords.email}`}
 								placeholder='Notification Email'
+								id='reviewNotificationTextarea'
 							/>
-							{!isValidReviewNotificationEmail && <small className="text-danger">Email address is invalid.</small>}
-
+							{!isValidReviewNotificationEmail && <InlineError message="Email address is invalid." fieldID="reviewNotificationTextarea" />}
 						</div>
-
-
-
-						<div className="bottomcheckrow">
-							<div className="form-check form-switch">
-								<input
-									checked={
-										isCheckedReviewNotification
-									}
-									onChange={
-										handleCheckboxChange
-									}
-									className="form-check-input"
-									type="checkbox"
-									role="switch"
-									name="reviewNotification"
-									id="revNotiSwitchCheckChecked"
-								/>
-								<label
-									className="form-check-label"
-									htmlFor="revNotiSwitchCheckChecked"
-								>
-									Review notifications
-								</label>
-							</div>
-						</div>
-					</Card> */}
-				</div>
-			</div>
-
-			<div className='col-md-12'>
-				<div className='collectreviewformbox'>
-					<Card>
-						<div className="">
-							<div className="form-check form-switch">
-								<input
-									checked={
-										isAddOnsiteReview
-									}
-									onChange={
-										handleAddOnsiteReviewChange
-									}
-									className="form-check-input"
-									type="checkbox"
-									role="switch"
-									name="addOnsiteReview"
-									id="addonsiteNotiSwitchCheckChecked"
-								/>
-								<label
-									className="form-check-label"
-									htmlFor="addonsiteNotiSwitchCheckChecked"
-								>
-									Add onsite reviewers to Shopify Customers list
-								</label>
-							</div>
-						</div>
-					</Card>
-				</div>
-			</div>
-
-		</div>
+					</BlockStack>
+				</Card>
+			</InlineGrid>
+			<Card>
+				<BlockStack gap="400">
+					<Checkbox
+						label="Add onsite reviewers to Shopify Customers list"
+						checked={isAddOnsiteReview}
+						onChange={ (value) => handleAddOnsiteReviewChange(value , "addOnsiteReview")}
+					/>
+						
+							{/* <input
+								checked={
+									isAddOnsiteReview
+								}
+								onChange={
+									handleAddOnsiteReviewChange
+								}
+								className="form-check-input"
+								type="checkbox"
+								role="switch"
+								name="addOnsiteReview"
+								id="addonsiteNotiSwitchCheckChecked"
+							/>
+							<label
+								className="form-check-label"
+								htmlFor="addonsiteNotiSwitchCheckChecked"
+							>
+								Add onsite reviewers to Shopify Customers list
+							</label> */}
+						
+					
+				</BlockStack>
+			</Card>
+		</BlockStack>
 	);
 }
